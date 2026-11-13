@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11. 等值線性與非線性分析 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用：可編輯的土層表、ICA 量測表 */
+  table.edit input { width: 5.6em; padding: 5px 8px; border: 0; border-radius: 8px; background: var(--inset); color: var(--ink); font: inherit; font-size: 14px; font-variant-numeric: tabular-nums; }
+  table.edit td, table.edit th { padding: 6px 8px; vertical-align: middle; }
+  table.edit td.lab { white-space: nowrap; color: var(--muted); font-size: 14px; }
+  table.edit tr.rock td { background: var(--accent-soft); }
+  table.data.compact td, table.data.compact th { padding: 7px 9px; font-size: 14px; }
+  .mini-note { font-size: 13px; color: var(--muted); margin: .4em 0 0; }
+</style>
+</head>
+<body data-page="u11" data-root="../" data-title="11. 非線性地盤反應">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 4 地盤反應 · 單元 11 · Equivalent-Linear and Nonlinear Analysis</div>
+  <h1>等值線性與非線性分析</h1>
+  <p class="lede"><b>讓土壤性質跟著應變走。</b>等值線性分析反覆更新每一層的 \(G\) 與 \(\xi\)，直到與算出的應變相容；應變太大時改用時間域的非線性分析；地形與結構物不再是水平成層時，就需要二維與三維模型。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>強震時土壤變軟，線性分析還能用嗎？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>執行等值線性疊代，說明有效應變與收斂準則</li>
+    <li>選擇子層厚度，並檢查曲線隱含的剪力強度</li>
+    <li>說明等值線性在什麼情況下不準，以及時間域非線性分析的架構（顯式差分、傳遞邊界、Masing 規則）</li>
+    <li>判斷何時需要二維、三維模型</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u10.html"><h4>上一單元 · 一維線性地盤反應</h4><p>強震時土壤變軟、阻尼變大，線性分析不夠了。</p></a>
+    <a class="card" href="../units/u12.html"><h4>下一單元 · 液化易致性與反覆試驗</h4><p>本單元算出的 τ<sub>max</sub>(z) 是液化評估的載重。</p></a>
+  </div>
+</header>
+
+<section class="sec" id="s11-1" data-num="11.1" data-short="等值線性" data-title="等值線性分析">
+  <div class="sec-head"><span class="sec-num">11.1</span><h2>等值線性分析：用疊代逼近非線性</h2></div>
+  <p class="src">出處：Ch6 講義 2.16–2.22；教師 PDF p.34–40；郭安妮講義 p.9–10</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>\(G\) 和 \(\xi\) 隨應變改變，頻率域分析卻必須是線性的。每一層只能有一組 \(G\)、\(\xi\)，該選哪一組？</p>
+  </div>
+
+  <p>等值線性法的回答：用一組<b>與應變相容</b>的性質，代表整個地震期間的平均行為。要讀曲線就要選一個應變。\(\gamma_{max}\) 只出現一瞬間，大部分時間應變較小，用它讀曲線會高估非線性；所以用<b>有效應變</b>：</p>
+  <div class="eqbox">\[ \gamma_{eff} = R_\gamma\,\gamma_{max}, \qquad R_\gamma = \frac{M-1}{10}\quad(\text{Idriss \& Sun, SHAKE91}) \]</div>
+  <div class="tablewrap"><table class="data">
+    <tr><th>規模 M</th><th class="num">\(R_\gamma\)</th></tr>
+    <tr><td>7.5</td><td class="num">0.65</td></tr>
+    <tr><td>6.5</td><td class="num">0.55</td></tr>
+    <tr><td>6.0</td><td class="num">0.50</td></tr>
+  </table></div>
+  <p>規模越大、強震延時越長、接近最大應變的圈數越多，有效應變就該越接近最大應變。文獻值 0.5–0.7 都有，是本方法較主觀的參數之一；Strata 讓使用者設定，常用預設 0.65。同樣的 0.65 會在 Ch8 再出現：簡化液化評估法的平均反覆剪應力也取最大值的 0.65 倍，想法相同。</p>
+
+  <h3>五個步驟</h3>
+  <ol class="steps">
+    <li>每一層以小應變的 \(G_{max}\)、\(\xi_{min}\) 為初值。</li>
+    <li>做一次線性地盤反應分析，得到每一層的剪應變歷時（6.8 的應變轉換函數 → 逆 FFT）。</li>
+    <li>由每一層的 \(\gamma_{max}\) 求 \(\gamma_{eff} = R_\gamma\gamma_{max}\)。</li>
+    <li>由 \(\gamma_{eff}\) 從曲線讀出新的 \(G\)、\(\xi\)，再做一次分析。</li>
+    <li>重複 2–4，直到每一層都滿足 \(|G_j^{(i+1)} - G_j^{(i)}|/G_j^{(i+1)} \le 5\,\%\)，\(\xi\) 亦同（講義寫的 \(\xi_J\) 下標應為 \(\xi_j\)，勘誤表第 38 頁）。</li>
+  </ol>
+  <p>通常 5–8 次即可收斂。應變增加時 \(G\) 下降、\(\xi\) 上升，兩者都降低高頻放大，所以軟弱場址在強震下的放大常比弱震小。收斂後以固定性質再做一次線性分析，得到地表運動、反應譜、每一層的最大應力與應變。<b>計算反應時 \(G\)、\(\xi\) 在整段歷時中固定</b>：最強的幾秒和微弱的尾段用同一組性質，所以它仍是線性分析，這也是它最大的限制（11.3）。</p>
+
+  <div id="w-eql" data-title="多層等值線性分析（講義 2.21 剖面）"></div>
+
+  <div class="callout example"><div class="ct">例：多層剖面的等值線性結果（講義 2.21–2.22 與本頁重算）</div>
+    <p>剖面同 6.8；曲線用講義表（應變 \(10^{-4}\) % 到 10 %，\(G/G_{max}\) 1.00 → 0.04，\(\xi\) 3 % → 30 %；最小阻尼 3 %，即單元 8 的 \(D_{min}\)）。講義用 Kramer 書中的輸入（岩盤 PGA 近 0.5 g），得到：第一峰由 0.9 Hz 移到 0.5 Hz 以下，5 Hz 以上幾乎完全被抑制，地表 PGA 約 0.3 g，比輸入小（去放大）。</p>
+    <p>本頁拿不到那筆輸入，改用 CHY086 紀錄調到 0.5 g、\(R_\gamma\) = 0.65 重算：6 次疊代收斂；最軟的幾個子層 \(G/G_{max}\) 降到約 0.2、最大應變約 0.8 %；第一峰由 0.90 Hz 移到約 0.65 Hz，高頻放大大幅下降。趨勢與講義相同，但這筆輸入的地表 PGA 仍大於輸入（放大倍率由 0.1 g 時的 2.3 降到 0.5 g 時的 1.6）：<b>會不會去放大，取決於輸入的頻率內容</b>，不是剖面本身決定的。</p>
+  </div>
+
+  <div class="callout intuition"><div class="ct">反摺積（deconvolution）</div>
+    <p>分析是線性的，所以可以倒著做：把地表紀錄除以轉換函數，反推岩盤或任一層的運動，再施加到附近場址。只在轉換函數不接近零的頻率可行，否則雜訊被大幅放大。真正的非線性分析無法這樣由地表往回推。</p>
+  </div>
+
+  <div class="quiz" data-num="0.55" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">設計地震規模 M = 6.5，依 Idriss &amp; Sun 的式子，\(R_\gamma\) 是多少？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="Rγ"><button class="btn">檢查</button></div>
+    <div class="fb">R_γ = (6.5 − 1)/10 = 0.55。在上方互動圖改 M 看看：R_γ 小 → γ_eff 小 → 讀到的 G 較大、ξ 較小，地表高頻放大較多。</div>
+  </div>
+  <div class="quiz" data-answer="0">
+    <div class="qh">小測驗</div>
+    <div class="qq">等值線性分析的報告附上「最大剪應變 vs 深度」。圖上畫的應該是哪一個？</div>
+    <div class="opts">
+      <button class="opt">每層真正的 γmax（不乘 Rγ）</button>
+      <button class="opt">γeff = Rγ γmax，因為曲線是用它讀的</button>
+      <button class="opt">小應變分析的 γmax</button>
+    </div>
+    <div class="fb">R_γ 只用來讀曲線；γ_eff 是代表值，不是任何時刻真正發生的應變。報告與 Ch8 液化評估要的是最後一次分析的最大剪應力與最大剪應變。</div>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：整個土柱用同一條曲線</div>
+    <p>圍壓隨深度增加，同一種土在深處的曲線應較線性（往右移）。整個土柱用同一條曲線會高估深層的非線性。曲線可以來自室內試驗，或 Darendeli 等依 PI 與圍壓的模型（<a href="u08.html#s8-9">8.9</a>）。疊代 10 次以上仍不收斂，多半是某一層應變很大：檢查該層的輸入參數，或改用非線性分析，而不是一直增加疊代次數。</p>
+  </div>
+</section>
+
+<section class="sec" id="s11-2" data-num="11.2" data-short="實務檢核" data-title="子層厚度與隱含剪力強度">
+  <div class="sec-head"><span class="sec-num">11.2</span><h2>實務議題：子層厚度與隱含剪力強度</h2></div>
+  <p class="src">出處：Ch6 講義 3.2–3.3；教師 PDF p.42–43</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>均勻層明明有封閉解，為什麼程式還要把它切成一公尺左右的子層？曲線讀出來的 G，又為什麼可能違反物理？</p>
+  </div>
+
+  <h3>子層厚度</h3>
+  <p>若只解波動方程式，均勻層不必切。但等值線性法中每個子層只有一個有效應變、一組 \(G\)、\(\xi\)，而實際應變與圍壓隨深度變化，子層要薄到能跟上這個變化，也要能表示要分析的最短波長：</p>
+  <div class="eqbox">\[ \lambda_{min} = \frac{V_s}{f_{max}}, \qquad h \le \frac{\lambda_{min}}{5} \sim \frac{\lambda_{min}}{8} \]</div>
+  <div class="tablewrap"><table class="data">
+    <tr><th class="num">\(V_s\) (m/s)</th><th class="num">\(f_{max}\) (Hz)</th><th class="num">\(\lambda_{min}\) (m)</th><th class="num">\(h\) 上限（λ/5）</th></tr>
+    <tr><td class="num">150</td><td class="num">25</td><td class="num">6</td><td class="num">1.2 m</td></tr>
+    <tr><td class="num">300</td><td class="num">25</td><td class="num">12</td><td class="num">2.4 m</td></tr>
+  </table></div>
+  <p>\(f_{max}\) 一般結構取 20–25 Hz，剛性設備更高。軟土速度低、波長短，子層最薄；深處硬層可較厚。輸入紀錄也要支援同一個 \(f_{max}\)：\(\Delta t\) = 0.02 s 的紀錄 Nyquist 只有 25 Hz。基盤深達數百公尺時，基盤深度與深層 \(V_s\) 的不確定性，常比子層厚度更影響結果。</p>
+
+  <h3>隱含剪力強度</h3>
+  <p>G/Gmax 曲線加上 \(V_s\)（也就是 \(G_{max}\)），其實就隱含了完整的應力應變曲線：</p>
+  <div class="eqbox">\[ \tau(\gamma) = \frac{G}{G_{max}}(\gamma)\cdot G_{max}\cdot\gamma \]</div>
+  <p>在大應變時，這條隱含曲線可能一路上升到超過土壤的剪力強度（黏土用 \(S_u\)、砂用 \(\sigma'_v\tan\phi'\)），等於聲稱土壤承受比強度更大的剪應力，物理上不可能。\(\gamma_{max}\) &gt; 0.1 % 的每一層都要檢查，軟黏土最常出問題。</p>
+
+  <div id="w-check" data-title="子層厚度與隱含強度檢核"></div>
+
+  <div class="callout example"><div class="ct">例：正常壓密黏土，深 10 m</div>
+    <p>\(\sigma'_v \approx 100\) kPa，\(S_u \approx (0.2\text{–}0.3)\sigma'_v\) ≈ 20–30 kPa。\(G_{max}\) = 20 MPa，通用曲線在 1 % 給 \(G/G_{max}\) = 0.15：隱含應力 = 0.15 × 20,000 kPa × 0.01 = 30 kPa。若 \(S_u\) = 25 kPa，曲線已超過強度，必須修正。修正方法是<b>強度修正曲線</b>（strength-adjusted curves）：修改大應變段，讓曲線趨近強度時變平；DEEPSOIL 等程式提供此選項。上方互動圖按「NC 黏土例」重現（雙曲線 \(\gamma_r\) = 0.176 % 在 1 % 剛好給 0.15）。</p>
+  </div>
+
+  <div class="quiz" data-num="30" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">\(G_{max}\) = 20 MPa，曲線在 \(\gamma\) = 1 % 時 \(G/G_{max}\) = 0.15。隱含的剪應力是多少 kPa？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="τ (kPa)"><button class="btn">檢查</button></div>
+    <div class="fb">τ = 0.15 × 20,000 kPa × 0.01 = 30 kPa。若該層的 S_u 只有 25 kPa，不修正曲線會讓這個弱層往上傳遞過多剪應力，高估地表加速度。</div>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：只看 G/Gmax 曲線形狀</div>
+    <p>兩條形狀相同的 G/Gmax 曲線，配上不同的 \(G_{max}\)，隱含強度可以差好幾倍。養成習慣：畫出每一層的隱含應力應變曲線，和強度放在同一張圖比較。</p>
+  </div>
+</section>
+
+<section class="sec" id="s11-3" data-num="11.3" data-short="非線性" data-title="等值線性的限制與非線性分析">
+  <div class="sec-head"><span class="sec-num">11.3</span><h2>等值線性的限制與時間域非線性分析</h2></div>
+  <p class="src">出處：Ch6 講義 3.4–3.10；教師 PDF p.44–58</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>如果土壤的勁度在強震段變軟、在尾段又變硬，一組固定的 \(G\)、\(\xi\) 會錯在哪裡？</p>
+  </div>
+
+  <h3>等值線性的六個限制</h3>
+  <ol>
+    <li><b>高頻被過度阻尼</b>：\(\gamma_{eff}\) 主要由大而低頻的運動控制；高頻分量的應變小、應該只有小阻尼，卻用同一個大阻尼，地表高頻反應被低估。與紀錄比較，極軟場址受強震時約 5 Hz 以上的譜值常被低估，1 s 附近通常尚可。</li>
+    <li><b>\(\gamma_{max}\) 超過約 0.5–1 % 不可靠</b>：極軟層變得極軟、高阻尼，像上下土層之間的隔震墊，地表加速度可能被嚴重低估。近破壞的軟層幾乎不傳剪力，真正的問題變成大變形，而等值線性法算不出來。</li>
+    <li><b>總應力分析</b>：不能產生超額孔隙水壓、不能算永久變形，無法模擬液化過程。</li>
+    <li><b>一維</b>：忽略表面波、地形與盆地邊緣效應。</li>
+    <li><b>不確定性</b>：\(V_s\) 剖面與曲線都不確定，一次分析只給一個答案；用 Monte Carlo 產生大量剖面與曲線（Strata 有此功能），至少做上、下限分析。</li>
+    <li>它仍是<b>最廣泛使用、校核最充分</b>的方法，中等應變下相當可靠。正確的態度是知道它的適用範圍。</li>
+  </ol>
+  <p>每次等值線性分析後看三張圖：最大剪應變 vs 深度（有沒有層超過 0.5–1 %）、收斂後的 \(G/G_{max}\) 與阻尼 vs 深度（是否合理）、地表頻譜 / 輸入頻譜。</p>
+
+  <h3>時間域逐步積分：顯式差分</h3>
+  <p>真正的非線性分析在時間域逐步積分，每一步依當下的應力與應變更新模數。土柱切成 N 個子層，每個節點有位移與速度。一片厚 \(\Delta z\) 的土，速度變化由上下兩面的剪應力差決定（單位面積的牛頓第二定律，質量 \(\rho\Delta z\)）：</p>
+  <div class="eqbox">\[ \frac{\partial\tau}{\partial z} = \rho\frac{\partial\dot u}{\partial t} \quad\Rightarrow\quad \dot u_i^{\,t+\Delta t} = \dot u_i^{\,t} + \frac{\Delta t}{\rho\,\Delta z}\left(\tau_{i}^{\,t} - \tau_{i-1}^{\,t}\right), \qquad \tau_0 = 0\ (\text{地表}) \]</div>
+  <p>由目前的速度與應力直接得到下一步的速度，不解聯立方程，這就是<b>顯式</b>。代價是時間步長要小：一步之內波不能穿過一個以上的子層，\(\Delta t &lt; \Delta z/V_s\)。例：臨界子層 1 m、\(V_s\) = 200 m/s → \(\Delta t\) &lt; 0.005 s，實務上常把輸入紀錄的一個時間步再分成數個計算步。對照反應譜（5.2）用的 Newmark 法（可為隱式、每步解方程），這裡較簡單，但步長受穩定性限制。</p>
+
+  <h3>底部邊界：把 outcrop、阻抗比收進一個阻尼器</h3>
+  <ul>
+    <li><b>剛性基盤</b>：底部節點的速度 = 輸入基盤速度。能量出不去，振盪持續很久。</li>
+    <li><b>彈性基盤（傳遞邊界、Lysmer 邊界）</b>：在底部放一個係數等於岩盤阻抗 \(\rho_rV_r\) 的阻尼器，邊界剪應力 \(\tau_b = \rho_rV_r(2\dot u_I - \dot u_b)\)。入射速度 \(\dot u_I\) = 露頭紀錄 / 2（6.2 的因子 2）。它吸收下行波，讓能量離開土層：6.2 的 outcrop / within、6.7 的阻抗比與輻射阻尼，在時間域都化成這一個阻尼器。</li>
+    <li>若輸入是 within 紀錄，應像剛性基盤一樣直接指定底部節點的運動，<b>不乘 2</b>，否則反射被算兩次。</li>
+  </ul>
+
+  <h3>每個子層的應力應變</h3>
+  <p>位移增量 \(\Delta u = \dot u\Delta t\) → 子層剪應變 \(\gamma = (u_{i+1} - u_i)/\Delta z\) → 剪應力。非線性時用單元 8 的<b>骨架曲線＋Masing 規則</b>：依載重歷史判斷初次載重、卸載或再載入，每個子層一步一步沿著遲滯迴圈走。早期程式（CHARSOIL、DESRA-2、DYNA1D、MASH、NONL13、TESS1）的差別只在骨架的數學形式與阻尼、強度的處理；今日的 DEEPSOIL 非線性模式、OpenSees 架構相同。非線性模型在小應變幾乎線性、迴圈很細，所以通常另加少量黏滯阻尼代表 \(D_{min}\)，<b>這個黏滯阻尼怎麼加是重要的不確定來源</b>。</p>
+
+  <div id="w-nl" data-title="同一個土柱：等值線性 vs 非線性（顯式差分）"></div>
+
+  <div class="callout intuition"><div class="ct">與等值線性最根本的差別</div>
+    <p>等值線性：整段紀錄一個割線模數，對整段紀錄重複疊代。非線性：每一個時間步跑一次積分流程（① 已知各界面 \(u, \dot u\) → ② 各層應變 → ③ 應力應變律求應力 → ④ 由輸入定出基盤運動 → ⑤ 由下往上更新各界面），沒有疊代；強震段軟、微弱尾段再變硬，高頻過度阻尼的問題自然消失。40 s 紀錄、\(\Delta t\) = 0.005 s 是 8000 步，在 1970 年代這是等值線性法較流行的重要原因。</p>
+  </div>
+
+  <h3>怎麼選？</h3>
+  <p>老師最希望記住的一句：<b>非線性分析不會自動比較好，它只和它的率定與黏滯阻尼模型一樣好</b>。一般場址先做等值線性；最大應變超過約 0.5 %、可能液化、或需要永久變形時，再加做非線性分析，並以等值線性結果當基準：中等應變時兩者應接近，差很多時通常是某個輸入錯了。等值線性在一般電腦上只要數秒，數百組隨機剖面很容易；有效應力非線性要數分鐘到數十分鐘，參數率定可能要數天。有些程式提供頻率相依的等值線性法，可部分改善過度阻尼。</p>
+
+  <div class="quiz" data-num="0.005" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">顯式差分的土柱中，最薄的子層 \(\Delta z\) = 1.5 m、\(V_s\) = 300 m/s。計算步長 \(\Delta t\) 的上限是多少秒？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="Δt (s)"><button class="btn">檢查</button></div>
+    <div class="fb">Δt &lt; Δz/V_s = 1.5/300 = 0.005 s。若輸入紀錄 Δt = 0.01 s，每個輸入步至少要分成 2 個計算步；實務上再取安全係數。上方互動圖的統計列會顯示實際用了幾個子步。</div>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：把「非線性」當成「比較準」</div>
+    <p>Masing 規則在大應變時給的阻尼常偏高；小應變的黏滯阻尼（例如 Rayleigh 阻尼的兩個頻率）選法不同，結果可以明顯不同。在上方互動圖切換「黏滯阻尼匹配頻率」就能看到高頻譜值跟著改變。</p>
+  </div>
+</section>
+
+<section class="sec" id="s11-4" data-num="11.4" data-short="二三維" data-title="二維與三維動力分析">
+  <div class="sec-head"><span class="sec-num">11.4</span><h2>二維與三維動力分析</h2></div>
+  <p class="src">出處：Ch6 講義 4.1–4.10；教師 PDF p.59–70</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>土壩、擋土牆、隧道：哪些情況「水平成層」的假設不成立？二維模型又要避開哪些陷阱？</p>
+  </div>
+
+  <p>共同特徵是：一個方向很長、斷面不是水平成層、或土中有結構物。長土壩真實是三維，但壩夠長時取中央斷面，以<b>平面應變</b>模擬即可。主要工具是動力有限元素法，和一維一樣有等值線性與非線性兩種做法。</p>
+
+  <h3>全域運動方程式與 Rayleigh 阻尼</h3>
+  <div class="eqbox">\[ [M]\{\ddot u\} + [C]\{\dot u\} + [K]\{u\} = -[M]\{1\}\,\ddot u_b(t), \qquad [C] = a_0[M] + a_1[K] \]</div>
+  <p>就是單元 4 基底激振 SDOF 推廣到多自由度。阻尼矩陣常用 Rayleigh 阻尼：兩個係數由兩個頻率的目標阻尼比決定，兩頻率之間阻尼偏低、之外偏高，所以頻率的選擇會影響結果（下方互動圖第二頁）。</p>
+
+  <h3>離散化與邊界</h3>
+  <ul>
+    <li><b>空間</b>：元素尺寸 &lt; (1/5–1/8) 最短波長，與一維子層同一規則；節點太疏會濾掉高頻，這是數值濾波，不是物理濾波。</li>
+    <li><b>時間</b>：\(\Delta t\) &lt; 要模擬的最短週期 / 10；顯式法還要滿足穩定條件，二維用壓縮波速，比 \(\Delta z/V_s\) 更嚴。例：土壩 \(V_s\) = 250 m/s 模擬到 10 Hz → \(\lambda_{min}\) = 25 m，元素約 3–5 m；最短週期 0.1 s → \(\Delta t\) ≤ 0.01 s。先粗網格再加密，確認結果收斂。</li>
+  </ul>
+  <div class="tablewrap"><table class="data">
+    <tr><th>邊界</th><th>做法</th><th>優點</th><th>限制</th></tr>
+    <tr><td>基本邊界</td><td>固定位移</td><td>簡單</td><td>箱效應：反射能量困在模型內，模型要非常大</td></tr>
+    <tr><td>局部邊界</td><td>阻尼器（一維用過的 Lysmer 邊界）</td><td>吸收大部分能量</td><td>斜入射吸收不完全，效果與入射角、與結構距離有關</td></tr>
+    <tr><td>一致邊界</td><td>集中質量＋彈簧＋阻尼器</td><td>所有角度、頻率</td><td>複雜、頻率相依，多用於頻率域程式</td></tr>
+  </table></div>
+  <p>簡單檢查：模型寬度加倍再跑一次，結果變很多，表示邊界仍在影響。</p>
+
+  <h3>二維等值線性與非線性</h3>
+  <p>二維等值線性和 SHAKE 同一個想法，轉換函數變成矩陣 \(\{U(\omega)\} = [K^* - \omega^2M]^{-1}\{\cdots\}\)，\(K^*\) 是含阻尼的複數勁度矩陣（FLUSH、Ground2D）。每個頻率要解數千到數萬個自由度，只算有限個頻率、其餘內插。<b>疊代以元素為單位</b>，不是以層為單位：土壩同一高程，壩頂和壩趾的應變可能差很多。二維非線性（FLAC2D、TARA-3、DYNAFLOW、DYANA）在時間域逐步積分；擴展 Masing 規則加孔隙水壓模型可做有效應力分析、模擬液化（Ch8）。最大障礙是參數難以取得；PM4Sand 等新模型用少量有物理意義、可由 SPT、CPT 率定的參數。</p>
+
+  <h3>剪力梁法與鞭梢效應</h3>
+  <p>把土壩切成許多水平薄片，假設每片只做水平剪切（同高程各點水平位移相同），上下表面的剪力差等於薄片的慣性力：二維土壩變成<b>寬度隨高度變化的一維剪力梁</b>。均勻勁度的三角形壩，Gazetas (1982) 給出以 Bessel 函數表示的封閉解：</p>
+  <div class="eqbox">\[ \phi_n(z) = J_0\!\left(\beta_n\frac{z}{H}\right),\quad J_0(\beta_n) = 0,\quad \beta_n = 2.405,\ 5.520,\ 8.654;\qquad T_n = \frac{2\pi H}{\beta_n V_s},\quad T_1 = 2.61\frac{H}{V_s} \]</div>
+  <p>\(z\) 由壩頂往下量。壩頂附近斷面變窄、質量變小，第二、第三振態在壩頂附近的位移變化非常劇烈，運動被強烈放大，像鞭梢比手快得多，這就是<b>鞭梢效應（whiplash）</b>。土壩震害常見壩頂附近的縱向裂縫或局部滑動，耐震設計中壩頂加速度取得比基底大很多。</p>
+
+  <div id="w-dam" data-title="土壩剪力梁振態與 Rayleigh 阻尼"></div>
+
+  <div class="callout example"><div class="ct">例：壩高 50 m、平均 V<sub>s</sub> = 300 m/s</div>
+    <p>\(T_1 = 2\pi \times 50/(2.405 \times 300) = 0.435\) s，落在講義說的 0.4–0.5 s。同樣 50 m 厚的均勻土層 \(4H/V_s\) = 0.67 s：三角形斷面上窄下寬，有效勁度較高，週期較短。審查報告時可用來檢核有限元素分析。</p>
+  </div>
+
+  <h3>三維</h3>
+  <p>三種情況需要三維：土壤條件在三個方向都變化很大；窄峽谷中的土壩（峽谷壁束制兩端，平面應變不成立）；強烈的土壤–結構互制（相鄰高樓、鄰近地下結構）。方法和二維類似（等值線性如 SASSI，非線性如 FLAC3D、ABAQUS），計算與參數都昂貴，主要用於重要結構，例如大型捷運車站與隧道、高樓與鄰近深開挖的互制。你要能判斷為何需要三維、結果是否合理。</p>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">二維等值線性分析一座土壩，為什麼疊代必須逐元素、不能每一高程取一個平均應變？</div>
+    <div class="opts">
+      <button class="opt">因為二維程式不能分層</button>
+      <button class="opt">同一高程的壩頂中央與壩趾，應變與圍壓可能差很多，平均值兩邊都不對</button>
+      <button class="opt">因為 Rayleigh 阻尼要求每個元素不同</button>
+    </div>
+    <div class="fb">一維的「每層一組 G、ξ」靠的是水平成層：同一深度應變相同。土壩斷面不是水平成層，同一高程的應變分布不均，所以應變相容要以元素為單位。</div>
+  </div>
+</section>
+
+<section class="sec" id="s11-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <p>單元 10、11 只記一條鏈：<b>水平成層 + 垂直 SH 波 → 轉換函數（剛性 → 彈性岩盤 → 多層）→ FFT 流程 → 等值線性疊代 → 必要時非線性或二、三維</b>。強震下 \(G\) 下降、\(\xi\) 上升，結果是場址週期變長、高頻被濾掉。下一章（Ch7）看真實場址在地震中記錄到什麼，用來檢驗這些理論；<a href="u12.html">階段 5</a>（Ch8）用本單元輸出的 \(\tau_{max}(z)\) 評估液化。</p>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">有效應變</div>\[ \gamma_{eff} = R_\gamma\gamma_{max},\; R_\gamma = \frac{M-1}{10} \]</div>
+    <div class="fcard"><div class="ft">子層厚度</div>\[ h \le \frac{V_s}{(5\sim8)f_{max}} \]</div>
+    <div class="fcard"><div class="ft">隱含強度</div>\[ \tau = \frac{G}{G_{max}}G_{max}\gamma \le \tau_f \]</div>
+    <div class="fcard"><div class="ft">顯式差分穩定</div>\[ \Delta t &lt; \Delta z/V_s \]</div>
+    <div class="fcard"><div class="ft">傳遞邊界</div>\[ \tau_b = \rho_rV_r(2\dot u_I - \dot u_b) \]</div>
+    <div class="fcard"><div class="ft">三角形土壩</div>\[ T_1 = 2.61\,H/V_s \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>收斂準則的下標</b>：講義的 ξ<sub>J</sub> 應為 ξ<sub>j</sub>（第 j 層）。</li>
+    <li><b>報告的應變</b>：最大應變剖面是 γmax，不乘 Rγ。</li>
+    <li><b>同一條曲線用到底</b>：深層圍壓大、曲線應較線性；也要檢查隱含強度。</li>
+    <li><b>γ &gt; 0.5–1 % 還信等值線性</b>：軟層像隔震墊，地表加速度被低估、大變形算不出來。</li>
+    <li><b>逐字稿用詞</b>：Cramer → Kramer、Lismar → Lysmer、Idris and Son → Idriss &amp; Sun、macing / Mason / amazing rule → Masing rule、Dharandelis → Darendeli、Ramburg-Oskud → Ramberg–Osgood、Gazettas → Gazetas、open seas → OpenSees、flax → FLAC、Terra 3 → TARA-3、DYA → DYANA、Nequis → Nyquist。</li>
+    <li><b>等值線性不算孔隙水壓</b>：γ &gt; γtv 時要配合 Ch8 液化評估或有效應力分析。</li>
+  </ul>
+  <h3>自我檢測</h3>
+  <div class="quiz" data-answer="0">
+    <div class="qh">綜合題 1</div>
+    <div class="qq">等值線性分析得到某層 γmax = 1.5 %，地表 PGA 比岩盤 PGA 小很多。最恰當的下一步是？</div>
+    <div class="opts">
+      <button class="opt">檢查該層的隱含強度與輸入參數，並加做非線性分析比較</button>
+      <button class="opt">接受結果，因為去放大代表場址安全</button>
+      <button class="opt">把疊代次數加到 30 次</button>
+    </div>
+    <div class="fb">γ &gt; 0.5–1 % 已超出等值線性的可靠範圍：極軟層像隔震墊，地表加速度被低估，真正的問題是大變形。先檢查曲線是否超過強度，再用非線性分析（以等值線性為基準）比較。增加疊代次數不能解決模型本身的限制。</div>
+  </div>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>從斷層到地表的運動算完了。階段 5 用這些剪應力判斷土壤會不會液化：從單元 12 的易致性開始。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u10.html"><span class="dir">← 單元 10</span>一維線性地盤反應</a>
+  <a class="next" href="../units/u12.html"><span class="dir">單元 12 →</span>液化易致性與反覆試驗</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/data/ch6_motion.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/site.js"></script>
+</body>
+</html>

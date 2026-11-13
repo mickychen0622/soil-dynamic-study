@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7. 量測剪力波速與 Gmax · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用：數字很多的答案表、勘誤表 */
+  .ans-list { max-width: var(--measure); }
+  .ans-list li { margin: .35em 0; }
+  table.data td.ok { color: var(--green); font-weight: 600; }
+  table.data td.bad { color: var(--warn); font-weight: 600; }
+  .w-body .tablewrap { margin: 1em 0 .4em; }
+  .w-body table.data { font-size: 14px; }
+  .w-body table.data th, .w-body table.data td { padding: 8px 10px; }
+/* 單元專用：可編輯的分層表、熱圖、小型表單 */
+  .layer-tbl input[type=number] { width: 5.6em; border: 0; border-radius: 8px; padding: 5px 8px; background: var(--inset); color: var(--ink); font: inherit; font-size: 14px; }
+  .layer-tbl td, .layer-tbl th { padding: 6px 8px; }
+  .layer-tbl .x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 16px; }
+  .cls-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 10px 0 4px; }
+  .cls-row .chip { background: var(--inset); border-radius: 14px; padding: 10px 14px; font-size: 13px; color: var(--muted); }
+  .cls-row .chip b { display: block; color: var(--ink); font-size: 20px; font-family: var(--font-display); }
+  svg image.heat { image-rendering: pixelated; }
+  .w-sub { font-size: 14px; font-weight: 600; margin: 14px 0 2px; }
+  .ans-box { border-left: 3px solid var(--accent); padding: 2px 0 2px 16px; margin: 1em 0; }
+</style>
+</head>
+<body data-page="u07" data-root="../" data-title="7. 量 Vs">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 3 波與土壤性質 · 單元 7 · Measuring Vs and Gmax</div>
+  <h1>量測剪力波速與 Gmax</h1>
+  <p class="lede"><b>小應變勁度 \(G_{max} = \rho V_s^2\) 是一切的起點。</b>這個單元先看 \(G_{max}\) 受什麼影響、經驗式怎麼估，再看現地怎麼量 \(V_s\)：表面波（MASW）、孔內試驗（下孔、跨孔）與實驗室的彎曲元件，最後把 \(V_s\) 剖面濃縮成場址分類用的 \(V_{s30}\)。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>現地的土壤有多硬？該用哪一種方法量？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>估計 \(G_{max}\)，說明孔隙比、圍壓、OCR 怎麼影響它</li>
+    <li>讀懂 MASW 的頻散影像，避開高階模態與 \(\lambda/3\) 的陷阱</li>
+    <li>由下孔試驗走時求區間速度，並比較各種現地方法的優缺點</li>
+    <li>說明彎曲元件的走時拾取與近場效應</li>
+    <li>計算 \(V_{s30}\)，並依 NEHRP、Eurocode 8、臺灣耐震規範分類場址</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u06.html"><h4>上一單元 · 波在土中傳播</h4><p>波速和勁度連在一起之後，下一步是到現地與實驗室把 Vs 量出來。</p></a>
+    <a class="card" href="../units/u08.html"><h4>下一單元 · 土壤的非線性：模數與阻尼</h4><p>Gmax 只是小應變的勁度。地震時應變變大，土壤會變軟、吃能量。</p></a>
+  </div>
+</header>
+
+<section class="sec" id="s7-1" data-num="7.1" data-short="Gmax" data-title="小應變剪力模數 Gmax">
+  <div class="sec-head"><span class="sec-num">7.1</span><h2>小應變剪力模數 G<sub>max</sub> 與經驗式</h2></div>
+  <p class="src">出處：學生整理投影片 3.1–3.2；老師講義 p. 24–25；Richart et al. (1970) PDF pp. 173–179；郭老師 Dynamic Soil Behavior p. 26</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>\(G_{max}\) 叫「最大」剪力模數，土壤真的不可能比它更硬嗎？</p>
+  </div>
+
+  <p>名稱容易誤導：\(G_{max}\) 是<b>小應變</b>模數（有些文獻寫 \(G_0\)），也就是 MRD 曲線的錨點，不是土壤可能的最大勁度。它是彈性性質，原則上靜態與動態試驗在極小應變下應得到同一個值，但靜態試驗很少能量到那麼小的應變，所以幾乎都由波速求得：</p>
+  <div class="eqbox">\[ G_{max} = \rho V_s^2 \qquad(\rho\ \text{in t/m}^3,\ V_s\ \text{in m/s} \Rightarrow G_{max}\ \text{in kPa}) \]</div>
+  <div class="tablewrap"><table class="data">
+    <tr><th>因素</th><th>對 \(G_{max}\) 的影響</th></tr>
+    <tr class="hl"><td>平均有效應力 \(\sigma'_m\)</td><td>增加，約 \(\propto \sigma'^{0.5}_m\)，所以 \(V_s \propto \sigma'^{0.25}_m\)；\(\sigma'_m\) 變 4 倍，\(G_{max}\) 變 2 倍、\(V_s\) 變 1.41 倍</td></tr>
+    <tr><td>孔隙比 e</td><td>e 越大（越鬆）越小（Richart：孔隙比由最小變到最大，波速約降 10–15 %；Hardin &amp; Richart 1963 並分圓粒、角粒給出不同的 F(e)）</td></tr>
+    <tr><td>年代、膠結</td><td>增加；取樣與重模會破壞 → 現地 \(G_{max}\) 很難在實驗室重現</td></tr>
+    <tr><td>OCR、PI</td><td>OCR 主要影響黏土，且效應隨 PI 增大</td></tr>
+    <tr><td>飽和度</td><td>對砂影響小，水只增加質量（Richart Fig. 6-9）</td></tr>
+  </table></div>
+  <p>數量級（判斷報告數字合不合理）：軟弱黏土 \(V_s \approx 100\) m/s → 約 17 MPa；中等緊密砂 200–250 m/s → 約 80–120 MPa；緊密礫石 &gt; 400 m/s → &gt; 300 MPa。</p>
+
+  <h3>經驗式</h3>
+  <div class="eqbox">\[ \text{Hardin (1978):}\quad G_{max} = 625\,F(e)\,OCR^{k}\,p_a^{0.5}\,\sigma'^{0.5}_m, \qquad F(e) = \frac{1}{0.3 + 0.7e^2} \]
+  \[ \text{Hardin \& Drnevich (1972):}\quad G_{max}(\text{kPa}) = 3230\,\frac{(2.97-e)^2}{1+e}\,OCR^{k}\,\sigma'^{0.5}_m \]
+  \[ \text{Seed et al. (1986):}\quad G_{max}(\text{psf}) = 1000\,K_{2,max}\,\sigma'^{0.5}_m(\text{psf}), \qquad K_{2,max} \approx 20\,(N_1)_{60}^{1/3} \]</div>
+  <p>\(k\) 由 PI = 0 的 0 增加到 PI ≥ 100 的 0.5（PI = 20、40、60、80 時約 0.18、0.30、0.41、0.48）。Hardin 式中 \(G_{max}\)、\(p_a\)、\(\sigma'_m\) 同單位即可；Seed 式必須用 psf。現地相關式見 Kramer Table 6-6，例如 Imai &amp; Tonouchi (1982) \(G_{max}(\text{ksf}) = 325\,N_{60}^{0.68}\)，台灣也有很多以本地資料擬合的 \(V_s\)–N 關係。</p>
+
+  <div id="w-gmax" data-title="Gmax 計算器：由深度到 Vs"></div>
+
+  <div class="callout example"><div class="ct">例：同一層砂，兩個經驗式</div>
+    <p><b>Hardin：</b>e = 0.6、\(\sigma'_m\) = 100 kPa、OCR = 1、\(p_a\) = 100 kPa：\(0.7 \times 0.36 = 0.252\) → \(F(e) = 1/0.552 = 1.81\) → \(G_{max} = 625 \times 1.81 \times 10 \times 10 = 113\) MPa；ρ = 2.0 → \(V_s = \sqrt{113\,000/2} = 238\) m/s。</p>
+    <p><b>Seed：</b>\((N_1)_{60} = 15\) → \(K_{2,max} = 20 \times 2.47 = 49.3\)；100 kPa = 2 089 psf，\(\sqrt{2089} = 45.7\) → \(G_{max} = 1000 \times 49.3 \times 45.7 = 2.25 \times 10^6\) psf ≈ 108 MPa，與 Hardin 接近。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱</div>
+    <p><b>單位：</b>把 kPa 代入 psf 的式子，是設計審查最常抓到的錯誤之一。<b>經驗式的離散達 2 倍以上：</b>只能檢核實測 \(V_s\) 或做初步設計。<b>Hardin 式以未老化的重模試體擬合</b>，對老的自然沉積物常低估 \(G_{max}\)；<a href="../hw/hw3.html#q3">HW3 Q3</a> 的第 3 層現地值就比 Hardin 高 44 %。</p>
+  </div>
+
+  <div class="quiz" data-num="1.414" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">同一層砂，深度增加使 σ′m 變為 4 倍。Vs 大約變為幾倍？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="倍數"><button class="btn">檢查</button></div>
+    <div class="fb">Gmax ∝ σ′m^0.5 → Vs ∝ σ′m^0.25 → 4^0.25 = √2 ≈ 1.41；Gmax 則變為 2 倍。這是 Vs 剖面通常隨深度增加的原因。</div>
+  </div>
+</section>
+
+<section class="sec" id="s7-2" data-num="7.2" data-short="MASW" data-title="MASW：由頻散反算 Vs 剖面">
+  <div class="sec-head"><span class="sec-num">7.2</span><h2>MASW：由頻散反算 \(V_s\) 剖面</h2></div>
+  <p class="src">出處：Ch3 講義 2.1–2.4、4.23（投影片 p. 28–32）；Park et al. (1998) 相位偏移法；學生 MASW 虛擬實驗室操作說明</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>只在地表敲一下、放一排受波器，怎麼知道 15 m 深的 \(V_s\)？</p>
+  </div>
+
+  <p>原理一句話：<b>Rayleigh 波的波長決定它看多深</b>。土層隨深度變硬時，低頻（長波）跑得較快，速度隨頻率改變；量到這條頻散曲線，再找一個分層模型讓理論曲線吻合，就得到 \(V_s\) 剖面。Rayleigh 波速主要由 \(V_s\) 控制，對 \(V_p\)、密度幾乎不敏感，所以 MASW 量的就是土骨架的剪力勁度。</p>
+
+  <h3>三個步驟</h3>
+  <ol>
+    <li><b>擷取</b>：錘擊震源＋一排等間距受波器（例如 24 支、間距 1.5 m），每支一條 trace。</li>
+    <li><b>頻散分析（相位偏移法）</b>：每條 trace 做 Fourier 轉換、振幅正規化只留相位；對每個頻率、每個試算相速度 \(c\)，把各 trace 乘上補償相位後相加：
+      \[ E(\omega, c) = \left|\sum_{j=1}^{N}\frac{U_j(\omega)}{|U_j(\omega)|}\,e^{i\omega x_j/c}\right| \]
+      \(c\) 對了，各 trace 同相、總和最大；\(c\) 錯了互相抵消。把 \(E\) 對 \((f, c)\) 作圖就是<b>頻散影像</b>，沿基本模態的亮帶拾取點，就是實驗頻散曲線。只留相位，是為了讓近震源的大振幅 trace 不要主導總和。</li>
+    <li><b>反算</b>：用經驗法則建初始模型，迭代調整各層 \(V_s\)、厚度，直到理論基本模態吻合拾取點。</li>
+  </ol>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>經驗法則</th><th>內容</th><th>來源與限制</th></tr>
+    <tr><td>解析範圍</td><td>\(\lambda_{max} \approx L = (N-1)\Delta x\)，\(\lambda_{min} \approx 2\Delta x\)</td><td>範圍外的點不可信；最深層只有最低的幾個頻率看得到</td></tr>
+    <tr><td>代表深度</td><td>\(z \approx \lambda/3\)（文獻在 \(\lambda/2\)–\(\lambda/3\) 之間）</td><td>經驗值，依據是振幅約在一個波長內衰減；剖面要隨深度平滑變硬</td></tr>
+    <tr><td>速度換算</td><td>\(V_s \approx 1.1\,c\)</td><td>\(V_s/c_R\) 的四捨五入（<a href="u06.html#s6-6">6.6</a>）；只對基本模態成立</td></tr>
+  </table></div>
+
+  <div id="w-masw" data-title="MASW 頻散分析實驗室"></div>
+
+  <div class="callout example"><div class="ct">例：由一個頻散點估 Vs 與深度；測線看得多深</div>
+    <p>10 Hz 拾取到 \(c\) = 180 m/s：\(\lambda = 180/10 = 18\) m，代表深度 \(z \approx 18/3 = 6\) m，該深度 \(V_s \approx 1.1 \times 180 \approx 200\) m/s。</p>
+    <p>24 支、間距 1.5 m：\(L = 23 \times 1.5 = 34.5\) m → 最深約 \(34.5/3 = 11.5\) m；最短 \(\lambda \approx 3\) m → 最淺約 1 m。改成 12 支：\(L = 16.5\) m → 只看到約 5.5 m，深層消失。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：高階模態被當成基本模態</div>
+    <p>硬殼覆於軟黏土時，基本模態在高頻的能量很弱，影像的全域最大值會跳到較快的高階模態。反算程式只計算基本模態、把每個點都當基本模態，就會「發明」出一層很硬的假層：HW2 1(b) 中 2–8 m 的平均 \(V_s\) 被高估 36 %（<a href="../hw/hw2.html#q1">HW2 Q1</a>）。對策是改用最低速度峰、或手動沿基本模態拾取，並檢查拾取點有沒有不連續的跳躍。</p>
+  </div>
+
+  <div class="quiz" data-num="5.5" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">12 支受波器、間距 1.5 m，用 z ≈ λmax/3 估計，大約看得到多深（m）？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="z (m)"><button class="btn">檢查</button></div>
+    <div class="fb">L = 11 × 1.5 = 16.5 m ≈ λmax → z ≈ 16.5/3 = 5.5 m。要看更深，要拉長測線並用能產生低頻的較重震源。</div>
+  </div>
+  <div class="quiz" data-answer="0">
+    <div class="qh">課後問題</div>
+    <div class="qq">為什麼 MASW 需要低頻成分才能看到深層？</div>
+    <div class="opts">
+      <button class="opt">Rayleigh 波振幅約在一個波長內衰減，只有長波長（低頻）的波會受深層影響</button>
+      <button class="opt">低頻的波速比較快，比較早抵達受波器</button>
+      <button class="opt">高頻的波會被受波器濾掉</button>
+    </div>
+    <div class="fb">深度靠波長取得：λ = c/f，頻率越低波長越長、看得越深。測線長度限制 λmax，震源的低頻能量（錘的重量）也限制最低可用頻率，兩者都要夠。</div>
+  </div>
+</section>
+
+<section class="sec" id="s7-3" data-num="7.3" data-short="現地量測" data-title="現地波速量測">
+  <div class="sec-head"><span class="sec-num">7.3</span><h2>現地波速量測</h2></div>
+  <p class="src">出處：學生整理投影片 3.3–3.6；老師講義 p. 26–29；郭老師 Soil Property Determination Part 1 p. 1–4</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>要知道地下 20 m 的 \(V_s\)，一定要鑽孔嗎？鑽孔法和表面波法各有什麼代價？</p>
+  </div>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th></th><th>侵入式（需要鑽孔或貫入）</th><th>非侵入式（地表施作）</th></tr>
+    <tr><td>方法</td><td>跨孔、下孔、上孔、地震錐 SCPT、懸吊式 P-S 檢層</td><td>折射、表面波（SASW、MASW、MAM）</td></tr>
+    <tr><td>優點</td><td>解析度高、結果直接</td><td>便宜、快速、涵蓋大面積</td></tr>
+    <tr><td>缺點</td><td>成本高；孔周擾動</td><td>需要反算，結果不唯一</td></tr>
+  </table></div>
+
+  <h3>鑽孔法</h3>
+  <ul>
+    <li><b>下孔／SCPT：</b>震源在地表（槌子側敲木板產生剪力波），受波器在孔內不同深度。走時–深度曲線的斜率倒數就是 \(V_s\)，斜率轉折處是層界。相鄰兩深度的到時差得到<b>區間速度</b>：解析度高，但對到時判讀誤差敏感。SCPT 一次貫入同時得到 \(q_c\)、\(f_s\) 與 \(V_s\)，但打不穿礫石層。</li>
+    <li><b>跨孔：</b>震源在一孔、受波器在同深度的另外兩孔；\(V_s\) = 兩受波孔距離 / 到時差，相減消去震源觸發時間的誤差。孔距非常關鍵，深孔會偏斜，鑽孔偏斜量測不可少。</li>
+    <li><b>懸吊式 P-S 檢層：</b>約 7 m 長的探頭放入充液孔中，一個震源、兩個相距約 1 m 的受波器，\(V_s\) = 受波器間距 / 到時差。震源跟著探頭走，深處解析度不會下降（約 1 m），可達數百公尺，適合深剖面與岩盤；國家地震工程研究中心強震站的 \(V_{s30}\) 多由此量得。</li>
+  </ul>
+  <p>下孔法的震源若離孔口有一段距離 \(x\)，淺層的射線是斜的，走時要先換成垂直走時 \(t_v = t\cdot z/\sqrt{z^2+x^2}\)（直線射線近似）。HW3 Q3 的震源緊鄰鑽孔，可以視為垂直。</p>
+
+  <div id="w-downhole" data-title="下孔試驗：斜射路徑與區間速度（合成資料）"></div>
+
+  <h3>表面波法</h3>
+  <p>Rayleigh 波的質點運動隨深度衰減，衰減快慢取決於波長：高頻、短波長只感受淺層；低頻、長波長感受深層。層狀土中不同頻率的波速不同（<b>頻散</b>）。SASW 用 2 個受波器，MASW 用 24 個以上加主動震源，MAM 用二維陣列記錄環境微動、低頻豐富而看得更深。反算時調整 \(V_s\) 剖面，直到理論與現地頻散曲線吻合（<a href="#s7-2">7.2</a> 的 MASW 虛擬實驗）。</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>頻率</th><th class="num">相速度</th><th class="num">波長 \(\lambda = V_R/f\)</th><th class="num">約略反映深度（λ/3–λ/2）</th></tr>
+    <tr><td>10 Hz</td><td class="num">200 m/s</td><td class="num">20 m</td><td class="num">7–10 m</td></tr>
+    <tr><td>4 Hz</td><td class="num">300 m/s</td><td class="num">75 m</td><td class="num">25–38 m</td></tr>
+  </table></div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱</div>
+    <p><b>只看最後的 \(V_s\) 剖面：</b>所有方法都要回頭看原始波形與到時怎麼判讀。<b>折射法</b>要求波速隨深度增加，會漏掉低速夾層。<b>表面波法</b>遇到硬層在軟層上時頻散曲線出現高階模態、反算更難，一個鑽孔是約束反算最好的方法；MASW 給的是測線下方的平均剖面，側向變化會被平均掉。</p>
+  </div>
+
+  <div class="quiz" data-num="60" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">下孔試驗：0–6 m 的 Vs = 150 m/s，6 m 以下 300 m/s，路徑垂直。12 m 深受波器的走時是多少 ms？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="t (ms)"><button class="btn">檢查</button></div>
+    <div class="fb">6/150 = 0.040 s，6/300 = 0.020 s，合計 60 ms。走時–深度圖在 6 m 處由陡（6.67 ms/m）轉緩（3.33 ms/m）。</div>
+  </div>
+</section>
+
+<section class="sec" id="s7-4" data-num="7.4" data-short="彎曲元件" data-title="彎曲元件與 Gmax 的比較">
+  <div class="sec-head"><span class="sec-num">7.4</span><h2>彎曲元件，以及現地與室內的 \(G_{max}\)</h2></div>
+  <p class="src">出處：Ch3 講義 3.19–3.22（投影片 p. 51–53）；郭安妮 Soil Properties Part 2 講義 p. 2；Richart et al. (1970) 書頁 72（走時法）</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>示波器上，接收訊號在剪力波到達之前就先動了一下。哪一點才是「抵達」？</p>
+  </div>
+
+  <p>彎曲元件是兩片極性相反的壓電陶瓷黏在一起（約 15 mm 長、1 mm 厚）：加電壓時一片伸長、一片縮短，像跳水板一樣彎曲。元件以環氧樹脂固定在透水石中，只有尖端插入試體數 mm。發射端尖端橫向擺動 → 質點水平運動、波沿試體垂直傳播 → 剪力波；接收端反過來把彎曲轉成電壓。</p>
+  <div class="eqbox">\[ V_s = \frac{L}{t}, \qquad G_{max} = \rho V_s^2, \qquad L = \text{兩元件尖端的距離（不是試體高度）} \]</div>
+  <p>優點：裝在三軸室內，壓密中、剪動中、反覆載重後都能隨時量；限制：應變極小，只得到 \(G_{max}\)。這和 Richart 書中的走時法 \(G = \rho(\ell/t)^2\) 是同一個想法。</p>
+
+  <div class="callout example"><div class="ct">例：L 用錯會差多少</div>
+    <p>試體高 100 mm，每個元件插入 3 mm；走時 0.47 ms；ρ = 1.9 Mg/m³。</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th></th><th class="num">L</th><th class="num">\(V_s = L/t\)</th><th class="num">\(G = \rho V_s^2\)</th></tr>
+      <tr class="hl"><td>正確：尖端間距</td><td class="num">100 − 2 × 3 = 94 mm</td><td class="num">200 m/s</td><td class="num">76 MPa</td></tr>
+      <tr><td>錯誤：試體高度</td><td class="num">100 mm</td><td class="num">213 m/s（+6 %）</td><td class="num">86 MPa（+13 %）</td></tr>
+    </table></div>
+    <p>\(G \propto L^2\)：L 只差 6 %，G 就差 13 %；試體越短，插入深度的影響越大。</p>
+  </div>
+
+  <h3>近場效應</h3>
+  <p>波源小又近時，剪力波之前會先到一個小的反向擾動（近場成分，以接近 P 波的速度傳來）。把它當成抵達 → \(t\) 偏小、\(V_s\) 偏高。對策：提高激振頻率，讓路徑長 \(L\) 包含足夠多個波長（\(L/\lambda &gt; 2\)），再用幾個不同頻率的正弦脈衝確認拾取的抵達時間不變。</p>
+
+  <div id="w-bender" data-title="彎曲元件：走時拾取與近場效應"></div>
+
+  <h3>現地 G<sub>max</sub> 與室內 G<sub>max</sub></h3>
+  <p>MASW 與共振柱、彎曲元件的 \(G_{max}\) 理論上相同，實務上常差 20–50 %。原因：<b>取樣擾動</b>（應力釋放、顆粒接觸破壞，在壓力室重新壓密也無法完全恢復，對膠結或老化的土特別明顯）、<b>應力狀態</b>（壓力室等向圍壓，現地非等向）、<b>尺度</b>（10 cm 試體與 30 m 土層根本不是同一個東西）。實務做法：<b>\(G_{max}\) 取自現地，\(G/G_{max}\) 與阻尼曲線的形狀取自實驗室</b>。</p>
+
+  <div class="quiz" data-num="4.26" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">L = 94 mm、Vs = 200 m/s，要讓 L/λ &gt; 2，激振頻率至少要幾 kHz？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="f (kHz)"><button class="btn">檢查</button></div>
+    <div class="fb">λ &lt; L/2 = 47 mm → f &gt; Vs/λ = 200/0.047 = 4.26 kHz。這就是彎曲元件要用數 kHz 激振的原因。</div>
+  </div>
+</section>
+
+<section class="sec" id="s7-5" data-num="7.5" data-short="Vs30" data-title="Vs30 與場址分類">
+  <div class="sec-head"><span class="sec-num">7.5</span><h2>\(V_{s30}\) 與場址分類</h2></div>
+  <p class="src">出處：Ch3 講義 2.5–2.6；建築物耐震設計規範及解說（111 年版）2.5 節，p. 2-5～2-6、表 2-4</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>10 m、80 m/s 的軟黏土在 20 m、600 m/s 的風化岩上。這個場址的「平均 \(V_s\)」是 427 m/s 還是 190 m/s？</p>
+  </div>
+
+  <div class="eqbox">\[ V_{s30} = \frac{30}{\displaystyle\sum_{i} h_i / V_{s,i}}, \qquad \sum_i h_i = 30\ \text{m} \]</div>
+  <p>分母是垂直剪力波穿過上部 30 m 的<b>總走時</b>。\(V_{s30}\) 是「用同樣時間走完 30 m 的等效均勻速度」，不是厚度加權的算術平均。波大部分時間花在軟層，而場址的自然週期（\(T \approx 4H/V_s\)）和阻抗對比也由軟層主導，所以規範用走時平均。</p>
+
+  <div class="callout example"><div class="ct">例：一層薄軟土</div>
+    <div class="tablewrap"><table class="data">
+      <tr><th>方法</th><th>計算</th><th class="num">結果</th><th>NEHRP</th></tr>
+      <tr><td>算術平均（錯）</td><td>(10 × 80 + 20 × 600) / 30</td><td class="num">427 m/s</td><td>C</td></tr>
+      <tr class="hl"><td>走時平均（對）</td><td>30 / (10/80 + 20/600) = 30 / (0.125 + 0.033)</td><td class="num">189.5 m/s</td><td>D</td></tr>
+    </table></div>
+    <p>軟層只占三分之一厚度，卻占 79 % 的走時。差了一整個分類，而這正是放大最強烈的場址。</p>
+  </div>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>\(V_{s30}\) (m/s)</th><th>NEHRP / ASCE 7</th><th>Eurocode 8</th><th>臺灣（111 年版）</th></tr>
+    <tr><td>&gt; 1500</td><td>A 硬岩</td><td rowspan="2">A 岩盤（&gt; 800）</td><td rowspan="5">第一類（堅實）\(V_{s30} \ge 270\)</td></tr>
+    <tr><td>760–1500</td><td>B 岩盤</td></tr>
+    <tr><td>760–800</td><td rowspan="2">C 極密實土壤或軟岩</td><td rowspan="2">B 極密實砂礫、極硬黏土（360–800）</td></tr>
+    <tr><td>360–760</td></tr>
+    <tr><td>270–360</td><td rowspan="2">D 堅硬土壤</td><td rowspan="2">C 密實到中等密實砂礫、硬黏土</td></tr>
+    <tr><td>180–270</td><td>第二類（普通）\(180 \le V_{s30} &lt; 270\)</td></tr>
+    <tr><td>&lt; 180</td><td>E 軟弱土壤</td><td>D 疏鬆無黏性土、軟黏土</td><td>第三類（軟弱）\(V_{s30} &lt; 180\)</td></tr>
+    <tr><td>特殊</td><td>F：可液化土等，需場址特定研究</td><td>S1：極軟黏土厚 &gt; 10 m；S2：可液化、敏感黏土</td><td>臺北盆地依微分區（臺北一、二、三區），不用 \(V_{s30}\)</td></tr>
+  </table></div>
+  <p>臺灣規範沒有實測 \(V_s\) 時，可由 SPT-N 值或單壓強度 \(q_u\)（kgf/cm²）估各層 \(V_s\)，再用同一式算 \(V_{s30}\)：</p>
+  <div class="eqbox">\[ \text{黏性土：} V_{si} = 120\,q_{ui}^{0.36}\ (N_i &lt; 2),\quad V_{si} = 100\,N_i^{1/3}\ (2 \le N_i \le 25) \qquad \text{砂質土：} V_{si} = 80\,N_i^{1/3}\ (1 \le N_i \le 50) \]</div>
+  <p>分類結果用來查表 2-4(a)、(b) 的工址放大係數 \(F_a\)、\(F_v\)：越軟的地盤放大越多，而且震區越強時放大越少（土壤非線性）。</p>
+
+  <div id="w-vs30" data-title="Vs30 計算器與三套分類"></div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱</div>
+    <p>① 用算術平均會高估場址等級。② 引用場址類別時一定要註明規範：同一個 300 m/s，NEHRP 叫 D、Eurocode 叫 C、臺灣叫第一類。③ Eurocode 的岩盤界線是 800，NEHRP 是 760；只有 NEHRP 分出 \(V_{s30} &gt; 1500\) 的硬岩。④ \(V_{s30}\) 描述不了可液化土、極厚軟黏土，所以各規範都有特殊類別。</p>
+  </div>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">某場址 Vs30 = 300 m/s，在 NEHRP、Eurocode 8、臺灣規範分別屬於？</div>
+    <div class="opts">
+      <button class="opt">C、B、第二類</button>
+      <button class="opt">D、C、第一類</button>
+      <button class="opt">D、C、第二類</button>
+      <button class="opt">C、C、第一類</button>
+    </div>
+    <div class="fb">NEHRP D（180–360）、EC8 C（180–360）、臺灣第一類（≥ 270）。臺灣的 270 界線落在 NEHRP D 中間，所以從密實土到岩盤都歸第一類。</div>
+  </div>
+</section>
+
+<section class="sec" id="s7-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">小應變模數</div>\[ G_{max} = \rho V_s^2 \]</div>
+    <div class="fcard"><div class="ft">Hardin (1978)</div>\[ G_{max} = \frac{625\,OCR^k}{0.3+0.7e^2}\sqrt{p_a\sigma'_m} \]</div>
+    <div class="fcard"><div class="ft">MASW 經驗法則</div>\[ \lambda_{max} \approx L,\; z \approx \lambda/3 \]</div>
+    <div class="fcard"><div class="ft">走時平均</div>\[ V_{s30} = \frac{30}{\sum h_i/V_{s,i}} \]</div>
+    <div class="fcard"><div class="ft">彎曲元件</div>\[ V_s = L_{tip}/t,\; L/\lambda &gt; 2 \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>高階模態誤當基本模態</b>：反算出假的硬層；檢查拾取點有沒有跳躍。</li>
+    <li><b>λ/3 是起點不是答案</b>：硬殼、夾層軟土、速度反轉時會錯很多。</li>
+    <li><b>Vs30 用走時平均</b>：算術平均會高估一整類；引用類別要註明規範。</li>
+    <li><b>彎曲元件的 L 是尖端間距</b>：用試體高度會高估 G；注意近場效應。</li>
+    <li><b>經驗式的單位</b>：Seed 式用 psf；Hardin 式同單位即可。經驗式離散 2 倍以上。</li>
+  </ul>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>Gmax 只是小應變的勁度。地震時應變變大，土壤會變軟、吃能量。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u06.html"><span class="dir">← 單元 6</span>波在土中傳播</a>
+  <a class="next" href="../units/u08.html"><span class="dir">單元 8 →</span>土壤的非線性：模數與阻尼</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/soil.js"></script>
+<script src="../assets/widgets/waves.js"></script>
+</body>
+</html>

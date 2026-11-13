@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HW1 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 本章專用的小樣式 */
+  .chain { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 1.4em 0; }
+  .chain > div { background: var(--tile); border-radius: 16px; padding: 14px 16px; position: relative; font-size: 14.5px; line-height: 1.5; }
+  .chain > div b { display: block; font-size: 16px; color: var(--accent); margin-bottom: 2px; }
+  .chain > div small { color: var(--muted); }
+  .bb-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 22px; align-items: center; }
+  .bb-wrap canvas { width: 100%; max-width: 280px; height: auto; display: block; margin: 0 auto; }
+  .bb-wrap .cap { text-align: center; font-size: 13px; color: var(--muted); }
+  .scale-tab td.on, .scale-tab th.on { background: var(--accent-soft); font-weight: 600; }
+  .strain-grid { width: 100%; }
+  .num-chip { display: inline-block; font-variant-numeric: tabular-nums; background: var(--inset); border-radius: 8px; padding: 0 6px; }
+</style>
+</head>
+<body data-page="hw1" data-root="../" data-title="HW1">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">Homework 1 · Strong Ground Motion Records</div>
+  <h1>HW1 強地動紀錄</h1>
+  <p class="lede"><b>用手機量洗衣機振動，再處理集集地震 30 筆 PEER 紀錄。</b>Part A 練習把一筆加速度紀錄變成速度、位移與頻譜；Part B 計算各種地動參數，看它們和 PGA、距離的關係。以下是完整解答，互動圖由網頁即時重算。</p>
+  <h3>先讀過這些觀念</h3>
+  <div class="chip-links">
+    <a class="chip-link" href="../units/u03.html#s3-1">3.1 PGA、PGV、PGD</a>
+    <a class="chip-link" href="../units/u03.html#s3-2">3.2 Arias intensity、CAV、顯著延時</a>
+    <a class="chip-link" href="../units/u03.html#s3-3">3.3 積分漂移與濾波</a>
+    <a class="chip-link" href="../units/u05.html#s5-1">5.1 Fourier 頻譜與取樣</a>
+    <a class="chip-link" href="../units/u02.html#s2-6">2.6 規模與距離</a>
+  </div>
+  <p class="hw-others">其他作業：<a href="hw2.html">HW2</a> · <a href="hw3.html">HW3</a> · <a href="../index.html#hw">作業總覽</a></p>
+</header>
+
+<section class="sec" id="a" data-num="A" data-short="Part A 手機" data-title="Part A：手機量洗衣機振動（Q1–Q4）">
+  <div class="sec-head"><span class="sec-num">A</span><h2>Part A：手機量洗衣機振動（Q1–Q4）</h2></div>
+  <p class="src">出處：CIE 5014 Assignment 1（9/23 出、10/07 交）；陳奇昌 HW1 報告最終版（10/6，…陳奇昌2.pdf）；A1_process.xlsx、B1_process.xlsx</p>
+
+  <p>Part A 用 phyphox 記錄手機加速度（Raw Sensors → Acceleration without g）至少 60 s；Part B 用 PEER NGA-West2 的集集地震紀錄（Group 3）。以下數值是報告與 Excel 的值；網頁互動圖用同一套流程即時重算，差異都在 1 % 以內（手機資料以 1 mm/s² 量化、PEER 資料降為 100 Hz 嵌入）。</p>
+
+    <p>手機平放在直立式洗衣機頂板後方，X＝左右（向右為正）、Y＝前後（向前為正）、Z＝上下（向下為正）。紀錄 161.7 s、16 228 點、Δt = 9.966 ms（中位數，9.963–9.969 ms）。</p>
+
+  <h4>Q1 加速度歷時：形狀、大小、頻率</h4>
+  <div class="tablewrap"><table class="data">
+    <tr><th>時段 (s)</th><th>洗衣機狀態</th><th class="num">峰值 X / Y / Z (m/s²)</th><th class="num">RMS X / Y / Z (m/s²)</th><th class="num">AI 占全段 X / Y / Z</th></tr>
+    <tr><td>0–13</td><td>剛放衣物，正反轉交替，大振幅不規則</td><td class="num">0.72 / 0.84 / 0.25</td><td class="num">0.154 / 0.196 / 0.060</td><td class="num">25 / 27 / 38 %</td></tr>
+    <tr><td>13–91</td><td>注水，接近背景雜訊</td><td class="num">0.14 / 0.13 / 0.05</td><td class="num">0.020 / 0.023 / 0.009</td><td class="num">3 / 2 / 5 %</td></tr>
+    <tr class="hl"><td>91–131</td><td>注水＋正反轉，19 個週期性振動群（間隔約 2.1 s）</td><td class="num">0.59 / 0.73 / 0.16</td><td class="num">0.107 / 0.137 / 0.032</td><td class="num">38 / 40 / 34 %</td></tr>
+    <tr><td>131–136</td><td>停止</td><td class="num">0.02 / 0.04 / 0.01</td><td class="num">0.006 / 0.006 / 0.005</td><td class="num">&lt; 1 %</td></tr>
+    <tr><td>136–162</td><td>開始洗滌，週期性振動群</td><td class="num">0.99 / 0.66 / 0.19</td><td class="num">0.127 / 0.149 / 0.033</td><td class="num">34 / 31 / 23 %</td></tr>
+  </table></div>
+  <p><b>答</b>：紀錄分成五段（上表）。RMS 最大在 0–13 s，但 AI 在 X、Y 以 91–131 s 最大（強度中等、持續最久），兩個指標排序不同正好說明「峰值、平均強度、累積能量」是三件事。運轉段 X、Y 的 RMS 是 Z 的 2.6–4.5 倍：洗衣槽繞垂直軸轉，偏心與水流主要產生水平力，機身垂直向也較剛。全段峰值 X 0.988 m/s²（156.8 s，一次尖銳撞擊）、Y 0.844、Z 0.249 m/s²。三方向的主頻都在 13.8–14.1 Hz（Q4）。</p>
+
+  <h4>Q2、Q3 速度與位移：怎麼得到、結果如何</h4>
+  <p><b>做法</b>（<a href="../units/u03.html#s3-3">3.3</a> 的流程）：去除全段平均 → 頭尾 1 s 餘弦漸縮、前後各補 30 s 零 → 4 階 Butterworth 0.1–30 Hz 零相位帶通（SOS、sosfiltfilt）→ 梯形法積分得 v → 0.1 Hz 高通 → 梯形法積分得 u → 0.1 Hz 高通。</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>方向</th><th class="num">|v|<sub>max</sub> (m/s)、時刻</th><th class="num">|u|<sub>max</sub> (mm)、時刻</th><th class="num">直接積分 v 終值 (m/s)</th><th class="num">直接積分 u 終值 (m)</th></tr>
+    <tr><td>X 左右</td><td class="num">0.0126、156.8 s</td><td class="num">1.35、156.8 s</td><td class="num">+0.177</td><td class="num">+11.2</td></tr>
+    <tr><td>Y 前後</td><td class="num">0.0093、8.9 s</td><td class="num">2.26、1.4 s</td><td class="num">−1.100</td><td class="num">−117.6</td></tr>
+    <tr><td>Z 上下</td><td class="num">0.0035、10.5 s</td><td class="num">1.22、11.2 s</td><td class="num">−1.742</td><td class="num">−142.6</td></tr>
+  </table></div>
+  <p><b>答</b>：速度保留了加速度的分段與 2.1 s 振動群，水平峰值是垂直的 2.6–3.6 倍；以主頻估算 \(v \approx a/2\pi f = 0.84/(2\pi\times14) = 0.0096\) m/s，與 Y 峰值 0.0093 吻合，表示速度仍由 13–15 Hz 的振動控制。位移則被週期 7–8 s、約 ±1 mm 的緩慢起伏主導，那是二次積分放大的 0.1 Hz 附近雜訊；洗衣機真實的振動位移約 \(a/(2\pi f)^2 \approx 0.11\) mm。Y 在 1.4 s 的峰值落在濾波暫態區，X 在 156.8 s 的峰值對應真實撞擊但在最後 5 s，判讀以中段最可靠。直接積分的終值大了 4–5 個數量級，證明每個處理步驟都必要；X 的偏差很小卻仍有 11 m 漂移，表示偏差在運轉中會變（感測器零點漂移或傾斜），只靠去平均不夠，必須濾波。</p>
+
+  <h4>Q4 頻率內容、卓越頻率、取樣率</h4>
+  <div id="w-hw1a" data-title="Part A：洗衣機紀錄的 Fourier 振幅譜"></div>
+  <div class="tablewrap"><table class="data">
+    <tr><th>項目</th><th class="num">X</th><th class="num">Y</th><th class="num">Z</th></tr>
+    <tr><td>取樣率 f<sub>s</sub> = 1/Δt</td><td class="num" colspan="3">100.34 Hz</td></tr>
+    <tr><td>Nyquist f<sub>N</sub></td><td class="num" colspan="3">50.17 Hz</td></tr>
+    <tr><td>頻率解析度 Δf = 1/(NΔt)</td><td class="num" colspan="3">0.0062 Hz</td></tr>
+    <tr class="hl"><td>卓越頻率 f<sub>p</sub>（0.1–30 Hz 內 FAS 最大）</td><td class="num">14.06 Hz</td><td class="num">13.80 Hz</td><td class="num">13.80 Hz</td></tr>
+    <tr><td>卓越週期 T<sub>p</sub> = 1/f<sub>p</sub></td><td class="num">0.071 s</td><td class="num">0.072 s</td><td class="num">0.072 s</td></tr>
+  </table></div>
+  <p><b>答</b>：用 FFT 求帶通後加速度的 Fourier 振幅譜 \(FAS = \Delta t\,|\mathrm{rfft}(a)|\)，在 0.1–30 Hz 內取最大值的頻率。三方向 f<sub>p</sub> = 13.8–14.1 Hz，由同一個轉動頻率控制；約 28 Hz（2 倍頻）有第二群峰，濾波後為主峰的 50 %、74 %、71 %（X、Y、Z），因接近 30 Hz 只保留約 74 %，濾波前在 Y、Z 幾乎與主峰一樣高。取樣率 100.34 Hz → Nyquist 50.17 Hz，高於帶通上限與主要振動頻率，足夠；紀錄長 161.7 s 使 Δf ≈ 0.006 Hz，譜線很密，所以主峰附近看到許多細峰。</p>
+
+  </section>
+
+<section class="sec" id="b" data-num="B" data-short="Part B 集集地震" data-title="Part B：集集地震 30 筆 PEER 紀錄（Q5–Q9）">
+  <div class="sec-head"><span class="sec-num">B</span><h2>Part B：集集地震 30 筆 PEER 紀錄（Q5–Q9）</h2></div>
+  <p class="src">出處：CIE 5014 Assignment 1（9/23 出、10/07 交）；陳奇昌 HW1 報告最終版（10/6，…陳奇昌2.pdf）；A1_process.xlsx、B1_process.xlsx</p>
+
+  <p>搜尋條件：Chi-Chi、R<sub>rup</sub> 0–100 km、V<sub>s30</sub> 0–760 m/s、全部斷層類型、最多 30 筆、不縮放。271 個檔案 = 30 筆 × 3 分量 × 3 物理量（.AT2/.VT2/.DT2）＋搜尋報告；只用 .AT2（單位 g，1 g = 9.80665 m/s²）。處理流程同 Part A，另外把兩個水平分量旋轉 0°–179°：\(a_\theta = a_1\cos\theta + a_2\sin\theta\)，每個參數各自取所有角度的最大值 = <b>RotD100</b>。PGA<sub>RotD100</sub> 必定等於兩水平分量合成向量的最大值，可當程式檢查。</p>
+
+  <div id="w-rotd" data-title="RotD100：把兩個水平分量轉到最不利的方向"></div>
+
+  <h4>Q5–Q7 迴歸結果（N = 30，log y = a + b log x；T<sub>m</sub>、D<sub>s</sub> 用 y = a + b log x）</h4>
+  <div class="tablewrap"><table class="data">
+    <tr><th>題</th><th>x</th><th>y</th><th class="num">r</th><th class="num">斜率 b</th><th>重點</th></tr>
+    <tr><td>Q5(a)</td><td rowspan="6">PGA<sub>RotD100</sub></td><td>PGV</td><td class="num">0.69</td><td class="num">0.74</td><td>中度相關</td></tr>
+    <tr><td>Q5(b)</td><td>PGD</td><td class="num">0.44</td><td class="num">0.43</td><td>最弱：PGD 由 0.1–0.5 Hz 控制</td></tr>
+    <tr><td>Q5(c)</td><td>CAV</td><td class="num">0.79</td><td class="num">0.79</td><td>CAV ∝ 振幅 → 斜率接近 1</td></tr>
+    <tr class="hl"><td>Q5(d)</td><td>AI</td><td class="num">0.90</td><td class="num">1.66</td><td>最強；AI ∝ a²，理論斜率 2，被延時差異拉低</td></tr>
+    <tr><td>Q5(e)</td><td>T<sub>m</sub></td><td class="num">−0.07</td><td class="num">−0.10</td><td>幾乎無關：頻率內容不是振幅</td></tr>
+    <tr><td>Q5(f)</td><td>D<sub>s</sub></td><td class="num">−0.11</td><td class="num">−5.92</td><td>幾乎無關：延時不是振幅</td></tr>
+    <tr><td>Q6(a)</td><td rowspan="4">R<sub>rup</sub>（水平）</td><td>PGA</td><td class="num">−0.51</td><td class="num">−0.59</td><td rowspan="4">都隨距離衰減；AI 最快、PGV 最慢（長週期的非彈性衰減小）</td></tr>
+    <tr><td>Q6(b)</td><td>PGV</td><td class="num">−0.31</td><td class="num">−0.38</td></tr>
+    <tr><td>Q6(c)</td><td>CAV</td><td class="num">−0.41</td><td class="num">−0.47</td></tr>
+    <tr><td>Q6(d)</td><td>AI</td><td class="num">−0.46</td><td class="num">−0.98</td></tr>
+    <tr><td>Q7(a)</td><td rowspan="5">R<sub>rup</sub>（垂直）</td><td>PGA</td><td class="num">−0.63</td><td class="num">−0.88</td><td rowspan="5">垂直比水平衰減快（P 波、高頻）；PGA 相關最好，因垂直分量受 V<sub>s30</sub> 影響小</td></tr>
+    <tr><td>Q7(b)</td><td>PGV</td><td class="num">−0.46</td><td class="num">−0.54</td></tr>
+    <tr><td>Q7(c)</td><td>PGD</td><td class="num">−0.36</td><td class="num">−0.31</td></tr>
+    <tr><td>Q7(d)</td><td>CAV</td><td class="num">−0.58</td><td class="num">−0.54</td></tr>
+    <tr><td>Q7(e)</td><td>AI</td><td class="num">−0.57</td><td class="num">−1.12</td></tr>
+  </table></div>
+
+  <div id="w-hw1b" data-title="Part B：30 筆紀錄的地動參數散佈圖（B1_process.xlsx）"></div>
+
+  <p><b>Q5 答</b>：在同一場地震（Mw 7.62）內，PGA 大致能預測 AI 與 CAV，但預測不了頻率內容（T<sub>m</sub> 0.37–1.12 s）與延時（D<sub>s</sub> 17–42 s），這兩者反映路徑與場址。長週期結構或液化這類累積損害，還需要 PGV、T<sub>m</sub> 與 D<sub>s</sub>。</p>
+  <p><b>Q6 答</b>：四個參數都隨 R<sub>rup</sub> 衰減，斜率 AI −0.98、PGA −0.59、CAV −0.47、PGV −0.38。相關性只是中等（|r| = 0.31–0.51），主要因為距離太集中：R<sub>rup</sub> 19.96–83.43 km，低於 25 km 只有 1 筆，23 筆落在 44–64 km（PEER 只回傳最接近其預設目標譜的 30 筆）；R<sub>rup</sub> 44–56 km 的 20 筆中，PGA 仍差 2.7 倍、PGV 3.6 倍、AI 5.3 倍，散佈主要來自場址與方位。最近的紀錄 20 km，看不到近斷層飽和與方向性，迴歸只代表 20–85 km，不可外插。</p>
+  <p><b>Q7 答</b>：垂直分量衰減比水平快（PGA −0.88 vs −0.59、PGV −0.54 vs −0.38、AI −1.12 vs −0.98），因為垂直運動以 P 波、高頻為主，隨距離衰減較快。垂直 PGA 相關性（r = −0.63）高於水平（−0.51）：其殘差與 log V<sub>s30</sub> 幾乎無關（0.07，水平為 −0.32），V<sub>s30</sub> 主要控制水平 S 波的放大。PGD<sub>V</sub> 相關最弱（−0.36），振幅只有幾 cm、受 0.1 Hz 高通影響大。</p>
+  <p><b>Q8 答</b>：搜尋結果的 Tp-Pulse Period 欄 30 筆全為「-」，<b>本批沒有脈衝型紀錄</b>。若有，脈衝型紀錄（近斷層、前進方向性）預期 PGV 與 T<sub>m</sub> 較大、D<sub>s</sub> 較短，可依 Tp 分組在 Q5–Q7 圖上比較相近 R<sub>rup</sub> 的兩組。</p>
+  <p><b>Q9 答</b>：B1_process.xlsx 的 Q9_Summary 工作表，每筆一列（30 列、依 R<sub>rup</sub> 排序）：RSN、地震、年份、測站、Mw、機制（全為 Reverse Oblique）、R<sub>jb</sub>、R<sub>rup</sub>、V<sub>s30</sub>、Tp、脈衝旗標，以及水平 RotD100 與垂直分量的 PGA、PGV、PGD、CAV、AI、T<sub>m</sub>、D<sub>s</sub>。上方散佈圖就是讀這張表。</p>
+
+  <div class="callout pitfall"><div class="ct">寫作業時容易出錯的地方</div>
+    <p>（1）AT2 是 g，積分前要換成 m/s²；（2）兩個水平分量的 PGA 取大者不等於 RotD100，RotD100 是合成向量的最大值，一定 ≥ 兩者；（3）Δt 不同的紀錄（0.004、0.005 s）要各自設計濾波器；（4）0.1 Hz 高通削去的長週期比 PEER 自己的處理多，HW1 的 PGD 比 PEER .DT2 小，不要拿來直接比較；（5）I<sub>a</sub> 的 g 要和加速度單位一致（m/s² 配 9.80665）。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../index.html#hw"><span class="dir">← 回到</span>作業總覽</a>
+  <a class="next" href="hw2.html"><span class="dir">下一份作業 →</span>HW2</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/data/ch02_chy010.js"></script>
+<script src="../assets/data/ch02_hwa035.js"></script>
+<script src="../assets/data/ch02_chy065.js"></script>
+<script src="../assets/data/ch02_chy078.js"></script>
+<script src="../assets/data/ch02_phone.js"></script>
+<script src="../assets/data/ch02_hw1.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/quake.js"></script>
+</body>
+</html>

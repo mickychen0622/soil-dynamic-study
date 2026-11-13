@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>12. 液化易致性與反覆試驗 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  table.data.compact td, table.data.compact th { padding: 7px 9px; font-size: 14px; }
+</style>
+</head>
+<body data-page="u12" data-root="../" data-title="12. 液化易致性">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 5 土壤液化 · 單元 12 · Liquefaction Susceptibility and Cyclic Tests</div>
+  <h1>液化易致性與反覆試驗</h1>
+  <p class="lede"><b>哪些土可能液化？在實驗室裡液化長什麼樣子？</b>先用歷史、地質、組成、狀態四個準則篩掉不會液化的土；再用臨界狀態線分開「流動液化」與「反覆流動性」；最後看不排水反覆試驗中孔隙水壓怎麼一圈一圈累積，定義出 CSR、CRR 與修正因子。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>為什麼年輕、疏鬆、飽和的砂最危險？「液化」在試驗中怎麼定義？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>依歷史、地質、組成、狀態四個準則判斷易致性；細粒土用塑性判斷</li>
+    <li>用臨界狀態線說明收縮與膨脹，區分流動液化與反覆流動性</li>
+    <li>判讀 \(r_u\) 曲線，說明試驗的液化準則、CSR 與 CRR</li>
+    <li>把室內 CRR 換到現地：\(c_r\)、0.9、\(K_\alpha\)、\(K_\sigma\)</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u08.html"><h4>先備 · 單元 8 土壤的非線性</h4><p>剪應變超過體積門檻應變 γ<sub>tv</sub>（約 0.01 %）才會累積孔隙水壓。</p></a>
+    <a class="card" href="../units/u13.html"><h4>下一單元 · 液化觸發評估</h4><p>本單元的 CRR = aN<sup>−b</sup> 是 N<sub>eq</sub> 與 MSF 的基礎。</p></a>
+  </div>
+</header>
+
+<section class="sec" id="s12-1" data-num="12.1" data-short="易致性" data-title="液化易致性的四個準則">
+  <div class="sec-head"><span class="sec-num">12.1</span><h2>易致性：四個準則由粗到細</h2></div>
+  <p class="src">出處：Ch8 講義 1.3–1.8；教師 PDF p.5–10</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>黏土不液化、乾淨礫石也很少液化，偏偏中間的砂最危險。為什麼？</p>
+  </div>
+
+  <p><b>易致性不等於會液化</b>：它只回答「這種土在夠強的地震下有沒有可能液化」。不易致的土不必再做觸發評估；易致的土才進入單元 13。四個準則由粗到細：</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>準則</th><th>看什麼</th><th>易液化的一側</th></tr>
+    <tr><td>歷史</td><td>過去地震的液化案例、液化最遠距離（Ambraseys 1988）</td><td>讀圖：M = 6 約 20 km、M = 7 約 100 km、M = 8 約 300 km 內；同一地點常重複液化</td></tr>
+    <tr><td>地質</td><td>沉積環境、地下水位、年代</td><td>河流、沖積、風積、水力回填、未壓實填土；地下水位淺；全新世（更新世很少液化）</td></tr>
+    <tr><td>組成</td><td>粒徑、級配、顆粒形狀、塑性</td><td>細砂到中砂、非塑性粉土；均勻級配；圓粒</td></tr>
+    <tr><td>狀態</td><td>孔隙比與有效圍壓</td><td>剪動時收縮的土（12.2）</td></tr>
+  </table></div>
+
+  <h3>為什麼是砂</h3>
+  <p>液化需要兩件事同時成立：土受剪時<b>想收縮</b>，而且水<b>排不掉</b>。黏土有凝聚力、不易產生孔隙水壓；乾淨礫石排水太快，超額孔隙水壓來不及累積；砂與非塑性粉土既容易收縮、又排水慢。反過來，礫石若上方有黏土蓋層、排水受阻，也會液化（1983 Borah Peak、2008 汶川）。台灣的例子：1999 集集地震的員林、南投、霧峰，2016 美濃地震的台南安南區等。</p>
+
+  <h3>細粒土：看塑性，不看粒徑</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>準則</th><th>像砂（可能液化）</th><th>說明</th></tr>
+    <tr><td>修正中國準則</td><td>黏粒含量、LL、w<sub>c</sub></td><td><b>已不建議</b>：黏粒含量不是好指標</td></tr>
+    <tr><td>Bray &amp; Sancio (2006)</td><td>PI ≤ 12 且 w<sub>c</sub>/LL ≥ 0.85</td><td>12 &lt; PI ≤ 18 且 w<sub>c</sub>/LL ≥ 0.8：中度易致，要試驗</td></tr>
+    <tr><td>Idriss &amp; Boulanger (2008)</td><td>PI &lt; 7</td><td>PI ≥ 7 像黏土，改評估反覆軟化</td></tr>
+    <tr><td>CPT（Robertson &amp; Wride 1998）</td><td>I<sub>c</sub> ≤ 2.6</td><td>I<sub>c</sub> &gt; 2.6：取樣試驗</td></tr>
+  </table></div>
+  <p>像黏土的土不會「液化」，但大應變下仍會<b>反覆軟化</b>（cyclic softening），強度與勁度明顯下降；它不用本章的 CRR 曲線。</p>
+
+  <div class="quiz" data-answer="2">
+    <div class="qh">小測驗</div>
+    <div class="qq">某粉土 FC = 60 %、PI = 4、w<sub>c</sub>/LL = 0.9。依 Idriss &amp; Boulanger (2008) 與 Bray &amp; Sancio (2006)，它應該？</div>
+    <div class="opts">
+      <button class="opt">細粒料超過 50 %，不會液化</button>
+      <button class="opt">要看黏粒含量才能決定</button>
+      <button class="opt">像砂，可能液化，要做觸發評估</button>
+    </div>
+    <div class="fb">PI = 4 &lt; 7（I&amp;B 像砂）；PI ≤ 12 且 w_c/LL = 0.9 ≥ 0.85（Bray &amp; Sancio 易致）。判斷細粒土的是塑性，不是細粒料比例或黏粒含量。</div>
+  </div>
+</section>
+
+<section class="sec" id="s12-2" data-num="12.2" data-short="狀態與 CSL" data-title="狀態準則與臨界狀態線">
+  <div class="sec-head"><span class="sec-num">12.2</span><h2>狀態準則：臨界狀態線分開兩種液化</h2></div>
+  <p class="src">出處：Ch8 講義 1.9–1.13；教師 PDF p.11–15</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>同一種砂，在淺處表現得像密砂，在深處卻像鬆砂。可能嗎？</p>
+  </div>
+
+  <p>Casagrande 的排水三軸試驗：密砂應力先有峰值再軟化、體積膨脹；鬆砂一路硬化、體積收縮；最後兩者趨於同一個孔隙比 \(e_c\)，即<b>臨界孔隙比</b>。\(e_c\) 隨圍壓增加而減小，把它對圍壓畫成一條線，就是<b>臨界狀態線（CSL）</b>（e–log σ′ 近似直線）。</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 620 260" width="620" role="img" aria-label="臨界狀態線與排水、不排水路徑">
+      <line x1="70" y1="225" x2="590" y2="225" class="s-ink" stroke-width="1.2"/>
+      <line x1="70" y1="225" x2="70" y2="20" class="s-ink" stroke-width="1.2"/>
+      <text x="590" y="248" class="txt" text-anchor="end">log σ′<tspan baseline-shift="-25%" font-size="72%">3c</tspan></text>
+      <text x="58" y="30" class="txt" text-anchor="end">e</text>
+      <line x1="100" y1="50" x2="560" y2="200" class="s-red" stroke-width="2.2"/>
+      <text x="565" y="196" class="txt-red">CSL</text>
+      <text x="420" y="70" class="txt">鬆、收縮（易流動液化）</text>
+      <text x="130" y="200" class="txt">密、膨脹</text>
+      <!-- 鬆砂：不排水往左 -->
+      <circle cx="430" cy="105" r="5" class="s-blue f-surface" stroke-width="1.5"/>
+      <line x1="424" y1="105" x2="270" y2="105" class="s-blue" stroke-width="1.8" stroke-dasharray="6 4"/>
+      <path d="M262 105 l10 -5 v10 z" class="f-blue"/>
+      <text x="350" y="96" class="txt-blue" text-anchor="middle">不排水：u↑、σ′↓</text>
+      <!-- 鬆砂：排水往下 -->
+      <line x1="430" y1="112" x2="430" y2="160" class="s-ink" stroke-width="1.5"/>
+      <path d="M430 168 l-5 -10 h10 z" class="f-ink"/>
+      <text x="438" y="145" class="txt-muted">排水：體積收縮</text>
+      <!-- 密砂 -->
+      <circle cx="200" cy="170" r="5" class="s-blue f-surface" stroke-width="1.5"/>
+      <line x1="206" y1="170" x2="320" y2="170" class="s-blue" stroke-width="1.8" stroke-dasharray="6 4"/>
+      <path d="M328 170 l-10 -5 v10 z" class="f-blue"/>
+      <text x="262" y="188" class="txt-blue" text-anchor="middle">不排水：u↓、σ′↑</text>
+    </svg>
+    <figcaption>e–log σ′ 平面上的 CSL（依講義 p.14 重繪）。不排水時孔隙比不變，只能水平移動：鬆砂往左（有效應力下降），密砂往右（有效應力上升）。</figcaption>
+  </figure>
+
+  <p>不排水時土粒想收縮，但水排不掉，孔隙水壓上升、有效應力下降、強度下降，這是液化的機制；想膨脹的土則產生負孔隙水壓、越剪越強。同一密度的砂，圍壓越大越偏向收縮：深處的「中等密度」砂也可能像鬆砂，這也是 \(K_\sigma &lt; 1\) 的原因（12.4）。</p>
+
+  <h3>流動液化與反覆流動性</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th></th><th>流動液化 flow liquefaction</th><th>反覆流動性 cyclic mobility</th></tr>
+    <tr><td>狀態</td><td>CSL 上方（鬆、收縮）</td><td>CSL 上下都可能（含中密到密砂）</td></tr>
+    <tr><td>必要條件</td><td>靜態剪應力 &gt; 液化後殘餘強度</td><td>反覆剪應力夠大、圈數夠多</td></tr>
+    <tr><td>變形</td><td>突然、很大，地震後可能繼續</td><td>逐步累積，地震停止就停</td></tr>
+    <tr><td>例子</td><td>1971 下 San Fernando 壩、尾礦壩流滑</td><td>側潰、噴砂、沉陷</td></tr>
+  </table></div>
+  <p>日常說的液化多半是反覆流動性；流動液化較少見但最具破壞性。觸發評估（單元 13）兩者通用，後果評估要分開（單元 14）。</p>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：講義 p.13 的縱軸</div>
+    <p>p.13 的 CSL 圖縱軸標成 Deviator stress；臨界孔隙比線一般畫在 e–σ′<sub>3c</sub> 平面，讀作孔隙比 e（與 p.14、p.15 同一條線）。</p>
+  </div>
+</section>
+
+<section class="sec" id="s12-3" data-num="12.3" data-short="孔隙水壓與 CRR" data-title="不排水反覆試驗：r_u、CSR 與 CRR">
+  <div class="sec-head"><span class="sec-num">12.3</span><h2>不排水反覆試驗：r<sub>u</sub>、CSR 與 CRR</h2></div>
+  <p class="src">出處：Ch8 講義 1.14–1.18；教師 PDF p.16–20</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>孔隙水壓一圈一圈上升，應變卻一直很小，直到某一圈突然變大。那一圈之前發生了什麼？</p>
+  </div>
+
+  <div class="eqbox">\[ r_u = \frac{\Delta u}{\sigma'_0},\qquad CSR_{ss} = \frac{\tau_{cyc}}{\sigma'_{v0}},\qquad CSR_{tx} = \frac{\sigma_d}{2\sigma'_{3c}} \]</div>
+  <ul>
+    <li>\(r_u\) 一圈一圈上升；應變在 \(r_u\) 接近 1 前都很小。</li>
+    <li>\(r_u = 1\) 只發生在<b>剪應力反轉</b>的瞬間；兩次反轉之間土膨脹、有效應力回升，應力路徑呈「香蕉形」。</li>
+    <li>鬆砂：\(r_u = 1\) 後應變失控（流動型）；密砂：每圈應變有限（反覆流動性）。</li>
+    <li>有靜態剪應力（剪應力不反轉）時，\(r_u\) 可能永遠到不了 1，但應變仍可以很大：只看 \(r_u\) 會低估危險。</li>
+  </ul>
+
+  <h3>試驗中的「液化」與 CRR</h3>
+  <p>液化的定義有兩種：<b>初始液化</b> \(r_u = 1\)；或<b>應變準則</b>：三軸雙振幅軸應變 5 %、單剪單振幅剪應變 3 %。鬆砂兩者幾乎同時發生；密砂 \(r_u\) 可以多次瞬間到 1，但應變很久才到 5 %，所以 \(N_L\) 可以差很多，引用試驗結果要寫明準則。<b>CRR</b> 是在指定圈數下造成液化的 CSR；說 CRR 一定要說圈數，現地基準是 15 圈（M = 7.5）。</p>
+  <div class="eqbox">\[ CRR = aN^{-b},\qquad b \approx 0.2\sim0.35\ (\text{乾淨砂}) \]</div>
+  <p>log–log 直線，越密曲線越高。指數 \(b\) 把不同振幅的圈數連起來：振幅 \(\tau_1\) 的 1 圈相當於振幅 \(\tau_2\) 的 \((\tau_1/\tau_2)^{1/b}\) 圈（每圈用掉 \(1/N_L\) 的壽命）。b = 0.25 時，振幅大 20 % 的一圈約等於 1.2<sup>4</sup> ≈ 2 圈。這是單元 13 的 \(N_{eq}\) 與 MSF 的基礎。</p>
+
+  <div id="w-ru" data-title="反覆三軸試驗：CRR 曲線與孔隙水壓累積"></div>
+  <p class="mini-note">互動圖的 CRR 曲線：以 \((N_1)_{60} \approx 46D_r^2\) 與 Youd et al. (2001) 乾淨砂曲線定 15 圈的 CRR，再以 \(N^{-b}\) 延伸；\(r_u\) 包絡用 Seed et al. (1975) 的 \(r_u = \tfrac12 + \tfrac1\pi\arcsin[2(N/N_L)^{1/0.7} - 1]\)。應變曲線是示意。</p>
+
+  <div class="callout example"><div class="ct">例：講義 p.18 的鬆砂與密砂</div>
+    <p>D<sub>r</sub> = 47 %、剪應力約 ±20 kPa：r<sub>u</sub> 穩定上升，第 10 圈到 1，應變在最後一兩圈突然變大。D<sub>r</sub> = 75 %、剪應力約 ±60 kPa：第 17 圈左右 r<sub>u</sub> 開始每圈瞬間到 1，但應變每圈只增加一點。密砂要三倍的剪應力才在相近圈數液化。在互動圖按「鬆砂」「密砂」可重現 N<sub>L</sub> ≈ 9 與 17 圈；按「同一 CSR，密砂」：同樣的 CSR 0.13，密砂要約 200 圈才液化。</p>
+  </div>
+
+  <div class="quiz" data-num="2" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">CRR 曲線 b = 0.25。振幅為 1.19τ 的一圈，相當於振幅 τ 的幾圈？（取整數）</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="圈數"><button class="btn">檢查</button></div>
+    <div class="fb">(1.19)^(1/0.25) = 1.19⁴ ≈ 2.0 圈。b 越小，大圈的權重越大（講義 p.32 的曲線較平，兩點給 b ≈ 0.17）。</div>
+  </div>
+</section>
+
+<section class="sec" id="s12-4" data-num="12.4" data-short="現地修正" data-title="由室內 CRR 到現地">
+  <div class="sec-head"><span class="sec-num">12.4</span><h2>由室內 CRR 到現地：c<sub>r</sub>、0.9、K<sub>α</sub>、K<sub>σ</sub></h2></div>
+  <p class="src">出處：Ch8 講義 1.19–1.24；教師 PDF p.21–26</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>反覆三軸試驗得到 CRR = 0.30，現地的抵抗也是 0.30 嗎？</p>
+  </div>
+
+  <div class="eqbox">\[ (CSR)_{field} = 0.9\,(CSR)_{ss} = 0.9\,c_r\,(CSR)_{tx},\qquad CRR_{\alpha,\sigma} = CRR_{\alpha=0,\ \sigma'&lt;1\,atm}\cdot K_\alpha K_\sigma \]</div>
+  <ul>
+    <li><b>\(c_r\)</b>：等向壓密三軸高估現地（K<sub>0</sub> 狀態）的抵抗。Finn \(c_r = (1+K_0)/2\)、Castro \(c_r = 2(1+2K_0)/3\sqrt3\)；K<sub>0</sub> = 0.4 時約 0.55–0.7，K<sub>0</sub> = 1 時約 1。</li>
+    <li><b>0.9</b>：現地有兩個水平方向的剪應力，多方向剪動使孔隙水壓上升更快（二維效應）。</li>
+    <li><b>\(K_\alpha\)</b>（\(\alpha = \tau_{h,static}/\sigma'_{v0}\)）：中密到密砂 \(K_\alpha &gt; 1\)，鬆砂 \(K_\alpha &lt; 1\)。不確定性大，水平地盤取 1。</li>
+    <li><b>\(K_\sigma\)</b>：σ′<sub>v0</sub> 大於約 100 kPa 時 &lt; 1；400 kPa 約 0.7。Youd (2001)：\(K_\sigma = (\sigma'_{v0}/p_a)^{f-1}\)，f = 0.6–0.8。</li>
+  </ul>
+
+  <div class="callout example"><div class="ct">例：三軸 → 現地</div>
+    <p>(CSR)<sub>tx</sub> = 0.30（15 圈），K<sub>0</sub> = 0.5：c<sub>r</sub> = 0.75 → (CSR)<sub>ss</sub> = 0.225 → × 0.9 → <b>0.20</b>。室內結果直接當現地強度，會高估約 50 %。</p>
+  </div>
+
+  <h3>為什麼實務改用現地試驗</h3>
+  <p>提高 CRR 的因素：密度、OCR、K<sub>0</sub>、老化、曾受小震預剪。其中土壤結構與老化在取樣時就被破壞，冷凍取樣可保留但很貴。所以實務用 SPT、CPT、V<sub>s</sub> 直接量現地狀態，配合地震案例資料庫建立 CRR 曲線（單元 13）。</p>
+
+  <div class="quiz" data-num="0.7" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">Finn et al. (1971)：K<sub>0</sub> = 0.4 時 c<sub>r</sub> = ?</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="c_r"><button class="btn">檢查</button></div>
+    <div class="fb">c_r = (1 + 0.4)/2 = 0.70，與 Kramer 表 9-1 相同。</div>
+  </div>
+</section>
+
+<section class="sec" id="s12-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">超額孔隙水壓比</div>\[ r_u = \Delta u/\sigma'_0 \]</div>
+    <div class="fcard"><div class="ft">兩種試驗的 CSR</div>\[ \frac{\tau_{cyc}}{\sigma'_{v0}},\quad \frac{\sigma_d}{2\sigma'_{3c}} \]</div>
+    <div class="fcard"><div class="ft">CRR 曲線</div>\[ CRR = aN^{-b} \]</div>
+    <div class="fcard"><div class="ft">不同振幅的圈數</div>\[ 1\text{ 圈 }\tau_1 = (\tau_1/\tau_2)^{1/b}\text{ 圈 }\tau_2 \]</div>
+    <div class="fcard"><div class="ft">室內 → 現地</div>\[ 0.9\,c_r\,(CSR)_{tx}\cdot K_\alpha K_\sigma \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>用粒徑判斷細粒土</b>：要看塑性（PI &lt; 7 像砂）。</li>
+    <li><b>只看 r<sub>u</sub></b>：有靜態剪應力時 r<sub>u</sub> 到不了 1，應變仍可很大。</li>
+    <li><b>CRR 不寫圈數或液化準則</b>：密砂的 N<sub>L</sub> 依準則差很多。</li>
+    <li><b>三軸 CRR 直接當現地</b>：要乘 c<sub>r</sub> 與 0.9。</li>
+  </ul>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>地震不是等振幅的：單元 13 把不規則載重換成 N<sub>eq</sub> 圈，並用簡化法由 a<sub>max</sub> 估 CSR、由 SPT 估 CRR。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u11.html"><span class="dir">← 單元 11</span>等值線性與非線性分析</a>
+  <a class="next" href="../units/u13.html"><span class="dir">單元 13 →</span>液化觸發評估：簡化法</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/liquefaction.js"></script>
+</body>
+</html>

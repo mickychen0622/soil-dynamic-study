@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8. 土壤的非線性：模數與阻尼 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用的小樣式 */
+  .chain { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 1.4em 0; }
+  .chain > div { background: var(--tile); border-radius: 16px; padding: 14px 16px; position: relative; font-size: 14.5px; line-height: 1.5; }
+  .chain > div b { display: block; font-size: 16px; color: var(--accent); margin-bottom: 2px; }
+  .chain > div small { color: var(--muted); }
+  .bb-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 22px; align-items: center; }
+  .bb-wrap canvas { width: 100%; max-width: 280px; height: auto; display: block; margin: 0 auto; }
+  .bb-wrap .cap { text-align: center; font-size: 13px; color: var(--muted); }
+  .scale-tab td.on, .scale-tab th.on { background: var(--accent-soft); font-weight: 600; }
+  .strain-grid { width: 100%; }
+  .num-chip { display: inline-block; font-variant-numeric: tabular-nums; background: var(--inset); border-radius: 8px; padding: 0 6px; }
+/* 單元專用：數字很多的答案表、勘誤表 */
+  .ans-list { max-width: var(--measure); }
+  .ans-list li { margin: .35em 0; }
+  table.data td.ok { color: var(--green); font-weight: 600; }
+  table.data td.bad { color: var(--warn); font-weight: 600; }
+  .w-body .tablewrap { margin: 1em 0 .4em; }
+  .w-body table.data { font-size: 14px; }
+  .w-body table.data th, .w-body table.data td { padding: 8px 10px; }
+</style>
+</head>
+<body data-page="u08" data-root="../" data-title="8. 非線性">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 3 波與土壤性質 · 單元 8 · Nonlinear Soil Behavior</div>
+  <h1>土壤的非線性：模數與阻尼</h1>
+  <p class="lede"><b>應變越大，土壤越軟、越會吃能量。</b>地震讓土壤元素反覆受剪，應力–應變畫成遲滯迴圈。迴圈的割線斜率是 \(G\)，面積對應阻尼比 \(D\)；兩者隨應變變化的曲線（MRD），加上骨架曲線與 Masing rules，就是地盤反應分析需要的土壤模型。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>在某個應變下，土壤有多硬？每搖一圈吃掉多少能量？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>估計地震在土中造成的反覆剪應力（CSR），並說明垂直傳播的剪力波讓土壤元素承受什麼應力</li>
+    <li>由一個遲滯迴圈讀出 \(G_{sec}\)、\(G_{tan}\)，並從黏滯類比推導 \(D = E_D/(4\pi E_{So})\)</li>
+    <li>讀懂 MRD 曲線（\(G/G_{max}\)、\(D\) 對應變），用兩個門檻應變判斷該用線性、等值線性或非線性分析</li>
+    <li>用雙曲線（或 Darendeli 修正雙曲線）骨架加上 Masing rules 產生迴圈，並說明 Masing 阻尼為何兩端都要修正</li>
+    <li>說明塑性指數、圍壓、級配如何影響 \(G/G_{max}\) 與阻尼曲線</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u07.html"><h4>上一單元 · 量測剪力波速與 Gmax</h4><p>Gmax 只是小應變的勁度。地震時應變變大，土壤會變軟、吃能量。</p></a>
+    <a class="card" href="../units/u09.html"><h4>下一單元 · 室內動態試驗</h4><p>MRD 曲線要靠實驗量。下一單元看共振柱等試驗怎麼量 G 與阻尼。</p></a>
+  </div>
+  <div class="callout pitfall"><div class="ct">符號提醒</div>
+    <p>從這個單元開始，\(D\) 指<b>阻尼比</b>（常以 % 表示，與 \(\xi\) 同義），不是單元 4 的放大因子。另一個常見陷阱是應變的單位：有的表用小數、有的用 %，相差 100 倍。</p>
+  </div>
+</header>
+
+<section class="sec" id="s8-1" data-num="8.1" data-short="反覆應力" data-title="地震中的反覆應力">
+  <div class="sec-head"><span class="sec-num">8.1</span><h2>地震中的反覆應力：從 PGA 到 CSR</h2></div>
+  <p class="src">出處：Ch0–2 講義 4.1、5.1；Ch0 原講義 p.9</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>地表量到 PGA = 0.25 g。地下 6 m 的砂土元素，受到多大的反覆剪應力？</p>
+  </div>
+
+  <p>由下往上傳的 <b>S 波</b>在水平面上產生反覆剪應力 \(\tau_d\)，土壤元素處於<b>反覆單剪</b>狀態，這正是室內反覆單剪、反覆三軸試驗要模擬的情況。<b>P 波</b>改變正向應力，但在飽和土中幾乎全由孔隙水承擔，有效應力變化很小。所以<b>液化與地震沉陷主要由剪力波造成</b>。</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 640 210" width="640" role="img" aria-label="反覆剪應力與土柱">
+      <line x1="40" y1="40" x2="300" y2="40" class="s-ink" stroke-width="1.4"/>
+      <text x="44" y="32" class="txt-muted">地表，加速度 a<tspan font-size="72%" baseline-shift="-25%">max</tspan></text>
+      <rect x="140" y="40" width="70" height="120" class="s-ink f-band" stroke-width="1.2"/>
+      <text x="175" y="105" class="txt" text-anchor="middle">土柱</text>
+      <line x1="120" y1="160" x2="230" y2="160" class="s-ink" stroke-width="1.2"/>
+      <text x="240" y="164" class="txt">深度 z</text>
+      <g class="s-red" stroke-width="2"><line x1="150" y1="172" x2="200" y2="172"/></g>
+      <path d="M200 172 l-9 -4.5 v9z" class="f-red"/>
+      <text x="175" y="194" class="txt-red" text-anchor="middle">τ = m·a<tspan font-size="72%" baseline-shift="-25%">max</tspan> × r<tspan font-size="72%" baseline-shift="-25%">d</tspan></text>
+      <g class="s-blue" stroke-width="1.6" fill="none"><path d="M60 150 l0 -100"/></g>
+      <path d="M60 46 l-4.5 9 h9z" class="f-blue"/>
+      <text x="66" y="110" class="txt-blue">S 波往上傳</text>
+      <!-- 右：元素 -->
+      <rect x="430" y="70" width="80" height="80" class="s-ink f-surface" stroke-width="1.4"/>
+      <path d="M430 70 l18 0 l-18 0 M448 70 l80 0 l-18 80 l-80 0 z" class="s-blue" fill="none" stroke-dasharray="4 3" stroke-width="1.2"/>
+      <g class="s-red" stroke-width="1.8"><line x1="440" y1="60" x2="500" y2="60"/><line x1="500" y1="160" x2="440" y2="160"/></g>
+      <path d="M500 60 l-8 -4 v8z M440 160 l8 -4 v8z" class="f-red"/>
+      <text x="470" y="52" class="txt-red" text-anchor="middle">τ<tspan font-size="72%" baseline-shift="-25%">d</tspan>（來回反轉）</text>
+      <text x="470" y="186" class="txt-muted" text-anchor="middle">元素處於反覆單剪</text>
+    </svg>
+    <figcaption>簡化法：深度 z 以上的土柱若是剛體，底部剪應力就是土柱質量乘地表加速度；r<sub>d</sub> 修正土柱並非剛體。</figcaption>
+  </figure>
+
+  <p><b>Seed–Idriss 簡化法（1971）</b>把上述想法寫成一條公式，再用 0.65 把不規則地動的峰值換成「等值均勻循環」的振幅：</p>
+  <div class="eqbox">\[ \tau_{max} = \frac{a_{max}}{g}\,\sigma_v\,r_d, \qquad CSR = \frac{\tau_{av}}{\sigma'_v} = 0.65\,\frac{a_{max}}{g}\,\frac{\sigma_v}{\sigma'_v}\,r_d \]
+  \[ r_d = 1 - 0.00765z \;(z \le 9.15\text{ m}), \qquad r_d = 1.174 - 0.0267z \;(9.15 &lt; z \le 23\text{ m}) \]</div>
+  <p>這條式子把<a href="u03.html">單元 3</a> 的 PGA 與 <a href="u01.html#s1-1">1.1</a> 的液化潛勢圖接起來；完整的液化評估（抗液化強度 CRR、規模修正）在後面章節。</p>
+
+  <div id="w-csr" data-title="由地表 PGA 估計反覆剪應力比 CSR"></div>
+
+  <div class="callout example"><div class="ct">例：地下 6 m 的砂</div>
+    <p>地下水位 2 m；水位以上 \(\gamma = 18\) kN/m³、以下 \(\gamma_{sat} = 19.5\) kN/m³；\(a_{max} = 0.25g\)。</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>量</th><th>計算</th><th class="num">結果</th></tr>
+      <tr><td>\(\sigma_v\)</td><td>\(2\times18 + 4\times19.5\)</td><td class="num">114 kPa</td></tr>
+      <tr><td>\(u\)</td><td>\(4\times9.81\)</td><td class="num">39.2 kPa</td></tr>
+      <tr><td>\(\sigma'_v\)</td><td>\(114 - 39.2\)</td><td class="num">74.8 kPa</td></tr>
+      <tr><td>\(r_d\)</td><td>\(1 - 0.00765\times6\)</td><td class="num">0.954</td></tr>
+      <tr><td>\(\tau_{av}\)</td><td>\(0.65\times0.25\times114\times0.954\)</td><td class="num">17.7 kPa</td></tr>
+      <tr class="hl"><td>CSR</td><td>\(17.7/74.8\)</td><td class="num">0.236</td></tr>
+    </table></div>
+    <p>\(\sigma_v/\sigma'_v = 1.52\)：地下水位越淺，這個比值越大，同樣的 PGA 產生的 CSR 越高。這是河岸沖積層液化潛勢高的另一個原因。</p>
+  </div>
+
+  <div class="quiz" data-num="0.155" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">同一個例子，但地下水位很深（6 m 以上全為 γ = 18 kN/m³ 的乾土，無孔隙水壓）。CSR 是多少？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="CSR"><button class="btn">檢查</button></div>
+    <div class="fb">σv = σ′v = 108 kPa，比值 1 → CSR = 0.65 × 0.25 × 1 × 0.954 = 0.155。地下水位下降使 σv/σ′v 從 1.52 降到 1，CSR 少了約三分之一；乾砂本來也不會液化，但會有地震沉陷（3.2 的「硬化」）。</div>
+  </div>
+</section>
+
+<section class="sec" id="s8-2" data-num="8.2" data-short="受力應變" data-title="土壤元素的受力與應變範圍">
+  <div class="sec-head"><span class="sec-num">8.2</span><h2>土壤元素的受力與應變範圍</h2></div>
+  <p class="src">出處：學生整理投影片 1.4–1.5（Ishihara 應變範圍）；老師講義 p. 5–6</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>地震時，地表下 10 m 的一小塊砂到底經歷了什麼？它的受力像哪一種實驗室試驗？</p>
+  </div>
+
+  <p>地震波從深處傳上來時，每進入一層較軟、較慢的土，射線就依 Snell 定律往垂直方向偏折。到了近地表，波幾乎是<b>垂直往上傳的 SH 波</b>，質點左右水平擺動。對水平地盤中的一個土壤元素來說：</p>
+  <ul>
+    <li><b>地震前</b>：只有靜態的地壓。垂直有效應力 \(\sigma'_{v0}\)，水平有效應力 \(K_0\sigma'_{v0}\)，水平面上沒有剪應力。</li>
+    <li><b>地震時</b>：水平面上加入來回變號的剪應力 \(\tau(t)\)，元素像一疊撲克牌被左右推。這就是<b>單剪</b>的應力路徑，也是反覆單剪試驗最接近現地的原因。</li>
+  </ul>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 640 230" width="640" role="img" aria-label="水平地盤中的土壤元素受力">
+      <g class="s-ink" fill="none" stroke-width="1.3">
+        <line x1="20" y1="30" x2="300" y2="30"/>
+        <line x1="20" y1="58" x2="300" y2="58" class="s-blue" stroke-dasharray="6 4"/>
+        <rect x="130" y="120" width="60" height="60"/>
+        <line x1="160" y1="225" x2="160" y2="195" class="s-red" stroke-width="2"/>
+        <path d="M160 190 l-5 9 h10 z" class="f-red" stroke="none"/>
+      </g>
+      <text x="24" y="24" class="txt-muted">地表</text>
+      <text x="24" y="52" class="txt-blue">地下水位</text>
+      <text x="200" y="216" class="txt-red">垂直上傳的 SH 波</text>
+      <g class="s-ink" stroke-width="1.4">
+        <line x1="160" y1="88" x2="160" y2="114"/><path d="M160 118 l-4.5 -9 h9 z" class="f-ink" stroke="none"/>
+        <line x1="160" y1="212" x2="160" y2="186"/><path d="M160 182 l-4.5 9 h9 z" class="f-ink" stroke="none"/>
+        <line x1="98" y1="150" x2="124" y2="150"/><path d="M128 150 l-9 -4.5 v9 z" class="f-ink" stroke="none"/>
+        <line x1="222" y1="150" x2="196" y2="150"/><path d="M192 150 l9 -4.5 v9 z" class="f-ink" stroke="none"/>
+      </g>
+      <g class="s-blue" stroke-width="2">
+        <line x1="135" y1="114" x2="185" y2="114"/><path d="M190 114 l-9 -4.5 v9 z" class="f-blue" stroke="none"/>
+        <line x1="185" y1="186" x2="135" y2="186"/><path d="M130 186 l9 -4.5 v9 z" class="f-blue" stroke="none"/>
+      </g>
+      <text x="168" y="98" class="txt">σ′<tspan font-size="72%" baseline-shift="-25%">v0</tspan></text>
+      <text x="46" y="146" class="txt">K<tspan font-size="72%" baseline-shift="-25%">0</tspan>σ′<tspan font-size="72%" baseline-shift="-25%">v0</tspan></text>
+      <text x="196" y="110" class="txt-blue">τ(t)，來回變號</text>
+      <!-- 右：單剪變形 -->
+      <g class="s-ink" fill="none" stroke-width="1.3">
+        <polygon points="380,170 460,170 480,90 400,90"/>
+        <polygon points="540,170 620,170 600,90 520,90" stroke-dasharray="5 4"/>
+        <line x1="380" y1="170" x2="380" y2="90" class="s-gray" stroke-dasharray="3 3"/>
+      </g>
+      <text x="386" y="200" class="txt-muted">向右剪</text>
+      <text x="548" y="200" class="txt-muted">半週期後向左剪</text>
+      <text x="384" y="84" class="txt">γ = 水平位移 / 高度</text>
+    </svg>
+    <figcaption>左：地震前的地壓與地震時加上的反覆剪應力。右：元素像單剪試體一樣左右變形</figcaption>
+  </figure>
+
+  <p>土壤的勁度主要由<b>平均有效應力</b>控制，後面的 Hardin 公式與 Darendeli 模型都用它，而不是 \(\sigma'_{v0}\)：</p>
+  <div class="eqbox">\[ \sigma'_m = \frac{\sigma'_{v0} + 2K_0\sigma'_{v0}}{3} = \frac{1+2K_0}{3}\,\sigma'_{v0} \]</div>
+  <p>正常壓密砂 \(K_0 \approx 0.5\)，所以 \(\sigma'_m \approx \tfrac23\sigma'_{v0}\)；過壓密土的 \(K_0\) 可以大於 1，\(\sigma'_m\) 反而大於 \(\sigma'_{v0}\)。</p>
+
+  <div class="callout example"><div class="ct">例：地下 10 m 的砂（地下水位 1 m、γ = 19 kN/m³、K₀ = 0.5）</div>
+    <div class="tablewrap"><table class="data">
+      <tr><th>量</th><th>計算</th><th class="num">結果</th></tr>
+      <tr><td>\(\sigma_{v0}\)</td><td>19 × 10</td><td class="num">190 kPa</td></tr>
+      <tr><td>\(u\)</td><td>9.81 × 9</td><td class="num">88.3 kPa</td></tr>
+      <tr><td>\(\sigma'_{v0}\)</td><td>190 − 88.3</td><td class="num">101.7 kPa</td></tr>
+      <tr><td>\(\sigma'_{h0}\)</td><td>0.5 × 101.7</td><td class="num">50.9 kPa</td></tr>
+      <tr class="hl"><td>\(\sigma'_m\)</td><td>(101.7 + 2 × 50.9)/3</td><td class="num">67.8 kPa</td></tr>
+    </table></div>
+    <p>中等地震在這個深度可以造成 20–30 kPa 的反覆剪應力，約為 \(\sigma'_{v0}\) 的 20–30 %。這個比值就是 <a href="#s8-1">8.1</a> 的反覆剪應力比 CSR。</p>
+  </div>
+
+  <h3>應變決定行為：三個範圍</h3>
+  <p>同一種土，搖得輕和搖得重，表現完全不同。Ishihara 依剪應變把行為分成三段，每一段對應一種模型與分析方法：</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>剪應變（小數）</th><th>剪應變（%）</th><th>行為</th><th>模型</th><th>分析方法</th></tr>
+    <tr><td>&lt; 10<sup>−5</sup></td><td>&lt; 10<sup>−3</sup></td><td>近乎彈性</td><td>線彈性</td><td>線性分析（機器基礎、交通振動）</td></tr>
+    <tr class="hl"><td>10<sup>−5</sup> – 10<sup>−3</sup></td><td>10<sup>−3</sup> – 10<sup>−1</sup></td><td>非線性、遲滯，但不破壞</td><td>黏彈性（非退化）</td><td>等值線性法</td></tr>
+    <tr><td>&gt; 10<sup>−3</sup></td><td>&gt; 10<sup>−1</sup></td><td>可能破壞；圈數、速率效應明顯</td><td>追蹤載重歷史（退化）</td><td>時間域逐步積分</td></tr>
+  </table></div>
+
+  <div id="w-range" data-title="應變範圍地圖：小數與 %、行為與分析方法"></div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：先看單位</div>
+    <p>Ishihara 原表的 \(10^{-5}\) 是<b>小數</b>，等於 \(10^{-3}\,\%\)。之後的 MRD 曲線、Darendeli 公式、HW3 都用 %，但 HW3 Q2 的 Masing 工具輸入 \(\gamma_{ref} = 0.0004\) 又是小數（= 0.04 %）。每次讀圖先看軸標籤，代入公式前先統一單位。</p>
+  </div>
+
+  <div class="quiz" data-num="0.0005" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">等值線性分析算出某層的有效剪應變是 0.05 %。換成小數是多少？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="小數應變"><button class="btn">檢查</button></div>
+    <div class="fb">0.05 % = 0.05/100 = 0.0005 = 5 × 10⁻⁴。它落在 10⁻⁵–10⁻³（小數）之間，屬於中應變，正是等值線性法的適用範圍；但已超過砂的體積門檻應變（8.5）。</div>
+  </div>
+</section>
+
+<section class="sec" id="s8-3" data-num="8.3" data-short="遲滯迴圈" data-title="遲滯迴圈：Gtan 與 Gsec">
+  <div class="sec-head"><span class="sec-num">8.3</span><h2>遲滯迴圈：G<sub>tan</sub> 與 G<sub>sec</sub></h2></div>
+  <p class="src">出處：學生整理投影片 1.6、1.8；老師講義 p. 7、9；郭老師 Dynamic Soil Behavior p. 2、6</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>反覆單剪試驗畫出一個斜斜的橢圓狀迴圈。這個迴圈的「勁度」是哪一條線的斜率？</p>
+  </div>
+
+  <p>把一個應變幅度 \(\gamma_c\) 的反覆載重畫成 \(\tau\)–\(\gamma\) 圖，得到一個閉合的<b>遲滯迴圈</b>。下標 c 代表 cyclic，是反覆載重的幅度，不是破壞值。迴圈上可以讀兩種勁度：</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>量</th><th>定義</th><th>特性</th><th>誰在用</th></tr>
+    <tr><td>切線模數 \(G_{tan}\)</td><td>迴圈上某點的斜率 \(d\tau/d\gamma\)</td><td>剛反轉時最陡（≈ \(G_{max}\)），接近尖端時變平</td><td>非線性時間域分析，每一步用當下的 \(G_{tan}\)</td></tr>
+    <tr class="hl"><td>割線模數 \(G_{sec}\)</td><td>原點到迴圈尖端：\(G_{sec} = \tau_c/\gamma_c\)</td><td>整個迴圈的平均勁度</td><td>等值線性分析</td></tr>
+  </table></div>
+  <p>初次載重的路徑稱為<b>骨架曲線</b>（backbone）。不同幅度的迴圈尖端都落在骨架上，這是 5.6 Masing rules 的關鍵。一句話記住：<b>\(G_{sec}\) 看迴圈有多「斜」，面積看迴圈有多「胖」</b>。\(\gamma_c\) 變大，迴圈同時躺下、變胖。</p>
+
+  <div id="w-loop" data-title="一個迴圈、兩種勁度"></div>
+
+  <div class="callout intuition"><div class="ct">等值線性法只留下兩個數字</div>
+    <p>等值線性法把整個迴圈濃縮成 \(G_{sec}\)（斜度）與 \(D\)（胖度）：用一個橢圓代表真實迴圈。橢圓的面積與尖端都對，但迴圈內部的細節（剛反轉時很硬、接近尖端時很軟）被丟掉了。這正是<a href="u10.html">單元 10</a> 頻率域分析用複數模數 \(G^* = G(1+2iD)\) 的基礎。</p>
+  </div>
+
+  <div class="callout example"><div class="ct">迴圈形狀也是資訊</div>
+    <p>細長、接近橢圓的迴圈 → 接近線性黏彈性材料。兩端尖、中間細腰的「香蕉形」迴圈 → 通常代表孔隙水壓已經很高、土壤在剪脹（dilation），Ch8 液化試驗會看到。看試驗資料時要看迴圈本身，不只看算出來的兩個數字。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：等值線性用的是 G<sub>sec</sub></div>
+    <p>\(G_{sec}\) 在迴圈尖端附近比 \(G_{tan}\) 大，在剛反轉後比 \(G_{tan}\) 小。把某一點的 \(G_{tan}\) 當成等值線性的勁度，會高估或低估，取決於讀在哪裡。</p>
+  </div>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">某迴圈尖端在 γc = 0.1 %、τc = 27 kPa。等值線性分析該用的剪力模數是多少？</div>
+    <div class="opts">
+      <button class="opt">迴圈剛反轉時的斜率，約等於 Gmax</button>
+      <button class="opt">τc/γc = 27/0.001 = 27 000 kPa = 27 MPa</button>
+      <button class="opt">尖端處的切線斜率</button>
+    </div>
+    <div class="fb">等值線性用割線模數 Gsec = τc/γc。應變要換成小數：0.1 % = 0.001，所以 Gsec = 27 MPa。剛反轉時的斜率 ≈ Gmax 是非線性模型的 Gtan，尖端切線則接近零。</div>
+  </div>
+</section>
+
+<section class="sec" id="s8-4" data-num="8.4" data-short="阻尼比" data-title="阻尼比：從黏滯類比到迴圈面積">
+  <div class="sec-head"><span class="sec-num">8.4</span><h2>阻尼比：從黏滯類比到迴圈面積</h2></div>
+  <p class="src">出處：學生整理投影片 1.7–1.8；老師講義 p. 8–9；4.8</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>土壤裡沒有阻尼器，為什麼可以談「阻尼比」？公式裡的 4π 是從哪裡來的？</p>
+  </div>
+
+  <p>做法是<b>借用</b>單元 4 的黏滯阻尼器：找一個黏滯系統，讓它在共振時每圈消散的能量和土壤迴圈相同，就把那個系統的阻尼比當成土壤的「等值阻尼比」。</p>
+
+  <details class="derive" open><summary>推導：一步一步得到 \(D = E_D/(4\pi E_{So})\)</summary><div class="body">
+    <ol class="steps">
+      <li>黏滯阻尼器受 \(u = u_0\sin\omega t\)。每圈消散的能量是阻尼力做的功，把 \(du\) 寫成 \(\dot u\,dt\)：
+        \[ E_D = \oint c\dot u\,du = \int_0^{2\pi/\omega} c\,(u_0\omega\cos\omega t)^2\,dt = \pi c\,\omega\,u_0^2 \]
+        （\(\cos^2\) 在一週期的平均為 ½。）</li>
+      <li>由阻尼比的定義 \(c = 2\xi\sqrt{km} = 2\xi k/\omega_n\)：
+        \[ E_D = 2\pi\xi\,\frac{\omega}{\omega_n}\,k u_0^2 = 4\pi\xi\,\frac{\omega}{\omega_n}\,E_{So}, \qquad E_{So} = \tfrac12 k u_0^2 \]</li>
+      <li>黏滯阻尼器消散的能量與頻率成正比；但土壤試驗顯示，在地震關心的頻率範圍內，迴圈面積幾乎與頻率無關（與速率無關的<b>遲滯阻尼</b>）。所以直接取 \(\omega/\omega_n = 1\)：
+        \[ D = \frac{E_D}{4\pi E_{So}}, \qquad E_{So} = \tfrac12\tau_c\gamma_c = \tfrac12 G_{sec}\gamma_c^2 \]</li>
+    </ol>
+    <p>這就是單元 4 的 \(W_D/(4\pi W_S) = \xi\beta\) 在 \(\beta = 1\) 的結果（<a href="../units/u04.html#s4-8">4.8</a>；<a href="../hw/hw3.html#q4">HW3 Q4(c)</a> 在 β = 0.5 時比值只有 ξ 的一半）。</p>
+  </div></details>
+
+  <div class="eqbox">\[ D = \frac{E_D}{4\pi E_{So}} = \frac{\text{loop area}}{4\pi\cdot\tfrac12\tau_c\gamma_c} \]</div>
+  <p>\(E_D\) 是<b>整個迴圈</b>的面積（從 A 繞到 B 再回到 A，跨四個象限）；\(E_{So}\) 只是第一象限從原點到尖端的<b>一個三角形</b>。分母用三角形，是為了把「載重大小」去掉，留下材料本身的性質，角色等同單元 4 用臨界阻尼 \(c_c\) 把 \(c\) 無因次化。</p>
+
+  <div id="w-loopdamp" data-title="由迴圈面積算阻尼比"></div>
+
+  <div class="callout example"><div class="ct">例：中應變的砂</div>
+    <p>\(\tau_c = 40\) kPa、\(\gamma_c = 0.1\%\)、迴圈面積 0.03 kJ/m³。先把應變換成小數 0.001：\(E_{So} = \tfrac12 \times 40 \times 0.001 = 0.02\) kJ/m³，\(D = 0.03/(4\pi \times 0.02) = 0.119 \approx 12\%\)。單位：kPa × 小數應變 = kN/m² = kJ/m³，是單位體積的能量；\(E_D\) 與 \(E_{So}\) 同單位，比值無因次。上面互動圖的預設值就是這一組。</p>
+  </div>
+
+  <h3>迴圈法與對數遞減法</h3>
+  <p>同一個阻尼比有兩種量法。共振柱（<a href="u09.html#s9-3">9.3</a>）讓試體自由振動，看振幅衰減多快：\(D \approx \delta/2\pi\)（4.9）；反覆三軸、單剪、扭剪則直接記錄迴圈，用面積算。阻尼小時兩者應該接近，差很多時要懷疑儀器本身的阻尼或試驗程序。</p>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱</div>
+    <p><b>應變用 % 直接代入：</b>\(E_{So}\) 會大 100 倍，阻尼比小 100 倍（互動圖的「錯誤示範」）。<b>不對稱迴圈：</b>公式假設迴圈對稱；有初始靜態剪應力（斜坡、擋土牆後）或迴圈往一側漂移時，\(E_{So}\) 要由迴圈本身重新定義。</p>
+  </div>
+
+  <div class="quiz" data-num="0.127" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">反覆單剪迴圈：τc = 30 kPa、γc = 0.05 %、迴圈面積 0.012 kJ/m³。阻尼比是多少？（填小數）</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="D"><button class="btn">檢查</button></div>
+    <div class="fb">γc = 0.0005；ESo = ½ × 30 × 0.0005 = 0.0075 kJ/m³；D = 0.012/(4π × 0.0075) = 0.127 ≈ 12.7 %。若把 0.05 直接代入，會得到 0.13 %，差 100 倍。</div>
+  </div>
+</section>
+
+<section class="sec" id="s8-5" data-num="8.5" data-short="MRD" data-title="MRD 曲線與門檻應變">
+  <div class="sec-head"><span class="sec-num">8.5</span><h2>模數折減與阻尼（MRD）曲線、門檻應變</h2></div>
+  <p class="src">出處：學生整理投影片 1.9–1.10；老師講義 p. 10–11；Darendeli (2001)、Vucetic (1994)</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>小地震時量到某層 \(V_s\) = 200 m/s。強震時，這層土「等效的」\(V_s\) 還是 200 m/s 嗎？</p>
+  </div>
+
+  <p>對每一個應變幅度做一組試驗，讀出 \(G_{sec}\) 與 \(D\)，再對 \(\log\gamma\) 作圖，就得到<b>這個單元最重要的兩條曲線</b>：</p>
+  <ul>
+    <li><b>\(G/G_{max}\)：</b>小應變時約為 1，\(G_{max} = \rho V_s^2\) 是曲線的錨點；應變越大越低。</li>
+    <li><b>\(D\)：</b>小應變時約 1 %（\(D_{min}\)），應變越大越高，到 1 % 應變約 20 %。一降一升是同一件事的兩面：越軟的迴圈越胖。</li>
+  </ul>
+  <p>因為波速與模數的平方根成正比，強震時的等效波速是 \(V_{s,eq} = V_s\sqrt{G/G_{max}}\)。下面的互動圖用 Darendeli (2001) 的平均模型（5.5 有公式）產生曲線，可以改變塑性、圍壓、過壓密比、圈數與頻率。</p>
+
+  <div id="w-mrd" data-title="MRD 曲線實驗室（Darendeli 2001 平均模型）"></div>
+
+  <div class="callout example"><div class="ct">例：PI = 15、1 atm 的土層在 0.1 % 應變</div>
+    <p>由 Darendeli 曲線讀 \(G/G_{max} = 0.347\)、\(D = 12.2\%\)。若 \(V_s = 200\) m/s、\(\rho = 1.9\) t/m³：\(G_{max} = 1.9 \times 200^2 = 76\,000\) kPa = 76 MPa，\(G \approx 0.347 \times 76 = 26\) MPa，等效 \(V_s \approx 200\sqrt{0.347} = 118\) m/s。<a href="u10.html">單元 10</a> 會看到：\(V_s\) 降低使場址週期變長，這就是強震時場址週期拉長的原因。（互動圖按「講義例」可重現。）</p>
+  </div>
+
+  <h3>兩個門檻應變</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>應變範圍</th><th>行為</th><th>分析上的後果</th></tr>
+    <tr><td>\(\gamma &lt; \gamma_{tl} \approx 10^{-3}\%\)</td><td>線彈性：\(G \approx G_{max}\)、\(D \approx D_{min}\)；顆粒接觸幾乎不滑動</td><td>線性分析即可（振動問題直接用 \(G_{max}\)）</td></tr>
+    <tr class="hl"><td>\(\gamma_{tl} &lt; \gamma &lt; \gamma_{tv}\)</td><td>非線性、遲滯，但<b>沒有永久體積變化</b>；卸載後大致回到原狀</td><td>等值線性法很好用</td></tr>
+    <tr><td>\(\gamma &gt; \gamma_{tv} \approx 10^{-2}\%\)（砂）</td><td>顆粒滑動、重新排列：排水 → 體積變化；不排水 → 超額孔隙水壓；性質逐圈改變</td><td>需要非線性、最好是有效應力模型</td></tr>
+  </table></div>
+  <p>\(\gamma_{tl}\) 是線性門檻（linear threshold），\(\gamma_{tv}\) 是體積門檻（volumetric threshold）。\(\gamma_{tv}\) 隨塑性增加：砂約 0.01 %，高塑性黏土可到約 0.1 %，所以黏土較不易累積孔隙水壓、較不易液化。液化與震陷只在 \(\gamma &gt; \gamma_{tv}\) 才開始。</p>
+
+  <div class="callout example"><div class="ct">判斷例：砂層尖峰剪應變 0.05 %</div>
+    <p>能直接用等值線性分析的結果評估此層的孔隙水壓嗎？<b>不行。</b>0.05 % 大於砂的 \(\gamma_{tv}\)，會產生超額孔隙水壓；但等值線性法是總應力分析，沒有孔隙水壓機制。實務上有兩條路：用等值線性法算反覆剪應力，再配合 Ch8 的液化評估；或直接做非線性有效應力分析。<a href="../hw/hw3.html#q3">HW3 Q3(b)</a> 問的就是這件事。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：MRD 曲線不含圈數效應</div>
+    <p>曲線上每一點通常是某應變幅度下「穩定迴圈」（約第 10 圈）的 \(G_{sec}\) 與 \(D\)。超過 \(\gamma_{tv}\) 後，飽和砂的第 1 圈與第 50 圈可能差很多，一條 MRD 曲線描述不了。另外，Darendeli 模型的資料多在 0.3 % 以下，更大應變是外插（阻尼曲線在約 3 % 後變平甚至下彎），常要用剪力強度修正大應變段（<a href="u11.html#s11-2">11.2</a>）。</p>
+  </div>
+
+  <div class="quiz" data-answer="2">
+    <div class="qh">小測驗</div>
+    <div class="qq">強震站同時有地表與井下紀錄，算出土層的剪應變約 5 × 10⁻⁴ %。比較兩筆紀錄時可以怎麼假設？</div>
+    <div class="opts">
+      <button class="opt">一定有明顯孔隙水壓上升，要用有效應力分析</button>
+      <button class="opt">等值線性，G/Gmax 約 0.5</button>
+      <button class="opt">低於 γtl，土層近乎線性，可用線性轉換函數</button>
+    </div>
+    <div class="fb">5 × 10⁻⁴ % &lt; γtl ≈ 10⁻³ %，土壤近乎線彈性，G ≈ Gmax、D ≈ Dmin，可用線性轉換函數比較地表與井下紀錄（單元 10）。若應變 &gt; γtv，則要預期非線性與孔隙水壓，放大倍率會降低、共振頻率往低頻移。</div>
+  </div>
+</section>
+
+<section class="sec" id="s8-6" data-num="8.6" data-short="骨架曲線" data-title="土壤模型與骨架曲線">
+  <div class="sec-head"><span class="sec-num">8.6</span><h2>土壤模型與骨架曲線</h2></div>
+  <p class="src">出處：學生整理投影片 2.2–2.5；老師講義 p. 13–16；Darendeli (2001)；郭老師 Dynamic Soil Behavior p. 27–29</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>要預測地震後擋土牆後方的永久側向位移，可以用等值線性分析嗎？</p>
+  </div>
+
+  <h3>兩種表示法、兩種土壤</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th></th><th>等值線性</th><th>非線性（反覆）</th></tr>
+    <tr><td>描述土壤</td><td>\(G_{sec}(\gamma)\) 與 \(D(\gamma)\) 兩條曲線</td><td>骨架曲線＋卸載再載入規則</td></tr>
+    <tr><td>一圈之內</td><td>線性黏彈性，每層整場地震一組 G、D</td><td>逐點追蹤，勁度每一步都在變</td></tr>
+    <tr><td>永久應變、孔隙水壓</td><td>算不出來</td><td>可以（配合有效應力模型）</td></tr>
+    <tr><td>強度上限</td><td>沒有：給定 G 後應力隨應變一直增加</td><td>骨架內建上限</td></tr>
+    <tr><td>典型程式</td><td>SHAKE、Strata（頻率域）</td><td>DEEPSOIL、OpenSees、FLAC（時間域）</td></tr>
+  </table></div>
+  <p>開場問題的答案是<b>不行</b>：等值線性在一圈之內是線性的，每個迴圈都自我閉合，永遠累積不出永久應變。要選非線性時間域模型，最好是有效應力模型。「等值線性」的「線性」指的是一次分析中每層性質固定，方法會迭代到 G、D 與該層應變相容，所以它抓到了非線性的平均效果，但抓不到一圈之內的變化。兩種方法需要同樣的輸入：由 \(V_s\) 得到的 \(G_{max}\)，以及骨架或 \(G/G_{max}\) 曲線。</p>
+  <p>選模型前先問：<b>孔隙水壓重不重要？</b>乾砂、高塑性黏土的迴圈幾乎不隨圈數改變（<b>非退化</b>，第 10 圈 ≈ 第 1 圈），等值線性很合適；飽和疏鬆砂每多一圈孔隙水壓就升一點，迴圈一圈比一圈平、胖（<b>退化</b>），模型必須能產生孔隙水壓。</p>
+
+  <h3>雙曲線骨架</h3>
+  <p>Kondner 先用雙曲線描述靜態試驗，Hardin &amp; Drnevich 再把它用在反覆載重：</p>
+  <div class="eqbox">\[ \tau = \frac{G_{max}\,\gamma}{1 + \gamma/\gamma_r}, \qquad \gamma_r = \frac{\tau_{max}}{G_{max}}, \qquad \frac{G}{G_{max}} = \frac{\tau/\gamma}{G_{max}} = \frac{1}{1 + \gamma/\gamma_r} \]</div>
+  <ul>
+    <li>\(\gamma \ll \gamma_r\)：分母 ≈ 1，\(\tau \approx G_{max}\gamma\)，初始斜率就是 \(G_{max}\)。</li>
+    <li>\(\gamma \gg \gamma_r\)：分母 ≈ \(\gamma/\gamma_r\)，\(\tau \to G_{max}\gamma_r = \tau_{max}\)，水平趨近強度。</li>
+    <li>\(\gamma = \gamma_r\)：\(G/G_{max} = 1/2\)，所以 \(\gamma_r\) 叫<b>參考應變</b>。在對數軸上，曲線以 \(\gamma_r\) 為中心對稱：\(\gamma/\gamma_r = 0.1, 1, 10\) 時分別是 0.91、0.5、0.09，大部分軟化發生在 \(\gamma_r\) 兩側各一個 log cycle 之內。</li>
+  </ul>
+
+  <h3>Darendeli (2001) 修正雙曲線</h3>
+  <p>一條雙曲線很難同時描述小應變與接近破壞的行為。Darendeli 在 UT Austin 以大量共振柱與扭剪試驗，加入曲率參數 \(a\)，並讓 \(\gamma_r\) 隨塑性、過壓密與圍壓變化：</p>
+  <div class="eqbox">\[ \frac{G}{G_{max}} = \frac{1}{1 + (\gamma/\gamma_r)^{a}}, \qquad \gamma_r(\%) = \left(\phi_1 + \phi_2\,PI\cdot OCR^{\phi_3}\right)\left(\frac{\sigma'_m}{p_a}\right)^{\phi_4} \]
+  \[ \phi_1 = 0.0352,\; \phi_2 = 0.0010,\; \phi_3 = 0.3246,\; \phi_4 = 0.3483,\; a = \phi_5 = 0.919 \]</div>
+
+  <div id="w-backbone" data-title="骨架曲線：雙曲線與修正雙曲線"></div>
+
+  <div class="callout example"><div class="ct">例：Darendeli 參考應變（\(\gamma_r\) 單位是 %）</div>
+    <div class="tablewrap"><table class="data">
+      <tr><th>土壤</th><th>括號項</th><th class="num">圍壓項</th><th class="num">\(\gamma_r\)</th></tr>
+      <tr><td>乾淨砂 PI = 0、1 atm</td><td>0.0352</td><td class="num">1</td><td class="num">0.0352 %</td></tr>
+      <tr><td>乾淨砂 PI = 0、4 atm</td><td>0.0352</td><td class="num">4<sup>0.3483</sup> = 1.62</td><td class="num">0.057 %</td></tr>
+      <tr><td>正常壓密黏土 PI = 30、1 atm</td><td>0.0352 + 0.001 × 30 = 0.0652</td><td class="num">1</td><td class="num">0.065 %</td></tr>
+      <tr><td>黏土 PI = 20、OCR = 2、2 atm</td><td>0.0352 + 0.001 × 20 × 2<sup>0.3246</sup> = 0.0602</td><td class="num">2<sup>0.3483</sup> = 1.273</td><td class="num">0.077 %</td></tr>
+    </table></div>
+    <p>規則：圍壓、塑性、OCR 越高 → \(\gamma_r\) 越大 → 整條曲線右移 → 越接近線性。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱</div>
+    <p><b>\(\gamma_r\) 常當擬合參數：</b>黏土 \(G_{max} = 50\) MPa、不排水強度 50 kPa，由強度推得 \(\gamma_r = 50/50\,000 = 0.1\%\)，常與試驗曲線上 \(G/G_{max} = 0.5\) 的應變不同。實務上直接讀實測曲線。<b>單位：</b>Darendeli 的 \(\gamma_r\) 是 %，式中的 \(\gamma\) 也要用 %。<b>應力：</b>\(\sigma'_m\) 是平均有效應力，只知道 \(\sigma'_{v0}\) 時先用 \(K_0\) 換算。</p>
+  </div>
+
+  <div class="quiz" data-num="0.25" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">雙曲線骨架，γ = 3γr 時 G/Gmax 是多少？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="G/Gmax"><button class="btn">檢查</button></div>
+    <div class="fb">G/Gmax = 1/(1 + 3) = 0.25。若用 Darendeli 的 a = 0.919，則是 1/(1 + 3^0.919) = 0.264，曲線在大應變處略平。</div>
+  </div>
+</section>
+
+<section class="sec" id="s8-7" data-num="8.7" data-short="Masing" data-title="Masing rules：由骨架畫出迴圈">
+  <div class="sec-head"><span class="sec-num">8.7</span><h2>Masing rules：由骨架畫出迴圈</h2></div>
+  <p class="src">出處：學生整理投影片 2.6–2.8；老師講義 p. 17–19；HW3 masing_model_tool.html（只讀，重新實作）；Kramer (1996) 擴充 Masing rules</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>只給一條骨架曲線，能畫出任意幅度、甚至不規則地震歷時的迴圈嗎？</p>
+  </div>
+
+  <p>德國冶金學家 Masing 在 1926 年研究黃銅的遲滯時提出一個規則：<b>反轉後的曲線，是把骨架在兩個方向都放大 2 倍、原點移到反轉點</b>。初次載重沿骨架 \(\tau = f(\gamma)\) 走到 A \((\gamma_a, \tau_a)\)，在 A 反轉：</p>
+  <div class="eqbox">\[ \frac{\tau - \tau_a}{2} = f\!\left(\frac{\gamma - \gamma_a}{2}\right) \qquad\text{（卸載；再載入時把 A 換成 B）} \]</div>
+  <p>雙曲線骨架的卸載分支寫開來就是 \(\tau = \tau_a + G_{max}(\gamma-\gamma_a)\big/\big(1 + |\gamma-\gamma_a|/2\gamma_r\big)\)，非線性場址反應程式在卸載段算的正是這一式。</p>
+
+  <details class="derive"><summary>三個檢查：為什麼放大 2 倍</summary><div class="body">
+    <ol class="steps">
+      <li><b>起點：</b>\(\gamma = \gamma_a\) 時右邊 \(f(0) = 0\)，\(\tau = \tau_a\)，分支從 A 出發。</li>
+      <li><b>反轉當下的斜率：</b>兩邊對 \(\gamma\) 微分，\(\tfrac12 d\tau/d\gamma = \tfrac12 f'(\cdot)\)，所以斜率 = \(f'((\gamma-\gamma_a)/2)\)；反轉瞬間引數為 0，斜率 = \(f'(0) = G_{max}\)。土壤反轉後先回到很硬的狀態，再逐漸變軟，與試驗一致。</li>
+      <li><b>終點：</b>\(\gamma = -\gamma_a\) 時，\(\tau = \tau_a + 2f(-\gamma_a) = \tau_a - 2\tau_a = -\tau_a\)，剛好落在骨架的 B 點。只有放大係數為 2，放大後的骨架尖端才會落在 B；再載入分支同理回到 A，迴圈閉合且對原點對稱。</li>
+    </ol>
+    <p>結果：迴圈尖端在骨架上，所以 \(G_{sec} = f(\gamma_a)/\gamma_a\)。<b>Masing 模型的 \(G/G_{max}\) 曲線完全由骨架決定，迴圈是骨架放大 2 倍，所以阻尼曲線也被骨架決定了</b>（8.8）。</p>
+  </div></details>
+
+  <h3>不規則載重：擴充 Masing rules</h3>
+  <p>地震的應變歷時不是規則的正負交替，Pyke 等人補了兩條規則：</p>
+  <ol>
+    <li>卸載或再載入曲線<b>超過先前的最大應變</b> → 回到骨架上。</li>
+    <li>曲線與<b>先前的分支相交</b>（內迴圈閉合）→ 改沿先前那條分支走，彷彿內迴圈沒發生過。</li>
+  </ol>
+  <p>要套用這兩條規則，程式必須記住每個反轉點，維護一個「尚未閉合迴圈」的堆疊。規則反覆載重只要記最後一個反轉點；不規則地震載重需要整個堆疊，這是非線性程式比等值線性複雜的原因之一。</p>
+
+  <div id="w-masing" data-title="Masing 迴圈產生器：任意應變路徑"></div>
+
+  <div class="callout intuition"><div class="ct">生活中的例子</div>
+    <p>輕輕彎一片薄彈簧鋼會彈回（線彈性）。用力彎到塑性範圍再往反方向彎：一開始很硬、之後變軟，回不到原點，畫出來就是迴圈。Masing rule 就是「每次反轉後先硬後軟」的數學描述。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：HW3 的網頁工具是簡化版</div>
+    <p>HW3 提供的 Masing 工具只記<b>最後一個反轉點</b>，並在 \(|\gamma|\) 超過歷史最大值時回到骨架，沒有「內迴圈閉合後回到外分支」的規則。對 HW3 Q2 的 0 → γc → −γc → γc 兩者完全相同；但對不規則路徑，內迴圈閉合後簡化版會繼續沿內分支走，應力可以和擴充規則差很多。上面互動圖勾選比較就看得到。</p>
+  </div>
+
+  <div class="quiz" data-answer="0">
+    <div class="qh">小測驗</div>
+    <div class="qq">Masing 模型中，應變剛反轉的瞬間，切線模數是多少？</div>
+    <div class="opts">
+      <button class="opt">Gmax，與反轉點在哪裡無關</button>
+      <button class="opt">反轉點的割線模數 τa/γa</button>
+      <button class="opt">反轉點的切線模數 f′(γa)</button>
+    </div>
+    <div class="fb">卸載分支的斜率是 f′((γ − γa)/2)，反轉瞬間引數為 0，所以斜率 = f′(0) = Gmax。這也是為什麼共振柱在小振幅附近反轉時，量到的勁度又回到很硬。</div>
+  </div>
+</section>
+
+<section class="sec" id="s8-8" data-num="8.8" data-short="Masing 阻尼" data-title="Masing 阻尼與修正">
+  <div class="sec-head"><span class="sec-num">8.8</span><h2>Masing 阻尼與它的兩端修正</h2></div>
+  <p class="src">出處：學生整理投影片 2.9；老師講義 p. 20；Darendeli (2001)；darendeli_curves.py（老師提供）</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>迴圈完全由骨架決定。擬合好 \(G/G_{max}\) 曲線之後，阻尼曲線還對嗎？</p>
+  </div>
+
+  <p>Masing 迴圈的阻尼<b>完全來自骨架的曲率</b>：骨架若是直線，放大 2 倍仍是同一條線，卸載與再載入重合，面積為零；骨架越彎，兩個分支分得越開，迴圈越胖。對任何骨架都可以直接寫出：</p>
+  <div class="eqbox">\[ D_{Masing} = \frac{2}{\pi}\left(\frac{2\int_0^{\gamma_a} f(\gamma)\,d\gamma}{\tau_a\gamma_a} - 1\right) \]</div>
+  <details class="derive"><summary>推導：迴圈面積 = 骨架下面積的 8 倍減去矩形</summary><div class="body">
+    <ol class="steps">
+      <li>卸載分支是骨架放大 2 倍，它與弦 AB 圍出的面積，是骨架與它自己的弦（原點到 A）圍出面積的 \(2 \times 2 = 4\) 倍。</li>
+      <li>骨架與弦之間的面積 = \(\int_0^{\gamma_a} f\,d\gamma - \tfrac12\tau_a\gamma_a\)。卸載、再載入兩半各一次：\(E_D = 8\left(\int_0^{\gamma_a} f\,d\gamma - \tfrac12\tau_a\gamma_a\right)\)。</li>
+      <li>除以 \(4\pi E_{So} = 2\pi\tau_a\gamma_a\) 即得上式。代入雙曲線並令 \(x = \gamma_a/\gamma_r\)：
+        \[ D_{Masing} = \frac{1}{\pi}\left[\frac{4(1+x)\,\big(x - \ln(1+x)\big)}{x^2} - 2\right] \]</li>
+    </ol>
+  </div></details>
+  <div class="tablewrap"><table class="data">
+    <tr><th>\(x = \gamma_a/\gamma_r\)</th><th>\(D_{Masing}\)（雙曲線）</th><th>意義</th></tr>
+    <tr><td>→ 0</td><td>\(\approx 2x/(3\pi) \to 0\)</td><td>小應變沒有阻尼，但試驗在 10⁻⁴ % 仍有約 1 %</td></tr>
+    <tr class="hl"><td>1</td><td>14.5 %</td><td>參考應變處</td></tr>
+    <tr><td>→ ∞</td><td>\(2/\pi \approx 63.7\%\)</td><td>大應變阻尼太大；砂的試驗值通常停在 20–30 %</td></tr>
+  </table></div>
+
+  <h3>Darendeli 的修正</h3>
+  <div class="eqbox">\[ D = b\left(\frac{G}{G_{max}}\right)^{0.1} D_{Masing} + D_{min}, \qquad b = 0.6329 - 0.0057\ln N \]
+  \[ D_{min}(\%) = \left(\phi_6 + \phi_7\,PI\cdot OCR^{\phi_8}\right)\left(\frac{\sigma'_m}{p_a}\right)^{\phi_9}\left(1 + \phi_{10}\ln f\right) \]
+  \[ \phi_6 = 0.8005,\; \phi_7 = 0.0129,\; \phi_8 = -0.1069,\; \phi_9 = -0.2889,\; \phi_{10} = 0.2919 \]</div>
+  <p>\(b \approx 0.62\)（N = 10）與 \((G/G_{max})^{0.1}\) 把大應變的 Masing 阻尼縮小約一半；\(D_{min}\) 補上小應變的黏滯性阻尼。這裡的 \(D_{Masing}\) 是修正雙曲線（\(a = 0.919\)）的 Masing 阻尼，Darendeli 用 \(a = 1\) 的封閉解乘上一個三次修正式近似。</p>
+
+  <div id="w-masingD" data-title="Masing 阻尼 vs. 修正後的阻尼"></div>
+
+  <div class="callout intuition"><div class="ct">為什麼兩端都要修正</div>
+    <p><b>大應變阻尼太大是不保守的：</b>阻尼越大，土層吸收越多能量，傳到地表的運動越小，高估阻尼會低估地表加速度與反應譜。<b>小應變沒有阻尼也不行：</b>小地震時共振峰會異常尖銳，高估反應。非線性程式常用 Rayleigh 阻尼或與頻率無關的黏滯阻尼補 \(D_{min}\)，副作用在 <a href="u11.html#s11-4">11.4</a> 討論。其他補救：非 Masing 的卸載再載入規則（迴圈變瘦）、同時擬合 G 與 D 的模型（GQ/H、DEEPSOIL 的 MRDF）。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：不檢查模型實際的阻尼</div>
+    <p>做非線性場址反應時，一定要把模型實際產生的阻尼曲線與目標阻尼曲線畫在一起比較（DEEPSOIL 有這張圖）。在你關心的應變範圍內兩者差很多，對結果的信任度也要相對降低。這是第一次做非線性分析最常跳過的步驟。</p>
+  </div>
+
+  <div class="quiz" data-num="63.7" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">雙曲線骨架＋Masing rules，應變幅度遠大於 γr 時，阻尼比趨近多少 %？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="D (%)"><button class="btn">檢查</button></div>
+    <div class="fb">x → ∞ 時 ln(1+x)/x → 0，D → (1/π)(4 − 2) = 2/π ≈ 63.7 %。骨架幾乎水平時，迴圈接近一個平行四邊形（剛塑性），面積相對三角形最大。真實砂土約 20–30 %。</div>
+  </div>
+</section>
+
+<section class="sec" id="s8-9" data-num="8.9" data-short="影響因素" data-title="影響 G/Gmax 與阻尼的因素">
+  <div class="sec-head"><span class="sec-num">8.9</span><h2>影響 G/G<sub>max</sub> 與阻尼的因素、其他土壤</h2></div>
+  <p class="src">出處：學生整理投影片 2.10–2.11；老師講義 p. 21–22；Richart, Hall &amp; Woods (1970) PDF pp. 171–185（Hardin &amp; Drnevich 參數研究）；郭老師 Dynamic Soil Behavior p. 9–19；Vucetic &amp; Dobry (1991)；Menq (2003)</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>同一種乾淨砂，在 2 m 深和 20 m 深，可以用同一條 MRD 曲線嗎？</p>
+  </div>
+
+  <p>不行。深處 \(\sigma'_m\) 大、\(\gamma_r\) 大、曲線右移：同一應變下 \(G/G_{max}\) 較高、阻尼較低。場址反應分析要讓曲線跟著每一層的 \(\sigma'_m\) 調整。Hardin &amp; Drnevich 一系列共振柱研究（Richart 等書中整理）把影響因素分成幾類：</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>因素</th><th>對 \(G/G_{max}\) 曲線</th><th>對 \(D\)</th><th>說明</th></tr>
+    <tr class="hl"><td>應變幅度</td><td>主控</td><td>主控</td><td>就是 MRD 曲線本身</td></tr>
+    <tr><td>平均有效應力 \(\sigma'_m\)</td><td>右移（較線性）</td><td>降低</td><td>對非塑性土最明顯；Darendeli 中每 4 倍 \(\gamma_r\) 約 × 1.6</td></tr>
+    <tr><td>塑性指數 PI</td><td>右移</td><td>降低</td><td>細顆粒有吸附水與電化學力，較難滑動（Vucetic &amp; Dobry 1991）</td></tr>
+    <tr><td>OCR</td><td>對黏土右移</td><td>略降</td><td>Darendeli 中 OCR 只透過 PI 項進入 → 砂不受影響</td></tr>
+    <tr><td>反覆次數 N</td><td>飽和砂退化；乾砂、黏土影響小</td><td>大應變略降</td><td>Darendeli 的 b 含 ln N；Richart 的 prestrain 試驗：小幅度高次數影響很小</td></tr>
+    <tr><td>頻率、應變速率</td><td>黏土每 log cycle 勁度約 +10 %</td><td>\(D_{min}\) 隨頻率增加</td><td>共振柱（快）與反覆三軸（慢）比較時要考慮</td></tr>
+    <tr><td>孔隙比 e</td><td>主要影響 \(G_{max}\)（<a href="u07.html#s7-1">7.1</a>）</td><td>—</td><td>正規化後影響小</td></tr>
+    <tr><td>飽和度、老化</td><td>對砂影響小；老化使現地較線性</td><td>飽和度對 D 略大</td><td>郭老師講義 p. 15、19–22</td></tr>
+  </table></div>
+
+  <div id="w-factors" data-title="影響因素：塑性、圍壓、礫石級配"></div>
+
+  <div class="callout example"><div class="ct">1985 墨西哥地震：PI ≈ 200 的湖積黏土</div>
+    <p>震央在約 350 km 外，城市卻嚴重受損。湖積黏土塑性極高，強震下幾乎保持線性、阻尼低，約 2 秒週期的運動被強烈放大，接近 10–20 層樓建物的自然週期，許多建物倒塌（Ch7 詳述）。對比之下，砂在強震中很快軟化、阻尼升高，會限制放大、甚至濾掉高頻。互動圖 PI 分頁比較 PI = 0 與 200 就看得出差別。</p>
+  </div>
+
+  <h3>其他土壤</h3>
+  <ul>
+    <li><b>礫石：</b>曲線強烈取決於級配。Menq (2003) 大型共振柱：\(\gamma_r(\%) = 0.12\,C_u^{-0.6}\,(\sigma'_m/p_a)^{0.5C_u^{-0.15}}\)。均勻級配 \(C_u = 2\)：\(\gamma_r = 0.079\%\)、圍壓指數 0.45；優良級配 \(C_u = 20\)：0.020 %、0.32，約早 4 倍進入非線性。台灣許多沖積扇是礫石層，不擾動取樣困難，通常現地量 \(V_s\)、曲線用經驗式。</li>
+    <li><b>粉土：</b>低塑性像砂、高塑性像黏土，依 PI 而非粒徑選曲線（Ch8 判斷細粒土能否液化也是同一觀念）。</li>
+    <li><b>黏土：</b>PI 與 OCR 控制曲線，速率效應明顯。</li>
+    <li><b>岩石：</b>近乎線性，場址反應常把基盤視為線彈性；風化或節理岩體則像硬的塑性土。</li>
+  </ul>
+  <p>實務流程：依土壤分類與 PI 選曲線族 → 依各層 \(\sigma'_m\) 調整 → 拿關鍵層的試驗結果檢核 → 沒有試驗時至少用上下限做敏感度分析。最重要的一句：<b>先把 \(V_s\) 弄對</b>，它決定勁度的絕對水準，誤差的影響通常大於曲線形狀。</p>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">依 Darendeli 平均模型，乾淨砂（PI = 0）由 OCR = 1 變成 OCR = 4，參考應變會怎樣？</div>
+    <div class="opts">
+      <button class="opt">增加約 1.6 倍</button>
+      <button class="opt">完全不變</button>
+      <button class="opt">減少</button>
+    </div>
+    <div class="fb">γr = (φ1 + φ2·PI·OCR^φ3)(σ′m/pa)^φ4，OCR 乘在 PI 上，PI = 0 時 OCR 沒有作用。這與試驗一致：砂的曲線對過壓密不敏感，黏土較敏感。（1.6 倍是圍壓變 4 倍的效果。）</div>
+  </div>
+</section>
+
+<section class="sec" id="s8-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <div class="callout intuition"><div class="ct">回到開場的液化問題</div>
+    <p>震源（斷層錯動，M<sub>w</sub>）→ 強地動（工址的 PGA、T<sub>p</sub>、延時）→ 反覆剪應力（CSR = 0.65 (a<sub>max</sub>/g)(σ<sub>v</sub>/σ′<sub>v</sub>) r<sub>d</sub>）→ 土壤反應（應變進入 10⁻² 以上、孔隙水壓累積 → 液化）。開場照片沒有地震就沒有反覆載重，開挖造成的湧砂與傾斜不是液化；但兩者同樣是「孔隙水壓使有效應力下降」。</p>
+  </div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">反覆剪應力比</div>\[ CSR = 0.65\frac{a_{max}}{g}\frac{\sigma_v}{\sigma'_v}r_d \]</div>
+    <div class="fcard"><div class="ft">平均有效應力</div>\[ \sigma'_m = \frac{1+2K_0}{3}\sigma'_{v0} \]</div>
+    <div class="fcard"><div class="ft">割線模數</div>\[ G_{sec} = \frac{\tau_c}{\gamma_c} \]</div>
+    <div class="fcard"><div class="ft">等值阻尼比</div>\[ D = \frac{E_D}{4\pi E_{So}},\; E_{So} = \tfrac12\tau_c\gamma_c \]</div>
+    <div class="fcard"><div class="ft">雙曲線骨架</div>\[ \tau = \frac{G_{max}\gamma}{1+\gamma/\gamma_r},\; \gamma_r = \frac{\tau_{max}}{G_{max}} \]</div>
+    <div class="fcard"><div class="ft">Darendeli 模數折減</div>\[ \frac{G}{G_{max}} = \frac{1}{1+(\gamma/\gamma_r)^{0.919}} \]</div>
+    <div class="fcard"><div class="ft">Darendeli 參考應變（%）</div>\[ \gamma_r = (0.0352 + 0.001\,PI\,OCR^{0.3246})\,(\sigma'_m/p_a)^{0.3483} \]</div>
+    <div class="fcard"><div class="ft">Masing rule</div>\[ \tau = \tau_a + 2f\!\left(\frac{\gamma-\gamma_a}{2}\right) \]</div>
+    <div class="fcard"><div class="ft">Masing 阻尼（任意骨架）</div>\[ D = \frac{2}{\pi}\left(\frac{2\int_0^{\gamma_a}\! f\,d\gamma}{\tau_a\gamma_a} - 1\right) \]</div>
+    <div class="fcard"><div class="ft">Darendeli 阻尼</div>\[ D = b\left(\frac{G}{G_{max}}\right)^{0.1}D_{Masing} + D_{min} \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>D 的兩種意思</b>：單元 4 的 D 是放大因子，本單元的 D 是阻尼比（= ξ）。能量定義見 4.8。</li>
+    <li><b>% 與小數</b>：Ishihara 表、Masing 工具的 γref 用小數；MRD 曲線、Darendeli 用 %。算 ESo 時應變一定用小數。</li>
+    <li><b>Gsec 不是 Gtan</b>：等值線性用原點到尖端的割線斜率。</li>
+    <li><b>σ′m 不是 σ′v0</b>：Hardin 與 Darendeli 都用平均有效應力，先用 K0 換算。</li>
+    <li><b>MRD 軸要用對數</b>：小應變端 G/Gmax 應接近 1；講義 p. 53 的線性軸、負值 G/Gmax 是反例。</li>
+    <li><b>G 的單位</b>：講義 p. 52 標 MPa、數值到 500 000，應是 kPa；用數量級表檢查（砂 80–120 MPa）。</li>
+    <li><b>Masing 阻尼兩端都錯</b>：小應變為 0（要加 Dmin）、大應變上限 64 %（要折減）；做非線性分析要比較模型阻尼與目標阻尼。</li>
+    <li><b>簡化 Masing 工具</b>：只記最後反轉點，對不規則路徑會與擴充 Masing rules 不同。</li>
+  </ul>
+  <h3>自我檢測</h3>
+  <div class="quiz" data-answer="1">
+    <div class="qh">綜合題 1</div>
+    <div class="qq">一個 Masing 模型完美擬合了某黏土的 G/Gmax 曲線。用它做非線性場址反應分析，最需要額外檢查的是什麼？</div>
+    <div class="opts">
+      <button class="opt">Gmax 是否正確，因為 Masing 會改變 Gmax</button>
+      <button class="opt">模型產生的阻尼曲線是否與目標阻尼曲線一致，尤其大應變與小應變兩端</button>
+      <button class="opt">不需要檢查，擬合好 G/Gmax 就同時擬合好阻尼</button>
+    </div>
+    <div class="fb">Masing 的迴圈由骨架鎖定，擬合了 G/Gmax，阻尼就被決定了：大應變高估（不保守）、小應變為零（共振峰過尖）。要把模型阻尼與目標阻尼畫在一起比較，必要時用 Dmin、b 折減或 MRDF 類修正。</div>
+  </div>
+  <div class="quiz" data-num="10.3" data-tol="0.03">
+    <div class="qh">綜合題 2</div>
+    <div class="qq">PI = 0、σ′m = 1 atm、N = 10、f = 1 Hz 的 Darendeli 曲線，在 γ = 0.05 % 的阻尼比是多少 %？（可用 8.5 的互動圖讀）</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="D (%)"><button class="btn">檢查</button></div>
+    <div class="fb">γr = 0.0352 %，G/Gmax = 1/(1 + (0.05/0.0352)^0.919) = 0.420，D ≈ 10.35 %。<a href="../hw/hw3.html#q3">HW3 Q3(b)</a> 用共振柱實測資料內插得 9.76 %，接近但略低。</div>
+  </div>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>MRD 曲線要靠實驗量。下一單元看共振柱等試驗怎麼量 G 與阻尼。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u07.html"><span class="dir">← 單元 7</span>量測剪力波速與 Gmax</a>
+  <a class="next" href="../units/u09.html"><span class="dir">單元 9 →</span>室內動態試驗</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/data/ch5_hw3.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/quake.js"></script>
+<script src="../assets/widgets/soil.js"></script>
+</body>
+</html>

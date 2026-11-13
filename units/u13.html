@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13. 液化觸發評估：簡化法 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  table.data.compact td, table.data.compact th { padding: 7px 9px; font-size: 14px; }
+  table.data.compact th { white-space: normal; }
+  .mini-note { font-size: 13px; color: var(--muted); margin: .4em 0 0; }
+</style>
+</head>
+<body data-page="u13" data-root="../" data-title="13. 液化觸發評估">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 5 土壤液化 · 單元 13 · Triggering: the Simplified Procedure</div>
+  <h1>液化觸發評估：簡化法</h1>
+  <p class="lede"><b>這次地震會讓這層土液化嗎？</b>把不規則的地震剪應力換成 0.65τ<sub>max</sub> 的 N<sub>eq</sub> 圈；簡化法由地表 a<sub>max</sub> 估出地震的 CSR，由 SPT、CPT、V<sub>s</sub> 與案例資料庫估出土壤的 CRR；兩者相除就是液化安全係數。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>FS<sub>L</sub> = CRR / CSR 的分子與分母各從哪裡來？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>說明 0.65 與 N<sub>eq</sub> 的意義，由應力歷時計算 N<sub>eq</sub></li>
+    <li>寫出簡化法的 CSR，說明 a<sub>max</sub>、σ<sub>v0</sub>/σ′<sub>v0</sub>、r<sub>d</sub> 的角色</li>
+    <li>把 SPT 打擊數修正到 (N<sub>1</sub>)<sub>60cs</sub>，查 CRR<sub>7.5</sub>，乘 MSF 與 K<sub>σ</sub></li>
+    <li>比較 Youd (2001)、HBF (2012)、B&amp;I (2014) 與 CPT、V<sub>s</sub> 法；說明何時改用地盤反應分析</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u12.html"><h4>上一單元 · 液化易致性與反覆試驗</h4><p>CRR = aN<sup>−b</sup> 與現地修正。</p></a>
+    <a class="card" href="../units/u11.html"><h4>相關 · 單元 11 等值線性分析</h4><p>R<sub>γ</sub> = 0.65 與本單元的 0.65τ<sub>max</sub> 是同一個想法。</p></a>
+  </div>
+</header>
+
+<section class="sec" id="s13-1" data-num="13.1" data-short="評估方法" data-title="液化觸發的評估方法">
+  <div class="sec-head"><span class="sec-num">13.1</span><h2>評估方法：反覆應力法</h2></div>
+  <p class="src">出處：Ch8 講義 2.1–2.3、2.10；教師 PDF p.28–30、37</p>
+
+  <p>Seed 與 Berkeley 團隊在 1964 新潟、阿拉斯加地震後（1960–70 年代）建立<b>反覆應力法</b>：把地震載重寫成「反覆剪應力振幅＋圈數」，與室內反覆試驗直接比較。今天的方法改進的是 r<sub>d</sub>、MSF、細粒料修正與案例資料庫，架構沒變：</p>
+  <div class="eqbox">\[ FS_L = \frac{CRR}{CSR} = \frac{\text{造成液化所需的反覆應力比}}{\text{地震引起的等值反覆應力比}} \]</div>
+  <p>FS<sub>L</sub> &lt; 1 液化、&gt; 1 不液化；重要結構要求 1.2–1.4 以上。分子分母必須在<b>同一個基準</b>（同 N<sub>eq</sub>、同 σ′、同 α）下比較。其他方法：反覆應變法（孔隙水壓由應變控制，門檻約 0.01 %，即單元 8 的 γ<sub>tv</sub>）、有效應力非線性分析、機率法。</p>
+  <p>地震載重有兩種求法：<b>地盤反應分析</b>（單元 10–11 的 τ(t)，13.5）與<b>簡化法</b>（τ 由 a<sub>max</sub>、N<sub>eq</sub> 由規模估，兩者都是大量地盤反應分析的統計結果）。</p>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：FS<sub>L</sub> 略大於 1 就安全</div>
+    <p>FS<sub>L</sub> = 1.0–1.2 仍會產生可觀的超額孔隙水壓（r<sub>u</sub> 約 0.3–0.7），造成強度下降與沉陷；單元 14 的 Ishihara &amp; Yoshimine 圖中這一段仍有體積應變。</p>
+  </div>
+</section>
+
+<section class="sec" id="s13-2" data-num="13.2" data-short="等值圈數" data-title="不規則載重與等值圈數">
+  <div class="sec-head"><span class="sec-num">13.2</span><h2>不規則載重 → 0.65τ<sub>max</sub> 的 N<sub>eq</sub> 圈</h2></div>
+  <p class="src">出處：Ch8 講義 2.4–2.8；教師 PDF p.31–35</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>一筆地震紀錄有上百個大大小小的圈，只有一兩個尖峰到 τ<sub>max</sub>。它對土壤的「損傷」等於幾圈均勻載重？</p>
+  </div>
+
+  <p>Seed 取 \(\tau_{cyc} = 0.65\tau_{max}\) 當代表振幅（和單元 11 的 \(\gamma_{eff} = 0.65\gamma_{max}\) 同一個想法），再問：要幾圈這個振幅，才產生與整段紀錄相同的孔隙水壓？用單元 12 的 b 把每一圈換算後加總：</p>
+  <div class="eqbox">\[ N_{eq} = \sum_i N_i\left(\frac{\tau_i}{\tau_{ref}}\right)^{1/b},\qquad \tau_{ref} = 0.65\tau_{max} \]</div>
+  <p>步驟：由地盤反應分析得到該深度的 τ(t) → 計數（雨流計數）得到 N<sub>i</sub> 圈振幅 τ<sub>i</sub>（半圈計 0.5）→ 加權加總。1/b ≈ 3–4：τ<sub>max</sub> 的一圈等於 3.7–5.6 圈，0.3τ<sub>max</sub> 的一圈只有 0.05–0.1 圈，N<sub>eq</sub> 由少數大圈主導。</p>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>規模 M<sub>w</sub></th><th class="num">N<sub>eq</sub>（0.65τ<sub>max</sub>）</th><th class="num">MSF（講義 p.42）</th></tr>
+    <tr><td>5.25</td><td class="num">2–3</td><td class="num">1.50</td></tr>
+    <tr><td>6.0</td><td class="num">5–6</td><td class="num">1.32</td></tr>
+    <tr><td>6.75</td><td class="num">10</td><td class="num">1.13</td></tr>
+    <tr class="hl"><td>7.5（基準）</td><td class="num">15</td><td class="num">1.00</td></tr>
+    <tr><td>8.5</td><td class="num">26</td><td class="num">0.89</td></tr>
+  </table></div>
+  <p>規模越大、延時越長、圈數越多（Seed et al. 1975，由不同地震紀錄的地盤反應分析統計而來）。散布很大：M = 7.5 平均 15 圈，±1 標準差約 8–27 圈。這張表就是規模修正因子 MSF 的物理基礎（13.4）。</p>
+
+  <div id="w-neq" data-title="由應力歷時計算 N_eq（集集地震 CHY086）"></div>
+
+  <div class="callout example"><div class="ct">例：集集地震 CHY086 紀錄</div>
+    <p>把單元 10–11 用過的 CHY086 N 向紀錄當作剛性土柱的剪應力（τ ∝ a）：41 s 內約 150 個半圈，振幅超過 0.65τ<sub>max</sub> 的只有 6 個。b = 0.25 得 N<sub>eq</sub> ≈ 11.6，b = 0.33 約 11.1，相當於表中 M ≈ 7.0 的圈數，雖然集集地震是 M<sub>w</sub> 7.6。這筆是距斷層約 28 km 的單一測站、只取 41 s，正好說明 N<sub>eq</sub>–M 關係的散布。互動圖的計數以零交越切半圈，比雨流計數簡化。</p>
+  </div>
+</section>
+
+<section class="sec" id="s13-3" data-num="13.3" data-short="簡化法 CSR" data-title="簡化法：地震引起的 CSR">
+  <div class="sec-head"><span class="sec-num">13.3</span><h2>簡化法：地震引起的 CSR</h2></div>
+  <p class="src">出處：Ch8 講義 2.9；教師 PDF p.36</p>
+
+  <p>深度 z 的土柱若是剛體，以 a<sub>max</sub> 一起運動，底面剪應力 \(\tau_{max,r} = \sigma_v a_{max}/g\)。真實土柱會變形，乘上折減係數 \(r_d = \tau_{max,flexible}/\tau_{max,rigid}\)（隨深度遞減，20 m 處約 0.6–0.75）：</p>
+  <div class="eqbox">\[ CSR = \frac{\tau_{av}}{\sigma'_{v0}} = 0.65\,\frac{a_{max}}{g}\,\frac{\sigma_{v0}}{\sigma'_{v0}}\,r_d \]</div>
+  <div class="tablewrap"><table class="data">
+    <tr><th>因子</th><th>意義</th><th>注意</th></tr>
+    <tr><td>0.65</td><td>代表振幅 τ<sub>av</sub>/τ<sub>max</sub></td><td>配合 N<sub>eq</sub> 與 MSF 的定義</td></tr>
+    <tr><td>a<sub>max</sub></td><td><b>地表</b>最大水平加速度</td><td>不是岩盤 PGA；含場址放大（單元 10）</td></tr>
+    <tr><td>σ<sub>v0</sub>/σ′<sub>v0</sub></td><td>總應力推動慣性力、有效應力提供抵抗</td><td>地下水位在地表時約為乾土的 2 倍</td></tr>
+    <tr><td>r<sub>d</sub></td><td>土柱變形折減</td><td>B&amp;I (2014) 的 r<sub>d</sub> 也隨規模變</td></tr>
+  </table></div>
+  <p>簡化法只適用於<b>水平或緩坡、約 20 m 內</b>的地盤；更深或幾何複雜時，用地盤反應分析求 τ（13.5）。</p>
+
+  <div class="quiz" data-num="0.263" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">a<sub>max</sub> = 0.24g，z = 6 m，σ<sub>v0</sub> = 113.5 kPa、σ′<sub>v0</sub> = 64.4 kPa，r<sub>d</sub> = 0.958。CSR = ?</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="CSR"><button class="btn">檢查</button></div>
+    <div class="fb">0.65 × 0.24 × (113.5/64.4) × 0.958 = 0.263（講義 p.50 例題）。</div>
+  </div>
+</section>
+
+<section class="sec" id="s13-4" data-num="13.4" data-short="SPT 法" data-title="SPT 法：由打擊數到 CRR">
+  <div class="sec-head"><span class="sec-num">13.4</span><h2>SPT 法：由打擊數到 CRR</h2></div>
+  <p class="src">出處：Ch8 講義 2.11–2.18；教師 PDF p.38–45</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>同一層砂，在 3 m 深打出 N = 8、在 15 m 深打出 N = 15。哪一個比較密？</p>
+  </div>
+
+  <p><b>案例資料庫</b>：每次地震後的勘查點，橫軸畫抵抗參數、縱軸畫當時的 CSR，液化與未液化分開；把兩類分開的邊界就是 CRR 曲線。現地試驗量到的是原位狀態，已含取樣會破壞的結構與老化效應。</p>
+
+  <h3>標準化</h3>
+  <div class="eqbox">\[ N_{60} = N_mC_EC_BC_RC_S,\quad C_E = \frac{ER}{60};\qquad (N_1)_{60} = C_NN_{60},\quad C_N = \left(\frac{p_a}{\sigma'_{v0}}\right)^{0.5} \le 1.7 \]</div>
+  <p>能量比 ER 影響最大：沒有實測時，C<sub>E</sub> 的範圍（0.5–1.3）就是 N<sub>60</sub> 的不確定範圍。C<sub>R</sub>：桿長 &lt; 3 m 取 0.75、6–10 m 取 0.95；C<sub>B</sub>、C<sub>S</sub> 修正孔徑與取樣器。C<sub>N</sub> 把 N 換到 1 atm：越深 σ′ 越大、N 越大，正規化後才能代表密度。</p>
+
+  <h3>細粒料與規模</h3>
+  <p>同一個 (N<sub>1</sub>)<sub>60</sub>，細粒料多的砂抵抗較高（SPT 在粉質砂中打擊數偏低），所以把 (N<sub>1</sub>)<sub>60</sub> 換成<b>等值乾淨砂</b> (N<sub>1</sub>)<sub>60cs</sub> 再查乾淨砂曲線（只適用於非塑性細粒料）。經驗曲線給的是 M = 7.5 的 CRR<sub>7.5</sub>；乾淨砂 (N<sub>1</sub>)<sub>60</sub> &gt; 30 已會膨脹、不液化。</p>
+  <div class="eqbox">\[ CRR = CRR_{7.5}\cdot MSF\cdot K_\sigma,\qquad MSF = \left(\frac{N_{eq,7.5}}{N_{eq,M}}\right)^b \]</div>
+  <div class="tablewrap"><table class="data compact">
+    <tr><th></th><th>Youd et al. (2001)</th><th>HBF (2012)</th><th>Boulanger &amp; Idriss (2014)</th></tr>
+    <tr><td>r<sub>d</sub></td><td>z 的有理式</td><td>1 − 0.01z（≤ 10 m）、1.2 − 0.03z</td><td>exp[α(z) + β(z)M]，隨規模變</td></tr>
+    <tr><td>C<sub>N</sub></td><td>(p<sub>a</sub>/σ′)<sup>0.5</sup> ≤ 1.7</td><td>1/√σ′（kg/cm²）</td><td>(p<sub>a</sub>/σ′)<sup>m</sup>，m 隨密度，<b>疊代</b></td></tr>
+    <tr><td>細粒料</td><td>α + β(N<sub>1</sub>)<sub>60</sub></td><td>K<sub>s</sub> = 1 + 0.07√(FC − 10)</td><td>+ Δ(N<sub>1</sub>)<sub>60</sub>(FC)</td></tr>
+    <tr><td>CRR<sub>7.5</sub></td><td>1/(34−N) + N/135 + 50/(10N+45)² − 1/200</td><td>0.08 + 0.0035N/(1 − N/39)</td><td>exp(N/14.1 + (N/126)² − (N/23.6)³ + (N/25.4)⁴ − 2.8)</td></tr>
+    <tr><td>MSF</td><td>10<sup>2.24</sup>/M<sup>2.56</sup></td><td>(M/7.5)<sup>−3.3</sup></td><td>隨密度變，鬆砂接近 1</td></tr>
+    <tr><td>K<sub>σ</sub></td><td>(σ′/p<sub>a</sub>)<sup>f−1</sup></td><td>（不另乘）</td><td>1 − C<sub>σ</sub>ln(σ′/p<sub>a</sub>) ≤ 1.1</td></tr>
+  </table></div>
+  <p>三條 CRR<sub>7.5</sub> 在 (N<sub>1</sub>)<sub>60cs</sub> 10–25 只差約 5–10 %；FS 的差異主要來自 r<sub>d</sub>、MSF、細粒料修正與 C<sub>N</sub>。<b>同一套方法的公式是一起校正的，不可混搭</b>；報告要寫明採用的方法。</p>
+
+  <div id="w-spt" data-title="SPT 簡化法：單一深度逐步計算"></div>
+
+  <div class="callout example"><div class="ct">例：講義 p.50，z = 6 m（本頁逐步重算，與講義一致）</div>
+    <p>GWT 1 m、a<sub>max</sub> = 0.24g、M<sub>w</sub> = 7.0、N<sub>m</sub> = 11、FC = 12 %、ER = 70 %。Youd (2001)：CSR = 0.263；N<sub>60</sub> = 12.2、(N<sub>1</sub>)<sub>60</sub> = 15.2、(N<sub>1</sub>)<sub>60cs</sub> = 17.2；CRR<sub>7.5</sub> = 0.183、MSF = 1.193 → CRR = 0.219；<b>FS<sub>L</sub> = 0.83</b>，液化。同一點改用 HBF：CSR 0.258、CRR 0.227、FS 0.88；改用 B&amp;I：CSR 0.256、CRR 0.196、FS 0.77。三種方法都判定液化，但 FS 差到 0.1。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">講義 p.43 流程圖的 C<sub>N</sub></div>
+    <p>流程圖中的 C<sub>N</sub> = 2.2/(1.2 + σ′<sub>v</sub>/p<sub>a</sub>) 是 Kayen et al. 的另一式；p.39 與 p.50 例題用 (p<sub>a</sub>/σ′<sub>v0</sub>)<sup>0.5</sup>。σ′<sub>v0</sub> = 64 kPa 時兩者是 1.193 與 1.246，差約 4 %。</p>
+  </div>
+
+  <h3>CPT 與 V<sub>s</sub></h3>
+  <div class="eqbox">\[ q_{c1N} = C_N\frac{q_c}{p_a},\qquad V_{s1} = V_s\left(\frac{p_a}{\sigma'_{v0}}\right)^{0.25} \]</div>
+  <div class="tablewrap"><table class="data compact">
+    <tr><th></th><th>SPT</th><th>CPT</th><th>V<sub>s</sub></th></tr>
+    <tr><td>資料</td><td>離散、有樣本</td><td>連續、無樣本</td><td>剖面、無樣本</td></tr>
+    <tr><td>優點</td><td>大應變動態試驗；案例最多</td><td>標準化、可重複、快；可抓薄層</td><td>礫石也能量；基本性質</td></tr>
+    <tr><td>缺點</td><td>修正多；能量變異</td><td>礫石打不下去；薄層平均</td><td>小應變量測；膠結、老化使其偏高</td></tr>
+    <tr><td>文獻</td><td>Youd (2001)；B&amp;I (2014)</td><td>Robertson &amp; Wride (1998)；B&amp;I (2014)</td><td>Andrus &amp; Stokoe (2000)；Kayen (2013)</td></tr>
+  </table></div>
+  <p>V<sub>s1</sub> 超過約 200–215 m/s 的乾淨砂不液化（約對應 (N<sub>1</sub>)<sub>60</sub> ≈ 30）。重要工程至少用兩種方法交叉檢核。</p>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">Youd (2001) 的 CRR<sub>7.5</sub> = 0.183，設計規模 M<sub>w</sub> = 6.5。CRR 會？</div>
+    <div class="opts">
+      <button class="opt">變小，因為規模小的地震能量少</button>
+      <button class="opt">變大（MSF = 10^2.24/6.5^2.56 ≈ 1.44），因為圈數少</button>
+      <button class="opt">不變，MSF 只修正 CSR</button>
+    </div>
+    <div class="fb">M &lt; 7.5 時 N_eq &lt; 15，土壤能承受較大的 CSR：CRR = 0.183 × 1.44 ≈ 0.26。MSF 是修正「抵抗」的圈數基準。</div>
+  </div>
+</section>
+
+<section class="sec" id="s13-5" data-num="13.5" data-short="由地盤反應" data-title="由地盤反應分析評估液化">
+  <div class="sec-head"><span class="sec-num">13.5</span><h2>由地盤反應分析評估液化</h2></div>
+  <p class="src">出處：Ch8 講義 2.20–2.21；教師 PDF p.47–48</p>
+
+  <p>深層、地形複雜、重要結構物，或有該場址的試驗資料時，不用 a<sub>max</sub> 與 r<sub>d</sub>，直接用單元 10–11 的地盤反應分析在各深度算出的 τ(t)：</p>
+  <ol class="steps">
+    <li>τ<sub>av</sub> = 0.65τ<sub>max</sub>。</li>
+    <li>用 Seed et al. (1975) 的權重曲線，把 τ(t) 換成 N<sub>eq</sub> 圈（13.2）。</li>
+    <li>由同一種土的反覆三軸試驗讀 N<sub>eq</sub> 圈的 CRR。</li>
+    <li>換到現地應力狀態，FS = τ<sub>R</sub>/τ<sub>av</sub>：</li>
+  </ol>
+  <div class="eqbox">\[ \tau_R = \frac{1+2K_0}{3}\left(\frac{\tau'_R}{\sigma'_{3c}}\right)\sigma'_{3c} \]</div>
+  <div class="tablewrap"><table class="data compact">
+    <tr><th>試驗</th><th class="num">σ′<sub>3c</sub> (kg/cm²)</th><th class="num">N<sub>eq</sub></th><th class="num">CRR</th><th class="num">τ<sub>R</sub></th><th class="num">τ<sub>av</sub></th><th class="num">FS</th></tr>
+    <tr class="hl"><td>DYS-1</td><td class="num">0.75</td><td class="num">72</td><td class="num">0.26</td><td class="num">0.13</td><td class="num">0.14</td><td class="num">0.95</td></tr>
+    <tr class="hl"><td>DYS-2</td><td class="num">0.90</td><td class="num">80</td><td class="num">0.30</td><td class="num">0.18</td><td class="num">0.22</td><td class="num">0.82</td></tr>
+    <tr><td>DYS-3</td><td class="num">1.50</td><td class="num">295</td><td class="num">0.22</td><td class="num">0.22</td><td class="num">0.19</td><td class="num">1.18</td></tr>
+  </table></div>
+  <p>K<sub>0</sub> = 0.5 → (1 + 2K<sub>0</sub>)/3 = 0.67（與單元 12 的 c<sub>r</sub> 同一個意思）。驗算 DYS-1：0.67 × 0.26 × 0.75 = 0.130，0.130/0.14 = 0.93（表中 0.95 是四捨五入後相除的差異）。<b>DYS-3 的 N<sub>eq</sub> = 295 遠超過試驗範圍</b>（約 4–70 圈），CRR = 0.22 是外插值，FS = 1.18 的不確定性很大。</p>
+</section>
+
+<section class="sec" id="s13-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <p>載重：CSR = 0.65(a<sub>max</sub>/g)(σ<sub>v0</sub>/σ′<sub>v0</sub>)r<sub>d</sub> → 抵抗：(N<sub>1</sub>)<sub>60cs</sub> 或 q<sub>c1Ncs</sub>、V<sub>s1</sub> → CRR<sub>7.5</sub> → × MSF × K<sub>σ</sub> → FS<sub>L</sub> = CRR/CSR。</p>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">等值圈數</div>\[ N_{eq} = \sum N_i(\tau_i/0.65\tau_{max})^{1/b} \]</div>
+    <div class="fcard"><div class="ft">簡化法 CSR</div>\[ 0.65\frac{a_{max}}{g}\frac{\sigma_{v0}}{\sigma'_{v0}}r_d \]</div>
+    <div class="fcard"><div class="ft">SPT 正規化</div>\[ (N_1)_{60} = (p_a/\sigma'_{v0})^{0.5}N_mC_EC_BC_RC_S \]</div>
+    <div class="fcard"><div class="ft">抵抗</div>\[ CRR = CRR_{7.5}\cdot MSF\cdot K_\sigma \]</div>
+    <div class="fcard"><div class="ft">規模修正</div>\[ MSF = (N_{eq,7.5}/N_{eq,M})^b \]</div>
+    <div class="fcard"><div class="ft">試驗 → 現地</div>\[ \tau_R = \tfrac{1+2K_0}{3}CRR\,\sigma'_{3c} \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>用岩盤 PGA 當 a<sub>max</sub></b>：簡化法要的是地表加速度。</li>
+    <li><b>混搭方法</b>：r<sub>d</sub>、MSF、細粒料修正、CRR 曲線要同一套。</li>
+    <li><b>ER 不修正</b>：能量比的不確定性可達 ±30 % 以上。</li>
+    <li><b>塑性細粒土也用 SPT 曲線</b>：PI ≥ 7 要改評估反覆軟化。</li>
+    <li><b>外插 N<sub>eq</sub></b>：超出試驗圈數範圍的 CRR 不可靠。</li>
+  </ul>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>有一層液化，整個場址有多嚴重？單元 14 把整個鑽孔的 FS<sub>L</sub> 綜合成 P<sub>L</sub>，再估沉陷、側潰與流動破壞。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u12.html"><span class="dir">← 單元 12</span>液化易致性與反覆試驗</a>
+  <a class="next" href="../units/u14.html"><span class="dir">單元 14 →</span>液化潛能與液化後果</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/data/ch6_motion.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/liquefaction.js"></script>
+</body>
+</html>

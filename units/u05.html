@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5. 頻率的觀點：頻譜、反應譜與卓越週期 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用的小樣式 */
+  .chain { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 1.4em 0; }
+  .chain > div { background: var(--tile); border-radius: 16px; padding: 14px 16px; position: relative; font-size: 14.5px; line-height: 1.5; }
+  .chain > div b { display: block; font-size: 16px; color: var(--accent); margin-bottom: 2px; }
+  .chain > div small { color: var(--muted); }
+  .bb-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 22px; align-items: center; }
+  .bb-wrap canvas { width: 100%; max-width: 280px; height: auto; display: block; margin: 0 auto; }
+  .bb-wrap .cap { text-align: center; font-size: 13px; color: var(--muted); }
+  .scale-tab td.on, .scale-tab th.on { background: var(--accent-soft); font-weight: 600; }
+  .strain-grid { width: 100%; }
+  .num-chip { display: inline-block; font-variant-numeric: tabular-nums; background: var(--inset); border-radius: 8px; padding: 0 6px; }
+</style>
+</head>
+<body data-page="u05" data-root="../" data-title="5. 頻率觀點">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 2 振動與頻率 · 單元 5 · The Frequency View</div>
+  <h1>頻率的觀點：頻譜、反應譜與卓越週期</h1>
+  <p class="lede"><b>把地震拆成很多個頻率。</b>Fourier 頻譜告訴我們地動含有哪些頻率；反應譜把一排 SDOF 放在同一筆地震下，讀出各週期的最大反應；岩盤與軟土的卓越週期不同，正是之後波傳與地盤反應分析要解釋的現象。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>地震不是正弦波，SDOF 的那一套還能用嗎？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>用 Fourier 頻譜找卓越週期，知道取樣率、Nyquist 頻率與頻率解析度怎麼限制頻譜</li>
+    <li>說明反應譜怎麼由 SDOF 堆出來，以及擬加速度與等值靜力的關係</li>
+    <li>比較岩盤與軟土紀錄的頻譜，用 \(T = 4H/V_s\) 估計土層週期</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u04.html"><h4>上一單元 · 單自由度振動</h4><p>真實地震不是單一頻率。下一單元用頻譜與反應譜把 SDOF 用到地震紀錄上。</p></a>
+    <a class="card" href="../units/u06.html"><h4>下一單元 · 波在土中傳播</h4><p>岩盤與軟土的頻率內容為什麼不同？答案在波怎麼穿過土層。</p></a>
+  </div>
+</header>
+
+<section class="sec" id="s5-1" data-num="5.1" data-short="頻譜" data-title="Fourier 頻譜與取樣">
+  <div class="sec-head"><span class="sec-num">5.1</span><h2>Fourier 頻譜與取樣</h2></div>
+  <p class="src">出處：Ch0–2 講義 3.4；Ch2 原講義 p.7–8；HW1 附錄 II</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>手機每秒取樣 100 次。它量得到洗衣機 60 Hz 的振動嗎？量到的會是什麼？</p>
+  </div>
+
+  <p>任何紀錄都可以拆成一堆正弦波的和，每個頻率有自己的振幅與相位。<b>Fourier 振幅譜（FAS）</b>就是把振幅對頻率作圖。幾個正弦波疊在一起，時間域看起來雜亂；頻率域只有幾根清楚的線。這正是單元 4 的疊加原理：線性系統可以每個頻率各自乘上頻率響應再加回去（<a href="../units/u04.html#s4-1">4.1</a>），頻率域場址反應分析（SHAKE，<a href="u10.html#s10-4">10.4</a>）就是這樣做的。</p>
+
+  <div class="eqbox">\[ X_k = \sum_{n=0}^{N-1} a_n e^{-i2\pi kn/N}, \qquad FAS(f_k) = \Delta t\,|X_k|, \qquad f_k = \frac{k}{N\Delta t} \]
+  \[ f_N = \frac{f_s}{2} = \frac{1}{2\Delta t} \;(\text{Nyquist 頻率}), \qquad \Delta f = \frac{1}{N\Delta t} = \frac{1}{T} \;(\text{頻率解析度}) \]</div>
+  <ul>
+    <li><b>乘 Δt</b> 讓離散和近似連續 Fourier 轉換，單位變成 m/s（加速度用 m/s² 時），與取樣率無關。</li>
+    <li><b>Nyquist 頻率</b>是能分析的最高頻率。高於 \(f_N\) 的振動取樣後會<b>混疊（aliasing）</b>成低頻：表面頻率 \(f_a = |f - f_s\cdot\mathrm{round}(f/f_s)|\)。</li>
+    <li><b>頻率解析度</b>只由紀錄長度決定：紀錄越長，譜線越密，和取樣率無關。</li>
+  </ul>
+
+  <div id="w-fourier" data-title="疊加、取樣與混疊"></div>
+
+  <div class="callout example"><div class="ct">例：手機量 60 Hz 的振動</div>
+    <p>\(f_s = 100\) Hz → \(f_N = 50\) Hz。60 Hz 超過 Nyquist，取樣後看起來是 \(|60 - 100| = 40\) Hz 的振動。手機分辨不出「真的 40 Hz」和「混疊的 60 Hz」；強震儀因此在取樣前先用類比低通濾波（anti-aliasing filter）把高於 \(f_N\) 的成分擋掉。</p>
+  </div>
+
+  <div class="quiz" data-num="22.2" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">洗衣機手機紀錄 f<sub>s</sub> = 100.34 Hz。若改為每兩點取一點（f<sub>s</sub> 減半），洗衣機約 28 Hz 的倍頻成分會出現在幾 Hz？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="Hz"><button class="btn">檢查</button></div>
+    <div class="fb">新的 f<sub>s</sub> = 50.17 Hz、f<sub>N</sub> = 25.1 Hz &lt; 28 Hz → 混疊：|28 − 50.17| = 22.2 Hz。<a href="../hw/hw1.html#a">HW1 Part A</a> 的 FAS 互動圖可以直接把取樣率降一半看到這根假峰。</div>
+  </div>
+</section>
+
+<section class="sec" id="s5-2" data-num="5.2" data-short="反應譜" data-title="從單一頻率到真實地震：反應譜">
+  <div class="sec-head"><span class="sec-num">5.2</span><h2>從單一頻率到真實地震：反應譜</h2></div>
+  <p class="src">出處：Ch4 講義 2.15–2.16</p>
+
+  <p>真實地震不是正弦波，不能只讀一個 \(\beta\)。做法是：拿一筆地表加速度紀錄，對自然週期從 0 到數秒的每一個 SDOF 逐步積分，取出最大反應，對週期作圖，就是<b>反應譜</b>。</p>
+  <p>耐震設計常用<b>擬加速度</b> \(S_a = \omega^2 S_d\)（\(S_d\) 為最大相對位移）。\(kS_d = mS_a\) 正是彈簧的最大彈性力，也就是規範加在建築上的等效靜力。</p>
+
+  <div id="w-spec" data-title="反應譜：同一筆地震、不同週期的 SDOF"></div>
+
+  <div class="callout intuition"><div class="ct">單元 4 的內容全部都在反應譜裡</div>
+    <p>譜上的峰來自共振放大，峰的位置與高度由地動的頻率內容和阻尼比共同決定。週期很短的一端，SDOF 隨地面剛體運動，\(S_a \to\) PGA；週期很長的一端就像隔振區，擬加速度下降、位移譜趨近地表最大位移。把地震從「硬地盤」換成「軟弱土層」，峰就往長週期移：這就是<a href="u10.html">單元 10、11</a> 地盤反應分析要回答的問題。</p>
+  </div>
+</section>
+
+<section class="sec" id="s5-3" data-num="5.3" data-short="卓越週期" data-title="卓越週期：岩盤與土壤">
+  <div class="sec-head"><span class="sec-num">5.3</span><h2>卓越週期：岩盤與土壤</h2></div>
+  <p class="src">出處：Ch0–2 講義 3.5–3.6；Ch2 原講義 p.9–10</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>1985 年墨西哥市地震，震央在 350 km 外，為什麼倒的是 6–15 層的中高樓，不是低矮房子？</p>
+  </div>
+
+  <p><b>卓越週期 \(T_p\)</b>：Fourier 振幅最大的週期（另一種常用定義是 5 % 阻尼加速度反應譜峰值所在的週期）。原講義 p.9 的 Loma Prieta 例子：岩盤站 \(T_p = 0.39\) s，土壤站 1.5 s。軟弱土層本身有自然週期，會放大接近該週期的成分；土層越厚、越軟，週期越長。均勻土層放在剛性岩盤上（推導見 <a href="u10.html#s10-3">10.3</a>）：</p>
+  <div class="eqbox">\[ T_{soil} = \frac{4H}{V_s} \]</div>
+  <div class="tablewrap"><table class="data">
+    <tr><th>土層</th><th class="num">H (m)</th><th class="num">V<sub>s</sub> (m/s)</th><th class="num">T (s)</th></tr>
+    <tr><td>薄、硬</td><td class="num">20</td><td class="num">400</td><td class="num">0.20</td></tr>
+    <tr><td>中等</td><td class="num">40</td><td class="num">250</td><td class="num">0.64</td></tr>
+    <tr class="hl"><td>厚、軟（臺北盆地松山層量級）</td><td class="num">60</td><td class="num">160</td><td class="num">1.50</td></tr>
+  </table></div>
+  <p>經驗法則：建物自然週期約 0.1 × 樓層數（s）。15 層樓約 1.5 s，正好落在軟土場址的卓越週期附近，結構與土層一起共振。墨西哥市的軟黏土湖積層把長週期地動放大，中高樓因而大量倒塌。</p>
+
+  <div id="w-site" data-title="岩盤 vs 軟土：頻譜、反應譜與土層週期"></div>
+
+  <div class="callout link"><div class="ct">反應譜的來歷</div>
+    <p>上圖右側的 S<sub>a</sub> 是把一排不同週期、5 % 阻尼的 SDOF 拿去承受同一筆紀錄，取出最大反應（Newmark 平均加速度法逐步積分）。原理見 <a href="#s5-2">5.2</a>。原講義目錄列有衰減律、反應譜與設計譜，但這份 11 頁的講義只講到 Fourier 頻譜，反應譜請以 5.2 為準。</p>
+  </div>
+
+  <div class="quiz" data-num="1.5" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">H = 45 m、V<sub>s</sub> = 120 m/s 的軟黏土層，基本週期是幾秒？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="T (s)"><button class="btn">檢查</button></div>
+    <div class="fb">T = 4H/V<sub>s</sub> = 4 × 45 / 120 = 1.5 s。這和約 15 層樓的建物週期相近，是最需要注意共振的組合。</div>
+  </div>
+</section>
+
+<section class="sec" id="s5-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">Nyquist 與解析度</div>\[ f_N = \frac{1}{2\Delta t},\; \Delta f = \frac{1}{N\Delta t} \]</div>
+    <div class="fcard"><div class="ft">土層基本週期</div>\[ T = 4H/V_s \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>超過 Nyquist 會混疊</b>：不會消失，而是變成假的低頻；解析度由紀錄長度決定，不是取樣率。</li>
+    <li><b>講義目錄有、內容沒有</b>：Ch1 的 Seismic Hazard Analysis、Finite Fault Model，Ch2 的衰減律、反應譜、設計譜在這份講義沒有對應頁面；反應譜見 5.2。</li>
+  </ul>
+  <h3>自我檢測</h3>
+  <div class="quiz" data-answer="2">
+    <div class="qh">綜合題 1</div>
+    <div class="qq">兩個工址 PGA 都是 0.2 g。A 站在岩盤、紀錄 D<sub>5–95</sub> = 8 s；B 站在 40 m 厚的軟弱沖積層、D<sub>5–95</sub> = 30 s。對 B 站的飽和砂層與 15 層樓建物，哪個敘述最合理？</div>
+    <div class="opts">
+      <button class="opt">PGA 相同，兩站的液化與建物風險相同</button>
+      <button class="opt">B 站延時長，液化風險較高，但建物風險一定較低</button>
+      <button class="opt">B 站延時長、循環多，液化風險較高；地動偏長週期，也接近 15 層樓的自然週期，建物風險同樣較高</button>
+    </div>
+    <div class="fb">PGA 只是振幅。B 站 I<sub>a</sub>、CAV 與等值循環次數都較大，液化風險較高；軟土層 T = 4H/V<sub>s</sub> 可達 1 s 以上，與 15 層樓（約 1.5 s）接近，容易共振。這正是單元 3 與本單元要說的：振幅、頻率、延時三者缺一不可。</div>
+  </div>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>岩盤與軟土的頻率內容為什麼不同？答案在波怎麼穿過土層。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u04.html"><span class="dir">← 單元 4</span>單自由度振動</a>
+  <a class="next" href="../units/u06.html"><span class="dir">單元 6 →</span>波在土中傳播</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/data/ch02_chy010.js"></script>
+<script src="../assets/data/ch02_hwa035.js"></script>
+<script src="../assets/data/ch02_chy065.js"></script>
+<script src="../assets/data/ch02_chy078.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/quake.js"></script>
+<script src="../assets/widgets/vibration.js"></script>
+</body>
+</html>

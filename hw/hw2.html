@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HW2 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用：可編輯的分層表、熱圖、小型表單 */
+  .layer-tbl input[type=number] { width: 5.6em; border: 0; border-radius: 8px; padding: 5px 8px; background: var(--inset); color: var(--ink); font: inherit; font-size: 14px; }
+  .layer-tbl td, .layer-tbl th { padding: 6px 8px; }
+  .layer-tbl .x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 16px; }
+  .cls-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 10px 0 4px; }
+  .cls-row .chip { background: var(--inset); border-radius: 14px; padding: 10px 14px; font-size: 13px; color: var(--muted); }
+  .cls-row .chip b { display: block; color: var(--ink); font-size: 20px; font-family: var(--font-display); }
+  svg image.heat { image-rendering: pixelated; }
+  .w-sub { font-size: 14px; font-weight: 600; margin: 14px 0 2px; }
+  .ans-box { border-left: 3px solid var(--accent); padding: 2px 0 2px 16px; margin: 1em 0; }
+</style>
+</head>
+<body data-page="hw2" data-root="../" data-title="HW2">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">Homework 2 · MASW and Site Classification</div>
+  <h1>HW2 MASW 與場址分類</h1>
+  <p class="lede"><b>MASW 虛擬實驗室與 Vs30 場址分類。</b>Q1 用三個案例看測線長度、高階模態與飽和土層怎麼影響頻散分析；Q2 計算 Vs30，並比較三套場址分類系統。</p>
+  <h3>先讀過這些觀念</h3>
+  <div class="chip-links">
+    <a class="chip-link" href="../units/u06.html#s6-6">6.6 Rayleigh 波</a>
+    <a class="chip-link" href="../units/u06.html#s6-7">6.7 Love 波與幾何頻散</a>
+    <a class="chip-link" href="../units/u07.html#s7-2">7.2 MASW</a>
+    <a class="chip-link" href="../units/u07.html#s7-5">7.5 Vs30 與場址分類</a>
+    <a class="chip-link" href="../units/u06.html#s6-2">6.2 一維波動方程式與 Poisson 比</a>
+  </div>
+  <p class="hw-others">其他作業：<a href="hw1.html">HW1</a> · <a href="hw3.html">HW3</a> · <a href="../index.html#hw">作業總覽</a></p>
+</header>
+
+<section class="sec" id="q1" data-num="Q1" data-short="Q1 MASW" data-title="Q1：MASW 虛擬實驗室">
+  <div class="sec-head"><span class="sec-num">Q1</span><h2>Q1：MASW 虛擬實驗室</h2></div>
+  <p class="src">出處：HW2 題目（Ch3_Homework_SeismicWaves）；R15521107 陳奇昌 HW2 報告；A1_lab_record.xlsx、B1_process.xlsx</p>
+
+  <p>Question 1 在老師提供的 MASW 虛擬實驗室（masw_virtual_lab_en.html）操作；網頁雜訊用固定亂數種子，同樣的設定每次結果相同。Question 2 是手算加規範比較。以下數字都取自報告。</p>
+
+  <h3>Q1(a) 測線長度（Stiffening with depth：150 / 220 / 320 m/s，半無限域 450 m/s）</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>項目</th><th class="num">24 支</th><th class="num">12 支</th></tr>
+    <tr><td>最長可解析波長 \(\lambda_{max} \approx L\) (m)</td><td class="num">34.5</td><td class="num">16.5</td></tr>
+    <tr><td>最低拾取頻率 (Hz)</td><td class="num">8.1</td><td class="num">8.1</td></tr>
+    <tr><td>第 1 層 0–3 m（真值 150）</td><td class="num">152（+1 %）</td><td class="num">148（−1 %）</td></tr>
+    <tr><td>第 2 層 3–8 m（真值 220）</td><td class="num">227（+3 %）</td><td class="num">185（−16 %）</td></tr>
+    <tr><td>第 3 層 8–15 m（真值 320）</td><td class="num">476（+49 %）</td><td class="num">331（+4 %）</td></tr>
+    <tr><td>半無限域（真值 450）</td><td class="num">476（+6 %）</td><td class="num">331（−26 %）</td></tr>
+  </table></div>
+  <div class="ans-box">
+    <p><b>可見深度由測線長度決定</b>：\(\lambda_{max} \approx L\)，深度約 \(\lambda_{max}/3\)–\(\lambda_{max}/2\)：24 支為 11.5–17.3 m，12 支只有 5.5–8.3 m。兩者都從 8.1 Hz 開始拾取，但 12 支時 13 Hz 以下的 6 個點超過 \(\lambda = L\)，不可信而刪除。</p>
+    <p><b>最深層最不確定</b>：只有少數幾個微弱、寬鈍的低頻點約束它，而且和上一層互相取捨：24 支時 320 m/s 層與半無限域合併成 476 m/s；12 支時半無限域低估 26 %。（反算用 3 層含半無限域，所以真實的第 3 層沒有獨立的對應層。）</p>
+  </div>
+
+  <h3>Q1(b) 高階模態（Stiff crust over soft clay：300 / 140 / 250 m/s，半無限域 450 m/s）</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>項目</th><th class="num">Global maximum</th><th class="num">Lowest-velocity peak（門檻 0.15）</th></tr>
+    <tr><td>落在高階模態的拾取點（共 43 點）</td><td class="num">28</td><td class="num">6</td></tr>
+    <tr><td>RMS misfit</td><td class="num">7.20 %</td><td class="num">43.17 %</td></tr>
+    <tr><td>2–8 m 走時平均 \(V_s\)（軟黏土，真值 140）</td><td class="num">190</td><td class="num">114</td></tr>
+    <tr><td>8 m 以上的最大 \(V_s\)</td><td class="num">498</td><td class="num">197</td></tr>
+  </table></div>
+  <div class="ans-box">
+    <p><b>哪一個太硬</b>：Global maximum 在 1.3–2.3 m 造出一層假的 498 m/s，2–8 m 平均 190 m/s，比真值 140 m/s 硬 36 %。</p>
+    <p><b>為什麼失敗</b>：反算只計算基本模態、把每個點都當基本模態；高階模態永遠比較快（這裡快 16–56 %），22.7–49.1 Hz 的快速高頻點就被解釋成一層淺而硬的假層。模態跳躍是階梯，任何基本模態曲線都跟不上，所以 RMS 停在 7.2 %。</p>
+    <p><b>為什麼門檻用 0.15</b>：預設 0.6 時 22 Hz 以上的基本模態峰低於最大值的 0.6 而被略過，結果和 Global maximum 完全相同；0.2 時仍有 18 點在高階模態，0.1 時幾乎全落在雜訊上。但門檻低時，由低速往上找的第一個峰常是基本模態下方的雜訊，許多點掉到 70–130 m/s，反算變得太軟（114 m/s），又因為這些點不在任何模態上，RMS 高達 43 %。報告另做了沿基本模態的手動拾取（RMS 4.15 %，只剩 2 點在高階模態），是三者中最可信的。</p>
+  </div>
+
+  <h3>Q1(c) 水與 Poisson 比（Saturated deposit，\(\nu \approx 0.49\)）</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th class="num">f (Hz)</th><th class="num">c，試驗模型 ν = 0.25 (m/s)</th><th class="num">c，試驗模型 ν = 0.49 (m/s)</th></tr>
+    <tr><td class="num">10</td><td class="num">197</td><td class="num">197</td></tr>
+    <tr><td class="num">30</td><td class="num">145</td><td class="num">145</td></tr>
+  </table></div>
+  <div class="ans-box">
+    <p><b>飽和時 Vp</b>：\(V_p = V_s\sqrt{(2-2\nu)/(1-2\nu)}\)，180 m/s 的層在 \(\nu = 0.25\) 時 \(V_p\) = 312 m/s，\(\nu = 0.49\) 時 1285 m/s，接近水的壓縮波速。孔隙水承擔體積應力，\(V_p\) 量到的是水；水沒有剪力勁度，\(V_s\) 不受影響。</p>
+    <p><b>頻散中幾乎看不出來</b>：兩個 \(\nu\) 的反算都把拾取點擬合得一樣好（RMS 0.48 %、0.51 %），10、30 Hz 的相速度相同；\(V_p\) 增加約四倍，只需上兩層 \(V_s\) 改變 4–8 % 就吸收掉。Rayleigh 波由剪力主導（均質半無限域 \(c_R/V_s\) 只從 0.92 變到 0.95），資料分辨不出 \(\nu\)。用正確的 0.49 時，17 m 走時平均 \(V_s\)（220 m/s）較接近真值 210 m/s（0.25 時 254 m/s）。</p>
+    <p><b>量到的模數</b>：MASW 量 \(V_s\)，也就是小應變剪力模數 \(G_{max} = \rho V_s^2\)（180 m/s 層約 61 MPa）。錘擊的應變小於 \(10^{-4}\,\%\)，屬線彈性，是 \(G/G_{max}\) 曲線的起點，不是地震應變下的模數。</p>
+  </div>
+  <p><a href="../units/u07.html#s7-2">7.2</a> 的互動圖用自己的分層 Rayleigh 波求解器計算同樣三個場址的理論模態；用 Q1(c) 反算得到的模型（140 / 181 / 402 m/s，\(\nu\) = 0.49）驗算，10 Hz 得 196 m/s、30 Hz 得 144 m/s，與實驗室圖上讀到的 197、145 m/s 一致。</p>
+
+  </section>
+
+<section class="sec" id="q2" data-num="Q2" data-short="Q2 場址分類" data-title="Q2：Vs30 與場址分類">
+  <div class="sec-head"><span class="sec-num">Q2</span><h2>Q2：V<sub>s30</sub> 與場址分類</h2></div>
+  <p class="src">出處：HW2 題目（Ch3_Homework_SeismicWaves）；R15521107 陳奇昌 HW2 報告；A1_lab_record.xlsx、B1_process.xlsx</p>
+
+  <h3>Q2(a) 兩種平均</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>層</th><th class="num">h (m)</th><th class="num">Vs (m/s)</th><th class="num">走時 h/Vs (s)</th><th class="num">走時占比</th><th class="num">h·Vs (m²/s)</th></tr>
+    <tr><td>1 軟粉質黏土</td><td class="num">5</td><td class="num">120</td><td class="num">0.0417</td><td class="num">35 %</td><td class="num">600</td></tr>
+    <tr><td>2 中密砂</td><td class="num">10</td><td class="num">250</td><td class="num">0.0400</td><td class="num">34 %</td><td class="num">2500</td></tr>
+    <tr><td>3 密實礫石</td><td class="num">15</td><td class="num">400</td><td class="num">0.0375</td><td class="num">31 %</td><td class="num">6000</td></tr>
+    <tr class="hl"><td>Σ</td><td class="num">30</td><td></td><td class="num">0.1192</td><td class="num">100 %</td><td class="num">9100</td></tr>
+  </table></div>
+  <div class="ans-box">
+    <p>\(V_{s30} = 30/0.1192 = \mathbf{251.7}\) m/s；算術平均 \(= 9100/30 = 303.3\) m/s（高 20 %）。算術平均以厚度加權、走時平均以波停留的時間加權：軟黏土只占 17 % 厚度，卻占 35 % 走時。規範用走時平均，因為場址反應由走時（場址週期 \(T \approx 4H/V_{s30} = 0.48\) s）與阻抗對比控制，兩者都由軟層主導。</p>
+  </div>
+
+  <h3>Q2(b) 三套分類系統</h3>
+  <div class="ans-box">
+    <p><b>臺灣規範（111 年版，2.5 節）</b>：第一類（堅實）\(V_{s30} \ge 270\)；第二類（普通）\(180 \le V_{s30} &lt; 270\)；第三類（軟弱）\(V_{s30} &lt; 180\)；臺北盆地另依臺北一、二、三區微分區，不以 \(V_{s30}\) 分類。</p>
+    <p><b>Q2(a) 場址（251.7 m/s）</b>：NEHRP <b>D</b>、Eurocode 8 <b>C</b>、臺灣<b>第二類</b>。（若誤用算術平均 303 m/s，臺灣會變成第一類。）</p>
+    <p><b>界線差異</b>：NEHRP 與 EC8 共用 180、360，但岩盤界線 760 對 800，且只有 NEHRP 分出 A 硬岩（≥ 1500）。臺灣只有三類，下界同為 180，上界 270 落在 NEHRP D／EC8 C 中間，比 270 硬的從密實土到岩盤都是同一類。<b>最細的是 NEHRP</b>（五個 \(V_{s30}\) 類別加 F）。</p>
+    <p><b>沒有實測 Vs 時</b>：用式 2-5b（黏性土）、2-5c（砂質土）由 N 值或 \(q_u\) 估各層 \(V_s\)，再算 \(V_{s30}\)（見 <a href="../units/u07.html#s7-5">7.5</a>）。</p>
+  </div>
+
+  <h3>Q2(c) 一層薄軟土</h3>
+  <div class="ans-box">
+    <p>\(V_{s30} = 30/(0.1250 + 0.0333) = \mathbf{189.5}\) m/s（算術平均 426.7 m/s）→ NEHRP <b>D</b>、Eurocode 8 <b>C</b>、臺灣<b>第二類</b>。若用算術平均，三套都會高估一整類（C、B、第一類）。</p>
+    <p><b>為什麼被拉低</b>：黏土只占三分之一厚度，但 \(V_s\) 只有風化岩的 0.13 倍，占了 79 % 走時。<b>為什麼放大強</b>：軟層覆於硬岩形成大的阻抗對比，密度相近時阻抗比約 80/600 ≈ 0.13，無阻尼一維土層共振時的放大約為其倒數 ≈ 7.5；共振頻率 \(f_0 = V_s/4H = 80/40 = 2\) Hz（\(T_0 = 0.5\) s），正好落在中高樓層建築的週期範圍。</p>
+  </div>
+
+  <div id="w-hw2c" data-title="HW2 Q2(c)：表層軟土厚度與場址類別"></div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="hw1.html"><span class="dir">← 上一份作業</span>HW1</a>
+  <a class="next" href="hw3.html"><span class="dir">下一份作業 →</span>HW3</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/waves.js"></script>
+</body>
+</html>

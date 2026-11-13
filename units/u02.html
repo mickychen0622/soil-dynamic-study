@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. 地震從哪裡來 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用的小樣式 */
+  .chain { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 1.4em 0; }
+  .chain > div { background: var(--tile); border-radius: 16px; padding: 14px 16px; position: relative; font-size: 14.5px; line-height: 1.5; }
+  .chain > div b { display: block; font-size: 16px; color: var(--accent); margin-bottom: 2px; }
+  .chain > div small { color: var(--muted); }
+  .bb-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 22px; align-items: center; }
+  .bb-wrap canvas { width: 100%; max-width: 280px; height: auto; display: block; margin: 0 auto; }
+  .bb-wrap .cap { text-align: center; font-size: 13px; color: var(--muted); }
+  .scale-tab td.on, .scale-tab th.on { background: var(--accent-soft); font-weight: 600; }
+  .strain-grid { width: 100%; }
+  .num-chip { display: inline-block; font-variant-numeric: tabular-nums; background: var(--inset); border-radius: 8px; padding: 0 6px; }
+</style>
+</head>
+<body data-page="u02" data-root="../" data-title="2. 地震來源">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 1 地震輸入 · 單元 2 · Where Earthquakes Come From</div>
+  <h1>地震從哪裡來</h1>
+  <p class="lede"><b>從板塊運動到斷層錯動。</b>板塊推擠讓斷層累積應變，有效應力下降或應力超過強度時斷層滑動，釋放的能量用地震矩規模描述；某個地點搖得多厲害，則用震度描述。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>臺灣為什麼多震？一個地震的「大小」該怎麼量？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>用板塊構造說明臺灣為什麼多震</li>
+    <li>用 Mohr 圓與有效應力解釋孔隙水壓如何觸發斷層滑動</li>
+    <li>由走向、傾角、滑移角判斷斷層類型與海灘球</li>
+    <li>分清楚規模與震度；由 \(M_0=\mu AD\) 算 \(M_w\)，並知道 ML、mb、Ms 為什麼會飽和</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u01.html"><h4>上一單元 · 什麼是動態問題</h4><p>要知道土壤受到什麼樣的反覆載重，先得知道地震從哪裡來。</p></a>
+    <a class="card" href="../units/u03.html"><h4>下一單元 · 描述地動：時間域參數</h4><p>斷層錯動之後，工址記錄到一筆加速度歷時。下一單元學怎麼描述它。</p></a>
+  </div>
+</header>
+
+<section class="sec" id="s2-1" data-num="2.1" data-short="地球板塊" data-title="地球構造與板塊運動">
+  <div class="sec-head"><span class="sec-num">2.1</span><h2>地球構造與板塊運動</h2></div>
+  <p class="src">出處：Ch0–2 講義 2.1–2.4；Ch1 原講義 p.3–21</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>我們從來沒有挖到地核，怎麼知道外核是液體？</p>
+  </div>
+
+  <p>答案就在地震波。S 波是剪力波，速度 \(V_s = \sqrt{G/\rho}\)；液體不能承受剪應力，\(G = 0\)，所以 \(V_s = 0\)：<b>S 波過不了液體</b>。地震發生後，離震央約 104°–140° 的測站收不到直達 S 波，形成「S 波陰影區」，這就是外核為液態的證據。同一個關係式在<a href="u06.html">單元 6</a> 會用來由 \(V_s\) 反算土壤的剪力模數。</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 640 230" width="640" role="img" aria-label="地球分層與 S 波陰影">
+      <g fill="none" stroke-width="1.3">
+        <circle cx="140" cy="115" r="100" class="s-ink"/>
+        <circle cx="140" cy="115" r="96" class="s-gray" stroke-dasharray="3 3"/>
+        <circle cx="140" cy="115" r="55" class="s-blue"/>
+        <circle cx="140" cy="115" r="19" class="s-ink"/>
+      </g>
+      <circle cx="140" cy="115" r="55" class="f-band"/>
+      <text x="140" y="119" class="txt" text-anchor="middle" font-size="11">內核</text>
+      <text x="140" y="88" class="txt-blue" text-anchor="middle">外核（液態）</text>
+      <text x="140" y="42" class="txt" text-anchor="middle">地函</text>
+      <g class="txt" font-size="13">
+        <text x="270" y="40">地殼：陸殼約 30–70 km、洋殼約 5–10 km</text>
+        <text x="270" y="64">岩石圈 = 地殼 + 最上部地函（約 100 km），浮在軟流圈上</text>
+        <text x="270" y="88">地函：到約 2900 km；410、660 km 有相變不連續面</text>
+        <text x="270" y="112" class="txt-blue">外核：2900–5100 km，液態 → G = 0 → V<tspan font-size="72%" baseline-shift="-25%">s</tspan> = 0</text>
+        <text x="270" y="136">內核：5100 km 到地心（約 6371 km），固態</text>
+        <text x="270" y="172" class="txt-muted">S 波遇到外核就停止，只剩 P 波穿過：</text>
+        <text x="270" y="192" class="txt-muted">這條「陰影」證明外核是液體。</text>
+      </g>
+    </svg>
+    <figcaption>地球分層（比例未按實際尺寸）。外核是唯一的液態層。</figcaption>
+  </figure>
+
+  <h3>板塊邊界：地震集中的地方</h3>
+  <p>岩石圈分裂成十幾塊板塊，被地函對流、洋脊推擠（ridge push）與隱沒板塊下拉（slab pull）驅動。全球約八成的大地震發生在<b>環太平洋地震帶</b>，其次是地中海–喜馬拉雅帶。板塊交界的方式有三種，對應不同的斷層與地震：</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>邊界</th><th>運動</th><th>主要斷層</th><th>地震特徵</th><th>實例（原講義頁）</th></tr>
+    <tr><td>張裂（divergent）</td><td>板塊分離，新岩石圈生成</td><td>正斷層</td><td>淺源、規模較小，伴隨火山</td><td>東非裂谷、紅海（p.17–20）</td></tr>
+    <tr class="hl"><td>聚合（convergent）</td><td>一方隱沒或兩方碰撞</td><td>逆斷層、逆衝</td><td>全世界 Mw 9 以上都在隱沒帶</td><td>秘魯–智利海溝；1960 智利 Mw 9.5（p.13–14）</td></tr>
+    <tr><td>錯動（transform）</td><td>側向滑過，不增不減</td><td>走向滑移</td><td>淺源；斷層常穿過城市</td><td>聖安地列斯斷層、2010 海地 Mw 7.0（p.9–12）</td></tr>
+  </table></div>
+
+  <h3>臺灣：兩個方向相反的隱沒夾著一個碰撞</h3>
+  <figure class="diagram">
+    <svg viewBox="0 0 640 250" width="640" role="img" aria-label="臺灣板塊構造示意">
+      <path d="M300 40 C 330 70, 345 120, 330 170 C 320 200, 300 215, 285 225 C 270 190, 265 140, 275 95 C 280 70, 290 50, 300 40 Z" class="s-ink f-surface" stroke-width="1.4"/>
+      <text x="300" y="138" class="txt" text-anchor="middle" font-size="12">臺灣</text>
+      <g class="s-blue" stroke-width="2" fill="none"><path d="M360 30 C 420 40, 500 55, 580 80"/></g>
+      <g class="f-blue"><path d="M380 33 l6 10 l6 -9z"/><path d="M430 42 l6 10 l6 -9z"/><path d="M480 52 l6 10 l6 -9z"/><path d="M530 64 l6 10 l6 -9z"/></g>
+      <text x="470" y="26" class="txt-blue" text-anchor="middle">琉球海溝</text>
+      <g class="s-red" stroke-width="2" fill="none"><path d="M250 190 C 240 215, 230 235, 222 248"/></g>
+      <g class="f-red"><path d="M246 200 l-11 3 l7 8z"/><path d="M236 222 l-11 2 l6 9z"/></g>
+      <text x="160" y="232" class="txt-red" text-anchor="middle">馬尼拉海溝</text>
+      <g class="s-ink" stroke-width="1.6"><line x1="470" y1="150" x2="370" y2="135"/></g>
+      <path d="M370 135 l10 -6 l-1 11z" class="f-ink"/>
+      <text x="475" y="140" class="txt">菲律賓海板塊</text>
+      <text x="475" y="158" class="txt-muted">相對歐亞板塊約 8 cm/年，往西北</text>
+      <text x="120" y="80" class="txt">歐亞板塊</text>
+      <text x="470" y="96" class="txt-blue" font-size="12">東北：菲律賓海板塊向北隱沒</text>
+      <text x="30" y="200" class="txt-red" font-size="12">南部：歐亞板塊向東隱沒</text>
+      <text x="345" y="205" class="txt" font-size="12">中間：呂宋島弧撞上大陸邊緣</text>
+      <text x="345" y="222" class="txt-muted" font-size="12">擠出中央山脈（碰撞造山）</text>
+    </svg>
+    <figcaption>臺灣板塊構造示意（自行重繪，比例與位置僅示意）。三角形指向隱沒的上覆板塊一側。</figcaption>
+  </figure>
+  <p>全島都有淺源地震；東北外海的震源沿著隱沒板塊向北逐漸加深到約 300 km。西部麓山帶與平原交界的逆衝斷層（車籠埔斷層就是其中之一）吸收了碰撞造成的縮短，這也是 1999 集集地震的舞台。</p>
+
+  <div class="callout pitfall"><div class="ct">投影片勘誤：地殼不是 0–100 km 厚</div>
+    <p>Ch1 原講義 p.3 把 Crust 標為 0–100 km。一般陸殼約 30–70 km、洋殼約 5–10 km；約 100 km 是<b>岩石圈</b>（地殼＋最上部地函）的厚度量級。考試寫地殼厚度時不要照抄 100 km。</p>
+  </div>
+
+  <div class="quiz" data-answer="2">
+    <div class="qh">小測驗</div>
+    <div class="qq">某層的 P 波速度約 8 km/s，但 S 波完全消失。最合理的解釋是？</div>
+    <div class="opts">
+      <button class="opt">該層密度太大，S 波被吸收</button>
+      <button class="opt">該層的 Poisson 比為 0</button>
+      <button class="opt">該層是液體，剪力模數 G = 0</button>
+    </div>
+    <div class="fb">V<sub>s</sub> = √(G/ρ)，G = 0 時 V<sub>s</sub> = 0。P 波還能傳，因為液體有體積模數 K，V<sub>p</sub> = √((K + 4G/3)/ρ) = √(K/ρ)。飽和土壤也有類似現象：孔隙水承擔壓縮，P 波速度約 1500 m/s，卻不改變 S 波，這就是 3.1「壓縮波幾乎全由孔隙水承擔」的原因。</div>
+  </div>
+</section>
+
+<section class="sec" id="s2-2" data-num="2.2" data-short="地震成因" data-title="地震成因：有效應力也管斷層">
+  <div class="sec-head"><span class="sec-num">2.2</span><h2>地震成因：有效應力也管斷層</h2></div>
+  <p class="src">出處：Ch0–2 講義 2.5；Ch1 原講義 p.22–26</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>往地下注水、蓋水庫，為什麼會引發地震？水不是讓斷層「更滑」而已嗎？</p>
+  </div>
+
+  <p>地震的來源分兩類。<b>天然</b>：構造性（斷層錯動，最主要）、火山、岩體或礦坑崩塌。<b>人為</b>：爆炸與核試（以 P 波為主，可由波形辨識），以及<b>誘發地震</b>：加載（水庫蓄水）、卸載（採礦、開挖）、注入流體（廢水回注、地熱）。實例有印度 Koyna 水庫 1967 年 M 6.3、美國奧克拉荷馬州 2009 年後廢水回注使地震數暴增、韓國浦項 2017 年 Mw 5.5（與地熱注水有關）。</p>
+
+  <p>機制和土壤力學一模一樣：斷層面的抗剪強度遵守 Mohr–Coulomb 與<b>有效應力原理</b>。</p>
+  <div class="eqbox">\[ \tau_f = c + \mu\,(\sigma_n - u) \]</div>
+  <p>斷層上本來就有接近臨界的構造剪應力 \(\tau\)。注入流體讓孔隙水壓 \(u\) 上升，\(\sigma_n - u\) 下降，強度 \(\tau_f\) 跟著下降；一旦 \(\tau_f &lt; \tau\)，斷層就滑動。水庫的水重雖然增加了正向應力，但水滲入斷層後孔隙水壓上升，實際效果常由後者主導。</p>
+
+  <div id="w-mohr" data-title="孔隙水壓把 Mohr 圓推向破壞線"></div>
+
+  <div class="callout example"><div class="ct">例：要多少孔隙水壓才會觸發？</div>
+    <p>某斷層面 \(\sigma_n = 50\) MPa、\(\tau = 28\) MPa、\(\mu = 0.6\)、\(c = 0\)。目前強度 \(0.6\times 50 = 30\) MPa，安全係數 \(30/28 = 1.07\)。觸發條件 \(0.6(50-u) = 28\) → \(u = 50 - 46.67 = 3.33\) MPa，約等於 340 m 水頭。注水井的井口壓力常在數 MPa 等級，所以「接近臨界」的斷層確實可以被人為觸發。</p>
+  </div>
+
+  <div class="callout link"><div class="ct">同一個機制，換成土壤就是液化</div>
+    <p>斷層：注水 → \(u\) 上升 → \(\sigma_n-u\) 下降 → 滑動。液化：反覆剪應力使土骨架想變密 → 不排水 → \(u\) 一圈一圈上升 → \(\sigma'_v\) 趨近零 → 失去強度（<a href="u08.html#s8-1">8.1</a>、單元 8 之後）。上方互動圖的 Mohr 圓若代表一個土壤元素，往左推到破壞線就是同一件事。</p>
+  </div>
+
+  <div class="quiz" data-num="10" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">承上例，若摩擦係數改為 μ = 0.7（σn = 50 MPa、τ = 28 MPa），孔隙水壓需上升到多少 MPa 才會滑動？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="u (MPa)"><button class="btn">檢查</button></div>
+    <div class="fb">0.7(50 − u) = 28 → 50 − u = 40 → u = 10 MPa。摩擦係數越大，斷層越「穩」，需要的孔隙水壓從 3.33 MPa 增加到 10 MPa。如果你填 3.33，是沿用了 μ = 0.6 的答案。</div>
+  </div>
+</section>
+
+<section class="sec" id="s2-3" data-num="2.3" data-short="斷層" data-title="斷層幾何與斷層面解">
+  <div class="sec-head"><span class="sec-num">2.3</span><h2>斷層幾何與斷層面解（海灘球）</h2></div>
+  <p class="src">出處：Ch0–2 講義 2.6–2.7；Ch1 原講義 p.27–42</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>新聞的地震報告常附一顆黑白相間的「海灘球」。不用看地質圖，怎麼從它讀出這是正斷層、逆斷層還是走向滑移？</p>
+  </div>
+
+  <h3>三個角度描述一個斷層</h3>
+  <ul>
+    <li><b>走向（strike）\(\phi\)</b>：斷層面與水平面的交線方向，由北順時針量。</li>
+    <li><b>傾角（dip）\(\delta\)</b>：斷層面與水平面的夾角（0–90°），在垂直走向的方向量。慣例是面向走向方向時，斷層面往<b>右手邊</b>傾斜。原講義 p.31 例：走向 N40°W、傾角 30°SW。</li>
+    <li><b>滑移角（rake）\(\lambda\)</b>：上盤在斷層面上相對下盤的滑動方向，從走向方向量起。\(\lambda = 90°\) 純逆斷層、\(-90°\) 純正斷層、\(0°\) 左移、\(180°\) 右移。</li>
+  </ul>
+  <p>斷層面上方的岩塊是<b>上盤</b>（hanging wall），下方是<b>下盤</b>（footwall）。判斷正、逆斷層只看上盤往哪裡動。其他名詞：震源（hypocenter，破裂起始點）、震央（epicenter，震源正上方地表）、破裂面、強震區（asperity，滑移量特別大的區塊）、地表斷層線。</p>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>類型</th><th>上盤相對下盤</th><th>應力狀態</th><th>地殼變形</th><th>典型位置</th></tr>
+    <tr><td>正斷層</td><td>向下</td><td>σ<sub>1</sub> 垂直</td><td>伸張</td><td>洋脊、裂谷</td></tr>
+    <tr class="hl"><td>逆斷層（逆衝）</td><td>向上</td><td>σ<sub>3</sub> 垂直</td><td>縮短</td><td>隱沒帶、碰撞帶（臺灣西部）</td></tr>
+    <tr><td>走向滑移</td><td>水平</td><td>σ<sub>2</sub> 垂直</td><td>側向</td><td>聖安地列斯（右移）、新疆皮羌（左移）</td></tr>
+  </table></div>
+
+  <h3>海灘球怎麼來</h3>
+  <p>斷層錯動時，P 波初動在空間中分成四個象限：有的方向第一個動作是「推」（壓縮），有的是「拉」（伸張）。把各測站的初動投影到震源下方的半球（下半球等面積投影），<b>陰影＝壓縮象限（含 T 軸）</b>、<b>白色＝伸張象限（含 P 軸）</b>。兩條分界線是兩個<b>節面</b>，其中一個才是真正的斷層面。</p>
+  <ul>
+    <li>中心白色 → 正斷層；中心陰影 → 逆斷層；像四葉的十字 → 走向滑移。</li>
+    <li>兩個節面都能產生同一顆球，要靠餘震分布或地表破裂判斷哪一個是斷層面。</li>
+  </ul>
+
+  <div id="w-fault" data-title="斷層三角度 ↔ 運動 ↔ 海灘球"></div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：右移還是左移，跟站在哪一側無關</div>
+    <p>站在斷層任一側看過去，若對面那塊往右移就是右移斷層。換到另一側看，對面同樣是往右移。判斷時一定要「看對面」，不要看自己這一側。</p>
+  </div>
+
+  <div class="quiz" data-answer="0">
+    <div class="qh">小測驗</div>
+    <div class="qq">一顆海灘球的中心是陰影、兩側是白色，兩個節面都是約 30° 與 60° 的傾斜面。這是什麼斷層？</div>
+    <div class="opts">
+      <button class="opt">逆斷層（逆衝），水平壓縮</button>
+      <button class="opt">正斷層，水平伸張</button>
+      <button class="opt">走向滑移</button>
+    </div>
+    <div class="fb">中心（正下方）陰影代表往下的射線是壓縮象限，T 軸接近垂直 → σ3 垂直、水平壓縮 → 逆斷層。可在上方互動圖選「逆斷層」預設驗證；把滑移角改成 −90°，中心立刻變白。</div>
+  </div>
+</section>
+
+<section class="sec" id="s2-4" data-num="2.4" data-short="錯動斷層" data-title="彈性回跳、地表錯動與活動斷層">
+  <div class="sec-head"><span class="sec-num">2.4</span><h2>彈性回跳、地表錯動與活動斷層</h2></div>
+  <p class="src">出處：Ch0–2 講義 2.8–2.10；Ch1 原講義 p.41–48；In-Class Assignment 2</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>板塊每年只動幾公分，為什麼地震時斷層一次就錯動好幾公尺？</p>
+  </div>
+
+  <p>Reid（1910）由 1906 年舊金山地震提出<b>彈性回跳理論</b>：(a) 板塊持續相對運動；(b) 斷層面被摩擦「鎖住」，兩側岩體只能彈性變形，應變能慢慢累積；(c) 剪應力超過斷層強度，斷層突然滑動，兩側彈回原形並釋放能量，以地震波傳出。<b>應變慢慢累積（數百年），能量瞬間釋放（數秒到數分鐘）</b>。一次錯動量約等於「板塊速率 × 再現週期」：每年 2 cm、累積 300 年，就是一次約 6 m 的錯動。</p>
+
+  <div id="w-rebound" data-title="彈性回跳：鎖住、累積、釋放"></div>
+
+  <h3>地表錯動：石岡壩</h3>
+  <p>1999 集集地震（Mw 7.6）的車籠埔斷層是向東傾的逆衝斷層，地表破裂約 100 km。斷層通過石岡壩北端，上盤抬升約 10 m，溢洪道被剪斷，水庫失去蓄水功能。Wallace Creek 的河道被聖安地列斯斷層累積錯開約 135 m，1906 年舊金山地震錯開的圍籬顯示單次水平錯動可達數公尺。</p>
+  <div class="callout intuition"><div class="ct">工程意義</div>
+    <p>震動可以用設計抵抗，<b>跨越斷層的永久錯動幾乎不行</b>。結構只能避開，或設計成可以容許錯動（例如可滑動的支承、留足夠的座長）。這就是要劃定活動斷層與地質敏感區的原因。</p>
+  </div>
+
+  <h3>課堂活動 2：斷層錯動穿過土層（DEM）</h3>
+  <p>用離散元素法模擬岩盤斷層錯動時，剪動帶如何自己穿過上覆土層。五個觀察的結論可以濃縮成四句：</p>
+  <ol>
+    <li><b>地表破裂不在岩盤斷層的投影上</b>：傾角越緩，兩者差得越多；差距要和土層厚度比較，不是和斷層帶寬度比較。</li>
+    <li><b>斷層決定落差，土壤決定位置</b>：同一個斷層換弱或強的土（顆粒摩擦 0.30 vs 0.80），地表落差幾乎不變，破裂出現的位置卻明顯移動。</li>
+    <li><b>不同斷層對橋梁的需求不同</b>：正、逆斷層主要造成橋墩差異沉陷與跨距變化，走向滑移主要是橫向位移，要強化的構件（支承、防落的剪力榫、橋墩）不同；加長座長不一定救得了跨越斷層的橋，因為跨距可能先因旋轉失效。</li>
+    <li><b>覆土越厚，地圖上的斷層線與實際破裂差越多</b>：所以固定寬度的地質敏感區（對稱時每側約 150 m；車籠埔斷層因上盤變形大，上盤側約 200 m、下盤側約 100 m）在厚沖積層上最不保險，開發前應做場址調查。</li>
+  </ol>
+  <p class="w-note">模型限制（講義第 7 頁）：顆粒不能旋轉，剪動帶比實際陡；邊界剛性，逆斷層的落差會被低估；結構是軟的，只能讀「需求」不能讀「容量」。</p>
+
+  <h3>活動斷層</h3>
+  <p>未來可能再發生地震的斷層。一般以近 10 萬年內有活動證據者視為活動斷層。臺灣的分類（經濟部地質調查及礦業管理中心）：<b>第一類</b>近 1 萬年內曾活動，<b>第二類</b>近 10 萬年內曾活動；目前公布的分布圖約 36 條。依地質法劃定「活動斷層地質敏感區」，開發前須做基地地質調查；工址到斷層的距離也是地震危害度分析的輸入。</p>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">某斷層兩側板塊相對速率 3 cm/年，上一次大地震錯動 4.5 m。若彈性回跳模型成立，粗估再現週期約多少年？</div>
+    <div class="opts">
+      <button class="opt">15 年</button>
+      <button class="opt">150 年</button>
+      <button class="opt">1500 年</button>
+    </div>
+    <div class="fb">錯動量 ≈ 速率 × 再現週期 → T ≈ 4.5 m / 0.03 m/年 = 150 年。實際斷層不會那麼規律：強度、應力降、鄰近斷層的應力轉移都會改變間隔，所以危害度分析用機率描述。</div>
+  </div>
+</section>
+
+<section class="sec" id="s2-5" data-num="2.5" data-short="震度" data-title="震度：某地搖得多厲害">
+  <div class="sec-head"><span class="sec-num">2.5</span><h2>震度：某地搖得多厲害</h2></div>
+  <p class="src">出處：Ch0–2 講義 2.11；Ch1 原講義 p.49–51；中央氣象署 2020 新制震度</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>新聞說「規模 7.2、臺北震度 4 級、花蓮震度 6 弱」。同一個地震，為什麼有一個規模、卻有很多個震度？</p>
+  </div>
+
+  <p><b>規模</b>描述震源釋放多少能量，一個地震只有一個值。<b>震度</b>描述某地搖得多厲害，每個測站都不同，取決於距離、路徑與場址。臺灣 2020 年起的新制震度分 0–7 級，5、6 級再分弱、強，共 10 級。關鍵改變：<b>4 級以下依 PGA 分級；PGA 達 5 級（≥ 80 cm/s²）時改依 PGV 分級</b>，因為建物損害和速度的相關性比加速度好。</p>
+
+  <div class="tablewrap"><table class="data scale-tab" id="cwa-table">
+    <tr><th>震度</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5 弱</th><th>5 強</th><th>6 弱</th><th>6 強</th><th>7</th></tr>
+    <tr><td>PGA (cm/s²)</td><td>&lt; 0.8</td><td>0.8–2.5</td><td>2.5–8</td><td>8–25</td><td>25–80</td><td colspan="5">≥ 80 → 改看 PGV</td></tr>
+    <tr><td>PGV (cm/s)</td><td colspan="5">（4 級以下不看 PGV）</td><td>15–30</td><td>30–50</td><td>50–80</td><td>80–140</td><td>≥ 140</td></tr>
+  </table></div>
+  <p class="w-note">PGA ≥ 80 cm/s² 但 PGV &lt; 15 cm/s 時，依新制判為 4 級（短週期的尖峰加速度不足以造成 5 級以上的損害）。5 強起，軟弱土層可能出現噴砂、噴泥，也就是液化的徵兆。</p>
+
+  <div id="w-intensity" data-title="震度計：輸入 PGA、PGV，看新制怎麼判"></div>
+
+  <div class="callout example"><div class="ct">例：判斷震度</div>
+    <p>某測站 PGA = 120 cm/s²、PGV = 35 cm/s。先看 PGA：120 ≥ 80，已達 5 級以上，改用 PGV；35 落在 30–50 → <b>震度 5 強</b>。若只看 PGA（舊制思維），120 落在 80–140 會誤判為 5 弱。</p>
+  </div>
+
+  <div class="quiz" data-answer="2">
+    <div class="qh">小測驗</div>
+    <div class="qq">集集地震 CHY010 站水平 PGA<sub>RotD100</sub> = 0.252 g、PGV<sub>RotD100</sub> = 21.4 cm/s。依新制大約是幾級？（以 RotD100 近似，實際震度用各分量合成值）</div>
+    <div class="opts">
+      <button class="opt">4 級</button>
+      <button class="opt">6 弱</button>
+      <button class="opt">5 弱</button>
+      <button class="opt">5 強</button>
+    </div>
+    <div class="fb">0.252 g = 247 cm/s² ≥ 80，改看 PGV：21.4 cm/s 落在 15–30 → 5 弱。如果只看 PGA 對照值，247 cm/s² 會被判成 5 強（140–250）；新制把「加速度大但週期短」的紀錄往下修，正是 PGV 比 PGA 更能反映損害的例子。</div>
+  </div>
+</section>
+
+<section class="sec" id="s2-6" data-num="2.6" data-short="規模" data-title="規模、地震矩與飽和">
+  <div class="sec-head"><span class="sec-num">2.6</span><h2>規模、地震矩與飽和</h2></div>
+  <p class="src">出處：Ch0–2 講義 2.12–2.13；Ch1 原講義 p.52</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>規模 7.4 和 7.6 只差 0.2，釋放的能量差多少？</p>
+  </div>
+
+  <p>早期的規模（ML、mb、Ms）都由<b>某個特定週期的波的振幅</b>定義。<b>地震矩</b>則直接由震源的物理量定義：</p>
+  <div class="eqbox">\[ M_0 = \mu A D \qquad (\text{剛性模數} \times \text{破裂面積} \times \text{平均滑移量，單位 N·m}) \]
+  \[ M_w = \tfrac{2}{3}\left(\log_{10} M_0 - 9.05\right) \;\; (M_0 \text{ 用 N·m}) \;=\; \tfrac{2}{3}\left(\log_{10} M_0 - 16.05\right) \;\; (M_0 \text{ 用 dyne·cm}) \]</div>
+  <p>係數 2/3 讓 \(M_w\) 每加 1，\(M_0\) 增為 \(10^{1.5} \approx 32\) 倍；加 2 則 1000 倍。輻射能量大致與 \(M_0\) 成正比（\(E_s \approx M_0/(2\times10^4)\)），所以「規模加 1、能量約 32 倍」。</p>
+
+  <div class="callout pitfall"><div class="ct">投影片勘誤：dyne·cm 與 N·m 的常數要一致</div>
+    <p>學生版講義 2.12 寫「dyne·cm 用 16.05，N·m 改為 9.1」。1 N·m = 10⁷ dyne·cm，所以 16.05 對應的 N·m 常數是 <b>9.05</b>；9.1 對應的是另一套常用寫法 16.1。兩套都有人用，只是不能混搭：集集的例子用 9.05 得 7.61，用 9.1 得 7.57，差 0.03。</p>
+  </div>
+
+  <div class="callout example"><div class="ct">例：集集地震的量級</div>
+    <p>\(\mu = 3\times10^{10}\) Pa、破裂面 80 km × 40 km、平均滑移 3 m：\(A = 3.2\times10^9\) m²，\(M_0 = 3\times10^{10}\times3.2\times10^9\times3 = 2.88\times10^{20}\) N·m。\(\log M_0 = 20.46\) → \(M_w = (20.46-9.05)/1.5 = 7.61\)，與集集 Mw 7.6 一致。輻射能量約 \(1.4\times10^{16}\) J，約 230 顆廣島原子彈。</p>
+    <p>東日本地震（Mw 9.1）的 \(M_0\) 是集集的 \(10^{1.5\times1.5} = 178\) 倍；2024 花蓮（Mw 7.4）比集集只小 0.2，\(M_0\) 卻差 \(10^{0.3} = 2.0\) 倍。</p>
+  </div>
+
+  <div id="w-mag" data-title="地震矩規模計算機與規模飽和"></div>
+
+  <h3>為什麼 ML、mb、Ms 會飽和</h3>
+  <p>ML 量約 0.1–1 s 的波、mb 量約 1 s 的 P 波、Ms 量約 20 s 的表面波。破裂越大，增加的主要是<b>長週期</b>能量（破裂時間長、面積大），短週期振幅不再隨之增加，量到的規模就「頂」住了：mb 約 6–6.5、ML 約 7、Ms 約 8 以上。\(M_w\) 由 \(M_0\) 定義，<b>不會飽和</b>。臺灣的例子：集集 ML 7.3（Mw 7.6）、2024 花蓮 ML 7.2（Mw 7.4），大地震時兩者差距變大。</p>
+
+  <div class="quiz" data-num="6.4" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">某斷層 μ = 3×10¹⁰ Pa、破裂 20 km × 10 km、平均滑移 0.8 m。M<sub>w</sub>（用 9.05）是多少？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="Mw"><button class="btn">檢查</button></div>
+    <div class="fb">A = 2×10⁸ m²，M₀ = 3×10¹⁰ × 2×10⁸ × 0.8 = 4.8×10¹⁸ N·m，log M₀ = 18.68 → Mw = (18.68 − 9.05)/1.5 = 6.42。可在上方計算機輸入驗證。</div>
+  </div>
+  <div class="quiz" data-num="1000" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">Mw 8 的地震矩是 Mw 6 的幾倍？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="倍"><button class="btn">檢查</button></div>
+    <div class="fb">10^(1.5 × 2) = 10³ = 1000 倍。不是 2 倍、也不是 100 倍：規模是對數尺度，而且每單位是 1.5 個數量級。</div>
+  </div>
+</section>
+
+<section class="sec" id="s2-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">有效應力與斷層強度</div>\[ \tau_f = c + \mu(\sigma_n - u) \]</div>
+    <div class="fcard"><div class="ft">地震矩</div>\[ M_0 = \mu A D \;[\text{N·m}] \]</div>
+    <div class="fcard"><div class="ft">地震矩規模</div>\[ M_w = \tfrac23(\log M_0 - 9.05) \]</div>
+    <div class="fcard"><div class="ft">規模差與地震矩比</div>\[ M_{0,1}/M_{0,2} = 10^{1.5\,\Delta M_w} \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>地殼不是 100 km 厚</b>：陸殼 30–70 km、洋殼 5–10 km；約 100 km 是岩石圈（原講義 Ch1 p.3 的標示有誤）。</li>
+    <li><b>規模 ≠ 震度</b>：一個地震一個規模，震度每站不同；新制 5 級以上看 PGV，不看 PGA。</li>
+    <li><b>M<sub>w</sub> 常數別混搭</b>：dyne·cm 用 16.05 對應 N·m 用 9.05（學生講義寫 9.1 屬另一套）。</li>
+    <li><b>ΔM<sub>w</sub> = 1 是 32 倍</b>：不是 10 倍；ΔM<sub>w</sub> = 0.2 已是 2 倍。</li>
+    <li><b>右移、左移看「對面」</b>：站在哪一側看都一樣，看對面那塊往哪移。</li>
+  </ul>
+  <h3>自我檢測</h3>
+  <div class="quiz" data-num="31.6" data-tol="0.02">
+    <div class="qh">綜合題 1</div>
+    <div class="qq">Mw 7.0 與 Mw 6.0 的地震矩比是多少？（填數字）</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="倍"><button class="btn">檢查</button></div>
+    <div class="fb">10^1.5 = 31.6 倍。這就是「規模每加 1，能量約 32 倍」。</div>
+  </div>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>斷層錯動之後，工址記錄到一筆加速度歷時。下一單元學怎麼描述它。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u01.html"><span class="dir">← 單元 1</span>什麼是動態問題</a>
+  <a class="next" href="../units/u03.html"><span class="dir">單元 3 →</span>描述地動：時間域參數</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/quake.js"></script>
+</body>
+</html>

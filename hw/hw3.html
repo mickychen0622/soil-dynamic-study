@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HW3 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用：可編輯的分層表、熱圖、小型表單 */
+  .layer-tbl input[type=number] { width: 5.6em; border: 0; border-radius: 8px; padding: 5px 8px; background: var(--inset); color: var(--ink); font: inherit; font-size: 14px; }
+  .layer-tbl td, .layer-tbl th { padding: 6px 8px; }
+  .layer-tbl .x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 16px; }
+  .cls-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 10px 0 4px; }
+  .cls-row .chip { background: var(--inset); border-radius: 14px; padding: 10px 14px; font-size: 13px; color: var(--muted); }
+  .cls-row .chip b { display: block; color: var(--ink); font-size: 20px; font-family: var(--font-display); }
+  svg image.heat { image-rendering: pixelated; }
+  .w-sub { font-size: 14px; font-weight: 600; margin: 14px 0 2px; }
+  .ans-box { border-left: 3px solid var(--accent); padding: 2px 0 2px 16px; margin: 1em 0; }
+/* 單元專用：數字很多的答案表、勘誤表 */
+  .ans-list { max-width: var(--measure); }
+  .ans-list li { margin: .35em 0; }
+  table.data td.ok { color: var(--green); font-weight: 600; }
+  table.data td.bad { color: var(--warn); font-weight: 600; }
+  .w-body .tablewrap { margin: 1em 0 .4em; }
+  .w-body table.data { font-size: 14px; }
+  .w-body table.data th, .w-body table.data td { padding: 8px 10px; }
+</style>
+</head>
+<body data-page="hw3" data-root="../" data-title="HW3">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">Homework 3 · Dynamic Soil Properties and Vibration</div>
+  <h1>HW3 動態土壤性質與振動</h1>
+  <p class="lede"><b>共振柱、Masing 迴圈、下孔試驗、隔振墊。</b>四題分別練習由共振柱資料求 G 與阻尼、用 Masing rules 產生迴圈、由現地走時求 Gmax，以及用 SDOF 分析隔振。所有原始資料都嵌在互動圖裡，數字由網頁即時重算。</p>
+  <h3>先讀過這些觀念</h3>
+  <div class="chip-links">
+    <a class="chip-link" href="../units/u09.html#s9-1">9.1 共振柱頻率方程式</a>
+    <a class="chip-link" href="../units/u09.html#s9-2">9.2 掃頻、阻尼與大應變</a>
+    <a class="chip-link" href="../units/u04.html#s4-9">4.9 量阻尼比的三種方法</a>
+    <a class="chip-link" href="../units/u08.html#s8-5">8.5 MRD 曲線</a>
+    <a class="chip-link" href="../units/u08.html#s8-7">8.7 Masing rules</a>
+    <a class="chip-link" href="../units/u07.html#s7-3">7.3 現地波速量測</a>
+    <a class="chip-link" href="../units/u04.html#s4-8">4.8 能量與阻尼比</a>
+    <a class="chip-link" href="../units/u04.html#s4-10">4.10 傳遞率</a>
+  </div>
+  <p class="hw-others">其他作業：<a href="hw1.html">HW1</a> · <a href="hw2.html">HW2</a> · <a href="../index.html#hw">作業總覽</a></p>
+</header>
+
+<section class="sec" id="q1a" data-num="Q1(a)" data-short="Q1(a) 共振柱 stage 1" data-title="Q1(a) 共振柱 stage 1：由原始資料求 fn、Vs、Gmax、D">
+  <div class="sec-head"><span class="sec-num">Q1(a)</span><h2>Q1(a) 共振柱 stage 1：求 fn、Vs、Gmax 與阻尼比</h2></div>
+  <p class="src">出處：HW3 Question 1(a)；Homework 3/!Question/data/resonant_column_sweep.csv、resonant_column_stages.csv；A1_resonant_column.py、A1_process.xlsx；HW3_報告說明.md</p>
+
+  <div class="callout question"><div class="ct">題目（原文改寫）</div>
+    <p>平坦場址由三層砂土與較硬的基盤組成，各層密度 ρ = 1.95 t/m³。從第 3 層 15 m 深處取乾淨砂（PI = 0、OCR = 1），重模到 e = 0.70、壓密到 σ′m = 100 kPa，放進固定–自由式共振柱（d = 50 mm、H = 100 mm、I/I₀ = 0.10）試驗。驅動振幅分六階段加大，每階段記錄剪應變 γ 與共振頻率 fn；接著關掉驅動，記錄自由振動連續六個峰值 X₁–X₆（Table 1）。</p>
+    <p>(a) 由 stage 1（γ = 0.0005 %）的頻率響應曲線（Figure 3）求<b>共振頻率</b>、<b>剪力波速</b>與 <b>Gmax</b>；再由自由振動衰減，用<b>對數遞減法</b>求 stage 1 的<b>阻尼比</b>。</p>
+    <p>題目附註：\(I/I_0 = \beta\tan\beta\)，\(\beta = \omega_nH/V_s\)；\(\delta = \frac1n\ln(X_1/X_{n+1})\)，\(D \approx \delta/2\pi\)。</p>
+  </div>
+
+  <h3>題目給了什麼、各用在哪裡</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>條件</th><th>數值</th><th>用在哪一步</th></tr>
+    <tr><td>土的密度</td><td>ρ = 1.95 t/m³</td><td>步驟 4：\(G_{max} = \rho V_s^2\)</td></tr>
+    <tr><td>試體高度</td><td>H = 100 mm = 0.100 m</td><td>步驟 3：\(V_s = \omega_nH/\beta\)</td></tr>
+    <tr><td>轉動慣量比</td><td>I/I₀ = 0.10（I：試體；I₀：頂蓋＋驅動系統）</td><td>步驟 2：解 \(\beta\tan\beta = I/I_0\)</td></tr>
+    <tr><td>試體直徑</td><td>d = 50 mm</td><td>不必用：直徑只影響 I，而題目已直接給 I/I₀</td></tr>
+    <tr><td>試體狀態</td><td>e = 0.70、σ′m = 100 kPa</td><td>本題不參與計算；Q3 用 Hardin 式比較 Gmax 時才用到</td></tr>
+    <tr><td>Stage 1 頻率響應（Figure 3）</td><td>96–120 Hz 共 97 點的加速度計輸出（mV），峰值 60.04 mV @ 108.25 Hz</td><td>步驟 1：找共振頻率</td></tr>
+    <tr><td>Stage 1 自由振動峰值（Table 1）</td><td>X₁–X₆ = 88.80、83.14、77.94、72.61、67.75、63.39 mV</td><td>步驟 5：對數遞減法</td></tr>
+    <tr><td>Stage 1 共振頻率（Table 1）</td><td>fn = 108.3 Hz</td><td>拿來和步驟 1 的結果對照</td></tr>
+  </table></div>
+
+  <h3>用到的觀念</h3>
+  <ol>
+    <li><b>共振柱 = 扭轉波在試體裡形成的駐波</b>（<a href="../units/u09.html#s9-1">9.1</a>）。底部固定、頂部接一個有慣量 I₀ 的頂蓋。試體的第一個扭轉振態頻率 \(\omega_n\) 由邊界條件決定，寫成頻率方程式 \(I/I_0 = \beta\tan\beta\)，其中 \(\beta = \omega_nH/V_s\) 是「波走過試體高度所需的相位」。量到 \(\omega_n\)、解出 \(\beta\)，就能反算 \(V_s\)。</li>
+    <li><b>共振峰</b>（<a href="../units/u04.html#s4-5">4.5</a>）：用固定振幅的扭矩掃頻，反應在 \(f = f_n\) 附近最大，峰的位置給 \(f_n\)，峰的寬度反映阻尼。</li>
+    <li><b>彈性波速與剪力模數</b>（<a href="../units/u06.html#s6-2">6.2</a>）：\(V_s = \sqrt{G/\rho}\)，所以 \(G = \rho V_s^2\)。stage 1 應變極小（0.0005 % 低於線性門檻），量到的 G 就是 \(G_{max}\)。</li>
+    <li><b>對數遞減法</b>（<a href="../units/u04.html#s4-9">4.9</a>）：關掉驅動後，次阻尼 SDOF 每一圈振幅按固定比例 \(e^{\delta}\) 縮小，\(\delta = 2\pi\xi/\sqrt{1-\xi^2} \approx 2\pi\xi\)。</li>
+  </ol>
+
+  <details class="derive"><summary>頻率方程式 \(I/I_0 = \beta\tan\beta\) 從哪裡來</summary><div class="body">
+    <ol class="steps">
+      <li>試體內扭轉角滿足一維波動方程式 \(\ddot\theta = V_s^2\,\theta''\)。設簡諧振動 \(\theta(z,t) = \Theta(z)\,e^{i\omega t}\)，得 \(\Theta(z) = A\sin(\omega z/V_s) + B\cos(\omega z/V_s)\)。</li>
+      <li><b>底部固定</b>：\(\Theta(0) = 0 \Rightarrow B = 0\)。</li>
+      <li><b>頂部</b>：試體作用在頂蓋上的扭矩 \(-GJ\,\theta'(H)\) 推動頂蓋的慣量 \(I_0\ddot\theta(H)\)：\(GJ\,\frac{\omega}{V_s}\cos\frac{\omega H}{V_s} = I_0\,\omega^2\sin\frac{\omega H}{V_s}\)。</li>
+      <li>代入 \(G = \rho V_s^2\)，兩邊乘 \(H\)，並用試體的轉動慣量 \(I = \rho JH\)：\(\dfrac{I}{I_0} = \dfrac{\omega H}{V_s}\tan\dfrac{\omega H}{V_s} = \beta\tan\beta\)。</li>
+    </ol>
+    <p>直覺：若頂蓋遠重於試體（\(I/I_0\) 小），\(\tan\beta \approx \beta\)，得 \(\beta^2 \approx I/I_0\)，也就是 \(\omega_n^2 \approx (GJ/H)/I_0\)：試體像一根扭轉彈簧 \(k = GJ/H\)，頂蓋是質量，回到單元 4 的 SDOF。</p>
+  </div></details>
+
+  <h3>步驟 1：從頻率響應曲線找共振頻率 \(f_n\)</h3>
+  <p>加速度計量的是頂蓋的<b>加速度</b>，扭矩振幅固定，所以量測曲線是 SDOF 的加速度頻率響應（位移響應乘上 \(\omega^2\)）：</p>
+  <div class="eqbox">\[ A(f) = \frac{A_0\,r^2}{\sqrt{(1-r^2)^2 + (2\xi r)^2}}, \qquad r = \frac{f}{f_n} \]</div>
+  <p>用三種方式讀 \(f_n\)：</p>
+  <ul>
+    <li><b>最大量測點</b>：108.25 Hz（60.04 mV）。點距 0.25 Hz，精度受限。</li>
+    <li><b>三點拋物線內插</b>：峰值與左右兩點擬合拋物線，頂點在 108.28 Hz。</li>
+    <li><b>整條曲線最小平方擬合</b>（採用）：對 97 點擬合上式的 \(A_0\)、\(f_n\)、\(\xi\)，得 \(f_n\) = <b>108.22 Hz</b>、\(\xi\) = 1.06 %、\(A_0\) = 1.27 mV。</li>
+  </ul>
+  <p>擬合值略低於峰值是合理的：加速度響應的峰在 \(f_n/\sqrt{1-2\xi^2}\)，比 \(f_n\) 稍高；但 \(\xi\) ≈ 1 % 時只差 0.01 %。三者和 Table 1 的 108.3 Hz 差都在 0.1 % 以內。</p>
+
+  <h3>步驟 2：解頻率方程式求 \(\beta\)</h3>
+  <p>\(\beta\tan\beta = 0.10\) 沒有解析解，用數值法求第一個根（介於 0 與 \(\pi/2\)）。以 \(\beta_0 = \sqrt{0.10} = 0.3162\) 為初值（小角度近似），牛頓法 \(\beta_{k+1} = \beta_k - \dfrac{\beta_k\tan\beta_k - 0.10}{\tan\beta_k + \beta_k\sec^2\beta_k}\)：</p>
+  <div class="eqbox">\[ \beta_0 = 0.3162 \;(\beta\tan\beta = 0.1035) \;\rightarrow\; \beta_1 = 0.3111 \;(0.10003) \;\rightarrow\; \beta = 0.31105\ \text{rad} \]
+  \[ \text{驗算：}\ 0.31105 \times \tan(0.31105) = 0.31105 \times 0.32149 = 0.1000 \]</div>
+  <p>\(\beta\) 只由 I/I₀ 決定，與頻率、應變無關，所以 Q1(b) 六個階段共用同一個 \(\beta\)。</p>
+
+  <h3>步驟 3：剪力波速 \(V_s\)</h3>
+  <p>由 \(\beta = \omega_nH/V_s\) 移項：</p>
+  <div class="eqbox">\[ \omega_n = 2\pi f_n = 2\pi \times 108.22 = 679.94\ \text{rad/s} \]
+  \[ V_s = \frac{\omega_nH}{\beta} = \frac{679.94 \times 0.100}{0.31105} = 218.6\ \text{m/s} \]</div>
+
+  <h3>步驟 4：最大剪力模數 \(G_{max}\)</h3>
+  <div class="eqbox">\[ G_{max} = \rho V_s^2 = 1.95\ \text{t/m}^3 \times (218.6\ \text{m/s})^2 = 93{,}176\ \text{kPa} \approx 93.2\ \text{MPa} \]</div>
+  <p>單位：t/m³ × m²/s² = 10³ kg/(m·s²) = kN/m² = kPa。stage 1 的 γ = 0.0005 % 低於線性門檻 \(\gamma_{tl}\)（約 0.001 %），所以這個 G 可視為 \(G_{max}\)。</p>
+
+  <h3>步驟 5：對數遞減法求阻尼比</h3>
+  <p>X₁ 到 X₆ 共六個峰、相隔 <b>n = 5 個週期</b>（常見錯誤是除以 6）：</p>
+  <div class="eqbox">\[ \frac{X_1}{X_6} = \frac{88.80}{63.39} = 1.4009, \qquad \delta = \frac15\ln 1.4009 = \frac{0.3371}{5} = 0.0674 \]
+  \[ D \approx \frac{\delta}{2\pi} = \frac{0.0674}{6.283} = 1.07\,\% \qquad \left(\text{精確式 } \frac{\delta}{\sqrt{4\pi^2+\delta^2}} = 1.07\,\%\right) \]</div>
+  <p><b>驗算</b>（同一個 stage 1，用不同資料、不同方法）：</p>
+  <ul>
+    <li><b>逐圈比值</b>：\(X_i/X_{i+1}\) = 1.068、1.067、1.073、1.072、1.069，幾乎是常數，表示每圈以相同比例衰減，符合線性黏滯阻尼的假設。</li>
+    <li><b>\(\ln X\) 對週期數迴歸</b>：斜率 \(-\delta\)，得 \(\delta\) = 0.0677、D = 1.08 %。</li>
+    <li><b>半功率頻寬法</b>（Figure 3）：在 \(A_{max}/\sqrt2\) = 42.45 mV 處內插得 \(f_1\) = 107.13 Hz、\(f_2\) = 109.45 Hz，\(D = (f_2-f_1)/(2f_n) = 2.31/(2 \times 108.22)\) = 1.07 %。</li>
+    <li><b>曲線擬合</b>的 \(\xi\) = 1.06 %。</li>
+  </ul>
+
+  <div class="ans-box">
+    <p><b>答案</b>：\(f_n\) = <b>108.22 Hz</b>（Table 1 為 108.3 Hz）；\(\beta\) = 0.3111 rad；\(V_s\) = <b>218.6 m/s</b>；\(G_{max}\) = <b>93.2 MPa</b>；\(\delta\) = 0.0674，\(D\) = <b>1.07 %</b>（迴歸 1.08 %、半功率 1.07 %，彼此一致）。</p>
+    <p>這個 \(G_{max}\) ≈ 94,000 kPa 就是 Q2 Masing 模型用的值；六個階段的 \(G/G_{max}\)、\(D\) 見 <a href="#q1b">Q1(b)</a>。</p>
+  </div>
+
+  <h3>用互動圖檢查</h3>
+  <p>下面的數值全部由網頁讀原始 CSV 即時計算，演算法與 A1_resonant_column.py 相同，可以切換三種 \(f_n\) 讀法，看 \(V_s\)、\(G_{max}\) 怎麼跟著變。</p>
+  <div id="w-hw3a" data-title="HW3 Q1(a)：由原始資料重算 stage 1"></div>
+
+  <div class="callout intuition"><div class="ct">為什麼三種阻尼估計在 stage 1 一致</div>
+    <p>γ = 0.0005 % 低於線性門檻（約 10⁻³ %），試體近乎線性，單元 4 的 SDOF 假設全部成立：對數遞減與半功率頻寬給同一個 D，ln X 的六個點也幾乎在直線上。到了 stage 4 以上（γ ≥ 0.01 %），衰減曲線開始彎曲，半功率法就不可靠了（<a href="../units/u09.html#s9-2">9.2</a>）。</p>
+  </div>
+
+  <div class="quiz" data-num="93.2" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">如果直接用 Table 1 的 fn = 108.3 Hz（其他不變），Gmax 是幾 MPa？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="Gmax (MPa)"><button class="btn">檢查</button></div>
+    <div class="fb">Vs = 2π × 108.3 × 0.1 / 0.3111 = 218.8 m/s，Gmax = 1.95 × 218.8² = 93.3 MPa，只差 0.15 %（G ∝ fn²，頻率差 0.07 %）。兩者都在 1 % 容許範圍內。</div>
+  </div>
+</section>
+
+<section class="sec" id="q1b" data-num="Q1(b)" data-short="Q1(b) 六個階段" data-title="HW3 Q1(b) 共振柱六階段">
+  <div class="sec-head"><span class="sec-num">Q1(b)</span><h2>Q1(b) 共振柱六個階段：模數衰減與阻尼曲線</h2></div>
+  <p class="src">出處：HW3 Question 1(b)；資料 resonant_column_stages.csv、resonant_column_sweep.csv；darendeli_curves.py；學生程式 A1_resonant_column.py、A1_process.xlsx</p>
+
+  <div class="callout question"><div class="ct">題目（原文改寫）</div>
+    <p>(b) 對<b>六個階段</b>重複 (a) 的計算，畫 \(G/G_{max}\)–γ 與 D–γ 兩張圖（γ 用對數座標），與 Darendeli (2001) 乾淨砂、σ′m = 1 atm 的曲線（darendeli_curves.py）比較。估計<b>參考應變</b> \(\gamma_r\)，並指出哪些階段<b>低於線性門檻 \(\gamma_{tl}\)</b>、哪些<b>高於體積門檻 \(\gamma_{tv}\)</b>。</p>
+  </div>
+
+  <h3>題目給了什麼</h3>
+  <p>除了 (a) 的試體條件（ρ = 1.95 t/m³、H = 0.100 m、I/I₀ = 0.10），還有六個階段的量測值（Table 1）：</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">X₁ (mV)</th><th class="num">X₂</th><th class="num">X₃</th><th class="num">X₄</th><th class="num">X₅</th><th class="num">X₆</th></tr>
+    <tr><td>1</td><td class="num">0.0005</td><td class="num">108.3</td><td class="num">88.80</td><td class="num">83.14</td><td class="num">77.94</td><td class="num">72.61</td><td class="num">67.75</td><td class="num">63.39</td></tr>
+    <tr><td>2</td><td class="num">0.001</td><td class="num">107.5</td><td class="num">92.53</td><td class="num">86.39</td><td class="num">80.01</td><td class="num">73.54</td><td class="num">68.50</td><td class="num">63.65</td></tr>
+    <tr><td>3</td><td class="num">0.003</td><td class="num">104.7</td><td class="num">67.79</td><td class="num">61.37</td><td class="num">54.00</td><td class="num">48.10</td><td class="num">42.79</td><td class="num">38.54</td></tr>
+    <tr><td>4</td><td class="num">0.01</td><td class="num">96.7</td><td class="num">83.23</td><td class="num">66.63</td><td class="num">52.99</td><td class="num">42.00</td><td class="num">33.54</td><td class="num">26.83</td></tr>
+    <tr><td>5</td><td class="num">0.03</td><td class="num">82.7</td><td class="num">92.49</td><td class="num">58.41</td><td class="num">37.10</td><td class="num">23.71</td><td class="num">14.96</td><td class="num">9.49</td></tr>
+    <tr><td>6</td><td class="num">0.1</td><td class="num">60.7</td><td class="num">70.62</td><td class="num">31.07</td><td class="num">13.67</td><td class="num">5.95</td><td class="num">2.60</td><td class="num">1.13</td></tr>
+  </table></div>
+  <ul>
+    <li><b>比較用的曲線</b>：darendeli_curves.py，參數 PI = 0、OCR = 1、σ′m = 1 atm（100 kPa ≈ 0.99 atm，題目指定用 1 atm）、N = 10、f = 1 Hz。</li>
+    <li><b>題目沒給、要自己查的</b>：門檻應變。PI = 0 的砂取 \(\gamma_{tl} \approx 0.001\%\)、\(\gamma_{tv} \approx 0.01\%\)（Vucetic 1994，<a href="../units/u08.html#s8-5">8.5</a>）。</li>
+  </ul>
+
+  <h3>用到的觀念</h3>
+  <ol>
+    <li><b>同一個試體、同一套儀器，\(\beta\) 不變</b>：\(I/I_0\) 不隨應變改變，所以六個階段都是 \(\beta\) = 0.3111。於是 \(V_s \propto f_n\)、\(G \propto f_n^2\)，<b>\(G/G_{max} = (f_n/f_{n,1})^2\)</b>，連 ρ、H 都消掉。大應變時共振柱量到的是該應變振幅下的<b>割線模數</b>（<a href="../units/u08.html#s8-3">8.3</a>）。</li>
+    <li><b>模數衰減與阻尼曲線（MRD）</b>（<a href="../units/u08.html#s8-5">8.5</a>）：應變越大，G 越小、D 越大。</li>
+    <li><b>參考應變</b> \(\gamma_r\)：\(G/G_{max} = 0.5\) 時的應變；雙曲線模型 \(G/G_{max} = 1/(1+\gamma/\gamma_r)\) 中 \(\gamma_r = \tau_{max}/G_{max}\)（<a href="../units/u08.html#s8-6">8.6</a>）。</li>
+    <li><b>門檻應變</b>（<a href="../units/u08.html#s8-5">8.5</a>）：低於 \(\gamma_{tl}\) 為線性、G ≈ \(G_{max}\)；高於 \(\gamma_{tv}\) 開始產生永久體積變化，不排水時會累積超額孔隙水壓。</li>
+  </ol>
+
+  <h3>步驟 1：每個階段的 \(V_s\)、G 與 \(G/G_{max}\)</h3>
+  <p>和 (a) 相同：\(V_s = 2\pi f_nH/\beta\)、\(G = \rho V_s^2\)，\(G_{max}\) 取 stage 1 的 93,176 kPa（stage 1 用 (a) 擬合的 108.22 Hz，其餘用 Table 1）。以 <b>stage 6</b> 為例：</p>
+  <div class="eqbox">\[ V_s = \frac{2\pi \times 60.7 \times 0.100}{0.31105} = 122.6\ \text{m/s}, \qquad G = 1.95 \times 122.6^2 = 29{,}316\ \text{kPa} \]
+  \[ \frac{G}{G_{max}} = \frac{29{,}316}{93{,}176} = 0.315 \quad\text{（捷徑：}(60.7/108.22)^2 = 0.315\text{）} \]</div>
+
+  <h3>步驟 2：每個階段的阻尼比</h3>
+  <p>同 (a) 的對數遞減法，n = 5。以 <b>stage 6</b> 為例：</p>
+  <div class="eqbox">\[ \frac{X_1}{X_6} = \frac{70.62}{1.13} = 62.50, \qquad \delta = \frac{\ln 62.50}{5} = \frac{4.135}{5} = 0.827, \qquad D = \frac{0.827}{2\pi} = 13.16\,\% \]</div>
+  <p>大阻尼時近似式開始有差：精確式 \(\delta/\sqrt{4\pi^2+\delta^2}\) = 13.05 %，差 0.11 個百分點，作圖時看不出來。各階段逐圈比值 \(X_i/X_{i+1}\) 仍相當穩定（stage 6 為 2.27–2.30），所以用頭尾兩點的 δ 和 ln X 迴歸的 δ 幾乎相同（0.8270 vs 0.8271）。</p>
+
+  <h3>步驟 3：Darendeli (2001) 比較曲線</h3>
+  <p>darendeli_curves.py 用修正雙曲線（γ 以 % 計、σ′m 以 atm 計）：</p>
+  <div class="eqbox">\[ \gamma_r = (\phi_1 + \phi_2\,PI\,OCR^{\phi_3})\,\sigma_m'^{\,\phi_4} = 0.0352\,\% \quad (PI = 0,\ \sigma'_m = 1\ \text{atm}) \]
+  \[ \frac{G}{G_{max}} = \frac{1}{1 + (\gamma/\gamma_r)^{a}}, \quad a = 0.919 \]
+  \[ D = b\left(\frac{G}{G_{max}}\right)^{0.1} D_{Masing} + D_{min}, \quad b = 0.6329 - 0.0057\ln N = 0.620,\ \ D_{min} = 0.80\,\% \]</div>
+  <p>以 <b>stage 4（γ = 0.01 %）</b>為例：\((0.01/0.0352)^{0.919} = 0.315\)，\(G/G_{max} = 1/1.315 = 0.761\)；Masing 阻尼（含 a ≠ 1 修正）\(D_{Masing}\) = 5.23 %，\(D = 0.620 \times 0.761^{0.1} \times 5.23 + 0.80 = 3.96\,\%\)。其他階段同法，列在下面答案表的最後兩欄。</p>
+
+  <h3>步驟 4：估計參考應變 \(\gamma_r\)</h3>
+  <p><b>方法一：內插</b>。\(G/G_{max} = 0.5\) 落在 stage 5（0.03 %，0.584）與 stage 6（0.1 %，0.315）之間，在 log γ 上線性內插：</p>
+  <div class="eqbox">\[ \log\gamma_r = \log 0.03 + \frac{0.584 - 0.5}{0.584 - 0.315}\,(\log 0.1 - \log 0.03) = -1.523 + 0.312 \times 0.523 \;\Rightarrow\; \gamma_r = 0.0437\,\% \]</div>
+  <p><b>方法二：雙曲線擬合</b>。對六點最小平方擬合 \(1/(1+\gamma/\gamma_r)\)，得 0.0431 %。<b>方法三：修正雙曲線</b>（固定 a = 0.919，與 Darendeli 同形狀），得 0.0441 %。三者相近，取 <b>\(\gamma_r \approx 0.043\%\)</b>。</p>
+
+  <h3>步驟 5：與門檻應變比較</h3>
+  <p>直接拿各階段的 γ 與 \(\gamma_{tl}\) = 0.001 %、\(\gamma_{tv}\) = 0.01 % 比較，並用量到的 \(G/G_{max}\) 確認：stage 1（0.0005 %）G/Gmax = 1、stage 2（0.001 %）0.987，都還是線性；stage 4（0.01 %）已降到 0.80。</p>
+
+  <h3>用互動圖檢查</h3>
+  <p>互動圖讀原始資料重算整張表，可切換 stage 1 的 \(f_n\)（擬合或 Table 1）、選擇 Darendeli 是否也在 stage 1 應變正規化，並看各階段的衰減曲線。</p>
+  <div id="w-hw3q1" data-title="HW3 Q1：共振柱資料處理（即時重算）"></div>
+
+  <h3>答案</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">V<sub>s</sub> (m/s)</th><th class="num">G (MPa)</th><th class="num">G/G<sub>max</sub></th><th class="num">δ</th><th class="num">D (%)</th><th class="num">Darendeli G/G<sub>max</sub></th><th class="num">Darendeli D (%)</th><th>範圍</th></tr>
+    <tr><td>1</td><td class="num">0.0005</td><td class="num">108.22*</td><td class="num">218.6</td><td class="num">93.2</td><td class="num">1.000</td><td class="num">0.0674</td><td class="num">1.07</td><td class="num">0.980</td><td class="num">0.99</td><td>&lt; γ<sub>tl</sub></td></tr>
+    <tr><td>2</td><td class="num">0.001</td><td class="num">107.5</td><td class="num">217.1</td><td class="num">91.9</td><td class="num">0.987</td><td class="num">0.0748</td><td class="num">1.19</td><td class="num">0.963</td><td class="num">1.17</td><td>≈ γ<sub>tl</sub></td></tr>
+    <tr><td>3</td><td class="num">0.003</td><td class="num">104.7</td><td class="num">211.5</td><td class="num">87.2</td><td class="num">0.936</td><td class="num">0.1129</td><td class="num">1.80</td><td class="num">0.906</td><td class="num">1.88</td><td>γ<sub>tl</sub>–γ<sub>tv</sub></td></tr>
+    <tr><td>4</td><td class="num">0.01</td><td class="num">96.7</td><td class="num">195.3</td><td class="num">74.4</td><td class="num">0.799</td><td class="num">0.2264</td><td class="num">3.60</td><td class="num">0.761</td><td class="num">3.96</td><td>≈ γ<sub>tv</sub></td></tr>
+    <tr><td>5</td><td class="num">0.03</td><td class="num">82.7</td><td class="num">167.1</td><td class="num">54.4</td><td class="num">0.584</td><td class="num">0.4554</td><td class="num">7.25</td><td class="num">0.537</td><td class="num">7.91</td><td>&gt; γ<sub>tv</sub></td></tr>
+    <tr class="hl"><td>6</td><td class="num">0.1</td><td class="num">60.7</td><td class="num">122.6</td><td class="num">29.3</td><td class="num">0.315</td><td class="num">0.8270</td><td class="num">13.16</td><td class="num">0.277</td><td class="num">13.79</td><td>&gt; γ<sub>tv</sub></td></tr>
+  </table></div>
+  <p class="w-note">* stage 1 用 Q1(a) 頻率響應曲線（97 點）擬合的 108.22 Hz；Table 1 寫 108.3 Hz，兩者差 0.08 %，\(G_{max}\) 為 93.2 或 93.3 MPa。</p>
+  <ul class="ans-list">
+    <li><b>與 Darendeli 比較：</b>試驗的 \(G/G_{max}\) 各階段高 0.02–0.05；\(D\) 在 \(\gamma \le 0.003\%\) 時相差不到 0.1 %，在 \(\gamma \ge 0.01\%\) 時低 0.35–0.66 %。兩條曲線形狀一致，這個砂軟化得稍慢。</li>
+    <li><b>參考應變：</b>內插 0.0437 %、雙曲線擬合 0.0431 %、修正雙曲線 0.0441 %，取 \(\gamma_r \approx 0.043\%\)；比 Darendeli 的 0.0352 % 大約 22 %，與 Q2 的 \(\gamma_{ref}\) = 0.0004（= 0.04 %）相符。</li>
+    <li><b>門檻應變：</b>stage 1 低於 \(\gamma_{tl}\)；stage 2 恰在 \(\gamma_{tl}\)（\(G/G_{max}\) = 0.987，仍可視為線性）；stage 4 恰在 \(\gamma_{tv}\)；<b>stage 5、6 高於 \(\gamma_{tv}\)</b>。高於 \(\gamma_{tv}\) 的階段若在不排水反覆載重下，會開始累積超額孔隙水壓。</li>
+  </ul>
+  <div class="callout intuition"><div class="ct">比較時要注意正規化</div>
+    <p>以 stage 1 的 G 當 \(G_{max}\)，等於強迫試驗曲線在 0.0005 % 等於 1；但 Darendeli 曲線在 0.0005 % 已經是 0.980。把 Darendeli 也除以它在 0.0005 % 的值再比較，差距由 0.02–0.05 縮小為 0.004–0.036，剩下的部分才是這個砂真的比平均模型「慢軟化」（\(\gamma_r\) 0.043 vs 0.035 %）。互動圖勾選「Darendeli 也在 stage 1 應變正規化」可以看到。</p>
+  </div>
+
+  <div class="quiz" data-num="0.799" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">只用共振頻率：stage 4（96.7 Hz）的 G/Gmax 是多少？（stage 1 取 108.22 Hz）</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="G/Gmax"><button class="btn">檢查</button></div>
+    <div class="fb">β 各階段相同，G ∝ fn²：(96.7/108.22)² = 0.799。不必算出 Vs，也不需要 ρ 或 H。</div>
+  </div>
+</section>
+
+<section class="sec" id="q2" data-num="Q2" data-short="Q2 Masing" data-title="作業：HW3 Q2 Masing">
+  <div class="sec-head"><span class="sec-num">Q2</span><h2>作業：HW3 Q2 Masing 迴圈與阻尼</h2></div>
+  <p class="src">出處：HW3 Question 2；masing_model_tool.html（演算法重新實作）；學生程式 B1_masing.py、B1_process.xlsx、Masing_tool/masing_gc0.01.csv、masing_gc0.1.csv</p>
+
+  <p><b>題目（改寫）：</b>雙曲線骨架，\(G_{max}\) = 94 000 kPa、\(\gamma_{ref}\) = 0.0004（小數，= 0.04 %），載重路徑 0 → γc → −γc → γc。(a) γc = 0.01 % 與 0.1 % 時畫迴圈，用 \(D = E_D/(4\pi E_{So})\) 算阻尼比，與 Q1 量測值比較。(b) 說明 Masing 阻尼為何在極小應變與大應變都和量測值不同。</p>
+
+  <h3>解法</h3>
+  <ol>
+    <li>骨架 \(\tau = G_{max}\gamma/(1+|\gamma/\gamma_{ref}|)\)，γ 用<b>小數</b>。反轉點 A：γc = 0.01 % → \(\tau_c = 94\,000 \times 0.0001/1.25 = 7.52\) kPa；0.1 % → \(94\,000 \times 0.001/3.5 = 26.86\) kPa。</li>
+    <li>卸載、再載入用 \(\tau = \tau_a + 2f((\gamma-\gamma_a)/2)\)，每段 200 點（與網頁工具相同）。</li>
+    <li>\(E_D\) = 第 2、3 段（A → B → A）的閉合面積（梯形積分），\(E_{So} = \tfrac12\tau_c\gamma_c\)；能量單位 kPa × 小數應變 = kJ/m³。</li>
+  </ol>
+
+  <div id="w-hw3q2" data-title="HW3 Q2：Masing 迴圈、面積與阻尼比"></div>
+
+  <h3>答案</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>項目</th><th class="num">γc = 0.01 %</th><th class="num">γc = 0.1 %</th></tr>
+    <tr><td>\(\tau_c\) (kPa)</td><td class="num">7.52</td><td class="num">26.86</td></tr>
+    <tr><td>\(G_{sec}/G_{max}\)（Masing）／量測</td><td class="num">0.800 ／ 0.799</td><td class="num">0.286 ／ 0.315</td></tr>
+    <tr><td>\(E_D\)、\(E_{So}\) (J/m³)</td><td class="num">0.223、0.376</td><td class="num">42.64、13.43</td></tr>
+    <tr class="hl"><td>\(D\) Masing (%)</td><td class="num">4.73</td><td class="num">25.27</td></tr>
+    <tr><td>\(D\) 量測，Q1 (%)</td><td class="num">3.60</td><td class="num">13.16</td></tr>
+    <tr><td>Masing／量測</td><td class="num">1.31</td><td class="num">1.92</td></tr>
+    <tr><td>Darendeli (2001) \(D\) (%)</td><td class="num">3.96</td><td class="num">13.79</td></tr>
+  </table></div>
+  <p>梯形積分與封閉解（<a href="../units/u08.html#s8-8">8.8</a>）差小於 0.001 %；學生下載的網頁 CSV 與重算路徑的 τ 最大差 5 × 10⁻⁷ kPa。</p>
+  <ul class="ans-list">
+    <li><b>(a)</b> 同一條骨架把模數描述得很好（0.800 vs 0.799、0.286 vs 0.315），卻高估阻尼：0.01 % 時高 31 %，0.1 % 時接近量測值的 2 倍。</li>
+    <li><b>(b) 極小應變：</b>雙曲線趨近直線 \(\tau = G_{max}\gamma\)，卸載與再載入重合，\(D_{Masing} \approx 2x/(3\pi) \to 0\)（0.0005 % 時只有 0.27 %）；但試驗 stage 1 有 1.07 %。這部分阻尼來自顆粒接觸的微滑動與孔隙流體的黏滯，與迴圈的非線性形狀無關，Masing rules 產生不出來。</li>
+    <li><b>(b) 大應變：</b>Masing 假設反轉曲線是骨架放大 2 倍，迴圈隨 \(\gamma/\gamma_r\) 迅速變胖，上限 \(2/\pi \approx 64\%\)；真實砂土的反轉曲線較「瘦」（顆粒重新排列、剪脹，以及量測中的圈數效應），面積遠小於預測。共振柱自由衰減時振幅一路變小，量到的 \(D\) 也偏向較小應變的值。修正：Darendeli 的 \(b(G/G_{max})^{0.1}\) 縮小大應變段、\(D_{min}\) 補上小應變段，因此 Darendeli 曲線與量測值吻合；非線性程式的 MRDF 等修正也是同樣想法。</li>
+  </ul>
+
+  <div class="quiz" data-num="26.86" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">Gmax = 94 000 kPa、γref = 0.0004。γc = 0.1 % 的迴圈尖端剪應力是多少 kPa？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="τc (kPa)"><button class="btn">檢查</button></div>
+    <div class="fb">γc = 0.001；γc/γref = 2.5；τc = 94 000 × 0.001/(1 + 2.5) = 26.86 kPa。若把 γc 寫成 0.1、γref 寫成 0.0004，會得到幾乎等於 τmax = 37.6 kPa 的錯誤值。</div>
+  </div>
+</section>
+
+<section class="sec" id="q3" data-num="Q3" data-short="Q3 下孔試驗" data-title="作業：HW3 Q3 下孔試驗">
+  <div class="sec-head"><span class="sec-num">Q3</span><h2>作業：HW3 Q3 下孔試驗與等值線性參數</h2></div>
+  <p class="src">出處：HW3 Question 3；資料 downhole_test.csv；學生程式 C1_downhole.py、C1_process.xlsx；Hardin (1978)</p>
+
+  <p><b>題目（改寫）：</b>三層砂（0–4 m 疏鬆、4–10 m 中等緊密、10–20 m 緊密）位於較硬基盤上，地下水位 1 m，\(\rho\) = 1.95 t/m³、\(K_0\) = 0.5。下孔試驗震源緊鄰鑽孔，路徑視為垂直，量到 2、4、7、10、15、20 m 的 S 波到時。(a) 畫走時–深度，求各層 \(V_s\)、\(G_{max}\)；第 3 層與共振柱（Q1）及 Hardin (1978)（e = 0.70、15 m 處的 \(\sigma'_m\)）比較並討論。(b) 等值線性分析得第 3 層有效應變 0.05 %，用 Q1 的結果估計 G 與 D；這個分析能預測超額孔隙水壓嗎？</p>
+
+  <h3>解法</h3>
+  <ol>
+    <li>震源在地表，加入原點 (0, 0)。每層用層頂、層內、層底的受波器做直線迴歸 \(t = t_0 + z/V_s\)，斜率倒數即 \(V_s\)；另列相鄰受波器的區間速度作對照。</li>
+    <li>15 m 處：\(\sigma_v = 1.95 \times 9.81 \times 15 = 286.9\) kPa、\(u = 9.81 \times 14 = 137.3\) kPa、\(\sigma'_v = 149.6\) kPa、\(\sigma'_m = \tfrac23 \times 149.6 = 99.7\) kPa，與共振柱的壓密應力幾乎相同，兩者可直接比較。</li>
+    <li>Hardin：\(F(0.70) = 1/(0.3 + 0.343) = 1.555\)；\(G_{max} = 625 \times 1.555 \times \sqrt{101.325 \times 99.7} = 97.7\) MPa（\(p_a\) = 100 kPa 時 97.1 MPa）。</li>
+    <li>(b)：0.05 % 位於 stage 5（0.03 %）與 stage 6（0.1 %）之間，以 \(\log\gamma\) 內插 \(G/G_{max}\) 與 \(D\)，再乘以<b>現地</b> \(G_{max}\)。</li>
+  </ol>
+
+  <div id="w-hw3q3" data-title="HW3 Q3：走時迴歸、Gmax 比較與 γ = 0.05 % 的參數"></div>
+
+  <h3>答案</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>土層</th><th class="num">斜率 (ms/m)</th><th class="num">V<sub>s</sub> (m/s)</th><th class="num">G<sub>max</sub> (MPa)</th><th class="num">層中點 σ′<sub>m</sub> (kPa)</th></tr>
+    <tr><td>1 疏鬆砂（0–4 m）</td><td class="num">6.800</td><td class="num">147</td><td class="num">42.2</td><td class="num">19.0</td></tr>
+    <tr><td>2 中等緊密砂（4–10 m）</td><td class="num">4.683</td><td class="num">214</td><td class="num">88.9</td><td class="num">50.0</td></tr>
+    <tr class="hl"><td>3 緊密砂（10–20 m）</td><td class="num">3.720</td><td class="num">269</td><td class="num">140.9</td><td class="num">99.7</td></tr>
+  </table></div>
+  <div class="tablewrap"><table class="data">
+    <tr><th>第 3 層 G<sub>max</sub> 來源</th><th class="num">V<sub>s</sub> (m/s)</th><th class="num">G<sub>max</sub> (MPa)</th><th class="num">與 Hardin 之比</th></tr>
+    <tr class="hl"><td>下孔試驗（現地）</td><td class="num">269</td><td class="num">140.9</td><td class="num">1.44</td></tr>
+    <tr><td>共振柱（重模，e = 0.70、σ′<sub>m</sub> = 100 kPa）</td><td class="num">219</td><td class="num">93.2</td><td class="num">0.95</td></tr>
+    <tr><td>Hardin (1978)，σ′<sub>m</sub> = 99.7 kPa</td><td class="num">224</td><td class="num">97.7</td><td class="num">1.00</td></tr>
+  </table></div>
+  <ul class="ans-list">
+    <li><b>(a) 討論：</b>走時在 4 m 與 10 m 轉折，三段迴歸殘差都小於 0.2 ms，層界與題目一致。共振柱與 Hardin 只差 5 %：Hardin 式本來就是以重模砂的共振柱試驗建立的，兩者代表同一種「新鮮重模」狀態。現地高約 50 %（\(V_s\) 高 23 %），原因是重模失去現地組構、老化與輕微膠結，現地孔隙比可能小於 0.70，以及取樣擾動。工程上 \(G_{max}\) 以現地為準；只用實驗室 \(G_{max}\) 會低估第 3 層勁度約三分之一。</li>
+    <li><b>(b) G 與 D：</b>內插得 \(G/G_{max}\) = 0.470、\(D\) = 9.76 %；\(G = 0.470 \times 140.9 = 66.2\) MPa（等效 \(V_s\) = 184 m/s）。對照：雙曲線擬合 0.463 → 65.2 MPa；Darendeli 0.420、10.35 % → 59.2 MPa。</li>
+    <li><b>(b) 孔隙水壓：</b>不能。等值線性是總應力分析，每次疊代用一組固定的 G、D 做線性黏彈性計算，沒有剪力–體積耦合，也不追蹤有效應力。第 3 層在地下水位以下，0.05 % 又高於 \(\gamma_{tv}\) ≈ 0.01 %，不排水反覆剪動下孔隙水壓會逐圈累積、G 持續下降，這種隨時間演變的過程無法用一組等值參數表示。只能把算出的反覆剪應力代入 Ch8 的經驗液化評估，或改做有效應力非線性分析。</li>
+  </ul>
+
+  <div class="quiz" data-num="147" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">第 1 層用 (0, 0)、(2 m, 13.5 ms)、(4 m, 27.2 ms) 三點迴歸，斜率 6.80 ms/m。Vs 是多少 m/s？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="Vs (m/s)"><button class="btn">檢查</button></div>
+    <div class="fb">Vs = 1/斜率 = 1000/6.80 = 147 m/s；Gmax = 1.95 × 147² = 42.2 MPa。注意 ms/m 換成 s/m 要除以 1000。</div>
+  </div>
+</section>
+
+<section class="sec" id="q4" data-num="Q4" data-short="Q4 隔振墊" data-title="Q4 隔振墊 SDOF">
+  <div class="sec-head"><span class="sec-num">Q4</span><h2>Q4：隔振墊 SDOF</h2></div>
+  <p class="src">出處：HW3 Question 4；資料 sdof_frequency_response.csv；學生程式 D1_sdof_isolation.py、D1_process.xlsx；HW3_報告說明.md</p>
+
+  <p>對振動敏感的儀器 m = 2,000 kg 放在隔振墊上，視為 SDOF。振動機施加 \(p(t) = p_0\sin\bar\omega t\)、\(p_0 = 0.5\) kN，量 4–12 Hz 的穩態位移振幅（81 點）。這一題與前三題的場址無關。</p>
+
+  <h3>(a) 隔振墊的性質：\(f_n\)、\(k\)、\(\xi\)、\(c\)</h3>
+  <p><b>做法</b>：最大點與左右兩點做拋物線內插求峰（\(f_{peak}\)、\(U_{max}\)）。(i) 共振放大法：\(k = m(2\pi f_n)^2\)、\(\rho_s = p_0/k\)、\(D_{max} = U_{max}/\rho_s = 1/(2\xi\sqrt{1-\xi^2})\)，再以 \(f_{peak} = f_n\sqrt{1-2\xi^2}\) 修正 \(f_n\)，兩式疊代到收斂；(ii) 半功率頻寬法：在 \(U_{max}/\sqrt2\) 處線性內插 \(f_1\)、\(f_2\)，\(\xi = (f_2-f_1)/(f_2+f_1)\)。兩法平均作為 (b)、(c) 的採用值。</p>
+  <div id="w-hw3q4a" data-title="HW3 Q4(a)：實測頻率響應與兩種方法"></div>
+  <p><b>答</b>：\(f_{peak}\) = 7.97 Hz、\(U_{max}\) = 0.6221 mm。共振放大法 \(f_n\) = 8.019 Hz、\(\xi\) = 7.94 %；半功率法 \(f_1\) = 7.28、\(f_2\) = 8.562 Hz，\(\xi\) = 8.11 %。採用 \(f_n\) = <b>8.020 Hz</b>、\(\xi\) = <b>8.02 %</b>、\(k\) = <b>5,079 kN/m</b>、\(c = 2\xi\sqrt{km}\) = <b>16.17 kN·s/m</b>。兩法只差約 0.2 %，表示這個隔振墊接近線性的黏滯阻尼系統。</p>
+
+  <h3>(b) 地板振動傳到儀器</h3>
+  <p>附近施工使地板振動 \(u_g = u_{g0}\sin\bar\omega t\)、\(u_{g0}\) = 0.05 mm。儀器的總位移振幅 \(U_{total} = u_{g0}\,TR_2\)，\(TR_2 = D\sqrt{1+(2\xi\beta)^2}\)（<a href="../units/u04.html#s4-10">4.10 情況 b</a>）。</p>
+  <div id="w-hw3b" data-title="HW3 Q4(b)：地板振動傳到儀器"></div>
+  <div class="tablewrap"><table class="data">
+    <tr><th>地板頻率</th><th class="num">β</th><th class="num">TR₂</th><th class="num">U<sub>total</sub> (mm)</th><th>判斷</th></tr>
+    <tr><td>15 Hz</td><td class="num">1.870</td><td class="num">0.415</td><td class="num">0.0207</td><td>減振</td></tr>
+    <tr><td>8 Hz</td><td class="num">0.998</td><td class="num">6.32</td><td class="num">0.316</td><td>共振放大</td></tr>
+  </table></div>
+  <p><b>答</b>：15 Hz 時儀器振幅 0.0207 mm，比地板小（減振）；8 Hz 幾乎就是共振，放大 6.3 倍到 0.316 mm。\(TR_2 = 1\) 發生在 \(\beta = \sqrt2\)，與阻尼比無關，所以地板頻率高於 \(\sqrt2 f_n\) = <b>11.34 Hz</b> 時隔振墊才有減振效果。</p>
+
+  <h3>(c) 每圈能量與阻尼比的定義</h3>
+  <p>\(\rho_d = \rho_sD\)、\(W_D = \pi c\bar\omega\rho_d^2\)、\(W_S = \tfrac12k\rho_d^2\)（<a href="../units/u04.html#s4-8">4.8</a>）。</p>
+  <div id="w-hw3q4c" data-title="HW3 Q4(c)：力–位移迴圈與焦耳"></div>
+  <div class="tablewrap"><table class="data">
+    <tr><th>β</th><th class="num">W<sub>D</sub> (J)</th><th class="num">W<sub>S</sub> (J)</th><th class="num">W<sub>D</sub>/(4πW<sub>S</sub>)</th><th>與 ξ = 0.0802 比較</th></tr>
+    <tr><td>1</td><td class="num">0.964</td><td class="num">0.956</td><td class="num">0.0802</td><td>= ξ</td></tr>
+    <tr><td>0.5</td><td class="num">0.0218</td><td class="num">0.0433</td><td class="num">0.0401</td><td>= ξβ，只有 ξ 的一半</td></tr>
+  </table></div>
+  <p><b>答</b>：黏滯阻尼器的比值 \(W_D/(4\pi W_S) = \xi\beta\)，只有在共振時才等於 \(\xi\)。土壤每圈消散的能量來自顆粒接觸面的摩擦（遲滯阻尼），在地震頻率範圍內幾乎與頻率無關，迴圈面積只由應變振幅決定。所以土壤的阻尼比直接用一個迴圈定義 \(\xi = W_D/(4\pi W_S)\)，等於「讓等值的黏滯阻尼器在共振時每圈消散相同能量」，因此不含頻率比（<a href="../units/u08.html#s8-4">8.4</a>）。</p>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="hw2.html"><span class="dir">← 上一份作業</span>HW2</a>
+  <a class="next" href="../index.html"><span class="dir">回到 →</span>課程主頁</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/data/hw3_q4.js"></script>
+<script src="../assets/data/ch3_hw3_rc.js"></script>
+<script src="../assets/data/ch5_hw3.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/waves.js"></script>
+<script src="../assets/widgets/vibration.js"></script>
+<script src="../assets/widgets/soil.js"></script>
+</body>
+</html>

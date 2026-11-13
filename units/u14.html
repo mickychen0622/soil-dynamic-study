@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14. 液化潛能與液化後果 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  table.edit input, table.edit select { width: 5.6em; padding: 5px 8px; border: 0; border-radius: 8px; background: var(--inset); color: var(--ink); font: inherit; font-size: 14px; font-variant-numeric: tabular-nums; }
+  table.edit select { width: auto; }
+  table.edit td, table.edit th { padding: 6px 8px; vertical-align: middle; }
+  table.edit td.lab { white-space: nowrap; color: var(--muted); font-size: 14px; }
+  table.data.compact td, table.data.compact th { padding: 7px 9px; font-size: 14px; }
+  .mini-note { font-size: 13px; color: var(--muted); margin: .4em 0 0; }
+</style>
+</head>
+<body data-page="u14" data-root="../" data-title="14. 液化潛能與後果">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 5 土壤液化 · 單元 14 · Liquefaction Potential Index and Consequences</div>
+  <h1>液化潛能與液化後果</h1>
+  <p class="lede"><b>液化了，然後呢？</b>把整個鑽孔的 FS<sub>L</sub> 依厚度與深度加權成液化潛能指數 P<sub>L</sub>；再看液化怎麼改變地表運動、推壞樁基、造成沉陷、側潰與流動破壞，以及怎麼減災。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>同樣有一層液化，為什麼有的場址只是噴砂，有的整排房子下陷、河岸滑動？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>對整個鑽孔計算 FS<sub>L</sub> 剖面與 P<sub>L</sub>，並分級</li>
+    <li>說明液化對地表運動與樁基的影響</li>
+    <li>由 FS<sub>L</sub> 與密度估計液化後沉陷（Tokimatsu &amp; Seed、Ishihara &amp; Yoshimine）</li>
+    <li>估計側潰位移（LDI），說明流動破壞的殘餘強度與減災策略</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u13.html"><h4>上一單元 · 液化觸發評估</h4><p>每個深度的 FS<sub>L</sub> = CRR/CSR。</p></a>
+    <a class="card" href="../units/u10.html"><h4>相關 · 單元 10 一維線性地盤反應</h4><p>液化後勁度幾乎消失，場址週期 4H/V<sub>s</sub> 大幅變長。</p></a>
+  </div>
+</header>
+
+<section class="sec" id="s14-1" data-num="14.1" data-short="液化潛能指數" data-title="整孔評估與液化潛能指數">
+  <div class="sec-head"><span class="sec-num">14.1</span><h2>整孔評估與液化潛能指數 P<sub>L</sub></h2></div>
+  <p class="src">出處：Ch8 講義 3.1–3.3；教師 PDF p.50–52</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>一層 1 m 厚、FS = 0.5 的砂，在 2 m 深和在 15 m 深，對地面上的房子一樣危險嗎？</p>
+  </div>
+
+  <p>講義的鑽孔（GWT 1 m、a<sub>max</sub> = 0.24g、M<sub>w</sub> = 7.0）：3–9 m 的鬆粉質砂 FS<sub>L</sub> ≈ 0.76–0.94，液化；10 m 以下 N 較大、r<sub>d</sub> 較小，FS<sub>L</sub> &gt; 1.2。要回答「整個場址有多嚴重」，要同時考慮液化層的<b>厚度</b>、<b>深度</b>、<b>FS 小多少</b>：</p>
+  <div class="eqbox">\[ P_L = \int_0^{20}F(z)\,W(z)\,dz \] \[ F = \max(0,\ 1 - FS_L),\qquad W = 10 - 0.5z \]</div>
+  <div class="tablewrap"><table class="data">
+    <tr><th>P<sub>L</sub></th><th>分級（Iwasaki et al. 1982）</th></tr>
+    <tr><td>&gt; 15</td><td>嚴重液化</td></tr>
+    <tr><td>5–15</td><td>中度液化</td></tr>
+    <tr><td>≤ 5</td><td>輕微液化</td></tr>
+  </table></div>
+  <p>越淺權重越大（地表 10、20 m 處 0）：淺層液化才會造成噴砂、沉陷、基礎破壞，深層液化的影響被上覆非液化層「蓋住」。經濟部地質調查所的土壤液化潛勢圖即以 P<sub>L</sub> 分級；P<sub>L</sub> 依採用的 FS 方法而不同，不同機構的地圖不能直接比較數值。</p>
+
+  <div id="w-boring" data-title="整孔液化評估：FS_L、P_L、沉陷與側潰"></div>
+  <p class="mini-note">預設鑽孔依講義 p.51 的 N<sub>m</sub> 剖面讀圖近似重建（FC 為假設值），不是原始資料。沉陷與最大剪應變用 Idriss &amp; Boulanger (2008) 對 Ishihara &amp; Yoshimine (1992) 圖的近似式，D<sub>r</sub> = √((N<sub>1</sub>)<sub>60cs</sub>/46)；LDI 只計 15 m 內。</p>
+
+  <div class="callout example"><div class="ct">例：預設鑽孔（本頁計算）</div>
+    <p>Youd (2001)：3–9 m 的 FS<sub>L</sub> ≈ 0.72–0.87，FS &lt; 1 總厚約 7 m，<b>P<sub>L</sub> ≈ 9.2</b>，中度（講義 9.7）。同一鑽孔用 HBF 得 6.9、用 B&amp;I 得 12.3：分級相同，數值差近一倍。按「把 3–9 m 改良到 N<sub>m</sub> = 25」，P<sub>L</sub> 降到約 1.7；按「地下水位降到 4 m」，P<sub>L</sub> 降到約 0.8。降水與加密都有效，前者靠減少飽和層、後者靠提高 CRR。</p>
+  </div>
+
+  <div class="quiz" data-num="4.5" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">只有一層 1 m 厚、中點深 2 m、FS<sub>L</sub> = 0.5 的砂。P<sub>L</sub> = ?</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="P_L"><button class="btn">檢查</button></div>
+    <div class="fb">F = 0.5、W = 10 − 0.5 × 2 = 9 → P_L = 0.5 × 9 × 1 = 4.5。同一層在 15 m 深：W = 2.5 → 1.25。</div>
+  </div>
+</section>
+
+<section class="sec" id="s14-2" data-num="14.2" data-short="地動與樁基" data-title="液化對地表運動與樁基的影響">
+  <div class="sec-head"><span class="sec-num">14.2</span><h2>液化對地表運動與樁基的影響</h2></div>
+  <p class="src">出處：Ch8 講義 3.4–3.7；教師 PDF p.53–56</p>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>流動液化</th><th>反覆流動性</th></tr>
+    <tr><td>大規模流滑；重結構物下陷傾倒；輕的地下結構物上浮（人孔、管線）；擋土結構破壞</td><td>邊坡坍滑；建物沉陷；側潰；擋土牆破壞；地表振盪、地盤沉陷、噴砂</td></tr>
+  </table></div>
+
+  <h3>濾掉高頻</h3>
+  <p>1964 新潟（川岸町）的紀錄：前約 7 s 是一般的高頻震動；液化後土層勁度幾乎消失，紀錄變成週期約 6 s 的長週期擺盪。這就是單元 10 的觀念：G 大幅下降 → 場址週期 4H/V<sub>s</sub> 大幅變長、阻尼大 → 高頻被濾掉。地表 PGA 可能變小，但<b>位移與長週期反應變大</b>。</p>
+
+  <h3>地表振盪</h3>
+  <p>水平地盤也會壞：液化層把上方未液化的地殼與下方土層「解耦」，地殼像浮在液體上的板塊來回振盪，裂成塊、塊間張開閉合，造成裂縫、噴砂與管線破壞，地震後不一定留下永久位移。</p>
+
+  <h3>樁基</h3>
+  <p>液化層幾乎沒有勁度與強度，上下未液化層的相對位移集中在液化層，樁在兩個界面附近產生<b>大剪應變與大彎矩</b>。載重有兩種：上部結構的慣性力，與土壤側向位移推樁的運動力；側潰場址常由後者控制。設計時液化層的側向土壤反力要大幅折減，界面附近加強配筋。</p>
+</section>
+
+<section class="sec" id="s14-3" data-num="14.3" data-short="沉陷" data-title="液化後沉陷">
+  <div class="sec-head"><span class="sec-num">14.3</span><h2>液化後沉陷</h2></div>
+  <p class="src">出處：Ch8 講義 3.8–3.11；教師 PDF p.57–60</p>
+
+  <p><b>機制</b>：地震中不排水，孔隙比不變、有效應力因孔隙水壓上升而下降（A → B）；地震後孔隙水壓消散，有效應力回到原值，但沿較平的<b>再壓縮曲線</b>（B → C），孔隙比減小 Δe。即使 r<sub>u</sub> 只到 0.5 也有體積應變，只是較小。</p>
+  <div class="eqbox">\[ \varepsilon_v = \frac{\Delta e}{1+e_0},\qquad \Delta H = \sum_i \varepsilon_{v,i}\,\Delta z_i \]</div>
+  <ul>
+    <li><b>Tokimatsu &amp; Seed (1987)</b>：由 (N<sub>1</sub>)<sub>60</sub> 與 CSR<sub>M=7.5</sub> 查 ε<sub>v</sub>。完全液化時 (N<sub>1</sub>)<sub>60</sub> ≈ 8 約 3 %、≈ 15 約 2 %、≈ 29 約 1 %。</li>
+    <li><b>Ishihara &amp; Yoshimine (1992)</b>：由 FS<sub>L</sub> 與 D<sub>r</sub> 查 ε<sub>v</sub>（另有 γ<sub>max</sub> 等值線）。FS<sub>L</sub> &gt; 約 1.2 很小；1.0–1.2 快速增加；完全液化時只由密度決定（D<sub>r</sub> 40 % 約 4 %、80 % 約 2 %）。可直接接單元 13 的 FS<sub>L</sub>。</li>
+  </ul>
+
+  <div class="callout example"><div class="ct">例：1989 Loma Prieta，舊金山 Marina District（PGA 0.2g）</div>
+    <div class="tablewrap"><table class="data compact">
+      <tr><th>層</th><th>深度 (m)</th><th class="num">N</th><th class="num">(N<sub>1</sub>)<sub>60</sub></th><th class="num">CSR</th><th class="num">ε<sub>v</sub> (%)</th><th class="num">ΔH (m)</th></tr>
+      <tr><td>1</td><td>2.5–3.5</td><td class="num">5</td><td class="num">7.5</td><td class="num">0.141</td><td class="num">3.0</td><td class="num">0.030</td></tr>
+      <tr><td>2</td><td>3.5–5.3</td><td class="num">9</td><td class="num">11.4</td><td class="num">0.165</td><td class="num">2.4</td><td class="num">0.043</td></tr>
+      <tr><td>3</td><td>5.3–6.8</td><td class="num">8</td><td class="num">8.6</td><td class="num">0.180</td><td class="num">2.8</td><td class="num">0.042</td></tr>
+      <tr><td>4</td><td>6.8–8.5</td><td class="num">19</td><td class="num">18.7</td><td class="num">0.186</td><td class="num">0.2</td><td class="num">0.003</td></tr>
+      <tr class="hl"><td colspan="6">合計</td><td class="num">0.118</td></tr>
+    </table></div>
+    <p>每層 ΔH = 層厚 × ε<sub>v</sub>（例：1.8 m × 2.4 % = 0.043 m），約 12 cm，由三層鬆砂質回填主導。下方的灣泥不液化，但它放大地表運動，使 CSR 變大：人工回填＋淺地下水位＋軟土放大是典型的高風險組合。</p>
+  </div>
+
+  <div class="quiz" data-num="0.03" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">一層 1.5 m 厚的砂，液化後體積應變 2 %。沉陷多少公尺？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="ΔH (m)"><button class="btn">檢查</button></div>
+    <div class="fb">ΔH = 0.02 × 1.5 = 0.03 m = 3 cm。整孔把每一層加起來即可。</div>
+  </div>
+</section>
+
+<section class="sec" id="s14-4" data-num="14.4" data-short="側潰與流動" data-title="側潰、流動破壞與殘餘強度">
+  <div class="sec-head"><span class="sec-num">14.4</span><h2>側潰、流動破壞與殘餘強度</h2></div>
+  <p class="src">出處：Ch8 講義 3.12–3.13；教師 PDF p.61–62</p>
+
+  <h3>側潰（lateral spreading）</h3>
+  <p>緩坡或自由面（河岸、碼頭）旁，液化層上方的地殼往低處移動，坡度只有 0.5–5 % 也可移動數公尺。Zhang et al. (2004)：</p>
+  <div class="eqbox">\[ LDI = \int_0^{z_{max}}\gamma_{max}(z)\,dz,\qquad LD = (S + 0.2)\,LDI\ \ (\text{緩坡}),\qquad LD = 6\left(\frac{L}{H}\right)^{-0.8}LDI\ \ (\text{自由面}) \]</div>
+  <p>γ<sub>max</sub> 由 FS<sub>L</sub> 與 D<sub>r</sub> 查 Ishihara &amp; Yoshimine 圖，以小數代入（LDI 單位為 m）；S 以 % 代入（0.2–3.5 %），自由面式適用 4 &lt; L/H &lt; 40。經驗替代法：Youd et al. (2002) 的回歸式。</p>
+  <div class="callout example"><div class="ct">例</div>
+    <p>液化層 4 m、平均 γ<sub>max</sub> = 10 % → LDI = 0.4 m。緩坡 S = 1 %：LD = 1.2 × 0.4 ≈ <b>0.5 m</b>。同一層在高 5 m 的河岸旁、距岸 50 m：LD = 6 × 10<sup>−0.8</sup> × 0.4 ≈ <b>0.38 m</b>，越接近岸邊越大。</p>
+  </div>
+
+  <h3>流動破壞與殘餘強度</h3>
+  <p>靜態驅動剪應力大於液化土的殘餘強度 S<sub>r</sub> 時發生流動破壞；以 S<sub>r</sub> 代入液化區做邊坡穩定分析：FS<sub>flow</sub> = 抵抗 / 驅動。S<sub>r</sub> 由案例反算（Seed &amp; Harder 1990、Olson &amp; Stark 2002、Idriss &amp; Boulanger 2008），常寫成 S<sub>r</sub>/σ′<sub>v0</sub> 對 (N<sub>1</sub>)<sub>60cs</sub>。</p>
+  <ul>
+    <li><b>孔隙重分布</b>：液化砂上方有低透水層時，往上流的水被擋住、聚在界面下方，界面下的砂變鬆甚至形成水膜，強度遠低於「孔隙比不變」的預測；有此可能時取 S<sub>r</sub> 的較低值。</li>
+    <li>室內穩態強度對孔隙比極敏感，取樣與重新壓密都會改變 e，所以很少直接使用。</li>
+  </ul>
+
+  <div class="quiz" data-answer="0">
+    <div class="qh">小測驗</div>
+    <div class="qq">液化砂層上方有一層薄粉土。估計流動破壞時，S<sub>r</sub> 應取？</div>
+    <div class="opts">
+      <button class="opt">較低值，因為可能發生孔隙重分布</button>
+      <button class="opt">較高值，因為粉土提供額外的抵抗</button>
+      <button class="opt">室內穩態強度試驗值</button>
+    </div>
+    <div class="fb">低透水層擋住向上流的水，界面下的砂吸水變鬆（水膜），強度大幅降低。案例反算的 S_r 圖中，可能發生孔隙重分布時要用下緣。</div>
+  </div>
+</section>
+
+<section class="sec" id="s14-5" data-num="14.5" data-short="減災" data-title="液化災害的減災">
+  <div class="sec-head"><span class="sec-num">14.5</span><h2>減災：依性能目標選擇</h2></div>
+  <p class="src">出處：Ch8 講義 3.14–3.15；教師 PDF p.63–64</p>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>策略</th><th>例子</th><th>機制</th></tr>
+    <tr><td>加密</td><td>振動壓密、動力夯實、壓密灌漿</td><td>提高 D<sub>r</sub>：CRR 提高、變成膨脹型</td></tr>
+    <tr><td>加勁</td><td>碎石樁、深層攪拌、噴射灌漿、樁</td><td>加勁體分擔剪力、降低土中應變</td></tr>
+    <tr><td>排水</td><td>排水帶、礫石排水</td><td>地震中消散 Δu</td></tr>
+    <tr><td>其他</td><td>去飽和、地工合成材、結構設計</td><td>降低 Δu 或容許變形</td></tr>
+  </table></div>
+  <p>先定性能目標：防止液化發生，或只限制沉陷與側向變形。以單元 13 的例題為例，要 FS<sub>L</sub> ≥ 1.2，CRR 需約 0.32，(N<sub>1</sub>)<sub>60cs</sub> 要由 17 提高到約 26；施工後以 SPT 或 CPT 驗證。振動壓密對細粒料超過 15–20 % 的土效果差，改用碎石樁或深層攪拌；既有建物下不能大型振動施工，改用灌漿、微型樁或排水。</p>
+
+  <div class="callout intuition"><div class="ct">Ch5–8 一條鏈</div>
+    <p>V<sub>s</sub> 剖面 → 應變相依性質（單元 7–9）→ τ(t)、γ(t)（單元 10–11）→ 性能（本階段的液化）。簡化法的 r<sub>d</sub>、N<sub>eq</sub> 是地盤反應分析的統計結果；等值線性不能算孔隙水壓，液化場址要用有效應力分析；液化後土層變成長週期濾波器，又回到單元 10 的場址週期。</p>
+  </div>
+</section>
+
+<section class="sec" id="s14-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">液化潛能指數</div>\[ P_L = \int_0^{20}\max(0,1-FS_L)(10-0.5z)\,dz \]</div>
+    <div class="fcard"><div class="ft">沉陷</div>\[ \Delta H = \sum\varepsilon_{v,i}\Delta z_i \]</div>
+    <div class="fcard"><div class="ft">側潰指數</div>\[ LDI = \int\gamma_{max}\,dz \]</div>
+    <div class="fcard"><div class="ft">側潰位移</div>\[ LD = (S+0.2)LDI,\ \ 6(L/H)^{-0.8}LDI \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>只看最小 FS<sub>L</sub></b>：場址嚴重性要看厚度與深度（P<sub>L</sub>）。</li>
+    <li><b>比較不同機構的 P<sub>L</sub></b>：FS 方法不同，數值不能直接比。</li>
+    <li><b>以為液化會讓地表加速度變大</b>：高頻被濾掉，但位移與長週期反應變大。</li>
+    <li><b>LDI 用 % 代入</b>：γ<sub>max</sub> 用小數，LDI 才是公尺。</li>
+    <li><b>FS<sub>L</sub> 略大於 1 就沒有沉陷</b>：1.0–1.2 仍有體積應變。</li>
+  </ul>
+  <div class="quiz" data-answer="1">
+    <div class="qh">綜合題</div>
+    <div class="qq">某場址 P<sub>L</sub> = 18，液化層在 2–8 m，旁邊 30 m 有 4 m 高的河岸。最需要優先評估的是？</div>
+    <div class="opts">
+      <button class="opt">地表 PGA 會不會因液化而放大</button>
+      <button class="opt">側潰位移（LDI 與自由面式），以及河岸附近樁基的側向推力</button>
+      <button class="opt">更深處 15–20 m 的 FS<sub>L</sub></button>
+    </div>
+    <div class="fb">P_L &gt; 15 屬嚴重、液化層淺，L/H = 7.5 落在自由面式範圍內。側潰常是橋台、碼頭、管線與樁基破壞的主因；液化後地表 PGA 多半變小，而深層的 W 很小。</div>
+  </div>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>整門課到這裡從斷層串到液化後果。回到主頁看作業怎麼用到這些觀念。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u13.html"><span class="dir">← 單元 13</span>液化觸發評估：簡化法</a>
+  <a class="next" href="../index.html"><span class="dir">回到 →</span>課程主頁與作業</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/liquefaction.js"></script>
+</body>
+</html>

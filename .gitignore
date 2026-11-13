@@ -1,0 +1,5 @@
+# macOS / exFAT metadata
+._*
+.DS_Store
+# old archive snapshot (history now lives in git)
+StudyWeb.zip

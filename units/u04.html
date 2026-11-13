@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4. 單自由度振動 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body data-page="u04" data-root="../" data-title="4. SDOF 振動">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 2 振動與頻率 · 單元 4 · Single-Degree-of-Freedom Vibration</div>
+  <h1>單自由度振動</h1>
+  <p class="lede"><b>一個質量、一根彈簧、一個阻尼器。</b>共振柱、場址放大、機器基礎與隔震，全部都用這套語言描述：系統有自己的自然頻率和阻尼比，被搖動時，反應取決於「搖的頻率」和「自己的頻率」之比。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>一個系統被搖動時，什麼決定它搖得多大？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>寫出 SDOF 的運動方程式，並說明自然頻率 \(\omega\) 與阻尼比 \(\xi\) 的物理意義</li>
+    <li>判斷次阻尼、臨界阻尼、超阻尼三種自由振動，並解出初始條件下的反應</li>
+    <li>由 \(\beta\) 和 \(\xi\) 求出穩態振幅 \(D\) 與相位落後 \(\varphi\)，並用旋轉向量和力多邊形解釋三個頻率區</li>
+    <li>說明共振為什麼需要時間累積，以及阻尼比的能量定義 \(\xi = W_D/4\pi W_S\)</li>
+    <li>用自由衰減、共振放大、半功率頻寬三種方法從實驗資料求阻尼比，並知道各自的弱點</li>
+    <li>用傳遞率設計隔振</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u03.html"><h4>上一單元 · 描述地動：時間域參數</h4><p>振幅與延時都有了，還缺「頻率」。要談頻率，先學系統怎麼振動。</p></a>
+    <a class="card" href="../units/u05.html"><h4>下一單元 · 頻率的觀點：頻譜、反應譜與卓越週期</h4><p>真實地震不是單一頻率。下一單元用頻譜與反應譜把 SDOF 用到地震紀錄上。</p></a>
+  </div>
+  <div class="callout pitfall"><div class="ct">符號提醒</div>
+    <p>本單元的 \(D\) 是<b>動態放大因子</b>，阻尼比寫作 \(\xi\)。到了單元 8、9（土壤性質與室內試驗），\(D\) 改指<b>阻尼比</b>。看到 \(D\) 時先確認是哪一種定義。</p>
+  </div>
+</header>
+
+<section class="sec" id="s4-1" data-num="4.1" data-short="SDOF 模型" data-title="一個質量、一根彈簧、一個阻尼器">
+  <div class="sec-head"><span class="sec-num">4.1</span><h2>一個質量、一根彈簧、一個阻尼器</h2></div>
+  <p class="src">出處：Ch4 講義 1.1–1.3</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>共振柱裡高 10 cm 的土樣、60 m 深的軟弱土層、放在橡膠墊上的精密儀器，尺度差了上千倍，為什麼可以用同一條方程式描述？</p>
+  </div>
+
+  <p>因為它們都只有「一個主要的運動方式」。只要一個位移 \(u\) 就能描述整個系統的狀態，這樣的系統稱為<b>單自由度系統（SDOF）</b>。它由三個元件組成：質量 \(m\) 儲存動能、彈簧 \(k\) 儲存位能、阻尼器 \(c\) 把能量消散掉。</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 640 190" width="640" role="img" aria-label="SDOF 模型與自由體圖">
+      <!-- 左：模型 -->
+      <g class="s-ink" fill="none" stroke-width="1.4">
+        <line x1="30" y1="30" x2="30" y2="150"/>
+        <g stroke-width="1"><line x1="30" y1="40" x2="20" y2="50"/><line x1="30" y1="60" x2="20" y2="70"/><line x1="30" y1="80" x2="20" y2="90"/><line x1="30" y1="100" x2="20" y2="110"/><line x1="30" y1="120" x2="20" y2="130"/><line x1="30" y1="140" x2="20" y2="150"/></g>
+        <polyline points="30,65 60,65 68,52 82,78 96,52 110,78 124,52 132,65 170,65"/>
+        <line x1="30" y1="115" x2="85" y2="115"/>
+        <polyline points="85,100 85,130"/>
+        <polyline points="75,100 115,100"/><polyline points="75,130 115,130"/>
+        <line x1="100" y1="106" x2="100" y2="124" stroke-width="2.4"/>
+        <line x1="100" y1="115" x2="170" y2="115"/>
+        <rect x="170" y="45" width="70" height="90" rx="3"/>
+        <line x1="240" y1="90" x2="290" y2="90"/>
+        <path d="M290 90 l-9 -4.5 v9 z" class="f-ink"/>
+        <line x1="205" y1="160" x2="255" y2="160"/>
+        <path d="M255 160 l-9 -4.5 v9 z" class="f-ink"/>
+        <line x1="205" y1="152" x2="205" y2="168"/>
+        <line x1="150" y1="140" x2="260" y2="140" stroke-width="1" class="s-gray"/>
+      </g>
+      <text x="96" y="46" class="txt" text-anchor="middle" font-style="italic">k</text>
+      <text x="96" y="152" class="txt" text-anchor="middle" font-style="italic">c</text>
+      <text x="205" y="96" class="txt" text-anchor="middle" font-style="italic">m</text>
+      <text x="296" y="95" class="txt" font-style="italic">p(t)</text>
+      <text x="262" y="165" class="txt" font-style="italic">u</text>
+      <text x="160" y="186" class="txt-muted" text-anchor="middle">(a) 模型</text>
+      <!-- 右：自由體圖 -->
+      <g class="s-ink" fill="none" stroke-width="1.4">
+        <rect x="455" y="55" width="70" height="70" rx="3"/>
+        <line x1="525" y1="90" x2="600" y2="90"/><path d="M600 90 l-9 -4.5 v9 z" class="f-ink"/>
+        <line x1="455" y1="70" x2="385" y2="70"/><path d="M385 70 l9 -4.5 v9 z" class="f-ink"/>
+        <line x1="455" y1="90" x2="385" y2="90"/><path d="M385 90 l9 -4.5 v9 z" class="f-ink"/>
+        <line x1="455" y1="110" x2="385" y2="110"/><path d="M385 110 l9 -4.5 v9 z" class="f-ink"/>
+      </g>
+      <text x="605" y="95" class="txt" font-style="italic">p(t)</text>
+      <text x="345" y="74" class="txt">f<tspan font-size="72%" baseline-shift="-25%">I</tspan> = m ü</text>
+      <text x="345" y="94" class="txt">f<tspan font-size="72%" baseline-shift="-25%">D</tspan> = c u̇</text>
+      <text x="345" y="114" class="txt">f<tspan font-size="72%" baseline-shift="-25%">S</tspan> = k u</text>
+      <text x="490" y="186" class="txt-muted" text-anchor="middle">(b) 自由體圖（D'Alembert）</text>
+    </svg>
+    <figcaption>SDOF 的三個元件，以及把慣性當成「力」之後的平衡</figcaption>
+  </figure>
+
+  <p>把慣性 \(m\ddot u\) 移到力的一側並加上負號（D'Alembert 原理），動力問題就變成一個「靜力平衡」：</p>
+  <div class="eqbox">\[ m\ddot u + c\dot u + k u = p(t) \]</div>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>項</th><th>力</th><th>配對的運動量</th><th>物理角色</th></tr>
+    <tr><td>\(m\ddot u\)</td><td>慣性力 \(f_I\)</td><td>加速度</td><td>抗拒速度改變</td></tr>
+    <tr><td>\(c\dot u\)</td><td>阻尼力 \(f_D\)</td><td>速度</td><td>消散能量</td></tr>
+    <tr><td>\(k u\)</td><td>彈簧力 \(f_S\)</td><td>位移</td><td>把系統拉回平衡</td></tr>
+  </table></div>
+  <p>記住這個「力 ↔ 運動量」的配對：簡諧運動中，速度領先位移 90°、加速度領先 180°，這正是 4.4 旋轉向量圖和 4.6 力多邊形的來源。</p>
+
+  <h3>線性帶來的超能力：疊加</h3>
+  <p>\(m\)、\(c\)、\(k\) 是常數，\(u\) 只以一次方出現，所以方程式是<b>線性</b>的。若 \(u_1\) 是外力 \(p_1\) 的解、\(u_2\) 是 \(p_2\) 的解，則 \(u_1+u_2\) 是 \(p_1+p_2\) 的解。</p>
+  <div class="callout intuition"><div class="ct">為什麼整章只算正弦外力</div>
+    <p>任何不規則的載重（地震紀錄、機器振動）都能用 Fourier 轉換拆成許多頻率的正弦波。只要知道系統對「單一頻率」的反應，把各頻率的反應加回去，就是總反應。這正是 SHAKE 等頻率域地盤反應程式的做法：Fourier 分解 → 乘上轉換函數 → 加總（<a href="u10.html#s10-4">10.4</a>）。</p>
+  </div>
+
+  <div class="callout example"><div class="ct">例：把一層土看成 SDOF</div>
+    <p>厚度 \(H\) 的均勻土層放在剛性岩盤上：\(m\) 是參與振動的土體質量，\(k\) 是土層的剪力勁度（每單位面積約 \(G/H\)）。之後會看到它的基本週期是 \(T = 4H/V_s\)（<a href="u05.html#s5-3">5.3</a>、<a href="u10.html#s10-6">10.6</a>）。</p>
+    <p>\(H = 60\) m、\(V_s = 200\) m/s → \(T = 4 \times 60 / 200 = 1.2\) s。若地震的主要週期接近 1.2 s，這層土就會明顯放大地表運動。</p>
+  </div>
+
+  <div class="quiz" data-answer="2">
+    <div class="qh">小測驗</div>
+    <div class="qq">土壤在大應變下勁度會隨應變變小（k 不再是常數）。這時疊加原理還成立嗎？</div>
+    <div class="opts">
+      <button class="opt">成立，因為方程式形式沒有改變</button>
+      <button class="opt">成立，只要阻尼比夠小</button>
+      <button class="opt">不成立，k 隨 u 改變時方程式不再是線性</button>
+    </div>
+    <div class="fb">k = k(u) 讓 ku 不再是 u 的一次式，疊加原理失效。這就是<a href="u11.html">單元 11</a> 要用「等值線性」的原因：先猜一個應變對應的 G，做線性分析，再用算出的應變更新 G，反覆迭代到一致。真正的非線性分析則要在時間域逐步積分。</div>
+  </div>
+</section>
+
+<section class="sec" id="s4-2" data-num="4.2" data-short="無阻尼" data-title="無阻尼自由振動">
+  <div class="sec-head"><span class="sec-num">4.2</span><h2>無阻尼自由振動</h2></div>
+  <p class="src">出處：Ch4 講義 1.4–1.7</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>把質量拉開一段距離、給它一個初速後放手，之後的振幅和週期由什麼決定？</p>
+  </div>
+
+  <p>沒有外力（\(p=0\)）也沒有阻尼（\(c=0\)）時，方程式剩下 \(m\ddot u + ku = 0\)。猜 \(u = Ge^{\lambda t}\)：指數函數微分後和自己成正比，代入後每一項都帶有 \(Ge^{\lambda t}\)，消去後得到<b>特徵方程式</b>：</p>
+  \[ m\lambda^2 + k = 0 \;\Rightarrow\; \lambda = \pm i\omega, \qquad \omega = \sqrt{k/m} \]
+  <p>根是純虛數，代表系統以頻率 \(\omega\) 永遠振動。用 Euler 公式把複數解換成實數形式：</p>
+  <div class="eqbox">\[ u(t) = \frac{\dot u(0)}{\omega}\sin\omega t + u(0)\cos\omega t = \rho\cos(\omega t - \varphi) \]
+  \[ \rho = \sqrt{\left(\frac{\dot u(0)}{\omega}\right)^2 + u(0)^2}, \qquad \tan\varphi = \frac{\dot u(0)}{\omega\,u(0)} \]</div>
+
+  <details class="derive"><summary>推導：把 A sin + B cos 合成一個 cos</summary><div class="body">
+    <ol class="steps">
+      <li>設 \(u = \rho\cos(\omega t-\varphi) = \rho\cos\varphi\cos\omega t + \rho\sin\varphi\sin\omega t\)。</li>
+      <li>與 \(u = A\sin\omega t + B\cos\omega t\) 比較係數：\(\rho\cos\varphi = B\)、\(\rho\sin\varphi = A\)。</li>
+      <li>平方相加得 \(\rho = \sqrt{A^2+B^2}\)，相除得 \(\tan\varphi = A/B\)；象限由 A、B 的正負決定。</li>
+      <li>初始條件：\(t=0\) 時 \(u(0) = B\)，\(\dot u(0) = A\omega\)。</li>
+    </ol>
+    <p>這個技巧在 4.4 強迫振動會再用一次。</p>
+  </div></details>
+
+  <p>結論很直接：<b>週期只由系統決定</b>（\(m\)、\(k\)），<b>振幅只由初始條件決定</b>（怎麼放手）。三個描述快慢的量要會互換：</p>
+  \[ f = \frac{1}{T}, \qquad \omega = 2\pi f = \frac{2\pi}{T} \quad (\omega \text{ 的單位是 rad/s}) \]
+
+  <div id="w-free0" data-title="無阻尼自由振動：改初始條件，看什麼會變"></div>
+
+  <div class="callout example"><div class="ct">例：2000 kg 的塊體</div>
+    <p>\(m = 2000\) kg、\(k = 800\) kN/m；拉右 10 mm 後以 0.3 m/s 向右放開。（上面互動圖的「講義例」按鈕就是這組數字。）</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>量</th><th>計算</th><th class="num">結果</th></tr>
+      <tr><td>\(\omega\)</td><td>\(\sqrt{800\,000/2000} = \sqrt{400}\)</td><td class="num">20 rad/s</td></tr>
+      <tr><td>\(f\)、\(T\)</td><td>\(20/2\pi\)；\(1/f\)</td><td class="num">3.18 Hz；0.314 s</td></tr>
+      <tr><td>\(\rho\)</td><td>\(\sqrt{(0.3/20)^2 + 0.010^2}\)</td><td class="num">18.0 mm</td></tr>
+      <tr><td>\(\varphi\)</td><td>\(\tan^{-1}(0.015/0.010)\)</td><td class="num">56.3°</td></tr>
+      <tr><td>第一個峰</td><td>\(\omega t = \varphi \Rightarrow t = 0.983/20\)</td><td class="num">0.049 s</td></tr>
+      <tr><td>最大速度</td><td>\(\omega\rho = 20 \times 0.018\)</td><td class="num">0.36 m/s</td></tr>
+    </table></div>
+    <p>塊體從 10 mm 出發、仍在往外走，約 0.05 s 到達 18 mm 的峰。最大速度 0.36 m/s 略大於初速 0.3 m/s，合理：放手時彈簧還有位能可以轉成動能。</p>
+  </div>
+
+  <div class="quiz" data-num="12.57" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">一層土的自然週期 T = 0.5 s，角頻率 ω 是多少 rad/s？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="ω (rad/s)"><button class="btn">檢查</button></div>
+    <div class="fb">f = 1/T = 2 Hz，ω = 2πf = 12.57 rad/s。常見錯誤是把 ω 和 f 混用，差了 2π 倍。</div>
+  </div>
+</section>
+
+<section class="sec" id="s4-3" data-num="4.3" data-short="有阻尼" data-title="有阻尼自由振動">
+  <div class="sec-head"><span class="sec-num">4.3</span><h2>有阻尼自由振動</h2></div>
+  <p class="src">出處：Ch4 講義 1.8–1.14</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>真實的系統搖一搖都會停下來。阻尼越大，回到平衡就越快嗎？</p>
+  </div>
+
+  <p>加回阻尼，特徵方程式變成 \(m\lambda^2 + c\lambda + k = 0\)，用公式解：</p>
+  \[ \lambda = -\frac{c}{2m} \pm \sqrt{\left(\frac{c}{2m}\right)^2 - \omega^2} \]
+  <p>一切取決於根號內的正負。根號為零時的阻尼係數稱為<b>臨界阻尼係數</b> \(c_c = 2m\omega = 2\sqrt{km}\)。用它把 \(c\) 無因次化，就是<b>阻尼比</b>：</p>
+  <div class="eqbox">\[ \xi = \frac{c}{c_c} = \frac{c}{2m\omega} \qquad\Rightarrow\qquad \ddot u + 2\xi\omega\dot u + \omega^2 u = \frac{p(t)}{m} \]</div>
+  <p>右邊這個寫法之後會一直用到（\(c/m = 2\xi\omega\)、\(k/m = \omega^2\)）。</p>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>情形</th><th>條件</th><th>根</th><th>運動</th></tr>
+    <tr class="hl"><td>次阻尼</td><td>\(\xi &lt; 1\)</td><td>\(-\xi\omega \pm i\omega_D\)</td><td>邊振動邊衰減，\(u = e^{-\xi\omega t}(A\sin\omega_D t + B\cos\omega_D t)\)</td></tr>
+    <tr><td>臨界阻尼</td><td>\(\xi = 1\)</td><td>\(-\omega\)（重根）</td><td>不振動、最快回到平衡，\(u = (G_1 + G_2 t)e^{-\omega t}\)</td></tr>
+    <tr><td>超阻尼</td><td>\(\xi &gt; 1\)</td><td>\(-\xi\omega \pm \hat\omega\)</td><td>不振動、慢慢爬回，\(\hat\omega = \omega\sqrt{\xi^2-1}\)</td></tr>
+  </table></div>
+  <p>次阻尼的<b>阻尼頻率</b> \(\omega_D = \omega\sqrt{1-\xi^2}\)，常數為 \(B = u(0)\)、\(A = [\dot u(0) + \xi\omega u(0)]/\omega_D\)。</p>
+
+  <div id="w-free1" data-title="阻尼比怎麼改變自由振動"></div>
+
+  <div class="callout intuition"><div class="ct">為什麼超阻尼反而比較慢</div>
+    <p>超阻尼的兩個根中，衰減較慢的那個決定回到平衡的速度：\(\lambda = -\omega(\xi - \sqrt{\xi^2-1})\)。取 \(\xi = 2\)：\(2 - \sqrt 3 = 0.27\)，它以 \(e^{-0.27\omega t}\) 衰減，而臨界阻尼以 \(e^{-\omega t}\) 衰減，慢了將近 4 倍。阻尼強到質量像被黏住，只能慢慢爬回來，就像閥門關得太緊的自動關門器。</p>
+  </div>
+
+  <p><b>土壤和結構落在哪裡？</b>一般建築約 2–5 %，小應變的土壤約 1–3 %，強震大應變下的土壤約 15–25 %，都遠小於 1。所以這門課幾乎只處理次阻尼。</p>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：ω<sub>D</sub> 和 ω 要分嗎？</div>
+    <p>\(\xi = 0.2\) 時 \(\sqrt{1-0.04} = 0.98\)，\(\omega_D\) 只比 \(\omega\) 低 2 %。要低 10 % 需要 \(\sqrt{1-\xi^2} = 0.9\)，也就是 \(\xi \approx 0.44\)，沒有土壤或一般結構接近這個值。工程上取 \(\omega_D \approx \omega\) 很安全；但推導阻尼量測公式時要保留，才知道近似從哪裡來。</p>
+  </div>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">設計一個指針儀表，希望指針最快停在讀數上而且不要來回晃。阻尼比應該選多少？</div>
+    <div class="opts">
+      <button class="opt">ξ 越大越好，例如 ξ = 3</button>
+      <button class="opt">接近臨界，實務常選 0.6–0.7</button>
+      <button class="opt">越小越好，例如 ξ = 0.02</button>
+    </div>
+    <div class="fb">臨界阻尼是「不振動」中回得最快的；超阻尼反而變慢，小阻尼則會來回晃很多次。實務上常選略低於臨界（0.6–0.7）：允許一點點超越，卻更早到達讀數附近。汽車懸吊則刻意選 0.2–0.4，在舒適與抓地之間折衷。</div>
+  </div>
+</section>
+
+<section class="sec" id="s4-4" data-num="4.4" data-short="穩態反應" data-title="簡諧外力：穩態反應">
+  <div class="sec-head"><span class="sec-num">4.4</span><h2>簡諧外力：穩態反應</h2></div>
+  <p class="src">出處：Ch4 講義 1.15–1.19、1.23</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>用固定頻率一直推一個系統，它最後會怎麼動？跟外力同步嗎？</p>
+  </div>
+
+  <p>外力 \(p(t) = p_0\sin\bar\omega t\)。注意 \(\bar\omega\)（上面有橫線）是<b>外力頻率</b>，由搖的人決定；\(\omega\) 是系統自己的自然頻率。完整解分成兩部分：</p>
+  \[ u(t) = \underbrace{e^{-\xi\omega t}(A\sin\omega_D t + B\cos\omega_D t)}_{\text{暫態：以 } \omega_D \text{ 振動，會消失}} + \underbrace{\rho_s D\sin(\bar\omega t - \varphi)}_{\text{穩態：以 } \bar\omega \text{ 振動，一直存在}} \]
+  <p>暫態幾個週期後就消失，剩下的穩態才是我們關心的。它只由兩個無因次量決定：</p>
+  <div class="eqbox">\[ \beta = \frac{\bar\omega}{\omega}, \qquad \rho_s = \frac{p_0}{k} \]
+  \[ D = \frac{1}{\sqrt{(1-\beta^2)^2 + (2\xi\beta)^2}}, \qquad \tan\varphi = \frac{2\xi\beta}{1-\beta^2} \]</div>
+  <p>\(\rho_s\) 是外力慢慢加上去時彈簧的變位（靜態變位）。一句話：<b>動態振幅是靜態變位的 \(D\) 倍，反應落後外力 \(\varphi\)</b>。</p>
+
+  <details class="derive"><summary>推導：用複數三行完成</summary><div class="body">
+    <ol class="steps">
+      <li>把外力寫成 \(p_0e^{i\bar\omega t}\) 的虛部，試 \(u_p = \mathrm{Im}(Ue^{i\bar\omega t})\)；每次微分就乘上 \(i\bar\omega\)。</li>
+      <li>代入 \(\ddot u + 2\xi\omega\dot u + \omega^2u = (p_0/m)e^{i\bar\omega t}\)，消去指數，除以 \(\omega^2\)：
+        \[ U\left[(1-\beta^2) + i\,2\xi\beta\right] = \rho_s \]</li>
+      <li>分母的複數大小為 \(1/D\)、角度為 \(\varphi\)，除以它就是「長度乘 \(D\)、往回轉 \(\varphi\)」：
+        \[ U = \rho_s D\, e^{-i\varphi} \;\Rightarrow\; u_p = \rho_s D\sin(\bar\omega t - \varphi) \]</li>
+    </ol>
+    <p>這個複數乘上 \(k\) 就是<b>動態勁度</b> \(k - m\bar\omega^2 + ic\bar\omega\)，在 4.10 的傳遞率和所有頻率域地盤反應程式中都會再出現。</p>
+    <p>若用實數法，要假設 \(u_p = G_1\sin\bar\omega t + G_2\cos\bar\omega t\)，sin 和 cos 項分別平衡，聯立解出 \(G_1 = \rho_s(1-\beta^2)D^2\)、\(G_2 = -\rho_s(2\xi\beta)D^2\)。cos 項一定要放，因為阻尼項的一次微分會把 sin 變成 cos；若 \(c=0\)，\(G_2 = 0\)，反應與外力同相或完全反相。</p>
+  </div></details>
+
+  <h3>把穩態看成旋轉的三角形</h3>
+  <p>穩態反應可以畫成一組以 \(\bar\omega\) 旋轉的向量：\(G_1\) 沿外力方向，\(G_2\) 落後 90°（只來自阻尼），兩者相加就是振幅 \(\rho_d = \rho_s D\)，固定落後外力 \(\varphi\)。整個三角形旋轉時形狀不變，所以振幅與相位落後都固定。<b>實際的位移是向量在水平軸上的投影</b>。</p>
+
+  <div id="w-phasor" data-title="旋轉向量實驗室（Phasor Lab）"></div>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>頻率區</th><th>誰在扛外力</th><th>\(\varphi\)</th><th>行為</th></tr>
+    <tr><td>\(\beta \ll 1\)</td><td>彈簧（勁度控制）</td><td>≈ 0°</td><td>質量跟著外力動，\(D \approx 1\)，就是靜載重</td></tr>
+    <tr class="hl"><td>\(\beta = 1\)</td><td>阻尼器（阻尼控制）</td><td>90°</td><td>\(G_1 = 0\)，振幅 \(\rho_s/2\xi\)，與 \(\xi\) 成反比</td></tr>
+    <tr><td>\(\beta \gg 1\)</td><td>質量（慣性控制）</td><td>≈ 180°</td><td>質量跟不上變化太快的外力，幾乎不動</td></tr>
+  </table></div>
+
+  <div class="callout intuition"><div class="ct">自己動手：橡皮筋掛重物</div>
+    <p>握住橡皮筋上端上下移動。很慢時，重物跟著手動；剛好在自然頻率時，振幅變得很大，而且重物落後手約四分之一週；動得很快時，重物幾乎停在空中不動。三個頻率區一次看完。</p>
+  </div>
+
+  <div class="callout example"><div class="ct">例：高架水塔在三種外力頻率下</div>
+    <p>水塔加水共 100 t，塔架側向勁度 4 MN/m，\(\xi = 0.05\)，受 20 kN 的簡諧側力。\(\omega = \sqrt{4\times10^6/10^5} = 6.32\) rad/s → \(f_n \approx 1\) Hz；\(\rho_s = 20\,000/(4\times10^6) = 5\) mm。</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>外力頻率</th><th class="num">\(1-\beta^2\)</th><th class="num">\(2\xi\beta\)</th><th class="num">\(D\)</th><th class="num">擺幅</th><th class="num">\(\varphi\)</th></tr>
+      <tr><td>0.9 Hz</td><td class="num">0.19</td><td class="num">0.09</td><td class="num">4.8</td><td class="num">24 mm</td><td class="num">25°</td></tr>
+      <tr class="hl"><td>1.0 Hz</td><td class="num">0</td><td class="num">0.10</td><td class="num">10</td><td class="num">50 mm</td><td class="num">90°</td></tr>
+      <tr><td>1.5 Hz</td><td class="num">−1.25</td><td class="num">0.15</td><td class="num">0.79</td><td class="num">4 mm</td><td class="num">173°</td></tr>
+    </table></div>
+    <p>同一個水塔、同樣的外力，只因頻率不同就差到 24、50、4 mm。頻率只差 10 %（0.9 Hz），擺幅已接近共振值的一半；1.5 Hz 的擺幅甚至比靜態變位還小，這就是隔振的基礎（4.10）。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：計算機算 φ</div>
+    <p>\(\beta &gt; 1\) 時 \(1-\beta^2 &lt; 0\)，\(\varphi\) 應落在 90°–180°。直接按 \(\tan^{-1}\) 會得到負角，要手動加 180°，或用 <code>atan2(2ξβ, 1−β²)</code> 分別輸入分子分母。</p>
+  </div>
+
+  <div class="quiz" data-answer="2">
+    <div class="qh">小測驗</div>
+    <div class="qq">β = 2、ξ = 0.2 時，相位落後 φ 約為多少？</div>
+    <div class="opts">
+      <button class="opt">−15°</button>
+      <button class="opt">15°</button>
+      <button class="opt">165°</button>
+      <button class="opt">90°</button>
+    </div>
+    <div class="fb">1 − β² = −3、2ξβ = 0.8。tan⁻¹(0.8/−3) 在計算機上會給 −15°，但分母為負，實際角度在第二象限：180° − 15° = 165°。β &gt; 1 屬於慣性控制區，反應和外力幾乎反相。</div>
+  </div>
+</section>
+
+<section class="sec" id="s4-5" data-num="4.5" data-short="頻率響應" data-title="頻率響應曲線">
+  <div class="sec-head"><span class="sec-num">4.5</span><h2>頻率響應曲線：D–β 與 φ–β</h2></div>
+  <p class="src">出處：Ch4 講義 1.20–1.22、2.4</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>只知道 β 和 ξ，不知道質量、勁度、外力大小，能預測放大多少倍嗎？</p>
+  </div>
+  <p>可以。\(D\) 和 \(\varphi\) 只取決於 \(\beta\) 與 \(\xi\)，與絕對大小無關。所以<b>共振柱裡的小試體和 60 m 深的土層，只要 β、ξ 相同，就落在同一條曲線上</b>。把這兩條曲線讀熟，就等於讀懂了所有線性振動問題。</p>
+
+  <div id="w-curves" data-title="D–β 與 φ–β 曲線"></div>
+
+  <h3>曲線上要會讀的五件事</h3>
+  <ol>
+    <li><b>\(\beta \to 0\)：</b>\(D \to 1\)、\(\varphi \to 0\)。變化很慢的外力就是靜載重。</li>
+    <li><b>峰不在 \(\beta = 1\)，而在 \(\beta = \sqrt{1-2\xi^2}\)</b>，高度 \(D_{max} = 1/(2\xi\sqrt{1-\xi^2})\)。\(\xi = 0.1\) 時峰在 0.99，高度只比 \(1/2\xi\) 大 0.5 %，所以實務上直接取「峰在 \(\beta = 1\)、高度 \(1/2\xi\)」。</li>
+    <li><b>\(\xi \ge 0.707\) 沒有峰</b>，曲線從 1 單調遞減，因為 \(1-2\xi^2 &lt; 0\) 時根號不存在。</li>
+    <li><b>\(\beta &gt; \sqrt 2\) 時不論阻尼多少，\(D &lt; 1\)</b>（有阻尼時與 \(D=1\) 的交點在 \(\sqrt{2-4\xi^2}\)，稍早一點）。這預告了隔振。</li>
+    <li><b>所有有阻尼的 φ 曲線都在 \(\beta = 1\) 通過 90°</b>。振幅峰會隨阻尼偏移，90° 的交點不會。無阻尼時是階梯：共振以下 0°、以上 180°。</li>
+  </ol>
+
+  <details class="derive"><summary>推導：峰的位置與高度</summary><div class="body">
+    <ol class="steps">
+      <li>\(D\) 最大 ⇔ 根號內 \(g(\beta) = (1-\beta^2)^2 + 4\xi^2\beta^2\) 最小。</li>
+      <li>\(g'(\beta) = -4\beta(1-\beta^2) + 8\xi^2\beta = 4\beta(\beta^2 - 1 + 2\xi^2) = 0\)。</li>
+      <li>\(\beta = 0\) 是靜態端；另一根 \(\beta^2 = 1 - 2\xi^2\)。</li>
+      <li>代回：\(1-\beta^2 = 2\xi^2\)，\(g = 4\xi^4 + 4\xi^2(1-2\xi^2) = 4\xi^2(1-\xi^2)\)，所以 \(D_{max} = 1/(2\xi\sqrt{1-\xi^2})\)。</li>
+    </ol>
+  </div></details>
+
+  <div class="callout link"><div class="ct">連到共振柱與場址放大</div>
+    <p><b>共振柱（<a href="u09.html">單元 9</a>）</b>：同時記錄驅動電流與加速度計訊號，掃頻到「位移落後驅動 90°」的頻率就是共振頻率，不需要知道阻尼，也不需要量靜態變位。</p>
+    <p><b>場址放大（<a href="u10.html">單元 10</a>）</b>：地震主要頻率接近土層自然頻率 \(V_s/4H\) 時 \(\beta \approx 1\)，地表運動放大數倍。真實土層還有高階模態（基頻的 3、5、7 倍），每個峰多高由阻尼決定。</p>
+  </div>
+
+  <div class="quiz" data-num="10" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">ξ = 0.05 的系統在 β = 1 受力，動態振幅是靜態變位的幾倍？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="D"><button class="btn">檢查</button></div>
+    <div class="fb">β = 1 時 D = 1/(2ξ) = 1/(2 × 0.05) = 10。阻尼比若降到 0.02，D 變 25；這就是為什麼共振時「阻尼比就是一切」。</div>
+  </div>
+</section>
+
+<section class="sec" id="s4-6" data-num="4.6" data-short="力多邊形" data-title="力多邊形：誰在扛外力">
+  <div class="sec-head"><span class="sec-num">4.6</span><h2>力多邊形：誰在扛外力？</h2></div>
+  <p class="src">出處：Ch4 講義 2.2–2.3</p>
+
+  <p>把旋轉向量圖的每個長度乘上 \(k\)，位移就變成力。由 \(u = \rho_d\sin(\bar\omega t-\varphi)\) 出發，三個力的幅值以 \(p_0D\) 為單位是：</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>力</th><th>幅值（以 \(p_0 D\) 為單位）</th><th>方向</th></tr>
+    <tr><td>彈簧力 \(k u\)</td><td>1</td><td>沿位移方向</td></tr>
+    <tr><td>阻尼力 \(c\dot u\)</td><td>\(c\bar\omega/k = 2\xi\beta\)</td><td>領先位移 90°（與速度同相）</td></tr>
+    <tr><td>慣性力 \(m\ddot u\)</td><td>\(m\bar\omega^2/k = \beta^2\)</td><td>與位移反向</td></tr>
+  </table></div>
+  <p>三個力頭尾相接，必須封閉在外力 \(p_0\) 上，這就是動力平衡。沿位移方向的合力是 \(p_0D(1-\beta^2)\)，垂直方向是 \(p_0D(2\xi\beta)\)，合起來長度剛好是 \(p_0D/D = p_0\)。</p>
+
+  <div id="w-poly" data-title="力多邊形"></div>
+
+  <div class="callout intuition"><div class="ct">共振時只剩阻尼器在扛</div>
+    <p>\(\beta = 1\) 時慣性力與彈簧力等大反向、完全抵消，外力只能由阻尼力平衡，多邊形變成矩形：\(\rho_d = p_0/(c\bar\omega) = \rho_s/2\xi\)。這解釋了為什麼共振振幅只由阻尼決定。</p>
+  </div>
+
+  <div class="quiz" data-answer="2">
+    <div class="qh">設計問題</div>
+    <div class="qq">一座機器基礎在共振時振動過大。改 m、k、c 哪一個最直接降低「共振時」的振幅？</div>
+    <div class="opts">
+      <button class="opt">加大質量 m</button>
+      <button class="opt">加大勁度 k</button>
+      <button class="opt">加大阻尼 c</button>
+    </div>
+    <div class="fb">共振時外力只由阻尼器平衡，振幅 ρd = p0/(cω̄) 由 c 決定。改 m 或 k 會移動共振頻率；如果機器轉速固定，移開共振點也是一種解法，但在新的共振點，振幅仍然由阻尼器決定。</div>
+  </div>
+</section>
+
+<section class="sec" id="s4-7" data-num="4.7" data-short="共振成長" data-title="共振需要時間累積">
+  <div class="sec-head"><span class="sec-num">4.7</span><h2>共振需要時間累積</h2></div>
+  <p class="src">出處：Ch4 講義 2.4–2.7</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>一場地震的強震段只有幾秒，結構來得及「共振」到 \(1/2\xi\) 那麼大嗎？</p>
+  </div>
+
+  <p>從靜止開始、在 \(\beta = 1\) 受力，由 \(u(0) = \dot u(0) = 0\) 決定暫態常數後，反應比 \(R(t) = u/\rho_s\) 在小阻尼下可近似為：</p>
+  <div class="eqbox">\[ R(t) \approx \frac{1}{2\xi}\left(e^{-\xi\omega t} - 1\right)\cos\omega t \qquad\Rightarrow\qquad \text{振幅} = \frac{1}{2\xi}\left(1 - e^{-\xi\omega t}\right) \]</div>
+  <p>振幅從零開始，以指數方式趨近 \(1/2\xi\)。到達 63 %（\(1 - 1/e\)）時 \(\xi\omega t = 1\)，換算成圈數：</p>
+  <div class="eqbox">\[ n_{63\%} = \frac{\omega t}{2\pi} = \frac{1}{2\pi\xi} \]</div>
+
+  <div id="w-growth" data-title="由靜止開始的共振"></div>
+
+  <details class="derive"><summary>推導：完整解與無阻尼極限</summary><div class="body">
+    <ol class="steps">
+      <li>\(\beta=1\) 時 \(\varphi = 90°\)，穩態為 \(u_p = -(\rho_s/2\xi)\cos\omega t\)。</li>
+      <li>\(u(0) = 0\)：\(B = \rho_s/2\xi\)。\(\dot u(0)=0\)：\(-\xi\omega B + A\omega_D = 0\)，所以 \(A = \xi\omega B/\omega_D\)。</li>
+      <li>\(R(t) = \dfrac{1}{2\xi}\left[e^{-\xi\omega t}\left(\cos\omega_D t + \dfrac{\xi}{\sqrt{1-\xi^2}}\sin\omega_D t\right) - \cos\omega t\right]\)；小阻尼時 \(\omega_D \approx \omega\)、sin 項很小，得到上面的近似式。</li>
+      <li>\(\xi \to 0\) 時第一項是 0/0，用 L'Hôpital 對 \(\xi\) 微分：\(R(t) = \tfrac12(\sin\omega t - \omega t\cos\omega t)\)。包絡線 \(\omega t/2\) 線性成長，每圈增加 \(\pi\) 倍靜態變位。</li>
+    </ol>
+  </div></details>
+
+  <div class="callout intuition"><div class="ct">阻尼的兩個相反效果</div>
+    <p>阻尼小 → 最終振幅大，但要累積很久；阻尼大 → 振幅小，但很快到達。\(\xi = 0.05\) 約 3.2 圈到 63 %，\(\xi = 0.15\) 約 1 圈。只有幾個強震圈的短促地震，可能推不到輕阻尼結構的共振振幅：<b>延時和頻率內容一樣重要</b>。沒有阻尼時振幅會無限制地成長，真實系統則有阻尼，大振幅時材料也會變成非線性，所以反應有限。</p>
+  </div>
+
+  <div class="quiz" data-num="3.18" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">ξ = 0.05 的系統由靜止開始在共振頻率受力，大約幾圈後振幅達到穩態值的 63 %？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="圈數"><button class="btn">檢查</button></div>
+    <div class="fb">n = 1/(2πξ) = 1/(2π × 0.05) = 3.18 圈。這也是暫態衰減到 1/e 所需的圈數。</div>
+  </div>
+</section>
+
+<section class="sec" id="s4-8" data-num="4.8" data-short="能量" data-title="能量與阻尼比的定義">
+  <div class="sec-head"><span class="sec-num">4.8</span><h2>每圈消散的能量與阻尼比的能量定義</h2></div>
+  <p class="src">出處：Ch4 講義 2.8–2.9</p>
+
+  <p>阻尼力一圈所做的功，就是每圈消散的能量。代入 \(\dot u = \bar\omega\rho_d\cos(\bar\omega t-\varphi)\)，\(\cos^2\) 一週期平均為 ½：</p>
+  <div class="eqbox">\[ W_D = \oint c\dot u\,du = \int_0^{2\pi/\bar\omega} c\dot u^2\,dt = \pi c\bar\omega\rho_d^2 \]</div>
+  <p>三件事：與振幅平方成正比（振幅加倍、能量四倍）、與頻率成正比、與 \(c\) 成正比。阻尼力對位移作圖是一個橢圓，<b>橢圓面積就是 \(W_D\)</b>；總力（彈簧＋阻尼）對位移則是傾斜的橢圓，面積相同。</p>
+
+  <p>最大彈性能 \(W_S = \tfrac12 k\rho_d^2\)。兩者相除，\(\rho_d\) 消去：</p>
+  <div class="eqbox">\[ \frac{W_D}{4\pi W_S} = \frac{\pi c\bar\omega\rho_d^2}{2\pi k\rho_d^2} = \xi\beta \qquad\xrightarrow{\;\beta=1\;}\qquad \xi = \frac{W_D}{4\pi W_S} \]</div>
+
+  <div id="w-energy" data-title="力–位移迴圈與能量比"></div>
+
+  <div class="callout intuition"><div class="ct">為什麼土壤的阻尼比不帶 β</div>
+    <p>黏滯阻尼器每圈消散的能量隨頻率增加。但在地震頻率範圍內，土壤每圈消散的能量幾乎與頻率無關：它來自顆粒接觸面的摩擦滑動（遲滯阻尼），迴圈面積只由應變振幅決定。所以土壤（<a href="u08.html#s8-4">8.4</a>）直接用一個迴圈定義 \(\xi = W_D/(4\pi W_S)\)，也就是「讓等值的黏滯阻尼器在共振時每圈消散相同能量」。不需要真的有阻尼器，任何迴圈形狀都適用。</p>
+  </div>
+
+  <h3>與頻率無關的阻尼：複數勁度</h3>
+  <p>若要每圈損失固定，阻尼係數必須隨頻率變小：\(c = 2\xi k/\bar\omega\)。代入彈簧＋阻尼的力 \((k + ic\bar\omega)u\)，頻率消去：</p>
+  <div class="eqbox">\[ k^* = k(1 + 2i\xi) \qquad\Longleftrightarrow\qquad G^* = G(1 + 2i\xi) \]</div>
+  <p>虛部就是能量損失，應力領先應變一個小角度（\(\tan = 2\xi\)）。它只適用於穩態簡諧運動，不是時間域的定律。等值線性地盤反應程式（單元 10、11）和共振柱的阻尼模擬（單元 9）用的都是它。</p>
+
+  <div class="callout example"><div class="ct">例：反覆三軸試驗的迴圈</div>
+    <p>迴圈面積 0.20 kJ/m³，原點到迴圈尖端的三角形面積 0.16 kJ/m³ → \(\xi = 0.20/(4\pi \times 0.16) = 0.0995 \approx 10\%\)。迴圈面積是 \(W_D\)、三角形是 \(W_S\)（單元 8 寫作 \(E_D\)、\(E_{So}\)）。</p>
+  </div>
+
+  <div class="callout link"><div class="ct">作業應用</div>
+    <p>把隔振墊的實測參數代入，在 \(\beta = 1\) 與 0.5 算出焦耳，驗證比值等於 \(\xi\beta\)：見 <a href="../hw/hw3.html#q4">HW3 Q4(c)</a>。</p>
+  </div>
+
+  <div class="quiz" data-answer="0">
+    <div class="qh">小測驗</div>
+    <div class="qq">黏滯阻尼器在 β = 0.5 時，W<sub>D</sub>/(4πW<sub>S</sub>) 等於多少？</div>
+    <div class="opts">
+      <button class="opt">0.5ξ</button>
+      <button class="opt">ξ</button>
+      <button class="opt">2ξ</button>
+    </div>
+    <div class="fb">W_D/(4πW_S) = ξβ = 0.5ξ。黏滯阻尼的比值隨頻率改變，只有在共振時才等於 ξ；這也是土壤試驗要用能量直接定義阻尼比的原因。</div>
+  </div>
+</section>
+
+<section class="sec" id="s4-9" data-num="4.9" data-short="阻尼量測" data-title="量阻尼比的三種方法">
+  <div class="sec-head"><span class="sec-num">4.9</span><h2>量阻尼比的三種方法</h2></div>
+  <p class="src">出處：Ch4 講義 2.10–2.13</p>
+
+  <h3>方法 a：自由振動衰減（對數遞減）</h3>
+  <p>次阻尼自由振動中，相隔一個阻尼週期的兩個峰，cos 回到同一值，比值只剩指數比，而且與挑哪兩個峰無關，這是線性系統的特徵：</p>
+  <div class="eqbox">\[ \delta = \ln\frac{u_n}{u_{n+1}} = \frac{2\pi\xi}{\sqrt{1-\xi^2}} \approx 2\pi\xi, \qquad \delta = \frac{1}{m}\ln\frac{u_n}{u_{n+m}}, \qquad \xi = \frac{\delta}{\sqrt{4\pi^2+\delta^2}} \approx \frac{\delta}{2\pi} \]</div>
+  <p>相鄰兩峰幾乎一樣高，差值會被讀數誤差淹沒，所以要隔 \(m\) 圈量。<b>共振柱就是用這個方法</b>：在共振頻率驅動試體，關掉驅動，記錄頂蓋的自由衰減，把 ln(峰值) 對圈數畫直線，斜率就是 \(-\delta\)。點不在直線上，表示阻尼與振幅有關，試體已進入非線性。</p>
+  <div class="callout example"><div class="ct">例</div>
+    <p>第 1 峰 10 mm、第 6 峰 4 mm：\(m = 5\)，\(\delta = \ln 2.5 / 5 = 0.183\)，\(\xi = 0.183/2\pi = 2.9\%\)。</p>
+  </div>
+
+  <h3>方法 b：共振放大</h3>
+  <p>共振振幅除以靜態變位 \(= D_{max} \approx 1/2\xi\)，所以 \(\xi \approx \rho_s/(2\rho_{max})\)。兩個弱點：靜態變位常常小到量不到；阻尼小時峰很尖，掃頻太粗會錯過峰頂。例：\(\xi = 0.02\)，掃頻只偏離共振 1 %（\(\beta = 0.99\)），\(D\) 從 25 掉到 22.5，反算的阻尼比就高估約 11 %。</p>
+
+  <h3>方法 c：半功率頻寬</h3>
+  <p>在共振曲線上找振幅降到峰值 \(1/\sqrt2\) 的兩個頻率 \(f_1\)、\(f_2\)。振動能量正比於振幅平方，\((1/\sqrt2)^2 = 1/2\)，所以叫「半功率」：</p>
+  <div class="eqbox">\[ \xi \approx \frac{f_2 - f_1}{2f_n} \approx \frac{f_2 - f_1}{f_2 + f_1} \]</div>
+  <details class="derive"><summary>推導：半功率點</summary><div class="body">
+    <ol class="steps">
+      <li>令 \(D = \frac{1}{\sqrt2}\cdot\frac{1}{2\xi}\)，取倒數再平方：\((1-\beta^2)^2 + 4\xi^2\beta^2 = 8\xi^2\)。</li>
+      <li>令 \(x = \beta^2\)：\(x^2 - (2-4\xi^2)x + (1-8\xi^2) = 0\)，判別式 \(16\xi^2(1+\xi^2)\)。</li>
+      <li>\(\beta^2 = 1 - 2\xi^2 \pm 2\xi\sqrt{1+\xi^2} \approx 1 \pm 2\xi\)，再用 \(\sqrt{1+\varepsilon} \approx 1 + \varepsilon/2\)：\(\beta_{1,2} \approx 1 \mp \xi\)。</li>
+      <li>\(\beta_2 - \beta_1 \approx 2\xi\)，換回頻率即得上式；\(\xi &lt; 10\%\) 時誤差只有幾 %。</li>
+    </ol>
+  </div></details>
+  <p>它不需要靜態變位，也不需要振幅的絕對尺度，只要曲線的形狀；但仍要讀準峰值，因為峰值決定 \(1/\sqrt2\) 的高度。例：共振 50 Hz、半功率點 48.5 與 51.5 Hz → \(\xi = 3/100 = 3\%\)。</p>
+
+  <div id="w-damp" data-title="阻尼量測實驗室"></div>
+  <div class="callout link"><div class="ct">作業應用</div>
+    <p>用共振放大與半功率兩種方法處理隔振墊的實測頻率響應：見 <a href="../hw/hw3.html#q4">HW3 Q4(a)</a>。</p>
+  </div>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th></th><th>自由振動衰減</th><th>共振放大</th><th>半功率頻寬</th></tr>
+    <tr><td>需要的資料</td><td>關掉驅動後的衰減歷時</td><td>共振振幅＋靜態變位</td><td>掃頻的響應曲線</td></tr>
+    <tr><td>公式</td><td>\(\xi \approx \delta/2\pi\)</td><td>\(\xi \approx \rho_s/2\rho_{max}\)</td><td>\(\xi \approx (f_2-f_1)/(f_2+f_1)\)</td></tr>
+    <tr><td>主要弱點</td><td>單圈讀數誤差大 → 隔多圈</td><td>靜態變位難量；錯過峰頂會高估</td><td>峰很窄 → 掃頻要細；大應變失效</td></tr>
+    <tr><td>共振柱</td><td>主要方法，可得 ξ 隨振幅的變化</td><td>少用</td><td>小應變時與衰減法互相驗證</td></tr>
+  </table></div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：大應變時的半功率法</div>
+    <p>三個方法都假設系統是線性的。土壤在大應變時越搖越軟，共振曲線會往低頻傾斜、變寬，半功率法會明顯<b>高估</b>阻尼比。這時要改用自由振動衰減，在指定振幅附近讀幾個週期。共振柱的細節見<a href="u09.html#s9-2">單元 9</a>。</p>
+  </div>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">掃頻時頻率間隔太粗，剛好錯過共振峰頂。用共振放大法反算的阻尼比會怎樣？</div>
+    <div class="opts">
+      <button class="opt">偏低</button>
+      <button class="opt">偏高</button>
+      <button class="opt">不受影響</button>
+    </div>
+    <div class="fb">錯過峰頂 → 量到的 ρmax 偏小 → ξ = ρs/(2ρmax) 偏大。上方「掃頻」分頁把頻率間隔調大、移動掃頻位置，就能看到估計值怎麼跳動。</div>
+  </div>
+</section>
+
+<section class="sec" id="s4-10" data-num="4.10" data-short="傳遞率" data-title="傳遞率：隔振與隔震">
+  <div class="sec-head"><span class="sec-num">4.10</span><h2>傳遞率：隔振與隔震</h2></div>
+  <p class="src">出處：Ch4 講義 2.14–2.15</p>
+
+  <h3>情況 a：機器的力傳到地面多少？</h3>
+  <p>機器產生 \(p_0\sin\bar\omega t\)，經彈簧與阻尼器傳到地面。彈簧力幅值 \(p_0D\)、阻尼力幅值 \(2\xi\beta p_0D\)，兩者差 90°，平方和開根號：</p>
+  <div class="eqbox">\[ TR = \frac{F_{\text{傳到地面}}}{p_0} = D\sqrt{1 + (2\xi\beta)^2} \]</div>
+
+  <h3>情況 b：地面在搖，質量動多少？</h3>
+  <p>地面 \(u_g = u_{g0}\sin\bar\omega t\)。慣性力作用在總加速度上，彈簧與阻尼器只感受相對運動，等效外力為 \(-m\ddot u_g\)。結果：</p>
+  <div class="eqbox">\[ \frac{u^t_{max}}{u_{g0}} = D\sqrt{1 + (2\xi\beta)^2} \;(=TR), \qquad \frac{u_{max}}{u_{g0}} = \beta^2 D \;\;(\text{相對位移，即彈簧伸長量}) \]</div>
+  <p>力由質量傳到地面、運動由地面傳到質量，是<b>同一個函數</b>。兩者都等於 \(|k + ic\bar\omega| / |k - m\bar\omega^2 + ic\bar\omega|\)：分子是傳遞的彈簧與阻尼器，分母是系統的動態勁度。</p>
+
+  <details class="derive"><summary>推導：TR 的兩個關鍵</summary><div class="body">
+    <ol class="steps">
+      <li>所有曲線在 \(\beta = \sqrt2\) 通過 \(TR = 1\)：\(\beta^2 = 2\) 時 \((1-\beta^2)^2 = 1\)，\(TR^2 = (1+8\xi^2)/(1+8\xi^2) = 1\)，與 \(\xi\) 無關。</li>
+      <li>\(\beta &gt; \sqrt2\) 時 \((1-\beta^2)^2 &gt; 1\)，\(TR^2 = (1+4\xi^2\beta^2)/((1-\beta^2)^2+4\xi^2\beta^2) &lt; 1\)；分子分母加同一個正數 \(4\xi^2\beta^2\) 會把比值往 1 推，所以<b>阻尼越大，傳遞越多</b>。</li>
+      <li>地動情況：相對位移 \(u = \beta^2u_{g0}D\sin(\bar\omega t-\varphi)\)，總位移 \(u_g + u\) 用餘弦定理相加，並用 \(\cos\varphi = D(1-\beta^2)\)，整理後與 \(D^2(1+4\xi^2\beta^2)\) 相同。</li>
+    </ol>
+  </div></details>
+
+  <div id="w-tr" data-title="傳遞率曲線與隔振設計"></div>
+
+  <h3>兩個設計結論</h3>
+  <ol>
+    <li><b>要隔振，\(\beta\) 必須大於 \(\sqrt2\)</b>：支承的自然頻率要低於運轉頻率 / 1.41。支承要做<b>軟</b>，和「基礎做剛一點比較好」的直覺相反。</li>
+    <li><b>在隔振區，阻尼越大傳遞率越高</b>：阻尼器是力進入地面的第二條路徑。但機器啟動、停止時會通過 \(\beta = 1\)，還是需要阻尼。很少啟動的機器用輕阻尼，整天開開關關的機器用較大阻尼。</li>
+  </ol>
+
+  <div class="callout example"><div class="ct">例：1800 rpm 的機器</div>
+    <p>1800 rpm = 30 Hz。要 \(TR &lt; 1\)：\(f_n &lt; 30/1.41 = 21\) Hz。要 \(TR &lt; 10\%\)（阻尼可忽略）：\(TR \approx 1/(\beta^2-1)\) → \(\beta = \sqrt{11} = 3.3\) → \(f_n \approx 9\) Hz，機器自重下的靜態沉陷 \(g/\omega^2 \approx 3\) mm。</p>
+  </div>
+  <div class="callout example"><div class="ct">例：基礎隔震</div>
+    <p>固定基底週期 0.5 s 的建築加上隔震器，週期拉長到 3 s；地震主要週期約 0.5 s → \(\beta = 3/0.5 = 6\)。輕阻尼時 \(TR \approx 1/35 \approx 3\%\)；隔震器刻意給 15 % 阻尼以限制位移，\(TR\) 約 6 %，仍大幅降低。代價是相對位移：\(\beta\) 大時 \(\beta^2D \to 1\)，隔震層要伸長整個地表位移，所以隔震建築周圍要留隔震溝。</p>
+  </div>
+
+  <div class="callout link"><div class="ct">作業應用</div>
+    <p>附近施工使地板振動，隔振墊在 15 Hz 與 8 Hz 時讓儀器振幅變小還是變大：見 <a href="../hw/hw3.html#q4">HW3 Q4(b)</a>。</p>
+  </div>
+
+  <div class="quiz" data-num="21.2" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">機器轉速 1800 rpm，要讓傳到地面的力小於不平衡力（TR &lt; 1），支承的自然頻率要低於多少 Hz？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="fn (Hz)"><button class="btn">檢查</button></div>
+    <div class="fb">1800 rpm = 30 Hz；β &gt; √2 → fn &lt; 30/√2 = 21.2 Hz。</div>
+  </div>
+</section>
+
+<section class="sec" id="s4-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">運動方程式</div>\[ \ddot u + 2\xi\omega\dot u + \omega^2u = p/m \]</div>
+    <div class="fcard"><div class="ft">系統的兩個個性</div>\[ \omega = \sqrt{k/m},\quad \xi = \frac{c}{2m\omega} \]</div>
+    <div class="fcard"><div class="ft">阻尼頻率</div>\[ \omega_D = \omega\sqrt{1-\xi^2} \]</div>
+    <div class="fcard"><div class="ft">穩態反應</div>\[ u_p = \rho_sD\sin(\bar\omega t-\varphi) \]</div>
+    <div class="fcard"><div class="ft">動態放大因子</div>\[ D = \frac{1}{\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}} \]</div>
+    <div class="fcard"><div class="ft">相位落後</div>\[ \varphi = \operatorname{atan2}(2\xi\beta,\,1-\beta^2) \]</div>
+    <div class="fcard"><div class="ft">共振峰</div>\[ \beta = \sqrt{1-2\xi^2},\; D_{max} = \frac{1}{2\xi\sqrt{1-\xi^2}} \]</div>
+    <div class="fcard"><div class="ft">共振成長（63 %）</div>\[ n = \frac{1}{2\pi\xi} \]</div>
+    <div class="fcard"><div class="ft">能量定義</div>\[ \xi = \frac{W_D}{4\pi W_S},\; W_D = \pi c\bar\omega\rho_d^2 \]</div>
+    <div class="fcard"><div class="ft">對數遞減</div>\[ \xi \approx \frac{1}{2\pi m}\ln\frac{u_n}{u_{n+m}} \]</div>
+    <div class="fcard"><div class="ft">半功率頻寬</div>\[ \xi \approx \frac{f_2-f_1}{f_2+f_1} \]</div>
+    <div class="fcard"><div class="ft">傳遞率</div>\[ TR = D\sqrt{1+(2\xi\beta)^2},\; \beta &gt; \sqrt2 \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>D 的兩種意思</b>：本單元的 D 是放大因子，單元 8、9 的 D 是阻尼比。</li>
+    <li><b>ω 與 f 差 2π</b>：ω 單位 rad/s，f 單位 Hz；T = 2π/ω。</li>
+    <li><b>β &gt; 1 的相位</b>：tan⁻¹ 會給負角，要加 180° 或用 atan2。</li>
+    <li><b>共振峰的位置</b>：嚴格來說在 √(1−2ξ²)，不在 β = 1；小阻尼時差異可忽略。</li>
+    <li><b>對數遞減的分母</b>：δ = 2πξ/√(1−ξ²)，「δ = 2πξ」是小阻尼近似，要寫「≈」。</li>
+    <li><b>掃頻太粗</b>：錯過峰頂 → 共振放大法高估阻尼；半功率法也需要準確的峰值。</li>
+    <li><b>大應變不是線性系統</b>：共振曲線傾斜時半功率法高估阻尼，改用自由衰減。</li>
+    <li><b>隔振要軟不要硬</b>：β &gt; √2 才有隔振效果；隔振區的阻尼反而增加傳遞。</li>
+  </ul>
+  <h3>自我檢測</h3>
+  <div class="quiz" data-answer="1">
+    <div class="qh">綜合題 1</div>
+    <div class="qq">共振柱試驗時，研究生只記錄了加速度計訊號，沒有量驅動扭矩的大小。下列哪一個量仍然可以可靠求得？</div>
+    <div class="opts">
+      <button class="opt">靜態變位 ρs，再用共振放大法求阻尼</button>
+      <button class="opt">共振頻率與半功率頻寬，再求 G 和阻尼比</button>
+      <button class="opt">以上皆不行</button>
+    </div>
+    <div class="fb">半功率頻寬法只需要響應曲線的形狀，不需要外力的絕對大小；共振頻率也只看峰的位置。共振放大法則需要靜態變位，沒有扭矩大小就算不出來。</div>
+  </div>
+  <div class="quiz" data-answer="0">
+    <div class="qh">綜合題 2</div>
+    <div class="qq">某土層基本週期 1.0 s、阻尼比 5 %。一場地震的主要週期也是 1.0 s，但強震段只有 2 個週期。地表放大最可能是？</div>
+    <div class="opts">
+      <button class="opt">明顯小於 1/(2ξ) = 10，因為共振來不及累積</button>
+      <button class="opt">約等於 10</button>
+      <button class="opt">大於 10，因為暫態會疊加</button>
+    </div>
+    <div class="fb">ξ = 0.05 要約 3.2 圈才達到穩態的 63 %，2 圈時振幅大約只有 1 − e^(−2π×0.05×2) ≈ 47 %。延時和頻率內容一樣重要（4.7）。</div>
+  </div>
+  <div class="quiz" data-num="0.0995" data-tol="0.03">
+    <div class="qh">綜合題 3</div>
+    <div class="qq">反覆單剪迴圈面積 0.30 kJ/m³，最大彈性能（三角形面積）0.24 kJ/m³，阻尼比是多少？（填小數）</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="ξ"><button class="btn">檢查</button></div>
+    <div class="fb">ξ = W_D/(4πW_S) = 0.30/(4π × 0.24) = 0.0995 ≈ 10 %。</div>
+  </div>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>真實地震不是單一頻率。下一單元用頻譜與反應譜把 SDOF 用到地震紀錄上。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u03.html"><span class="dir">← 單元 3</span>描述地動：時間域參數</a>
+  <a class="next" href="../units/u05.html"><span class="dir">單元 5 →</span>頻率的觀點：頻譜、反應譜與卓越週期</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/vibration.js"></script>
+</body>
+</html>

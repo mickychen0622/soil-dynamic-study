@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10. 一維線性地盤反應 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用：可編輯的土層表、ICA 量測表 */
+  table.edit input { width: 5.6em; padding: 5px 8px; border: 0; border-radius: 8px; background: var(--inset); color: var(--ink); font: inherit; font-size: 14px; font-variant-numeric: tabular-nums; }
+  table.edit td, table.edit th { padding: 6px 8px; vertical-align: middle; }
+  table.edit td.lab { white-space: nowrap; color: var(--muted); font-size: 14px; }
+  table.edit tr.rock td { background: var(--accent-soft); }
+  table.data.compact td, table.data.compact th { padding: 7px 9px; font-size: 14px; }
+  .mini-note { font-size: 13px; color: var(--muted); margin: .4em 0 0; }
+</style>
+</head>
+<body data-page="u10" data-root="../" data-title="10. 線性地盤反應">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 4 地盤反應 · 單元 10 · Linear 1-D Ground Response</div>
+  <h1>一維線性地盤反應</h1>
+  <p class="lede"><b>最後幾十到幾百公尺的土層會挑頻率放大。</b>把土層看成水平成層、垂直傳播 SH 波的一根土柱，先在剛性岩盤上求轉換函數，再加入阻尼、彈性岩盤與分層，最後用 FFT 把整筆地震紀錄傳到地表。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>地震到了岩盤，傳到地表時變成什麼樣子？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>說明為什麼近地表的反應可以用「水平成層中垂直傳播的 SH 波」描述，並分清楚露頭（outcrop）與土層內（within）運動</li>
+    <li>推導均勻土層在剛性岩盤與彈性岩盤上的轉換函數，並用阻抗比解釋輻射阻尼</li>
+    <li>計算場址的自然頻率、振態與共振放大，用 \(T_s = 4H/V_s\) 快速檢核分析結果</li>
+    <li>把「FFT → 乘上轉換函數 → 逆 FFT」用在地震紀錄上，並知道相位、Nyquist 頻率與補零的意義</li>
+    <li>用逐層遞迴算層狀土的反應</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u09.html"><h4>上一單元 · 室內動態試驗</h4><p>土壤性質齊了。最後把波傳、振動與土壤模型組合成地盤反應分析。</p></a>
+    <a class="card" href="../units/u11.html"><h4>下一單元 · 等值線性與非線性分析</h4><p>強震時土壤變軟、阻尼變大，線性分析不夠了。</p></a>
+  </div>
+  <div class="callout pitfall"><div class="ct">符號提醒</div>
+    <p>阻尼比一律寫作 \(\xi\)。課本圖中的 \(\beta\)、\(D\)，以及逐字稿中的「kaisei」「KC」「Psi」「chi」都是阻尼比。深度 \(z\) 由地表往下為正；\(k = \omega/V_s\) 是波數；\(F_1, F_2, F_3\) 分別是無阻尼剛性岩盤、有阻尼剛性岩盤、有阻尼彈性岩盤的轉換函數。</p>
+  </div>
+</header>
+
+<section class="sec" id="s10-1" data-num="10.1" data-short="一維假設" data-title="為什麼一維就夠">
+  <div class="sec-head"><span class="sec-num">10.1</span><h2>為什麼要做地盤反應分析，為什麼一維就夠</h2></div>
+  <p class="src">出處：Ch6 講義 1.1–1.5；教師 PDF p.2–6；郭安妮講義 p.1–2、p.15</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>地震波離開震源時可能斜斜地射出，為什麼到了地表附近，幾乎所有分析都假設波是「垂直往上」傳的？</p>
+  </div>
+
+  <p>一個地震的地表運動由三段決定：<b>震源</b>決定釋放多少能量、什麼頻率；<b>路徑</b>決定能量隨距離怎麼衰減；<b>場址</b>決定最後幾十到幾百公尺的土層怎麼改變運動。地盤反應分析只處理最後一段：假設岩盤頂部的運動已知，求土層裡和地表的運動。</p>
+  <p>工程上需要它的理由有四個：結構設計需要地表反應譜與歷時；液化與沉陷評估需要每一層的最大剪應力 \(\tau_{max}(z)\) 與剪應變 \(\gamma_{max}(z)\)；基礎、隧道、邊坡需要某個深度的運動；軟弱或特殊場址，規範直接要求做場址特定分析。</p>
+
+  <h3>Snell 定律把波「扳直」</h3>
+  <p>波穿過界面時，水平方向的視波速必須連續，於是：</p>
+  <div class="eqbox">\[ \frac{\sin i_1}{V_{s1}} = \frac{\sin i_2}{V_{s2}} \]</div>
+  <p>越往上土越軟、\(V_s\) 越小，\(\sin i\) 跟著等比例變小，射線一層一層往垂直偏。不論波從岩盤以多大的角度射入，到了近地表的軟弱層都幾乎垂直向上。問題因此簡化成：<b>水平成層土中垂直傳播的 SH 波</b>，也就是單元 10、11 所有公式的出發點。</p>
+
+  <div id="w-snell" data-title="Snell 定律：射線怎麼被軟土扳直"></div>
+
+  <div class="callout example"><div class="ct">例：40° 射入，到地表剩幾度？</div>
+    <p>岩盤中射線與垂直夾 40°，\(\sin 40° = 0.643\)。\(V_s\) 由 1500 m/s 一路降到 150 m/s（10 倍）。中間有幾層都沒關係，因為 \(\sin i/V_s\) 一路守恆：最上層 \(\sin i = 0.643/10 = 0.0643\)，\(i = 3.7°\)。上方互動圖的預設剖面就是這個例子。</p>
+  </div>
+
+  <h3>一維 SH 波模型</h3>
+  <figure class="diagram">
+    <svg viewBox="0 0 620 250" width="620" role="img" aria-label="一維層狀土柱模型">
+      <g fill="none" stroke-width="1.2" class="s-ink">
+        <line x1="60" y1="30" x2="360" y2="30"/>
+        <line x1="60" y1="80" x2="360" y2="80"/>
+        <line x1="60" y1="130" x2="360" y2="130"/>
+        <line x1="60" y1="170" x2="360" y2="170"/>
+      </g>
+      <rect x="60" y="170" width="300" height="60" class="f-band"/>
+      <g class="s-gray" stroke-width="1" stroke-dasharray="4 3"><line x1="60" y1="150" x2="360" y2="150"/></g>
+      <text x="210" y="62" class="txt" text-anchor="middle">第 1 層：G₁、ξ₁、ρ₁、h₁</text>
+      <text x="210" y="112" class="txt" text-anchor="middle">第 2 層：G₂、ξ₂、ρ₂、h₂</text>
+      <text x="210" y="145" class="txt-muted" text-anchor="middle">⋮</text>
+      <text x="210" y="205" class="txt" text-anchor="middle">第 N 層：岩盤（半無限，h = ∞）</text>
+      <!-- 上行與下行 -->
+      <g stroke-width="2">
+        <line x1="400" y1="215" x2="400" y2="45" class="s-blue"/>
+        <path d="M400 38 l-5 10 h10 z" class="f-blue"/>
+        <line x1="440" y1="45" x2="440" y2="215" class="s-red"/>
+        <path d="M440 222 l-5 -10 h10 z" class="f-red"/>
+      </g>
+      <text x="392" y="132" class="txt-blue" text-anchor="end">A</text>
+      <text x="448" y="132" class="txt-red">B</text>
+      <text x="470" y="80" class="txt">上行波 A e<tspan font-size="72%" baseline-shift="38%">i(ωt+kz)</tspan></text>
+      <text x="470" y="104" class="txt">下行波 B e<tspan font-size="72%" baseline-shift="38%">i(ωt−kz)</tspan></text>
+      <text x="470" y="140" class="txt-muted">質點水平振動（SH）</text>
+      <text x="470" y="160" class="txt-muted">波沿 z 垂直傳播</text>
+      <line x1="40" y1="30" x2="40" y2="225" class="s-ink" stroke-width="1.2"/>
+      <path d="M40 232 l-4.5 -9 h9 z" class="f-ink"/>
+      <text x="30" y="236" class="txt" text-anchor="end" font-style="italic">z</text>
+      <text x="40" y="22" class="txt-muted" text-anchor="middle">地表</text>
+    </svg>
+    <figcaption>每一層同時有上行波與下行波；層號由地表 1 往下到 N，第 N 層代表岩盤</figcaption>
+  </figure>
+  <p>每一層都滿足<a href="u06.html#s6-2">單元 6</a> 的一維波動方程式 \(\rho\,\partial^2u/\partial t^2 = G\,\partial^2u/\partial z^2\)，解是「往上傳的波＋往下傳的波」。地震紀錄可以用 Fourier 分析拆成許多簡諧分量，所以每一層的解寫成簡諧波：</p>
+  <div class="eqbox">\[ u(z,t) = A\,e^{i(\omega t + kz)} + B\,e^{i(\omega t - kz)}, \qquad k = \frac{\omega}{V_s} \]</div>
+  <p>\(z\) 向下為正，所以 \(\omega t + kz\) 那一項往 \(-z\)（上）走。每一層有自己的局部座標（由該層頂往下量），公式形式相同。</p>
+
+  <div class="callout intuition"><div class="ct">「岩盤」是工程定義</div>
+    <p>工程上的岩盤通常指 \(V_s\) 約 760 m/s 以上的材料，不一定是新鮮岩石。模型底部要選哪一層當半無限空間，本身就是工程判斷：選得太淺會漏掉深層的放大，選得太深則深層的 \(V_s\) 可能沒有可靠的量測。</p>
+  </div>
+
+  <div class="quiz" data-num="5.3" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">岩盤 \(V_s\) = 2000 m/s，射線與垂直夾 60°。最上層 \(V_s\) = 200 m/s 時，射線與垂直的夾角是多少度？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="角度 (°)"><button class="btn">檢查</button></div>
+    <div class="fb">sin i = sin 60° × 200/2000 = 0.866 × 0.1 = 0.0866 → i = 4.97° ≈ 5°。即使在岩盤裡斜到 60°，到地表也只剩 5°，「垂直入射」的誤差很小。</div>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：一維假設在哪裡失效</div>
+    <p>盆地邊緣、山脊，或層厚在短距離內快速變化的地方，土層不再水平，波也不再只有垂直的 SH 分量（郭安妮講義 p.16 指出斜入射時放大會降低）。這些情況要用二維、三維模型（<a href="u11.html#s11-4">11.4</a>），場址效應的觀測證據在 Ch7。</p>
+  </div>
+</section>
+
+<section class="sec" id="s10-2" data-num="10.2" data-short="露頭與土內" data-title="控制運動：露頭還是土層內">
+  <div class="sec-head"><span class="sec-num">10.2</span><h2>控制運動：露頭（outcrop）還是土層內（within）？</h2></div>
+  <p class="src">出處：Ch6 講義 1.6–1.7；教師 PDF p.7–9；郭安妮講義 p.4–5</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>手上有一筆「岩盤運動」，要把它放在土柱底部。同一筆紀錄，放法不同，地表結果可以差兩倍以上。差在哪裡？</p>
+  </div>
+
+  <p>同一場地震、同一塊岩盤，至少有三個位置的運動：土層地表、土層正下方的岩盤頂、旁邊岩石出露處（露頭）。</p>
+  <figure class="diagram">
+    <svg viewBox="0 0 620 230" width="620" role="img" aria-label="露頭運動與土層內運動">
+      <rect x="30" y="120" width="250" height="90" class="f-band"/>
+      <rect x="330" y="120" width="260" height="90" class="f-band"/>
+      <rect x="330" y="50" width="260" height="70" fill="none" class="s-ink" stroke-width="1.2"/>
+      <line x1="30" y1="120" x2="280" y2="120" class="s-ink" stroke-width="1.4"/>
+      <text x="155" y="200" class="txt-muted" text-anchor="middle">岩盤（露頭，上方是空氣）</text>
+      <text x="460" y="200" class="txt-muted" text-anchor="middle">岩盤</text>
+      <text x="460" y="80" class="txt-muted" text-anchor="middle">土層</text>
+      <!-- 左：A 與反射 A -->
+      <g stroke-width="2"><line x1="130" y1="185" x2="130" y2="130" class="s-blue"/><path d="M130 124 l-5 10 h10 z" class="f-blue"/>
+        <line x1="175" y1="130" x2="175" y2="185" class="s-red"/><path d="M175 191 l-5 -10 h10 z" class="f-red"/></g>
+      <text x="122" y="165" class="txt-blue" text-anchor="end">A</text>
+      <text x="183" y="165" class="txt-red">A</text>
+      <circle cx="152" cy="120" r="5" class="f-red"/>
+      <text x="152" y="105" class="txt" text-anchor="middle">露頭運動 = 2A</text>
+      <!-- 右：A 與 B -->
+      <g stroke-width="2"><line x1="435" y1="185" x2="435" y2="130" class="s-blue"/><path d="M435 124 l-5 10 h10 z" class="f-blue"/>
+        <line x1="480" y1="130" x2="480" y2="185" class="s-red"/><path d="M480 191 l-5 -10 h10 z" class="f-red"/></g>
+      <text x="427" y="165" class="txt-blue" text-anchor="end">A</text>
+      <text x="488" y="165" class="txt-red">B ≠ A</text>
+      <circle cx="458" cy="120" r="5" class="f-blue"/>
+      <text x="458" y="40" class="txt" text-anchor="middle">岩盤頂（within）= A + B</text>
+      <line x1="458" y1="46" x2="458" y2="113" class="guide"/>
+    </svg>
+    <figcaption>左：自由面剪應力為零，反射波與入射波一樣大；右：下行波 B 已穿過土層、在地表反射後才回來</figcaption>
+  </figure>
+  <ul>
+    <li><b>露頭（outcrop）</b>：岩石表面是自由面，剪應力為零，反射波與入射波一樣大，表面位移 = \(2A\)。</li>
+    <li><b>土層內（within）</b>：土層底部的上行波仍是 \(A\)，但下行波 \(B\) 已經穿過整個土層、在地表反射後再回來，大小與相位都被土層改變，所以運動是 \(A + B\)。</li>
+  </ul>
+  <p>把地表或露頭紀錄當作 within 輸入，等於假設 \(A + B = A\)，忽略土層對下行波的作用。下面的互動圖顯示：在土層共振頻率附近，within 運動有明顯的<b>凹陷</b>（能量被留在土層中、送往地表），兩種設定的差別最大。</p>
+
+  <div id="w-outcrop" data-title="同一個入射波：地表、岩盤頂、露頭各動多少"></div>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>紀錄來源</th><th>程式中的設定</th><th>程式怎麼處理</th></tr>
+    <tr><td>岩盤露頭測站、地表測站</td><td>outcrop</td><td>反推入射波 \(A\) = 紀錄 / 2，施加在土柱底部，再由分析求 \(B\)</td></tr>
+    <tr><td>井下陣列（downhole array）在深處量到</td><td>within</td><td>紀錄已含該深度的上行＋下行波，直接指定該深度的運動</td></tr>
+  </table></div>
+
+  <div class="callout link"><div class="ct">台灣的提醒</div>
+    <p>台灣的強震站大多在地表，幾乎所有紀錄都是地表紀錄。軟弱土層上的測站，紀錄已經含有該站的場址效應，不能直接拿來當另一個場址的岩盤露頭運動。做法是選岩盤或堅硬地盤測站的紀錄，或先以反摺積（deconvolution，<a href="u11.html#s11-1">11.1</a>）去除場址效應。本單元互動圖用的 CHY086 測站紀錄（\(V_{s30}\) = 665 m/s）也是地表紀錄，只拿來當示意輸入。</p>
+  </div>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">井下陣列在 100 m 深的岩盤中量到一筆紀錄，要當作 SHAKE、Strata 的輸入。應該怎麼設定？</div>
+    <div class="opts">
+      <button class="opt">outcrop，因為量測點在岩盤中</button>
+      <button class="opt">within，因為紀錄已含該深度的上行與下行波</button>
+      <button class="opt">都可以，結果一樣</button>
+    </div>
+    <div class="fb">井下紀錄在土柱內部，已經包含被上方土層改變過的下行波，所以是 within。若誤設成 outcrop，程式會把它除以 2 當入射波，再自行加上下行波，等於把土層效應算兩次。正確告訴程式紀錄的種類，是學生分析最常見的錯誤之一。</div>
+  </div>
+</section>
+
+<section class="sec" id="s10-3" data-num="10.3" data-short="無阻尼層" data-title="剛性岩盤上的無阻尼土層">
+  <div class="sec-head"><span class="sec-num">10.3</span><h2>剛性岩盤上的均勻無阻尼土層：F₁ 與四分之一波長</h2></div>
+  <p class="src">出處：Ch6 講義 1.8–1.10；教師 PDF p.10–12；郭安妮講義 p.3–6</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>一層土放在不會動形的岩盤上，岩盤以頻率 \(\omega\) 左右搖。地表振幅是岩盤的幾倍？</p>
+  </div>
+
+  <p>最簡單的情形：厚度 \(H\)、剪力波速 \(V_s\) 的均勻土層，沒有阻尼，坐在剛性岩盤上。只要兩個邊界條件就能解出來：</p>
+  <details class="derive" open><summary>推導：五個步驟得到 F₁</summary><div class="body">
+    <ol class="steps">
+      <li>一般解：\(u(z,t) = Ae^{i(\omega t + kz)} + Be^{i(\omega t - kz)}\)，\(A\) 項上行、\(B\) 項下行。</li>
+      <li>地表 \(z = 0\) 是自由面，剪應力 \(\tau = G\,\partial u/\partial z = 0\)：\(Gik(A - B)e^{i\omega t} = 0\)。</li>
+      <li>所以 \(A = B\)：上行波在地表完全反射。</li>
+      <li>代回：\(u = A(e^{ikz} + e^{-ikz})e^{i\omega t} = 2A\cos kz\,e^{i\omega t}\)。這是<b>駐波</b>：空間形狀 \(\cos kz\) 固定，整層同步振動，只是各深度的振幅不同。</li>
+      <li>轉換函數 = 地表位移 / 岩盤頂位移 = \(2A / (2A\cos kH)\)。</li>
+    </ol>
+  </div></details>
+  <div class="eqbox">\[ F_1(\omega) = \frac{u(0,t)}{u(H,t)} = \frac{1}{\cos kH} = \frac{1}{\cos(\omega H/V_s)} \]</div>
+
+  <h3>兩個觀察、三個檢核</h3>
+  <ul>
+    <li><b>只取決於 \(\omega H/V_s\)</b>：厚而軟和薄而硬的土層，只要 \(H/V_s\) 相同，反應就相同。</li>
+    <li><b>它是 SDOF 放大函數的連續版</b>（<a href="../units/u04.html#s4-5">4.5</a>）：\(\cos kH = 0\) 時分母為零、放大無限大，就是共振。差別是 SDOF 只有一個共振頻率，連續土層有無限多個。</li>
+    <li>檢核：低頻 \(\cos kH \to 1\)，\(F_1 \to 1\)，土層跟著岩盤一起動 ✓；\(\omega H/V_s\) 是弧度、無因次 ✓；比值與 \(A\) 無關，是線性系統 ✓。</li>
+  </ul>
+
+  <h3>四分之一波長</h3>
+  <p>共振發生在 \(kH = \pi/2,\ 3\pi/2,\ 5\pi/2, \dots\)。第一個共振 \(kH = \pi/2\) 等於 \(H = \lambda/4\)：<b>土層厚度恰好是四分之一波長</b>。上行波在地表反射、走回岩盤再被反射，剛好與新進來的入射波同相，能量一圈一圈累積。</p>
+  <div class="eqbox">\[ f_n = \frac{(2n-1)\,V_s}{4H}\quad(n = 1, 2, 3, \dots), \qquad f_0 \equiv f_1 = \frac{V_s}{4H}, \qquad T_s = \frac{4H}{V_s} \]</div>
+  <p>講義寫成 \(f_n = (2n+1)V_s/4H\)、\(n\) 從 0 開始，兩種寫法相同：共振頻率是基本頻率的 1、3、5、7 倍，兩峰之間 \(kH = n\pi\) 處放大回到 1。</p>
+
+  <div id="w-tf1" data-title="均勻土層、剛性岩盤的轉換函數"></div>
+
+  <div class="callout example"><div class="ct">例：10 ft 的薄層（Kramer 1996 例題）</div>
+    <p>\(H\) = 10 ft、\(V_s\) = 1050 ft/s（公制約 3.05 m、320 m/s），無阻尼。先估計：\(f_0 = 1050/(4\times10) = 26.25\) Hz。逐點驗算 \(F_1\)：</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>頻率</th><th>\(kH = 2\pi f H/V_s\)</th><th class="num">\(|F_1| = 1/|\cos kH|\)</th></tr>
+      <tr><td>10 Hz</td><td>0.598</td><td class="num">1.21</td></tr>
+      <tr><td>20 Hz</td><td>1.197</td><td class="num">2.74</td></tr>
+      <tr><td>25 Hz</td><td>1.496</td><td class="num">13.4</td></tr>
+      <tr class="hl"><td>26.25 Hz</td><td>\(\pi/2\)</td><td class="num">∞</td></tr>
+    </table></div>
+    <p>與講義的「10 Hz 以下接近 1、20 Hz 約 2.8、近 25 Hz 急升」一致（講義的 2.8 是讀圖值，計算值 2.74）。地震能量多在 1–10 Hz，遠低於 26 Hz，所以這層薄而硬的土只會稍微放大。</p>
+  </div>
+
+  <div class="quiz" data-num="1.44" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">540 ft 深的均勻沉積層，\(V_s\) = 1500 ft/s。場址週期 \(T_s\) 是多少秒？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="Ts (s)"><button class="btn">檢查</button></div>
+    <div class="fb">T_s = 4H/V_s = 4 × 540 / 1500 = 1.44 s（f₀ = 0.69 Hz）。第 2、3 振態在 3f₀ = 2.08 Hz、5f₀ = 3.47 Hz。和 10 ft 薄層相比，這層的共振頻率正好落在地震能量所在的頻段（10.4）。</div>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：無阻尼只用來建立觀念</div>
+    <p>\(\xi = 0\) 時轉換函數在共振頻率無限大；只要輸入在那個頻率有一點點能量，計算的地表運動就會出現不實際的尖峰。實際分析一定要給合理的阻尼比（10.5）。</p>
+  </div>
+</section>
+
+<section class="sec" id="s10-4" data-num="10.4" data-short="FFT 流程" data-title="線性分析的標準流程">
+  <div class="sec-head"><span class="sec-num">10.4</span><h2>線性地盤反應的標準流程：FFT → 乘上 F → 逆 FFT</h2></div>
+  <p class="src">出處：Ch6 講義 1.11、2.2–2.3；教師 PDF p.12–13、p.20–21；郭安妮講義 p.9</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>轉換函數只告訴我們「每一個頻率」放大幾倍。一筆不規則的地震紀錄要怎麼用它？</p>
+  </div>
+
+  <ol class="steps">
+    <li>岩盤加速度歷時 \(a_r(t)\) 做 FFT，得到複數頻譜 \(I(\omega)\)。</li>
+    <li>每個頻率乘上（複數的）轉換函數：\(S(\omega) = F(\omega)\,I(\omega)\)。</li>
+    <li>對 \(S(\omega)\) 做逆 FFT，得到地表加速度歷時。</li>
+  </ol>
+  <p>能夠「逐頻率相乘再加回去」的理由只有一個：<b>系統是線性的，疊加原理成立</b>（<a href="../units/u04.html#s4-1">4.1</a>）。每個簡諧分量各自穿過土層，最後再加起來。</p>
+
+  <div id="w-fft" data-title="FFT → 乘上轉換函數 → 逆 FFT"></div>
+
+  <h3>三個實務細節</h3>
+  <ul>
+    <li><b>補零</b>：基本 FFT 在點數為 2 的次方時最快；更重要的是要補到原長度的兩倍以上，否則土層在紀錄尾端的自由振動會「繞回」紀錄開頭。上方互動圖把 4096 點補到 8192 點。</li>
+    <li><b>Nyquist 頻率</b> \(f_{Ny} = 1/(2\Delta t)\)：能表示的最高頻率。\(\Delta t\) = 0.01 s → 50 Hz；\(\Delta t\) = 0.02 s → 只有 25 Hz。</li>
+    <li><b>相位很重要</b>：實際計算乘的是複數 \(F\)。講義圖只畫 \(|F|\) 是為了好讀；若只乘絕對值，逆轉換得到的歷時形狀是錯的，雖然振幅譜看起來一模一樣。互動圖勾選「只乘 |F|」就能看到。</li>
+  </ul>
+
+  <div class="callout example"><div class="ct">兩個例題的對照：10 ft 薄層 vs 540 ft 深層</div>
+    <div class="tablewrap"><table class="data">
+      <tr><th></th><th>10 ft 薄層（剛性岩盤）</th><th>540 ft 深層（剛性岩盤）</th></tr>
+      <tr><td>\(f_0\)</td><td>26.25 Hz</td><td>0.69 Hz（\(T_s\) = 1.44 s）</td></tr>
+      <tr><td>輸入有能量的頻段（約 0.5–10 Hz）內的 \(|F|\)</td><td>1.0–1.2</td><td>多個共振峰（0.69、2.08、3.47 Hz…），\(\xi\) = 5 % 時第一峰 12.8</td></tr>
+      <tr><td>地表運動</td><td>和輸入很像，只略為放大</td><td>主震後有週期約 1.4 s 的長時間振盪，長週期成分大很多</td></tr>
+    </table></div>
+    <p>本例的主要教訓：<b>土層放大多少，取決於它的共振頻率是否與輸入運動的頻率內容重疊</b>。另一個重要觀念：判斷場址效應不能只看 PGA。PGA 主要由高頻控制，深層土只稍微放大高頻，所以 PGA 不一定增加很多；改變很大的是反應譜長週期段，以及速度與位移。</p>
+  </div>
+
+  <div class="quiz" data-num="25" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">輸入紀錄的時間間隔 \(\Delta t\) = 0.02 s。這筆紀錄能代表的最高頻率是多少 Hz？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="f (Hz)"><button class="btn">檢查</button></div>
+    <div class="fb">f_Ny = 1/(2Δt) = 1/0.04 = 25 Hz。高於 25 Hz 的轉換函數再精確也沒有意義，因為輸入在那裡沒有資訊；這也限制了子層厚度要對應的 f_max（<a href="u11.html#s11-2">11.2</a>）。</div>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：只乘 |F|</div>
+    <p>把 \(|F|\) 乘上 \(|I|\) 得到正確的振幅譜，但相位沒有被土層延遲，逆轉換出來的波形會提早、形狀錯誤，峰值也不對。轉換函數一定要保留複數。</p>
+  </div>
+</section>
+
+<section class="sec" id="s10-5" data-num="10.5" data-short="複數模數" data-title="有阻尼土層：複數模數">
+  <div class="sec-head"><span class="sec-num">10.5</span><h2>有阻尼土層：複數模數讓峰值變有限</h2></div>
+  <p class="src">出處：Ch6 講義 1.12–1.14；教師 PDF p.14–16</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>真實土層的共振峰有多高？阻尼加在哪裡、怎麼加，才不會讓高頻被不合理地壓掉？</p>
+  </div>
+
+  <p>把土壤看成 Kelvin–Voigt 材料（彈簧與阻尼器並聯）：\(\tau = G\gamma + \eta\,\partial\gamma/\partial t\)。簡諧運動中，對時間微分就是乘上 \(i\omega\)，所以 \(\tau = (G + i\omega\eta)\gamma\)。若 \(\eta\) 是常數，阻尼會隨頻率增加；但單元 8 學過土壤的阻尼主要是遲滯型、幾乎與速率無關，所以取 \(\eta = 2G\xi/\omega\)，頻率消去：</p>
+  <div class="eqbox">\[ G^* = G(1 + 2i\xi), \qquad V_s^* = \sqrt{G^*/\rho} \approx V_s(1 + i\xi), \qquad k^* = \frac{\omega}{V_s^*} \approx \frac{\omega}{V_s}(1 - i\xi) \]</div>
+  <p>這就是 <a href="../units/u04.html#s4-8">4.8</a> 的複數勁度 \(k^* = k(1+2i\xi)\)。一般解與邊界條件都不變，只把 \(k\) 換成 \(k^*\)：</p>
+  <div class="eqbox">\[ F_2(\omega) = \frac{1}{\cos k^*H}, \qquad |F_2| = \frac{1}{\sqrt{\cos^2 kH + \sinh^2 \xi kH}} \approx \frac{1}{\sqrt{\cos^2 kH + (\xi kH)^2}} \]</div>
+
+  <details class="derive"><summary>推導：複數 cos 的大小</summary><div class="body">
+    <ol class="steps">
+      <li>恆等式：\(|\cos(x + iy)|^2 = \cos^2 x + \sinh^2 y\)。</li>
+      <li>\(k^*H \approx kH - i\xi kH\)，所以 \(x = kH\)、\(y = -\xi kH\)（平方後正負無關）。</li>
+      <li>小 \(y\) 時 \(\sinh y \approx y\)，得到上面的近似式。</li>
+      <li>共振時 \(kH = \pi/2 + n\pi\)，\(\cos\) 項為零，只剩 \(\xi kH\)：
+        \[ |F_2|_{peak} \approx \frac{1}{\xi\,(\pi/2 + n\pi)}, \quad n = 0, 1, 2, \dots \]</li>
+    </ol>
+    <p>虛部的物理意義：應力略為領先應變，一圈的應力應變曲線是橢圓，面積就是每圈消散的能量。真實遲滯迴圈兩端是尖的，複數模數給的是橢圓；形狀不同，但只要面積（消散能量）相同，預測的地表運動相當好。這是等值線性法的關鍵假設之一。</p>
+  </div></details>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>振態</th><th class="num">\(kH\)</th><th class="num">近似峰值 \(1/(\xi kH)\)，\(\xi\) = 5 %</th><th class="num">完整公式（30 m、200 m/s 例）</th></tr>
+    <tr class="hl"><td>第 1</td><td class="num">1.571</td><td class="num">12.7</td><td class="num">12.8（1.67 Hz）</td></tr>
+    <tr><td>第 2</td><td class="num">4.712</td><td class="num">4.2</td><td class="num">4.2（5.01 Hz）</td></tr>
+    <tr><td>第 3</td><td class="num">7.854</td><td class="num">2.5</td><td class="num">2.5（8.34 Hz）</td></tr>
+  </table></div>
+  <p>兩個結論：<b>阻尼越大，峰值越低</b>；<b>振態越高，\(kH\) 越大，峰值越低</b>，所以高振態的放大一定較小，土層是高頻運動的天然濾波器。對照 SDOF 的共振放大 \(1/2\xi = 10\)，同一量級，但連續土層還有高振態。</p>
+
+  <div id="w-f2" data-title="|F₂| 的解圖：橫軸是 kH，一張圖適用任何土層"></div>
+
+  <div class="callout example"><div class="ct">例：由井下陣列反算阻尼</div>
+    <p>地表／井下的轉換函數第一峰約 8：\(\xi \approx 1/(8 \times \pi/2) = 0.080\)，約 8 %。注意這個比值的分母是土層底部的 within 運動，下行波已在紀錄中，所以它主要反映<b>材料阻尼</b>；若改對露頭紀錄取比值，峰值還會受 10.7 的輻射阻尼影響。</p>
+  </div>
+
+  <div class="quiz" data-num="0.0637" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">井下陣列量到的「地表／岩盤頂」轉換函數第一峰為 10。土層的阻尼比約為多少？（填小數）</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="ξ"><button class="btn">檢查</button></div>
+    <div class="fb">ξ ≈ 1/(10 × π/2) = 0.0637 ≈ 6.4 %。用第二峰也可以：若第二峰約 3.4，ξ ≈ 1/(3.4 × 3π/2) = 6.2 %，兩者應該接近，差很多時表示土層不是均勻的。</div>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：ξ 大時高頻被削弱</div>
+    <p>\(\xi\) = 0 時 \(|F_2|\) 永遠 ≥ 1；但阻尼大（例如 30 %）時，\(kH\) 大於約 3 之後放大會<b>小於 1</b>，高頻反而被削弱。這不是錯誤，而是阻尼的濾波效應；也是等值線性分析後高頻消失的原因（<a href="u11.html#s11-1">11.1</a>）。</p>
+  </div>
+</section>
+
+<section class="sec" id="s10-6" data-num="10.6" data-short="週期振態" data-title="場址週期與土層振態">
+  <div class="sec-head"><span class="sec-num">10.6</span><h2>場址週期與土層振態</h2></div>
+  <p class="src">出處：Ch6 講義 1.14–1.17；教師 PDF p.16–18</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>只知道土層厚度和平均剪力波速，能不能在審查報告時一眼看出分析結果合不合理？</p>
+  </div>
+
+  <p>可以，靠的就是 \(T_s = 4H/V_s\)，場址效應中最常用的單一數字。厚而軟的土層場址週期長，會與長週期的高樓共振；薄而硬的土層場址週期短，影響低矮、剛性的結構。</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>例</th><th>計算</th><th>結果</th></tr>
+    <tr><td>\(V_s\) = 250 m/s、\(H\) = 25 m，輸入 2.5 Hz</td><td>\(kH = 2\pi \times 2.5 \times 25/250\)</td><td>1.57，正好在第一峰</td></tr>
+    <tr><td>\(V_s\) = 160 m/s、\(H\) = 20 m</td><td>\(T_s = 4 \times 20/160\)</td><td>0.50 s</td></tr>
+    <tr><td>1985 墨西哥市軟黏土（Ch7）</td><td>\(T_s = 4 \times 37.5/75\)</td><td>2.0 s，與 10–20 層樓的週期相近，這些建物受損最重</td></tr>
+    <tr><td>台北盆地松山層</td><td>數十公尺厚、\(V_s\) ≈ 150–250 m/s</td><td>\(T_s\) 約 1 s，中高樓層建物要特別注意</td></tr>
+  </table></div>
+
+  <h3>振態：cos(k<sub>n</sub>z)</h3>
+  <p>共振時土層的形狀就是 \(\cos k_n z\)，\(k_nH = (2n-1)\pi/2\)。底部（剛性岩盤）位移為零，地表最大。第 1 振態是四分之一個 cos，整層同向；第 2 振態在 \(z/H = 1/3\) 有一個節點，上下反向；第 3 振態的節點在 \(z/H\) = 0.2 與 0.6。</p>
+  <p><b>剪應變是位移對深度的斜率</b>：\(\gamma = \partial u/\partial z \propto k_n\sin k_n z\)。高振態在地表的放大較小，但節點附近斜率很陡，層內可以產生大應變；應變正是等值線性法要追蹤的量。</p>
+
+  <div id="w-modes" data-title="土層振態與任一頻率下的變形形狀"></div>
+
+  <div class="callout example"><div class="ct">例：H = 30 m、V<sub>s</sub> = 200 m/s、ξ = 5 %，剛性岩盤</div>
+    <p>\(f_0 = 200/120 = 1.67\) Hz、\(T_s = 0.60\) s；第 2、3 振態 5.00、8.33 Hz。峰值近似 12.7、4.2、2.5，完整公式 12.8、4.2、2.5，小 \(\xi\) 時近似式很準。</p>
+    <p>但放大 10 倍以上的頻帶很窄：1.5 Hz 時 \(|F_2|\) 已降到 5.7，2.0 Hz 約 3.2。週期約 0.6 s 的 5–6 層樓建物風險最高。</p>
+    <p><b>強震時</b> \(V_s\) 降到 150 m/s、\(\xi\) 升到 10 %：\(f_0 = 150/120 = 1.25\) Hz、\(T_s = 0.80\) s，第一峰 \(1/(0.10\times1.571) = 6.4\)（完整公式 6.4），約為原來的一半。場址週期變長、放大變小，正是等值線性法要捕捉的非線性效應；同一個場址小地震量到的週期較短、大地震較長，是土壤非線性最直接的觀測證據。</p>
+  </div>
+
+  <div class="callout intuition"><div class="ct">等值 SDOF：只保留第一振態</div>
+    <p>把土層當成週期 \(4H/V_s\)、阻尼比等於土壤 \(\xi\) 的 SDOF，可以快速估計地表反應譜的峰落在哪個週期。代價是漏掉高振態，以及高振態在土層內部造成的應變。另外 12.7 是剛性岩盤的值：真實岩盤會讓能量往下離開，峰值低很多（10.7 的 540 ft 例：12.8 → 3.2）。它是上限概念，不是設計值。</p>
+  </div>
+
+  <div class="quiz" data-num="0.5" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">\(H\) = 20 m、\(V_s\) = 160 m/s 的土層，場址週期 \(T_s\) 是多少秒？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="Ts (s)"><button class="btn">檢查</button></div>
+    <div class="fb">T_s = 4H/V_s = 80/160 = 0.50 s，f₀ = 2 Hz。</div>
+  </div>
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">均勻土層第 2 振態（\(kH = 3\pi/2\)）在土層內部（不含底部）哪個深度剪應變最大？</div>
+    <div class="opts">
+      <button class="opt">地表，因為位移最大</button>
+      <button class="opt">\(z/H = 1/3\)，也就是位移的節點</button>
+      <button class="opt">\(z/H = 2/3\)，位移反向最大的位置</button>
+    </div>
+    <div class="fb">γ ∝ sin(kz)。kz = π/2 在 z/H = 1/3：位移為零、斜率最陡，|sin| = 1。z/H = 2/3 時 kz = π，sin = 0，那裡位移反向最大，應變反而是零；地表 sin 0 = 0，應變也是零。另一個 |sin| = 1 的位置是底部 z/H = 1。</div>
+  </div>
+</section>
+
+<section class="sec" id="s10-7" data-num="10.7" data-short="輻射阻尼" data-title="彈性岩盤：阻抗比與輻射阻尼">
+  <div class="sec-head"><span class="sec-num">10.7</span><h2>彈性岩盤：阻抗比與輻射阻尼</h2></div>
+  <p class="src">出處：Ch6 講義 2.4–2.10；教師 PDF p.22–28</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>即使土壤完全沒有阻尼，真實場址的共振放大也不會無限大。能量跑到哪裡去了？</p>
+  </div>
+
+  <p>剛性岩盤的嚴重缺點是：下行波在岩盤被完全反射，能量永遠出不去。真實岩盤勁度有限，下行波有一部分穿入岩盤、一直往下走、不再回來，把能量帶走。這叫<b>輻射阻尼</b>。</p>
+  <p>土層（\(G_s, \rho_s, V_s\)）和岩盤（\(G_r, \rho_r, V_r\)）各有自己的上行與下行波。地表自由給一個條件，土–岩界面的<b>位移連續</b>與<b>剪應力連續</b>給兩個條件。剪應力連續會帶出一個比值，因為 \(Gk = \rho V_s^2 \cdot \omega/V_s = \omega\rho V_s\)：</p>
+  <div class="eqbox">\[ \alpha_z^* = \frac{G_s^* k_s^*}{G_r^* k_r^*} = \frac{\rho_s V_s^*}{\rho_r V_r^*} \qquad\text{（阻抗比，與單元 6 界面反射、透射的阻抗相同）} \]</div>
+  <p>以「沒有土時的露頭位移 \(2A_r\)」為分母，得到：</p>
+  <div class="eqbox">\[ F_3(\omega) = \frac{1}{\cos k_s^*H + i\,\alpha_z^*\sin k_s^*H}, \qquad |F_3|_{max} \approx \frac{1}{\alpha_z + \xi\pi/2} \]</div>
+
+  <details class="derive"><summary>推導：從兩個界面條件到 F₃</summary><div class="body">
+    <ol class="steps">
+      <li>地表自由：\(A_s = B_s\)，土層內 \(u_s = 2A_s\cos k_s^*z\)。</li>
+      <li>界面位移連續（\(z_s = H\)、\(z_r = 0\)）：\(A_r + B_r = A_s(e^{ik_s^*H} + e^{-ik_s^*H}) = 2A_s\cos k_s^*H\)。</li>
+      <li>界面剪應力連續：\(G_r^*k_r^*(A_r - B_r) = G_s^*k_s^*A_s(e^{ik_s^*H} - e^{-ik_s^*H})\)，即 \(A_r - B_r = 2i\alpha_z^*A_s\sin k_s^*H\)。</li>
+      <li>兩式相加：\(2A_r = 2A_s(\cos k_s^*H + i\alpha_z^*\sin k_s^*H)\)。地表 \(2A_s\) 除以露頭 \(2A_r\) 即得 \(F_3\)。</li>
+      <li>無阻尼土、共振時 \(\cos = 0\)、\(\sin = 1\)：峰值 \(= 1/\alpha_z\)。土層完全沒有阻尼，放大仍然有限。</li>
+      <li>小 \(\xi\)、小 \(\alpha_z\) 時，分母在第一個峰約為 \(\xi\pi/2 + \alpha_z\)：材料阻尼與輻射阻尼大約可以相加（第 n 峰把 \(\pi/2\) 換成 \((2n-1)\pi/2\)）。</li>
+    </ol>
+    <p>若分母改用土層底部真實運動 \(A_r + B_r\)，由步驟 2 得到 \(1/\cos k_s^*H = F_2\)：峰值尖銳、不含輻射阻尼，只能配 within 輸入。<b>轉換函數的定義必須與輸入運動的定義一致</b>。</p>
+  </div></details>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>\(\alpha_z\)</th><th>意義</th></tr>
+    <tr><td>0</td><td>岩盤無限硬 → 回到剛性岩盤（\(F_3 \to F_2\)）</td></tr>
+    <tr><td>0.1–0.3</td><td>土坐在岩盤上的典型值：輻射阻尼 \(\alpha_z\) 常比材料阻尼 \(\xi\pi/2\)（5 % 時 0.08）更大</td></tr>
+    <tr><td>1</td><td>土與岩阻抗相同 → 界面對波「隱形」，直接穿過，沒有共振</td></tr>
+  </table></div>
+
+  <div id="w-f3" data-title="阻抗比與輻射阻尼：F₃"></div>
+
+  <div class="callout example"><div class="ct">例：540 ft 土層、彈性岩盤</div>
+    <p>土：\(V_s\) = 1500 ft/s、125 pcf、\(\xi\) = 5 %；岩盤：\(V_r\) = 5000 ft/s、160 pcf、\(\xi\) = 2 %。單位重除以 \(g\) 就是密度，\(g\) 上下相消：</p>
+    <p>\(\alpha_z = (125 \times 1500)/(160 \times 5000) = 0.234\)：單位重比 0.78、速度比 0.30，阻抗比主要由速度比控制。</p>
+    <p>第一峰估計 \(1/(0.234 + 0.0785) = 3.20\)；完整的層狀遞迴（10.8）算出 0.686 Hz、3.19。剛性岩盤是 0.695 Hz、12.8：<b>峰值降到約四分之一，峰的位置幾乎不變</b>。在歷時上，剛性岩盤的長時間振盪（能量出不去）變成很快衰減（能量進入岩盤），輻射阻尼直接看得見（6.4 節互動圖選「540 ft、彈性岩盤」）。</p>
+  </div>
+
+  <div class="callout intuition"><div class="ct">阻抗比控制兩件事</div>
+    <p>波由硬而重的岩盤進入軟而輕的土：同樣的能量由較弱的材料攜帶，質點速度變大，這是<b>阻抗放大</b>。波由土往下回到岩盤：部分反射、部分透射，阻抗比越小，能量越被困在土層中，<b>共振越強</b>。軟土直接坐在很硬的岩盤上（如墨西哥市）兩者都很強烈。共振頻率則不受 \(\alpha_z\) 影響：峰都在 \(kH \approx \pi/2, 3\pi/2\)，所以 \(4H/V_s\) 的估計對剛性與彈性岩盤都成立。</p>
+  </div>
+
+  <div class="quiz" data-num="0.164" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">土：\(\gamma\) = 18 kN/m³、\(V_s\) = 200 m/s；岩盤：\(\gamma\) = 22 kN/m³、\(V_r\) = 1000 m/s。阻抗比 \(\alpha_z\) 是多少？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="αz"><button class="btn">檢查</button></div>
+    <div class="fb">α_z = (18 × 200)/(22 × 1000) = 0.164。若 ξ = 5 %，第一峰 ≈ 1/(0.164 + 0.079) = 4.1；同一土層放在剛性岩盤上會是 12.7。</div>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：講義 F₃ 圖的曲線標籤（勘誤）</div>
+    <p>講義 2.7 那張 \(\xi = 0\) 的圖，標 0.1 的曲線峰略大於 3、標 0.5 的約 1.5；但理論峰值 \(1/\alpha_z\) 應為 10 與 2。圖上峰值約為 \(1/\sqrt{\text{標籤}}\)，標籤的行為像 \(\alpha_z^2\) 而不是 \(\alpha_z\)。看趨勢即可，理論值以 \(1/\alpha_z\) 為準（上方互動圖按「講義 2.7 圖」可比較）。另外：程式設 rigid base 會移除輻射阻尼、高估共振放大，只適用於輸入是岩盤內部量到的 within 運動。</p>
+  </div>
+</section>
+
+<section class="sec" id="s10-8" data-num="10.8" data-short="逐層遞迴" data-title="層狀土：逐層遞迴">
+  <div class="sec-head"><span class="sec-num">10.8</span><h2>層狀土：逐層遞迴是 SHAKE 的核心</h2></div>
+  <p class="src">出處：Ch6 講義 2.11–2.15；教師 PDF p.29–33；郭安妮講義 p.7–8；Kramer (1996) 式 7.34</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>真實剖面有十幾層，甚至軟層夾在硬層之間。每一層兩個未知振幅，難道要解一個很大的聯立方程？</p>
+  </div>
+
+  <p>不用。第 \(m\) 層與第 \(m+1\) 層之間的界面條件，和 6.7 的土–岩界面一模一樣，只是把「土、岩」改名為「第 \(m\)、\(m+1\) 層」。層狀問題就是<b>同一個界面條件用 N − 1 次</b>：</p>
+  <div class="eqbox">\[ \begin{aligned} A_{m+1} &= \tfrac12 A_m(1+\alpha_m^*)\,e^{ik_m^*h_m} + \tfrac12 B_m(1-\alpha_m^*)\,e^{-ik_m^*h_m} \\ B_{m+1} &= \tfrac12 A_m(1-\alpha_m^*)\,e^{ik_m^*h_m} + \tfrac12 B_m(1+\alpha_m^*)\,e^{-ik_m^*h_m} \end{aligned} \qquad \alpha_m^* = \frac{\rho_m V_{s,m}^*}{\rho_{m+1}V_{s,m+1}^*} \]</div>
+  <details class="derive"><summary>推導：兩個連續條件 → 遞迴</summary><div class="body">
+    <ol class="steps">
+      <li>位移連續（第 \(m\) 層底 = 第 \(m+1\) 層頂）：\(A_{m+1} + B_{m+1} = A_me^{ik_m^*h_m} + B_me^{-ik_m^*h_m}\)。</li>
+      <li>應力連續：\(A_{m+1} - B_{m+1} = \alpha_m^*\,(A_me^{ik_m^*h_m} - B_me^{-ik_m^*h_m})\)。</li>
+      <li>兩式相加、相減再除以 2，就是上面的遞迴。</li>
+      <li>從地表 \(A_1 = B_1 = 1\)（自由面）開始，一層一層推到 \(A_N, B_N\)。系統是線性的，任何深度的振幅都等於 \(A_1\) 乘上只與頻率有關的函數。</li>
+    </ol>
+    <p>\(e^{ik^*h}\) 是複數，同時含相位變化與振幅衰減，衰減就是該層的材料阻尼。把一層的兩個振幅寫成向量，每過一層就乘上一個 2 × 2 傳遞矩陣，從不需要解大型聯立方程：即使數十層、上千個頻率，方法仍然快速而穩定。</p>
+  </div></details>
+  <p>有了每一層的 \(A_m, B_m\)，任意兩個深度之間的轉換函數都能算：地表對露頭是 \(2A_1/2A_N\)，地表對岩盤頂是 \(2A_1/(A_N+B_N)\)。對一層的兩個波求深度微分，就得到<b>應變</b>的轉換函數，再逆 FFT 就是應變歷時，等值線性法每次疊代都需要這一步。這是 Schnabel, Lysmer &amp; Seed (1972) SHAKE 的核心，今天 Strata、DEEPSOIL 的等值線性模式仍是同樣的架構。</p>
+
+  <div id="w-layers" data-title="層狀剖面的轉換函數（可編輯）"></div>
+
+  <div class="callout example"><div class="ct">例：540 ft 多層剖面（講義 2.14–2.15）</div>
+    <p>0–20 ft：500；20–45：700；45–70：1500；70–130：1000；130–540：2000 ft/s；540 ft 以下岩盤 5000 ft/s；土 \(\xi\) = 5 %。剖面只給 \(V_s\)，單位重與岩盤阻尼借用彈性岩盤例（土 125 pcf、岩 160 pcf、岩 \(\xi\) = 2 %）。以本頁的遞迴重算：</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>峰</th><th class="num">頻率 (Hz)</th><th class="num">\(|F|\) 重算</th><th>講義</th></tr>
+      <tr class="hl"><td>1</td><td class="num">0.90</td><td class="num">3.14</td><td>0.9 Hz、3.1 ✓</td></tr>
+      <tr><td>2</td><td class="num">2.14</td><td class="num">3.56</td><td>2.1 Hz ✓</td></tr>
+      <tr><td>3</td><td class="num">3.67</td><td class="num">2.59</td><td>3.7 Hz ✓</td></tr>
+      <tr><td>4</td><td class="num">4.75</td><td class="num">2.79</td><td>4.8 Hz ✓（峰值 2.6–3.6 ✓）</td></tr>
+      <tr><td>10 Hz 處</td><td class="num">10</td><td class="num">1.03</td><td>到約 10 Hz 放大仍 ≥ 1 ✓</td></tr>
+    </table></div>
+    <p>與均勻層等間距、逐漸下降的峰不同：間距不規則、峰高不單調，反映各層速度不同。<b>走時法</b>估計：總走時 \(\sum h/V_s = 0.357\) s，\(f_0 \approx 1/(4\times0.357) = 0.70\) Hz，比計算的 0.90 Hz 低。層狀剖面的振態不是單純的四分之一波長，這個估計只是粗略參考。</p>
+  </div>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">剖面第 3 層 1500 ft/s、第 4 層 1000 ft/s（速度反轉）。用一層平均 V<sub>s</sub> 的均勻模型代替，最可能漏掉什麼？</div>
+    <div class="opts">
+      <button class="opt">沒有影響，走時相同則轉換函數相同</button>
+      <button class="opt">夾層在兩個界面間來回反射，多出的共振峰與不規則的峰高</button>
+      <button class="opt">只會讓第一峰的頻率變高一點</button>
+    </div>
+    <div class="fb">走時相同只保證「平均」的四分之一波長估計相近；軟層夾在硬層之間會在上下兩個界面來回反射，產生額外的共振，峰的間距與高度都不再規則。在上方互動圖選「速度反轉」並勾選「同走時的均勻層」比較。</div>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：分層從哪裡來</div>
+    <p>有井下（downhole）或懸盪式（suspension）量測時，量到的 \(V_s\) 直接定義分層；只有 SPT N 值時要用經驗式推 \(V_s\)，不確定性大很多。另外講義 2.15 的剖面只給 \(V_s\)，單位重是借用的（勘誤表第 33 頁），重算時要說明假設。</p>
+  </div>
+</section>
+
+<section class="sec" id="s10-9" data-num="10.9" data-short="軟硬場址" data-title="同一個岩盤運動、兩種地盤">
+  <div class="sec-head"><span class="sec-num">10.9</span><h2>同一個岩盤運動、兩種地盤（課堂活動 1）</h2></div>
+  <p class="src">出處：In-Class Assignment 1（第一週課堂活動）；Ch6 講義 2.3、2.22</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>岩盤運動完全相同，只換上方的土。哪一個地盤比較危險？</p>
+  </div>
+
+  <p>第一週的課堂活動用老師的網頁工具（<a href="https://yuweihwangntu-rgb.github.io/soil-dynamics-ssi/" target="_blank" rel="noopener">soil-dynamics-ssi</a>，需連網）做了三件事：同一個地震放在軟弱盆地與堅硬場址上；把輸入加倍看土壤是不是彈簧；再放上 5 層與 10 層的建築。現在有了前面幾節的工具，可以說清楚每個現象的原因。下面的互動圖在本頁離線計算，土層參數是示意值，不是老師工具裡的設定。</p>
+
+  <div id="w-sites" data-title="軟弱盆地 vs 堅硬場址：同一個岩盤輸入"></div>
+
+  <h3>活動的三個教訓</h3>
+  <ol>
+    <li><b>PGA 和 \(S_a\)(1.0 s) 給的答案不一樣</b>。軟弱盆地的 PGA 不一定比較大，但 1 s 附近的譜值大很多；堅硬場址則在 0.2 s 附近較大。「哪個比較危險」要先問：<b>建築的週期是多少</b>。兩條反應譜的峰，分別落在各自的場址週期附近（軟弱盆地約 1 s、堅硬場址約 0.2 s）。</li>
+    <li><b>土壤不是彈簧</b>。輸入每次加倍，地表 PGA 增加不到兩倍，放大倍率一路下降：應變越大，\(G\) 越小（場址週期變長）、\(\xi\) 越大（峰值變低）。兩個效應方向相同，都降低高頻放大。報告裡只有「一個放大倍率」的場址，等於忽略了輸入強度；這也是規範的場址係數在最強震區會變小的原因。</li>
+    <li><b>建築週期與場址週期接近時最危險</b>。10 層樓（週期約 1 s）放在軟弱盆地上最糟；同一棟 10 層樓放在堅硬場址上反而安全，因為它的週期落在堅硬場址反應譜的下降段。這不需要真的放建築去算：讀反應譜就能預測，這就是反應譜的用途（<a href="../units/u05.html#s5-2">5.2</a>）。</li>
+  </ol>
+
+  <div class="callout link"><div class="ct">實務上</div>
+    <p>1985 年墨西哥地震，震央 350 km 外的市區只有舊湖床上的一區倒塌（Ch7）；台北盆地因此有自己的設計反應譜。決定場址用哪一條譜是大地工程師的工作，而它改變了這塊地上每一棟建築的設計力。</p>
+  </div>
+
+  <div class="quiz" data-answer="2">
+    <div class="qh">小測驗</div>
+    <div class="qq">開發商決定蓋 5 層樓（週期約 0.5 s），在 \(T_s\) ≈ 1 s 的軟弱盆地與 \(T_s\) ≈ 0.2 s 的堅硬場址之間選擇。在下結論之前，最需要先在兩個場址量什麼？</div>
+    <div class="opts">
+      <button class="opt">地表的 PGA 歷史紀錄</button>
+      <button class="opt">地下水位</button>
+      <button class="opt">剪力波速剖面與基盤深度（決定場址週期與放大），以及土壤的 G/Gmax、阻尼曲線</button>
+    </div>
+    <div class="fb">場址週期 4H/V_s 需要層厚與 V_s；放大的高低需要阻抗比（基盤 V_s）；強震下的變化需要 G/Gmax 與阻尼曲線。PGA 只反映高頻，不能回答 0.5 s 的建築會受多大的力。</div>
+  </div>
+</section>
+
+<section class="sec" id="s10-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">Snell 定律</div>\[ \frac{\sin i_1}{V_{s1}} = \frac{\sin i_2}{V_{s2}} \]</div>
+    <div class="fcard"><div class="ft">無阻尼、剛性岩盤</div>\[ F_1 = \frac{1}{\cos(\omega H/V_s)} \]</div>
+    <div class="fcard"><div class="ft">場址週期</div>\[ f_n = \frac{(2n-1)V_s}{4H},\; T_s = \frac{4H}{V_s} \]</div>
+    <div class="fcard"><div class="ft">複數模數</div>\[ G^* = G(1+2i\xi),\; V_s^* \approx V_s(1+i\xi) \]</div>
+    <div class="fcard"><div class="ft">有阻尼、剛性岩盤</div>\[ |F_2| \approx \frac{1}{\sqrt{\cos^2kH + (\xi kH)^2}} \]</div>
+    <div class="fcard"><div class="ft">剛性岩盤峰值</div>\[ |F_2|_{n} \approx \frac{1}{\xi(2n-1)\pi/2} \]</div>
+    <div class="fcard"><div class="ft">阻抗比</div>\[ \alpha_z = \frac{\rho_sV_s}{\rho_rV_r} \]</div>
+    <div class="fcard"><div class="ft">彈性岩盤</div>\[ F_3 = \frac{1}{\cos k^*H + i\alpha_z^*\sin k^*H},\; |F_3|_{max} \approx \frac{1}{\alpha_z + \xi\pi/2} \]</div>
+    <div class="fcard"><div class="ft">露頭與土內</div>\[ u_{outcrop} = 2A,\quad u_{within} = A + B \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>outcrop 與 within 設錯</b>：地表或露頭紀錄是 outcrop（程式除以 2 當入射波）；井下紀錄是 within，不乘 2。</li>
+    <li><b>rigid base 高估共振</b>：剛性基盤移除輻射阻尼，只適合 within 輸入；輻射阻尼（αz ≈ 0.1–0.3）常比材料阻尼更重要。</li>
+    <li><b>只乘 |F|</b>：轉換函數要保留複數，否則歷時的形狀錯誤。</li>
+    <li><b>只看 PGA</b>：深厚軟弱土層改變最多的是長週期譜值、速度與位移。</li>
+    <li><b>講義 F₃ 圖的標籤</b>：圖上峰值約 1/√標籤，行為像 αz²；理論峰值用 1/αz（10 與 2）。</li>
+    <li><b>f<sub>n</sub> 的兩種寫法</b>：(2n−1)V<sub>s</sub>/4H（n 從 1）與 (2n+1)V<sub>s</sub>/4H（n 從 0）相同，不要混用 n 的起點。</li>
+    <li><b>多層例的單位重</b>：講義剖面只給 V<sub>s</sub>，單位重與岩盤阻尼借自彈性岩盤例（125、160 pcf、2 %）。</li>
+  </ul>
+  <h3>自我檢測</h3>
+  <div class="quiz" data-answer="2">
+    <div class="qh">綜合題 1</div>
+    <div class="qq">一個場址做了兩次分析：rigid base 時第一峰 \(|F|\) = 12，elastic base 時 3.5，峰的頻率都是 1.2 Hz。下列敘述何者正確？</div>
+    <div class="opts">
+      <button class="opt">彈性基盤改變了場址週期</button>
+      <button class="opt">兩者差異來自材料阻尼不同</button>
+      <button class="opt">差異來自輻射阻尼；阻抗比約為 1/3.5 − ξπ/2</button>
+    </div>
+    <div class="fb">兩次分析土壤相同、ξ 相同，只換基盤：峰的位置不變（4H/V_s 不受 αz 影響），峰值由 1/(ξπ/2) ≈ 12 降到 1/(αz + ξπ/2) = 3.5。由 12 反推 ξπ/2 ≈ 0.083（ξ ≈ 5.3 %），αz ≈ 0.286 − 0.083 ≈ 0.20。</div>
+  </div>
+  <div class="quiz" data-num="1.0" data-tol="0.03">
+    <div class="qh">綜合題 2</div>
+    <div class="qq">三層剖面：0–10 m \(V_s\) = 150、10–30 m \(V_s\) = 200、30–50 m \(V_s\) = 280 m/s。用走時法估計場址週期（s）。</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="Ts (s)"><button class="btn">檢查</button></div>
+    <div class="fb">走時 = 10/150 + 20/200 + 20/280 = 0.0667 + 0.100 + 0.0714 = 0.238 s，T_s ≈ 4 × 0.238 = 0.95 s ≈ 1 s。這就是 10.9 互動圖的「軟弱盆地」剖面；遞迴算出的第一峰會略有不同，因為層狀剖面的振態不是單純的四分之一波長。</div>
+  </div>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>強震時土壤變軟、阻尼變大，線性分析不夠了。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u09.html"><span class="dir">← 單元 9</span>室內動態試驗</a>
+  <a class="next" href="../units/u11.html"><span class="dir">單元 11 →</span>等值線性與非線性分析</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/data/ch6_motion.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/site.js"></script>
+</body>
+</html>

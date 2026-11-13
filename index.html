@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>土壤動力學學習網站</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .center { text-align: center; }
+  .sub { color: var(--muted); font-size: 19px; margin-top: -8px; }
+  .hero .btn.primary { font-size: 17px; padding: 11px 24px; margin-top: 34px; display: inline-block; }
+  .hero .btn.primary:hover { text-decoration: none; }
+  .stage { margin-top: 38px; }
+  .stage-h { display: flex; align-items: baseline; gap: 12px; margin: 0 0 12px; }
+  .stage-h .k { font-size: 13px; font-weight: 600; color: var(--orange); }
+  .stage-h h3 { margin: 0; font-size: 22px; }
+  .units { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+  .unit { display: block; background: var(--tile); border-radius: 20px; padding: 20px 20px 18px; color: inherit; transition: transform .25s ease, box-shadow .25s ease; }
+  .unit:hover { transform: scale(1.02); box-shadow: 0 6px 28px rgba(0,0,0,.08); text-decoration: none; }
+  .unit .no { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--accent); }
+  .unit .t { font-family: var(--font-display); font-weight: 700; font-size: 19px; line-height: 1.3; margin: 4px 0 8px; letter-spacing: -.01em; }
+  .unit .q { font-size: 14px; color: var(--muted); line-height: 1.55; margin: 0; }
+  .hwgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 30px; }
+  .hwcard { background: var(--tile); border-radius: 22px; padding: 24px 24px 20px; }
+  .hwcard h3 { margin: 0 0 2px; }
+  .hwcard .d { color: var(--muted); font-size: 14.5px; margin: 0 0 12px; }
+  .hwcard ul { margin: 0 0 16px; padding-left: 1.1em; font-size: 14.5px; line-height: 1.6; }
+  .hwcard ul a { white-space: nowrap; }
+  .hwcard .btn.primary { padding: 8px 20px; display: inline-block; }
+  .hwcard .btn.primary:hover { text-decoration: none; }
+  .qty-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 30px 0 4px; }
+  .qty-btns .btn { font-size: 19px; padding: 8px 22px; font-family: var(--font-display); font-weight: 600; }
+  .panel { background: var(--tile); border-radius: 24px; padding: 28px 30px; margin-top: 18px; }
+  .panel h3 { margin: 0 0 4px; }
+  #map-tbl td:first-child { white-space: nowrap; font-weight: 600; }
+  #map-tbl td a { white-space: nowrap; }
+  .future { text-align: center; margin-top: 26px; font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body data-page="home" data-root="">
+
+<main>
+  <header class="hero">
+    <div class="eyebrow">CIE 5014 · 2026 Fall</div>
+    <h1>土壤動力學</h1>
+    <p class="lede"><b>地震從岩盤傳上來，經過土層，到了地表會變成什麼樣子？</b>要回答它，得先知道地震怎麼來、系統怎麼振、波怎麼傳、土壤有多硬又消耗多少能量，再把它們組合成地盤反應分析，最後用來判斷土壤會不會液化。這個網站把整門課拆成 14 個觀念單元，照學習的先後排列。</p>
+    <a class="btn primary" href="units/u01.html">從單元 1 開始</a>
+  </header>
+
+  <section class="sec" id="map">
+    <h2 class="center">學習路線</h2>
+    <p class="center sub">五個階段、十四個單元。每個單元只講一組觀念，前一個單元是後一個的工具。</p>
+    <div id="stages"></div>
+    <p class="future">Ch7 局部場址效應與設計地震（講義發布後加入）</p>
+  </section>
+
+  <section class="sec" id="hw">
+    <h2 class="center">作業</h2>
+    <p class="center sub">三份作業各自一頁，完整解答與原始資料的互動重算都在裡面。每一題都標出要先讀的單元。</p>
+    <div class="hwgrid" id="hwgrid"></div>
+  </section>
+
+  <section class="sec" id="qty">
+    <h2 class="center">貫穿全科的五個量</h2>
+    <p class="center sub">同一個量，在不同單元換了角色出場。</p>
+    <div class="qty-btns" id="qtyBtns"></div>
+    <div class="panel" id="qtyPanel"></div>
+  </section>
+
+  <section class="sec" id="lecture">
+    <h2 class="center">講義章節對照</h2>
+    <p class="center sub">依講義複習時，用這張表找到每一章的內容在哪個單元。</p>
+    <div class="tablewrap"><table class="data" id="map-tbl">
+      <tr><th>講義</th><th>主題</th><th>網站位置</th></tr>
+      <tr><td>Ch0</td><td>為什麼需要土壤動力學、動態問題的特徵、地震中的反覆應力</td><td><a href="units/u01.html#s1-1">1.1</a>、<a href="units/u01.html#s1-2">1.2</a>、<a href="units/u08.html#s8-1">8.1</a></td></tr>
+      <tr><td>Ch1</td><td>板塊、地震成因、斷層、彈性回跳、震度、規模</td><td><a href="units/u02.html">單元 2</a>（2.1–2.6）</td></tr>
+      <tr><td>Ch2</td><td>PGA／PGV／PGD、累積參數、積分漂移</td><td><a href="units/u03.html">單元 3</a>（3.1–3.3）</td></tr>
+      <tr><td>Ch2</td><td>Fourier 頻譜與取樣、卓越週期</td><td><a href="units/u05.html#s5-1">5.1</a>、<a href="units/u05.html#s5-3">5.3</a></td></tr>
+      <tr><td>Ch3</td><td>四種波、一維波動方程式、d'Alembert、波速與應變、諧和波、Rayleigh、Love</td><td><a href="units/u06.html">單元 6</a>（6.1–6.7）</td></tr>
+      <tr><td>Ch3</td><td>MASW、Vs30 與場址分類、彎曲元件</td><td><a href="units/u07.html#s7-2">7.2</a>、<a href="units/u07.html#s7-5">7.5</a>、<a href="units/u07.html#s7-4">7.4</a></td></tr>
+      <tr><td>Ch3</td><td>共振柱：頻率方程式、掃頻、阻尼與大應變</td><td><a href="units/u09.html#s9-1">9.1</a>、<a href="units/u09.html#s9-2">9.2</a></td></tr>
+      <tr><td>Ch4</td><td>SDOF：自由振動、強迫振動、頻率響應、能量、阻尼量測、傳遞率</td><td><a href="units/u04.html">單元 4</a>（4.1–4.10）</td></tr>
+      <tr><td>Ch4</td><td>反應譜</td><td><a href="units/u05.html#s5-2">5.2</a></td></tr>
+      <tr><td>Ch5</td><td>土壤元素的應力、遲滯迴圈、阻尼比、MRD、骨架曲線、Masing、影響因素</td><td><a href="units/u08.html">單元 8</a>（8.2–8.9）</td></tr>
+      <tr><td>Ch5</td><td>G<sub>max</sub> 經驗式、現地波速量測</td><td><a href="units/u07.html#s7-1">7.1</a>、<a href="units/u07.html#s7-3">7.3</a></td></tr>
+      <tr><td>Ch5</td><td>實驗室試驗與應變範圍、由實驗室到現地</td><td><a href="units/u09.html#s9-3">9.3</a>、<a href="units/u09.html#s9-4">9.4</a></td></tr>
+      <tr><td>Ch6</td><td>一維假設、控制運動、轉換函數、阻尼、場址週期、彈性岩盤、層狀土</td><td><a href="units/u10.html">單元 10</a>（10.1–10.9）</td></tr>
+      <tr><td>Ch6</td><td>等值線性、子層厚度、非線性分析、二維與三維</td><td><a href="units/u11.html">單元 11</a>（11.1–11.4）</td></tr>
+      <tr><td>Ch8</td><td>易致性四準則、臨界狀態線、r<sub>u</sub>、CSR 與 CRR、室內到現地的修正</td><td><a href="units/u12.html">單元 12</a>（12.1–12.4）</td></tr>
+      <tr><td>Ch8</td><td>N<sub>eq</sub>、簡化法 CSR、SPT／CPT／V<sub>s</sub> 法、MSF、由地盤反應評估液化</td><td><a href="units/u13.html">單元 13</a>（13.1–13.5）</td></tr>
+      <tr><td>Ch8</td><td>例題、P<sub>L</sub>、地動改變、樁基、沉陷、側潰、流動破壞、減災</td><td><a href="units/u13.html#s13-4">13.4</a>、<a href="units/u14.html">單元 14</a>（14.1–14.5）</td></tr>
+    </table></div>
+  </section>
+</main>
+<footer class="site">個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/auto-render.min.js"></script>
+<script src="assets/common.js"></script>
+<script>
+document.addEventListener('sd:ready', () => {
+  /* ---------- 學習路線 ---------- */
+  const Q = {
+    1: '同樣是反覆載重，為什麼地震算「動態」？應變大小怎麼決定土壤行為？',
+    2: '臺灣為什麼多震？規模和震度差在哪？',
+    3: 'PGA 一樣的兩筆紀錄，破壞力一樣嗎？積分為什麼會漂移？',
+    4: '一個系統被搖動時，什麼決定它搖得多大？阻尼怎麼量？',
+    5: '把地震拆成很多頻率：頻譜、反應譜、卓越週期。',
+    6: '波怎麼在土中傳？波速、質點速度與應變的關係？',
+    7: '現地與實驗室怎麼量 Vs、Gmax？Vs30 怎麼分類場址？',
+    8: '應變變大時，土壤有多硬、每圈吃掉多少能量？',
+    9: '共振柱等試驗怎麼量 G 與阻尼？實驗室結果怎麼用到現地？',
+    10: '土層把岩盤運動放大成什麼樣子？轉換函數與場址週期。',
+    11: '強震時土壤變軟：等值線性疊代、非線性與多維分析。',
+    12: '哪些土可能液化？孔隙水壓怎麼一圈一圈累積？',
+    13: 'FS = CRR/CSR：地震給多少反覆應力、土壤能承受多少？',
+    14: '液化了會怎樣？P_L、沉陷、側潰、流動破壞與減災。'
+  };
+  const box = document.getElementById('stages');
+  box.innerHTML = SITE.stages.map((s, i) => `<div class="stage"><div class="stage-h"><span class="k">階段 ${i + 1}</span><h3>${s}</h3></div>
+    <div class="units">${SITE.units.filter(u => u.stage === i).map(u => `<a class="unit" href="${u.href}">
+      <div class="no">單元 ${u.n}</div><div class="t">${u.name}</div><p class="q">${Q[u.n]}</p></a>`).join('')}</div></div>`).join('');
+
+  /* ---------- 作業 ---------- */
+  const HW = [
+    { id: 'hw1', d: '手機 phyphox 量洗衣機振動；集集地震 30 筆 PEER 紀錄', items: [
+      ['Part A Q1–Q4', '加速度 → 速度、位移、頻譜', [['3.1', 'u03.html#s3-1'], ['3.3', 'u03.html#s3-3'], ['5.1', 'u05.html#s5-1']]],
+      ['Part B Q5–Q9', '地動參數、距離衰減、RotD100', [['3.1', 'u03.html#s3-1'], ['3.2', 'u03.html#s3-2'], ['2.6', 'u02.html#s2-6']]]] },
+    { id: 'hw2', d: 'MASW 虛擬實驗室；Vs30 與場址分類', items: [
+      ['Q1', '測線長度、高階模態、飽和土層', [['6.6', 'u06.html#s6-6'], ['7.2', 'u07.html#s7-2']]],
+      ['Q2', 'Vs30 兩種平均、三套分類', [['7.5', 'u07.html#s7-5']]]] },
+    { id: 'hw3', d: '共振柱、Masing、下孔試驗、SDOF 隔振', items: [
+      ['Q1', '共振柱 stage 1 與六個階段', [['9.1', 'u09.html#s9-1'], ['4.9', 'u04.html#s4-9'], ['8.5', 'u08.html#s8-5']]],
+      ['Q2', 'Masing 迴圈與阻尼比', [['8.6', 'u08.html#s8-6'], ['8.7', 'u08.html#s8-7'], ['8.8', 'u08.html#s8-8']]],
+      ['Q3', '下孔試驗、Gmax 比較、等值線性參數', [['7.1', 'u07.html#s7-1'], ['7.3', 'u07.html#s7-3'], ['9.4', 'u09.html#s9-4']]],
+      ['Q4', '隔振墊：阻尼量測、傳遞率、能量', [['4.8', 'u04.html#s4-8'], ['4.9', 'u04.html#s4-9'], ['4.10', 'u04.html#s4-10']]]] }
+  ];
+  document.getElementById('hwgrid').innerHTML = HW.map(h => {
+    const s = SITE.hws.find(x => x.id === h.id);
+    return `<div class="hwcard"><h3>${s.short} ${s.name}</h3><p class="d">${h.d}</p><ul>${
+      h.items.map(it => `<li><b>${it[0]}</b> ${it[1]}：${it[2].map(l => `<a href="units/${l[1]}">${l[0]}</a>`).join('、')}</li>`).join('')
+    }</ul><a class="btn primary" href="${s.href}">進入 ${s.short} →</a></div>`;
+  }).join('');
+
+  /* ---------- 五個量 ---------- */
+  const L = (n, s) => `<a href="units/u${String(n).padStart(2, '0')}.html${s ? '#s' + n + '-' + s : ''}">${s ? n + '.' + s : '單元 ' + n}</a>`;
+  const QT = {
+    'Vs': { title: '剪力波速 V<sub>s</sub>', rows: [
+      [L(6, 4), '波速 \\(V_s = \\sqrt{G/\\rho}\\)；應變 \\(\\gamma \\approx \\dot u/V_s\\)'],
+      [L(7), 'MASW、下孔試驗、彎曲元件都在量它；\\(G_{max} = \\rho V_s^2\\)；Vs30 決定場址分類'],
+      [L(9, 1), '共振柱由共振頻率反算 \\(V_s = 2\\pi f_nh/\\beta\\)'],
+      [L(10), '轉換函數的峰值頻率 \\(f_n = (2n-1)V_s/4H\\)；阻抗比 \\(\\rho_sV_s/\\rho_rV_r\\) 控制放大的上限']] },
+    'G': { title: '剪力模數 G', rows: [
+      [L(4), 'SDOF 的勁度 k（土層每單位面積約 G/H）；複數模數 \\(G^* = G(1+2i\\xi)\\)（4.8）'],
+      [L(7), '極小應變的 \\(G_{max}\\)：經驗式與現地量測'],
+      [L(8), '割線模數 Gsec 隨應變下降：G/Gmax 曲線、雙曲線與 Darendeli 模型'],
+      [L(11), '等值線性分析反覆更新每層的 G，直到與算出的應變相容']] },
+    'xi': { title: '阻尼比 ξ', rows: [
+      [L(4), '\\(\\xi = c/2m\\omega\\)；能量定義 \\(\\xi = W_D/4\\pi W_S\\)；三種量測方法；共振振幅 \\(\\rho_s/2\\xi\\)'],
+      [L(8), '遲滯迴圈 \\(\\xi = E_D/4\\pi E_{So}\\)；阻尼曲線、Masing 阻尼的修正、小應變的 Dmin'],
+      [L(9), '共振柱用自由衰減與半功率頻寬量阻尼；大應變時半功率法會高估'],
+      [L(10), '控制轉換函數峰值的高度與高頻衰減；輻射阻尼與材料阻尼']] },
+    'gamma': { title: '剪應變 γ', rows: [
+      [L(1, 2), '應變範圍 10⁻⁶ 到 10⁻² 對應彈性、彈塑性、破壞；試驗方法依應變挑選'],
+      [L(6, 4), '一維波動：\\(\\gamma \\approx \\dot u / V_s\\)，強震時約 PGV/Vs'],
+      [L(8), 'MRD 曲線的橫軸；門檻應變 γtl、γtv 決定用線性、等值線性或非線性模型'],
+      [L(11, 1), '等值線性分析用有效應變（約 0.65 γmax）查曲線'],
+      [L(12, 3), '超過 γtv 才累積孔隙水壓；液化試驗以 5 %（三軸）或 3 %（單剪）應變為準'],
+      [L(14, 4), '液化後的 γmax 沿深度積分得 LDI，估側潰位移']] },
+    'f': { title: '頻率 f 與週期 T', rows: [
+      [L(4), '頻率比 \\(\\beta = \\bar\\omega/\\omega\\) 決定放大與相位'],
+      [L(5), 'Fourier 頻譜、反應譜、卓越週期：岩盤與土壤的頻率內容不同'],
+      [L(6, 5), '波長 \\(\\lambda = V/f\\)；MASW 的低頻看深、高頻看淺'],
+      [L(10), '場址週期 4H/Vs；轉換函數把岩盤頻譜轉成地表頻譜'],
+      [L(14, 2), '液化後勁度幾乎消失：場址週期大幅變長，高頻被濾掉']] }
+  };
+  const qb = document.getElementById('qtyBtns'), qp = document.getElementById('qtyPanel');
+  const labels = { Vs: 'V<sub>s</sub>', G: 'G', xi: 'ξ', gamma: 'γ', f: 'f / T' };
+  const qbtns = Object.keys(QT).map(k => {
+    const b = document.createElement('button');
+    b.className = 'btn';
+    b.innerHTML = labels[k];
+    b.addEventListener('click', () => showQ(k));
+    qb.appendChild(b);
+    return [k, b];
+  });
+  function showQ(k) {
+    qbtns.forEach(([kk, b]) => b.classList.toggle('on', kk === k));
+    qp.innerHTML = `<h3>${QT[k].title}</h3><div class="tablewrap"><table class="data">${QT[k].rows.map(r => `<tr><th style="width:6em">${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</table></div>`;
+    if (window.renderMathInElement) renderMathInElement(qp, { delimiters: [{ left: '\\(', right: '\\)', display: false }], throwOnError: false });
+  }
+  showQ('Vs');
+});
+</script>
+</body>
+</html>

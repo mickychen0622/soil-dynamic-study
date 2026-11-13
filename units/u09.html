@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9. 室內動態試驗 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用：可編輯的分層表、熱圖、小型表單 */
+  .layer-tbl input[type=number] { width: 5.6em; border: 0; border-radius: 8px; padding: 5px 8px; background: var(--inset); color: var(--ink); font: inherit; font-size: 14px; }
+  .layer-tbl td, .layer-tbl th { padding: 6px 8px; }
+  .layer-tbl .x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 16px; }
+  .cls-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 10px 0 4px; }
+  .cls-row .chip { background: var(--inset); border-radius: 14px; padding: 10px 14px; font-size: 13px; color: var(--muted); }
+  .cls-row .chip b { display: block; color: var(--ink); font-size: 20px; font-family: var(--font-display); }
+  svg image.heat { image-rendering: pixelated; }
+  .w-sub { font-size: 14px; font-weight: 600; margin: 14px 0 2px; }
+  .ans-box { border-left: 3px solid var(--accent); padding: 2px 0 2px 16px; margin: 1em 0; }
+/* 單元專用：數字很多的答案表、勘誤表 */
+  .ans-list { max-width: var(--measure); }
+  .ans-list li { margin: .35em 0; }
+  table.data td.ok { color: var(--green); font-weight: 600; }
+  table.data td.bad { color: var(--warn); font-weight: 600; }
+  .w-body .tablewrap { margin: 1em 0 .4em; }
+  .w-body table.data { font-size: 14px; }
+  .w-body table.data th, .w-body table.data td { padding: 8px 10px; }
+</style>
+</head>
+<body data-page="u09" data-root="../" data-title="9. 室內試驗">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 3 波與土壤性質 · 單元 9 · Laboratory Dynamic Tests</div>
+  <h1>室內動態試驗</h1>
+  <p class="lede"><b>共振柱是一個會量阻尼的 SDOF。</b>扭轉波動方程式給出頻率方程式 \(I/I_0 = \beta\tan\beta\)，由共振頻率得到 \(V_s\) 與 \(G\)，再用單元 4 的自由衰減與半功率法得到阻尼。各種試驗涵蓋不同的應變範圍，最後要把實驗室的曲線形狀和現地的 \(G_{max}\) 組合起來。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>MRD 曲線是怎麼量出來的？實驗室的結果能直接用在現地嗎？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>由共振柱的 \(f_n\)、\(I/I_0\) 求 \(V_s\)、\(G_{max}\)</li>
+    <li>用自由衰減與半功率法求阻尼，並知道大應變時誰會失效</li>
+    <li>說出共振柱、反覆三軸、反覆單剪、彎曲元件各自涵蓋的應變範圍</li>
+    <li>以「現地 \(V_s\) 決定勁度水準、實驗室曲線決定形狀」組合出等值線性分析的輸入</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u08.html"><h4>上一單元 · 土壤的非線性：模數與阻尼</h4><p>MRD 曲線要靠實驗量。下一單元看共振柱等試驗怎麼量 G 與阻尼。</p></a>
+    <a class="card" href="../units/u10.html"><h4>下一單元 · 一維線性地盤反應</h4><p>土壤性質齊了。最後把波傳、振動與土壤模型組合成地盤反應分析。</p></a>
+  </div>
+  <div class="callout pitfall"><div class="ct">符號提醒</div>
+    <p>共振柱的 \(\beta = \omega_n h/V_s\) 是試體所占的相位，不是單元 4 的頻率比。\(J\)（m⁴）是斷面極二次矩，\(I\)（kg·m²）是質量極慣性矩：看單位就分得出來。</p>
+  </div>
+</header>
+
+<section class="sec" id="s9-1" data-num="9.1" data-short="共振柱" data-title="共振柱：儀器與頻率方程式">
+  <div class="sec-head"><span class="sec-num">9.1</span><h2>共振柱：儀器與頻率方程式</h2></div>
+  <p class="src">出處：Ch3 講義 3.2–3.13、4.2–4.9（投影片 p. 33–44）；郭安妮 Soil Properties Part 2 講義 p. 2–3；Richart et al. (1970) 書頁 72–73、301–307（PDF p. 93–94、322–328）</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>\(10^{-4}\,\%\) 的剪應變，在 10 cm 高的試體上只對應數奈米的位移，位移計根本看不到。那要怎麼量 \(G\)？</p>
+  </div>
+
+  <p>答案：<b>不量位移和力，改量頻率</b>。頻率是最能精確量測的物理量之一；把試體激振到共振，反應最大、訊號最清楚，只需很小的扭矩。共振頻率由試體的勁度與慣性決定，反推就得到 \(V_s\) 與 \(G\)。</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 660 300" width="660" role="img" aria-label="固定–自由共振柱示意">
+      <!-- 底座 -->
+      <g class="s-ink" fill="none" stroke-width="1.4">
+        <rect x="120" y="248" width="160" height="16" class="f-gray" fill-opacity=".35"/>
+        <g stroke-width="1"><line x1="120" y1="264" x2="110" y2="274"/><line x1="145" y1="264" x2="135" y2="274"/><line x1="170" y1="264" x2="160" y2="274"/><line x1="195" y1="264" x2="185" y2="274"/><line x1="220" y1="264" x2="210" y2="274"/><line x1="245" y1="264" x2="235" y2="274"/><line x1="270" y1="264" x2="260" y2="274"/></g>
+        <!-- 試體 -->
+        <rect x="160" y="108" width="80" height="140" rx="2"/>
+        <!-- 頂蓋與驅動板 -->
+        <rect x="150" y="92" width="100" height="16" rx="2"/>
+        <line x1="200" y1="92" x2="200" y2="70"/>
+        <line x1="110" y1="70" x2="290" y2="70" stroke-width="3"/>
+        <rect x="96" y="60" width="18" height="20" rx="2" class="f-blue" fill-opacity=".25"/>
+        <rect x="286" y="60" width="18" height="20" rx="2" class="f-blue" fill-opacity=".25"/>
+        <rect x="236" y="40" width="16" height="14" rx="2"/>
+        <line x1="244" y1="54" x2="244" y2="70"/>
+        <!-- 扭矩箭頭 -->
+        <path d="M150 40 A50 14 0 0 1 250 40" stroke-width="1.6" class="s-red"/>
+        <path d="M250 40 l-10 -5 l2 9 z" class="f-red"/>
+        <!-- 量測座標 -->
+        <line x1="320" y1="248" x2="320" y2="100" class="s-gray" stroke-width="1"/>
+        <path d="M320 100 l-4 9 h8 z" class="f-gray"/>
+      </g>
+      <text x="200" y="182" class="txt" text-anchor="middle">試體</text>
+      <text x="200" y="200" class="txt-muted" text-anchor="middle">ρ, G, h, J</text>
+      <text x="200" y="290" class="txt-muted" text-anchor="middle">底座固定：θ(0, t) = 0</text>
+      <text x="262" y="102" class="txt-muted">頂蓋</text>
+      <text x="70" y="56" class="txt-blue" text-anchor="middle">磁鐵</text>
+      <text x="262" y="46" class="txt-muted">加速度計</text>
+      <text x="200" y="22" class="txt-red" text-anchor="middle">T₀ cos ω̄t</text>
+      <text x="335" y="104" class="txt-muted">z = h</text>
+      <text x="335" y="252" class="txt-muted">z = 0</text>
+      <text x="150" y="132" class="txt-muted" text-anchor="end">驅動系統</text>
+      <text x="150" y="148" class="txt-muted" text-anchor="end">慣性 I₀ →</text>
+      <!-- 模態形狀 -->
+      <g fill="none" stroke-width="1.4">
+        <line x1="440" y1="248" x2="440" y2="100" class="s-gray"/>
+        <line x1="440" y1="248" x2="600" y2="248" class="s-gray"/>
+        <path d="M440 248 L590 100" class="s-blue" stroke-width="2"/>
+        <path d="M440 248 C 500 190, 560 130, 600 100" class="s-ink" stroke-dasharray="5 4"/>
+      </g>
+      <text x="520" y="272" class="txt" text-anchor="middle">θ(z) / θ(h)</text>
+      <text x="600" y="92" class="txt-muted" text-anchor="middle">1</text>
+      <text x="545" y="190" class="txt-blue">β 小：近乎線性</text>
+      <text x="458" y="120" class="txt-muted">β → π/2：</text>
+      <text x="458" y="136" class="txt-muted">四分之一正弦</text>
+    </svg>
+    <figcaption>固定–自由（fixed–free）共振柱：底部固定，頂部以四組線圈＋磁鐵施加諧和扭矩；右為試體內扭轉的模態形狀</figcaption>
+  </figure>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>部件</th><th>功能</th><th>在理論中的角色</th></tr>
+    <tr><td>底座（含透水石）</td><td>夾住試體底部、排水</td><td>邊界條件 \(\theta(0,t) = 0\)：駐波的節點</td></tr>
+    <tr><td>試體</td><td>實心圓柱（典型 D = 50 mm、h = 100 mm），施加圍壓</td><td>\(\rho\)、\(G\)、\(J\)、\(h\)；質量極慣性矩 \(I = mD^2/8\)</td></tr>
+    <tr><td>頂蓋＋驅動板＋磁鐵＋加速度計</td><td>隨試體頂部一起轉動</td><td>剛體慣性 \(I_0\)，以已知 G、J 的金屬率定桿反推</td></tr>
+    <tr><td>驅動線圈（固定在框架）</td><td>通交流電 → 磁鐵受力 → 諧和扭矩。四力同旋向 → 扭轉（量 G）；同平移向 → 撓曲（量 E）</td><td>外加扭矩 \(T_0\cos\bar\omega t\)</td></tr>
+    <tr><td>加速度計、LVDT</td><td>量頂蓋切向加速度；低頻轉角與試體沉陷</td><td>找 \(f_n\)、換算應變；更新 \(h\)、\(\rho\)</td></tr>
+  </table></div>
+
+  <h3>一條方程式、兩個邊界條件</h3>
+  <p>試體內部就是 3.2 的扭轉波動方程式 \(\ddot\theta = V_s^2\theta''\)。底部固定 \(\theta(0,t) = 0\)。頂部：試體對驅動系統施加 \(-GJ\theta'(h)\)，驅動系統按牛頓第二定律轉動：</p>
+  <div class="eqbox">\[ -GJ\,\frac{\partial\theta}{\partial z}\bigg|_{z=h} = I_0\,\frac{\partial^2\theta}{\partial t^2}\bigg|_{z=h} \qquad\Longrightarrow\qquad \frac{I}{I_0} = \beta\tan\beta, \qquad \beta = \frac{\omega_n h}{V_s} \]</div>
+
+  <details class="derive"><summary>推導：分離變數與五步代數</summary><div class="body">
+    <ol class="steps">
+      <li>自由振動：\(\theta = \Theta(z)\cos\omega_n t\)，代入波動方程式得 \(\Theta = C_3\cos kz + C_4\sin kz\)，\(k = \omega_n/V_s\)。底部 \(\Theta(0) = 0\) → \(C_3 = 0\)。</li>
+      <li>頂部：\(-GJC_4k\cos kh = -I_0\omega_n^2C_4\sin kh\)。要非零解，\(C_4\) 消去：\(GJk\cos kh = I_0\omega_n^2\sin kh\)。</li>
+      <li>用 \(\omega_n = kV_s\)、\(G = \rho V_s^2\)：\(\rho V_s^2Jk\cos kh = I_0k^2V_s^2\sin kh\) → \(\rho J = I_0k\tan kh\)。</li>
+      <li>兩邊乘上 \(h\)，並用 \(I = \rho Jh\)（試體＝一疊薄圓盤，每片轉動慣量 \(\rho J\,dz\)）：\(I = I_0(kh)\tan(kh)\)。</li>
+      <li>令 \(\beta = kh = \omega_nh/V_s = 2\pi h/\lambda\)：\(I/I_0 = \beta\tan\beta\)。模態形狀 \(\Theta(z)/\Theta(h) = \sin(\beta z/h)/\sin\beta\)。</li>
+    </ol>
+    <p>符號檢查：頂部比下方扭得多 → \(\theta'(h) &gt; 0\) → 試體把驅動系統往回拉 → 角加速度為負，第一式的負號正是如此。</p>
+  </div></details>
+
+  <p>資料處理順序：<b>量 \(f_n\) → 算 \(I = mD^2/8\) → 取 \(I_0\)（率定）→ 解 \(\beta\tan\beta = I/I_0\) → \(V_s = 2\pi f_nh/\beta\) → \(G = \rho V_s^2\)</b>。\(\beta\tan\beta = I/I_0\) 沒有封閉解，查表或幾行數值解。</p>
+
+  <h3>兩個極限與 1/3 法則</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th></th><th>極限 1：頂部自由</th><th>極限 2：驅動系統慣性主導（本儀器）</th></tr>
+    <tr><td>條件</td><td>\(I/I_0 \to \infty\)（\(I_0 \to 0\)）</td><td>\(I/I_0 \ll 1\)</td></tr>
+    <tr><td>\(\beta\)</td><td>\(\to \pi/2\)</td><td>\(\approx \sqrt{I/I_0}\)</td></tr>
+    <tr><td>共振頻率</td><td>\(f_n = V_s/4h\)</td><td>\(\omega_n^2 = (GJ/h)/I_0 = k/m\)</td></tr>
+    <tr><td>試體占的波長</td><td>\(h = \lambda/4\)</td><td>\(h/\lambda = \beta/2\pi \approx 0.04\)</td></tr>
+    <tr><td>扭轉沿高度</td><td>四分之一正弦</td><td>近乎線性</td></tr>
+    <tr><td>對應</td><td>岩盤上土層的基本共振（單元 10）</td><td>SDOF：扭轉彈簧＋頂部質量（單元 4）</td></tr>
+  </table></div>
+  <p>把 \(\tan\beta = \beta + \beta^3/3 + \dots\) 多保留一項：\(\beta^2 \approx (I/I_0)/(1 + I/3I_0)\)，也就是 \(\omega_n^2 = (GJ/h)/(I_0 + I/3)\)。<b>有分布慣性的彈簧 ≈ 無質量彈簧＋三分之一自身慣性加到端點</b>。\(I/I_0 = 0.056\)：SDOF 給 0.2366、1/3 修正 0.2345、精確 0.2345。</p>
+
+  <div id="w-rc-beta" data-title="頻率方程式 I/I₀ = β tan β"></div>
+
+  <div class="callout example"><div class="ct">例：由 fn 到 G</div>
+    <p>試體 h = 0.1 m、D = 50 mm、m = 0.4 kg；儀器 \(I_0 = 2.2\times10^{-3}\) kg·m²；量到 \(f_n\) = 60 Hz。</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>步驟</th><th>計算</th><th class="num">結果</th></tr>
+      <tr><td>密度</td><td>\(\rho = 4m/(\pi D^2h) = 1.6/(\pi\times0.0025\times0.1)\)</td><td class="num">2.04 Mg/m³</td></tr>
+      <tr><td>試體慣性</td><td>\(I = 0.4\times0.05^2/8\)</td><td class="num">1.25×10⁻⁴ kg·m²</td></tr>
+      <tr><td>慣性比</td><td>\(I/I_0 = 1.25\times10^{-4}/2.2\times10^{-3}\)</td><td class="num">0.0568</td></tr>
+      <tr><td>解 \(\beta\)</td><td>\(\beta\tan\beta = 0.0568\)</td><td class="num">0.2361</td></tr>
+      <tr><td>剪力波速</td><td>\(V_s = 2\pi\times60\times0.1/0.2361\)</td><td class="num">160 m/s</td></tr>
+      <tr class="hl"><td>剪力模數</td><td>\(G = 2.04\times160^2\)</td><td class="num">52 MPa</td></tr>
+    </table></div>
+    <p>（講義把密度取整為 2.0，得 51 MPa。）\(G \propto f_n^2\)：\(f_n\) 讀成 61 Hz（+1.7 %）→ \(G\) = 53.7 MPa（+3.4 %）。所以掃頻要夠細（9.2）。</p>
+  </div>
+
+  <h3>由加速度換算剪應變</h3>
+  <p>加速度計裝在頂蓋半徑 \(r\) 處，量切向加速度 \(a\)：頂部轉角 \(\theta_h = a/(r\omega^2)\)。實心圓柱扭轉時，剪應變在軸心為 0、表面最大，所以要約定一個代表半徑：</p>
+  <div class="eqbox">\[ \gamma = \frac{r_{eq}\,\theta_h}{h}, \qquad r_{eq} \approx 0.8R \]</div>
+  <p>面積平均半徑是 \(2R/3\)；扭矩加權平均是 \(4R/5\)，給應變較大的外圈較多權重，共振柱實務與虛擬實驗都用 0.8R。報告的 \(\gamma\) 是代表值，實際應變在斷面上從 0 變到 \(R\theta_h/h\)。大應變研究為了讓應變更均勻，Drnevich (1967) 改用空心試體（Richart et al. 書頁 307）。</p>
+  <div class="callout example"><div class="ct">例：DEM 虛擬共振柱（D = 29.92 mm、h = 61.21 mm、m = 60 g、I₀ = 1.2×10⁻⁴ kg·m²）</div>
+    <p>\(I = 0.06\times0.02992^2/8 = 6.71\times10^{-6}\)，\(I/I_0 = 0.056\)，\(\beta = 0.2344\)；\(f_n\) = 190.15 Hz → \(V_s = 2\pi\times190.15\times0.06121/0.2344 = 312.0\) m/s；\(\rho = 1394\) kg/m³ → \(G = 135.8\) MPa（率定值 135.8 MPa）。加速度 0.314 m/s²、\(r\) = 15 mm：\(\theta_h = 0.314/(0.015\times(2\pi\times190.15)^2) = 1.47\times10^{-5}\) rad，\(\gamma = 0.8\times0.01496\times1.47\times10^{-5}/0.06121 = 2.9\times10^{-6}\)（= 2.9×10⁻⁴ %）。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">投影片勘誤：頂部扭矩寫法</div>
+    <p>投影片 p. 39–40 把彈性扭矩寫成 \(T = G(I/\rho)\,\partial\theta/\partial z\)、慣性扭矩寫成 \(-I_0h\,\ddot\theta\)。因為 \(I = \rho Jh\)，正確是 \(GJ = GI/(\rho h)\)：前式少了 \(1/h\)，後式多乘了 \(h\)，兩者剛好抵銷，最後的 \(I/I_0 = \beta\tan\beta\) 正確。建議直接寫 \(GJ\) 和 \(-I_0\ddot\theta\)。投影片 p. 44 的橫軸 \(I_\theta/I_t\) 就是 \(I/I_0\)（試體／驅動系統）。</p>
+  </div>
+
+  <div class="quiz" data-num="0.311" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">I/I₀ = 0.10，解 β tan β = 0.10 得 β 約為多少？（rad，三位小數）</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="β"><button class="btn">檢查</button></div>
+    <div class="fb">SDOF 近似 √0.10 = 0.316；1/3 修正 √(0.10/1.0333) = 0.3111；精確解 0.3111。這就是 <a href="../hw/hw3.html#q1a">HW3 Q1</a> 的儀器。</div>
+  </div>
+  <div class="quiz" data-num="500" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">若頂部完全沒有附加慣性（I₀ → 0），h = 0.1 m、Vs = 200 m/s 的試體，第一共振頻率是幾 Hz？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="fn (Hz)"><button class="btn">檢查</button></div>
+    <div class="fb">β → π/2，h = λ/4，fn = Vs/4h = 200/0.4 = 500 Hz。和岩盤上土層的基本頻率 Vs/4H 是同一件事。</div>
+  </div>
+</section>
+
+<section class="sec" id="s9-2" data-num="9.2" data-short="RC 阻尼" data-title="共振柱：掃頻、阻尼與大應變">
+  <div class="sec-head"><span class="sec-num">9.2</span><h2>共振柱：掃頻、阻尼與大應變</h2></div>
+  <p class="src">出處：Ch3 講義 3.14–3.19、4.10–4.17（投影片 p. 45–50）；郭安妮 Soil Properties Part 2 講義 p. 4；Richart et al. (1970) 書頁 306–307</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>加大扭矩重做共振柱，得到的阻尼比還能相信嗎？兩種量阻尼的方法，誰會先失效？</p>
+  </div>
+
+  <h3>找共振：兩階段掃頻</h3>
+  <p>小應變時土壤阻尼很小，共振峰很尖：半功率頻寬 \(\Delta f = 2Df_n\)。D = 1.6 %、\(f_n\) = 25 Hz 時頻寬只有 0.8 Hz。所以 GDS 的做法是：① <b>粗掃</b>（例如 5–35 Hz、每 5 Hz）找到大概位置；② 在估計峰值 ±5 Hz 內<b>細掃</b>（每 0.1 Hz）。\(G \propto f_n^2\)，頻率誤差 1 % 就是 \(G\) 誤差 2 %。</p>
+  <p>更精確的方法是看相位：共振時位移落後扭矩 90°，也就是扭矩與速度同相。把兩個訊號接到示波器的 x–y 輸入，同相時畫出一條直線、偏離時變成橢圓；這比找振幅峰值精確得多（Richart et al. 書頁 306–307；原理見 <a href="../units/u04.html#s4-5">4.5</a>）。</p>
+
+  <h3>量阻尼的兩種方法</h3>
+  <div class="eqbox">\[ \text{自由衰減：}\ \delta = \frac{1}{n}\ln\frac{X_1}{X_{n+1}},\quad D = \frac{\delta}{\sqrt{4\pi^2+\delta^2}} \approx \frac{\delta}{2\pi} \qquad\qquad \text{半功率：}\ D \approx \frac{f_2 - f_1}{2f_n} \]</div>
+  <p>自由衰減：在共振頻率激振、關掉驅動、記錄頂蓋的衰減振動，把 ln(峰值) 對週期數畫直線，斜率就是 \(-\delta\)。點不成直線，本身就說明阻尼與振幅有關。半功率：在掃頻曲線上找振幅降到峰值 \(1/\sqrt2\) 的兩個頻率。兩者的推導與誤差分析見 <a href="../units/u04.html#s4-9">4.9</a>。</p>
+
+  <details class="derive"><summary>推導：共振柱的半功率公式從哪裡來</summary><div class="body">
+    <ol class="steps">
+      <li>穩態諧和運動用複數模數 \(G^* = G(1 + 2iD)\)：應力領先應變一個小角，\(\tan = 2D\)；每週期消散能量 ÷（4π × 峰值彈性能）恰為 \(D\)。</li>
+      <li>外加扭矩 \(T_0e^{i\bar\omega t}\)，內部 \(\Theta = C\sin k^*z\)，\(k^* = \bar\omega\sqrt{\rho/G^*}\)。頂部條件給 \(\Theta(h) = T_0/(G^*Jk^*\cot k^*h - I_0\bar\omega^2)\)。無阻尼時分母在 \(GJk\cot kh = I_0\omega^2\) 為零，正是頻率方程式。</li>
+      <li>\(\beta\) 小時用 \(\cot x \approx 1/x - x/3\)：反應化為 \((T_0/K_T)/\big[(1-r^2) + 2iD\big]\)，\(K_T = GJ/h\)、\(r = \bar\omega/\omega_n\)，\(\omega_n^2 = K_T/(I_0 + I/3)\)。</li>
+      <li>峰值 \((T_0/K_T)/2D\) 在 \(r = 1\)；半功率點 \((1-r^2)^2 = 4D^2\) → \(r_{1,2} \approx 1 \mp D\) → \(D = (f_2-f_1)/2f_n\)。</li>
+    </ol>
+    <p>隱含假設：SDOF、<b>線性</b>、阻尼<b>與頻率及振幅無關</b>。大應變時後兩項失效。</p>
+  </div></details>
+
+  <h3>大扭矩：曲線傾斜、跳躍，半功率法高估阻尼</h3>
+  <p>土壤越搖越軟。掃頻時振幅不固定：遠離共振時小、接近共振時大，所以接近峰值時試體軟化、共振頻率往下移，曲線向低頻傾斜；往上掃時會在折疊處突然<b>跳升</b>。曲線的寬度同時反映了<b>勁度</b>與阻尼的振幅相依性，公式卻全部歸給阻尼，於是 \(D\) 被高估。公式沒有錯，是用在推導假設之外。自由衰減避開了掃頻：帶到指定振幅後釋放，在該振幅附近的前幾個週期評估衰減率。</p>
+
+  <div id="w-rc-sweep" data-title="共振柱掃頻與阻尼實驗室"></div>
+
+  <div class="callout example"><div class="ct">例：DEM 虛擬共振柱加大扭矩（講義 4.17）</div>
+    <div class="tablewrap"><table class="data">
+      <tr><th class="num">扭矩 (N·m)</th><th class="num">\(f_n\) (Hz)</th><th class="num">\(\gamma\)</th><th class="num">G 工作表／率定 (MPa)</th><th class="num">D 半功率／率定</th><th class="num">高估倍數</th></tr>
+      <tr><td class="num">3.2×10⁻⁵</td><td class="num">190.15</td><td class="num">2.9×10⁻⁶</td><td class="num">135.8 / 135.7</td><td class="num">0.63 % / 0.62 %</td><td class="num">≈ 1</td></tr>
+      <tr><td class="num">3.2×10⁻³</td><td class="num">182.4</td><td class="num">7.4×10⁻⁵</td><td class="num">124.9 / 124.2</td><td class="num">3.56 % / 2.61 %</td><td class="num">≈ 1.4</td></tr>
+      <tr class="hl"><td class="num">0.035</td><td class="num">155.6</td><td class="num">2.8×10⁻⁴</td><td class="num">90.9 / 81.1</td><td class="num">≥ 19 % / 10 %</td><td class="num">≥ 1.9</td></tr>
+    </table></div>
+    <p>最大扭矩時，下半功率點就是跳升點 140.3 Hz，上半功率點超過掃頻上限 200 Hz → \(D \ge (200-140)/(2\times155) \approx 19\,\%\)。\(G\) 也偏高約 12 %：加速度多乘了 \(\omega^2\)，最大值被推到較高頻率，已不代表該應變下的共振。</p>
+  </div>
+
+  <h3>系統阻尼、應變曲線與現地比較</h3>
+  <p>兩種方法量到的都是<b>試體＋儀器</b>的總阻尼。儀器阻尼主要來自驅動線圈的反電動勢（back EMF，像煞車），要率定扣除；小應變時兩法應該接近，差很多時先懷疑儀器阻尼或程序。在各扭矩等級重複，就得到 \(G\) 與 \(D\) 隨應變的變化：本實驗室資料（圍壓 50–400 kPa）顯示 \(G_{max}\) 約隨 \(\sqrt{\sigma'}\) 增加；\(\gamma &gt; 10^{-3}\,\%\) 後 \(G\) 下降、\(10^{-1}\,\%\) 時損失一半以上；圍壓越高越晚下降、阻尼越低。兩個門檻：<b>線性門檻</b>約 \(10^{-3}\,\%\)，<b>體積門檻</b>約 \(10^{-2}\,\%\)（以上反覆載重會產生體積變化或孔隙水壓）。完整的 MRD 曲線在<a href="u08.html#s8-5">單元 8</a>，六個階段的資料處理見 <a href="../hw/hw3.html#q1b">HW3 Q1(b)</a>。</p>
+
+  <div class="callout pitfall"><div class="ct">投影片勘誤與常見錯誤</div>
+    <p>① 投影片 p. 47 寫 \(\delta = 2\pi D/\sqrt{1-D^2} = 2\pi D\)，後一個等號應為「≈」；投影片的 \(D\) 與 \(\xi\) 同義。② 投影片 p. 49 右圖縱軸標 \(G/G_{max}\)（MPa），\(G/G_{max}\) 無因次。③ 學生講義 3.14 說「小應變阻尼約 0.6 %，半功率寬約 2 Hz（\(2Df_n\)）」：\(2\times0.006\times25 = 0.3\) Hz，不是 2 Hz；結論（細掃要 0.1 Hz）不變，反而更必要。</p>
+  </div>
+
+  <div class="quiz" data-num="0.8" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">D = 1.6 %、fn = 25 Hz，半功率頻寬 f₂ − f₁ 是幾 Hz？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="Δf (Hz)"><button class="btn">檢查</button></div>
+    <div class="fb">Δf = 2Dfn = 2 × 0.016 × 25 = 0.8 Hz。5 Hz 一格的粗掃完全可能錯過整個峰。</div>
+  </div>
+  <div class="quiz" data-answer="2">
+    <div class="qh">課後問題</div>
+    <div class="qq">共振柱在大應變時，為什麼半功率頻寬法會高估阻尼比？</div>
+    <div class="opts">
+      <button class="opt">大應變時阻尼比真的變大，半功率法只是如實反映</button>
+      <button class="opt">加速度計在大振幅時飽和</button>
+      <button class="opt">試體隨振幅軟化，曲線傾斜變寬；寬度同時包含勁度與阻尼的振幅相依性，公式卻全歸給阻尼</button>
+    </div>
+    <div class="fb">半功率公式假設線性、阻尼與振幅無關。大應變時共振頻率隨振幅下降，曲線折疊變寬，量到的「頻寬」大部分來自軟化而不是能量消散。上方「大應變」分頁比較同一應變下的真實 D 與半功率 D 就能看到差距。</div>
+  </div>
+</section>
+
+<section class="sec" id="s9-3" data-num="9.3" data-short="室內試驗" data-title="實驗室試驗與其應變範圍">
+  <div class="sec-head"><span class="sec-num">9.3</span><h2>實驗室試驗與它們的應變範圍</h2></div>
+  <p class="src">出處：學生整理投影片 3.7–3.17、備註 4.2–4.17；老師講義 p. 30–40、44–58；郭老師 Soil Property Determination Part 2 p. 1–4、Dynamic Soil Behavior p. 4–8</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>只做反覆三軸試驗，能得到完整的 MRD 曲線嗎？</p>
+  </div>
+
+  <p>不能。每種試驗只涵蓋一段應變：現地震測與彎曲元件在 \(\gamma_{tl}\) 以下，給 \(G_{max}\)；共振柱約 10⁻⁴–10⁻¹ %，正是曲線開始下降的範圍；反覆扭剪到約 1 %；反覆三軸與單剪約 10⁻² % 到數 %，給大應變的 \(G/G_{max}\)、阻尼與孔隙水壓反應。<b>沒有單一試驗能涵蓋整條曲線</b>，所以試驗要組合使用，重疊的範圍互相比對；重疊處差很多，通常是試體或量測有問題。</p>
+
+  <div id="w-lab" data-title="試驗應變範圍、共振柱頻率方程式與一個反例"></div>
+
+  <h3>共振柱試驗（RCT）</h3>
+  <p>把土柱激振到共振：量共振頻率 → 解頻率方程式 \(I/I_0 = \beta\tan\beta\)（\(\beta = \omega_nH/V_s\)）→ \(V_s\) → \(G = \rho V_s^2\)；關掉驅動記錄自由衰減 → 對數遞減 → 阻尼比。逐步加大驅動振幅，就描出 MRD 曲線的前段。理論推導、驅動系統與率定在 <a href="#s9-1">9.1</a>、<a href="#s9-2">9.2</a>；這裡只提醒四件事：</p>
+  <ol>
+    <li><b>實心試體的剪應變由中心到外緣線性增加</b>，報告的應變取等效半徑處，常用 ⅔–⅘ 半徑。</li>
+    <li><b>由小到大加振幅</b>：大應變的擾動會影響之後的小應變結果。</li>
+    <li><b>自由衰減量到的是一段應變範圍的平均</b>，且包含儀器本身的阻尼；阻尼大於約 10 % 時幾圈就消失，半功率頻寬法通常較可靠（4.9）。</li>
+    <li><b>頻率遠高於地震</b>，對有速率效應的黏土要考慮。</li>
+  </ol>
+
+  <h3>彎曲元件</h3>
+  <p>兩片壓電陶瓷黏合，加電壓時彎曲，尖端帶動土粒左右運動，產生沿試體上下傳播的剪力波：\(V_s = L/t\)。<b>L 是兩元件尖端之間的距離</b>，不是試體高度。驅動頻率數 kHz，波長只有數公分，與試體尺寸相當，會有<b>近場效應</b>；到時判讀（第一個明顯反轉、峰對峰、互相關）可以差約 10 %，報告要說明用哪一種。</p>
+
+  <h3>反覆三軸與反覆單剪</h3>
+  <div class="eqbox">\[ \text{cyclic triaxial:}\quad \tau = \frac{\sigma_d}{2}, \qquad \gamma = (1+\nu)\,\varepsilon_a = 1.5\,\varepsilon_a\ \ (\text{undrained},\ \nu = 0.5) \]</div>
+  <p>反覆三軸的主應力每半圈旋轉 90°，與垂直剪力波下的現地狀態不同（Ch8 用修正係數處理）；但台灣的液化試驗資料大多來自它。反覆單剪直接施加 \(\tau\)、量 \(\gamma\)，應力路徑最接近 5.1 的土壤元素；缺點是側面沒有互補剪應力，應力不均勻。定體積單剪固定試體高度，垂直應力的下降就等於不排水試驗中孔隙水壓的上升，不需要反水壓飽和，液化研究很常用。所有實驗室試驗都受取樣擾動、老化消失、組構破壞影響。</p>
+
+  <div class="callout pitfall"><div class="ct">資料品質：投影片 4.10–4.11（講義 p. 52–53）的兩張圖</div>
+    <p><b>單位：</b>G 軸標「MPa」但數值到 500 000，若真是 MPa 對砂大得不合理（5.9 的數量級），較可能是 kPa（約 50–130 MPa）。<b>G/Gmax 圖是錯的：</b>值在 0.2 以下甚至有負值，橫軸還是線性刻度、擠在 0.002 % 附近。正確的 MRD 圖要用對數應變軸，且小應變端應接近 1；這種結果通常是 \(G_{max}\) 取錯（例如取了最大的離群值）或正規化出錯。150 kPa 那組點在小應變沒有水平段，也不宜直接定 \(G_{max}\)。互動圖第三個分頁用合成資料重現這兩種錯誤。</p>
+  </div>
+
+  <details class="derive"><summary>投影片勘誤與疑點（整理自學生投影片 4.17）</summary><div class="body">
+    <div class="tablewrap"><table class="data">
+      <tr><th>講義頁</th><th>原文</th><th>建議</th></tr>
+      <tr><td>44</td><td>式 (2) 右邊 \(GJ_p\,\partial^2\theta/\partial x^2\)</td><td>少了 \(dx\)：\(GJ_p(\partial^2\theta/\partial x^2)\,dx\)</td></tr>
+      <tr><td>44</td><td>式 (3) 右邊 \(I\,\partial^2\theta/\partial t^2\)</td><td>此處 \(I\) 是薄片的 \(\rho J_p\,dx\)，與 p. 45 的試體慣量 \(I\) 不同</td></tr>
+      <tr><td>47</td><td>\(\delta = 2\pi D/\sqrt{1-D^2} = 2\pi D\)</td><td>「=」應為「≈」（小阻尼近似）。另 \(\delta = \frac{1}{n-1}\ln(X_1/X_n)\) 與 HW3 的 \(\frac1n\ln(X_1/X_{n+1})\) 是同一件事，只是編號不同</td></tr>
+      <tr><td>52</td><td>G (Mpa)，數值到 500 000</td><td>單位較可能是 kPa</td></tr>
+      <tr><td>53</td><td>G/Gmax 小於 0.2 且有負值，線性應變軸</td><td>正規化或 Gmax 取值有誤，當反例看</td></tr>
+      <tr><td>54</td><td>\(\theta = I_t\,\partial^2\theta/\partial t^2 + GJ_\theta\,\partial\theta/\partial z = T_0e^{i\omega t}\)</td><td>開頭多了「θ =」</td></tr>
+      <tr><td>45 vs 55</td><td>\(I/I_0\) 與 \(I_\theta/I_t\)</td><td>同一個比值的兩套符號（試體／頂部質量）</td></tr>
+      <tr><td>逐字稿</td><td>「macing」「Mazing」、「Durand-Dilly」</td><td>都是 Masing rules、Darendeli (2001)</td></tr>
+    </table></div>
+    <p>另外，郭老師 Part 2 講義 p. 1 列「Resonant column 10⁻⁶–10⁻⁴ %」，與本單元的 10⁻⁴–10⁻¹ % 差了 100 倍，看起來是把小數應變標成 %；讀應變範圍表時一律先確認單位。</p>
+  </div></details>
+
+  <div class="quiz" data-num="13.2" data-tol="0.05">
+    <div class="qh">小測驗</div>
+    <div class="qq">試體高 100 mm，彎曲元件各插入 3 mm，量到走時 0.47 ms。若誤用試體全高當 L，Gmax 會高估多少 %？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="%"><button class="btn">檢查</button></div>
+    <div class="fb">正確 L = 94 mm → Vs = 0.094/0.00047 = 200 m/s；用 100 mm → 213 m/s，高 6.4 %。Gmax ∝ Vs²：(100/94)² = 1.132，高估約 13 %。</div>
+  </div>
+  <div class="quiz" data-num="0.3" data-tol="0.01">
+    <div class="qh">小測驗</div>
+    <div class="qq">不排水反覆三軸量到軸應變 εa = 0.2 %，對應的剪應變是多少 %？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="γ (%)"><button class="btn">檢查</button></div>
+    <div class="fb">γ = (1 + ν)εa = 1.5 × 0.2 % = 0.3 %。拿三軸結果和單剪、共振柱的 MRD 曲線放在一起之前，一定要先換算。</div>
+  </div>
+</section>
+
+<section class="sec" id="s9-4" data-num="9.4" data-short="室內到現地" data-title="由實驗室到現地性質">
+  <div class="sec-head"><span class="sec-num">9.4</span><h2>由實驗室到現地性質</h2></div>
+  <p class="src">出處：學生整理投影片 3.18；老師講義 p. 41；郭老師 Dynamic Soil Behavior p. 19–23</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>同一層砂，現地下孔試驗的 \(G_{max}\) 比實驗室共振柱高 50 %。場址反應分析該用哪一個？</p>
+  </div>
+
+  <p>兩個都用，但用在不同地方。這是目前場址反應分析的標準程序：</p>
+  <div class="eqbox">\[ G_{field}(\gamma) = \left(\frac{G}{G_{max}}\right)_{lab}(\gamma)\cdot\rho\,V_{s,field}^2, \qquad D_{field}(\gamma) \approx D_{lab}(\gamma) \]</div>
+  <ul>
+    <li><b>勁度水準取自現地：</b>現地 \(V_s\) 保有年代、膠結與真實應力狀態。郭老師講義整理的經驗是 \(V_{s,field} &gt; V_{s,lab}\)，原因是取樣擾動（對模數的影響遠大於對強度）、現地量測應變更小、長期載重效應（每個 log cycle 的時間都會增加 \(G_{max}\)）。</li>
+    <li><b>曲線形狀取自實驗室或模型：</b>正規化後的形狀受擾動影響較小。</li>
+    <li><b>阻尼直接取實驗室值：</b>現地沒有可靠方法量大應變阻尼；實驗室只量到材料阻尼，不含散射等機制。</li>
+    <li>組合出的應力應變曲線在大應變隱含了一個剪力強度，要檢核是否合理（<a href="u11.html#s11-2">11.2</a>）。</li>
+  </ul>
+
+  <div id="w-eqlin" data-title="現地 Gmax × 實驗室曲線 → 等值線性輸入"></div>
+
+  <div class="callout example"><div class="ct">例</div>
+    <p>現地 \(V_s = 200\) m/s、\(\rho = 1.9\) t/m³ → \(G_{max} = 76\) MPa。實驗室在 \(\gamma = 0.05\%\) 得 \(G/G_{max} = 0.6\) → 現地該應變的 \(G = 0.6 \times 76 = 45.6\) MPa。這組 \(G_{max}\)、\(G/G_{max}\)、\(D\) 就是<a href="u11.html">單元 11</a> 等值線性分析的輸入。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：隱含的假設</div>
+    <p>這個做法假設現地曲線的<b>形狀</b>與實驗室試體相同。對老的或膠結的土壤，現地曲線可能比實驗室更線性，實驗室曲線會高估非線性。另外，只用實驗室 \(G_{max}\) 乘曲線，會把整條 \(G\) 曲線一起低估（<a href="../hw/hw3.html#q3">HW3 Q3</a> 約低三分之一）。</p>
+  </div>
+
+  <div class="quiz" data-answer="2">
+    <div class="qh">小測驗</div>
+    <div class="qq">現地 Vs = 250 m/s、ρ = 2.0 t/m³，實驗室在有效應變處 G/Gmax = 0.5、D = 9 %。等值線性輸入應為？</div>
+    <div class="opts">
+      <button class="opt">G = 125 MPa、D = 4.5 %</button>
+      <button class="opt">G = 62.5 MPa、D = 18 %</button>
+      <button class="opt">G = 62.5 MPa、D = 9 %</button>
+    </div>
+    <div class="fb">Gmax = 2.0 × 250² = 125 000 kPa = 125 MPa；G = 0.5 × 125 = 62.5 MPa。阻尼直接取實驗室值 9 %，不要乘或除 G/Gmax。</div>
+  </div>
+</section>
+
+<section class="sec" id="s9-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <div class="tablewrap"><table class="data">
+    <tr><th>方法</th><th>得到</th><th>關鍵式</th><th>應變範圍</th></tr>
+    <tr><td>理論</td><td>波速、通解</td><td>\(V_s = \sqrt{G/\rho}\)；\(u = f(Vt-x) + g(Vt+x)\)</td><td>—</td></tr>
+    <tr><td>MASW</td><td>\(V_s\) 剖面</td><td>Rayleigh 波頻散＋反算；\(V_{s30}\) = 走時平均</td><td>極小 → \(G_{max}\)</td></tr>
+    <tr><td>共振柱</td><td>\(G\)、\(D\) 隨 \(\gamma\) 變化</td><td>\(I/I_0 = \beta\tan\beta\)；\(V_s = 2\pi f_nh/\beta\)；自由衰減或半功率</td><td>\(10^{-4}\,\%\) 起，可到大應變</td></tr>
+    <tr><td>彎曲元件</td><td>\(G_{max}\)</td><td>\(V_s = L/t\)</td><td>極小 → \(G_{max}\)</td></tr>
+  </table></div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">共振柱頻率方程式</div>\[ \frac{I}{I_0} = \beta\tan\beta,\; V_s = \frac{2\pi f_nh}{\beta} \]</div>
+    <div class="fcard"><div class="ft">1/3 法則</div>\[ \omega_n^2 = \frac{GJ/h}{I_0 + I/3} \]</div>
+    <div class="fcard"><div class="ft">阻尼（自由衰減）</div>\[ D \approx \frac{1}{2\pi n}\ln\frac{X_1}{X_{n+1}} \]</div>
+    <div class="fcard"><div class="ft">共振柱應變</div>\[ \gamma = \frac{0.8R\,\theta_h}{h},\; \theta_h = \frac{a}{r\omega^2} \]</div>
+    <div class="fcard"><div class="ft">現地＋實驗室</div>\[ G_{field} = \left(\frac{G}{G_{max}}\right)_{lab}\rho V_{s,field}^2 \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>J 與 I</b>：J（m⁴）是斷面極二次矩，I（kg·m²）是質量極慣性矩；\(I = \rho Jh\)。投影片 p. 39–40 的 GI/ρ 應為 GJ。</li>
+    <li><b>δ = 2πD 要寫 ≈</b>：精確式是 \(D = \delta/\sqrt{4\pi^2+\delta^2}\)（投影片 p. 47）。</li>
+    <li><b>大應變不要用半功率法</b>：曲線傾斜跳躍，D 可被高估一倍以上；改用自由衰減。</li>
+    <li><b>室內與現地 Gmax 不同</b>：取樣擾動、應力狀態、尺度；Gmax 取現地、曲線形狀取室內。</li>
+  </ul>
+  <h3>自我檢測</h3>
+  <div class="quiz" data-num="52" data-tol="0.03">
+    <div class="qh">綜合題 1</div>
+    <div class="qq">共振柱試體 ρ = 2.0 Mg/m³、h = 0.1 m，I/I₀ = 0.0568（β = 0.2361），量到 fn = 60 Hz。G 約為幾 MPa？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="G (MPa)"><button class="btn">檢查</button></div>
+    <div class="fb">Vs = 2π × 60 × 0.1 / 0.2361 = 159.7 m/s；G = 2.0 × 159.7² = 51.0 MPa（用 ρ = 2.04 則 52 MPa）。兩者都在答案的容許範圍內。</div>
+  </div>
+  <div class="quiz" data-answer="0">
+    <div class="qh">綜合題 2</div>
+    <div class="qq">一個場址 MASW 得到 Gmax = 80 MPa，同深度取樣做共振柱只得到 55 MPa。最合理的做法是？</div>
+    <div class="opts">
+      <button class="opt">Gmax 用 80 MPa（現地），G/Gmax 與阻尼曲線的形狀用共振柱的結果</button>
+      <button class="opt">兩者平均，取 67.5 MPa</button>
+      <button class="opt">用 55 MPa，因為實驗室控制比較好</button>
+    </div>
+    <div class="fb">取樣擾動通常讓室內 Gmax 偏低，現地方法保留了原位的應力狀態與結構。實務上 Gmax 取現地，曲線形狀（隨應變如何下降）取室內，這正是 9.4 與單元 11 的用法。</div>
+  </div>
+  <div class="quiz" data-answer="0">
+    <div class="qh">綜合題 3</div>
+    <div class="qq">某工程只做了反覆三軸試驗（0.02 %–2 %）與 MASW。等值線性分析的輸入還缺什麼最關鍵？</div>
+    <div class="opts">
+      <button class="opt">缺 0.01 % 以下的曲線形狀；需加彎曲元件或共振柱，否則 G/Gmax 要靠外插</button>
+      <button class="opt">缺 Gmax；MASW 不能給 Gmax</button>
+      <button class="opt">什麼都不缺</button>
+    </div>
+    <div class="fb">MASW 給現地 Vs → Gmax，水準有了。但反覆三軸在 0.01 % 以下沒有資料，曲線前段（剛開始下降的地方）只能外插，且三軸試體的 Gmax 也無法和現地值銜接。加做彎曲元件（同一試體）或共振柱補上小到中應變。</div>
+  </div>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>土壤性質齊了。最後把波傳、振動與土壤模型組合成地盤反應分析。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u08.html"><span class="dir">← 單元 8</span>土壤的非線性：模數與阻尼</a>
+  <a class="next" href="../units/u10.html"><span class="dir">單元 10 →</span>一維線性地盤反應</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/data/ch5_hw3.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/waves.js"></script>
+<script src="../assets/widgets/soil.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1. 什麼是動態問題 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用的小樣式 */
+  .chain { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 1.4em 0; }
+  .chain > div { background: var(--tile); border-radius: 16px; padding: 14px 16px; position: relative; font-size: 14.5px; line-height: 1.5; }
+  .chain > div b { display: block; font-size: 16px; color: var(--accent); margin-bottom: 2px; }
+  .chain > div small { color: var(--muted); }
+  .bb-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 22px; align-items: center; }
+  .bb-wrap canvas { width: 100%; max-width: 280px; height: auto; display: block; margin: 0 auto; }
+  .bb-wrap .cap { text-align: center; font-size: 13px; color: var(--muted); }
+  .scale-tab td.on, .scale-tab th.on { background: var(--accent-soft); font-weight: 600; }
+  .strain-grid { width: 100%; }
+  .num-chip { display: inline-block; font-variant-numeric: tabular-nums; background: var(--inset); border-radius: 8px; padding: 0 6px; }
+</style>
+</head>
+<body data-page="u01" data-root="../" data-title="1. 動態問題">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 1 地震輸入 · 單元 1 · What Makes a Problem Dynamic</div>
+  <h1>什麼是動態問題</h1>
+  <p class="lede"><b>慣性力不能忽略的問題，才叫動態問題。</b>這個單元先回答整門課為什麼存在：地震讓土壤在很短的時間內反覆受剪，應變大小、載重速率與循環次數一起決定土壤怎麼回應、該用哪些參數。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>同樣是反覆載重，為什麼地震算「動態」，停車場的車來車往卻不算？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>說明什麼樣的載重算「動態」：慣性力不可忽略</li>
+    <li>用應變範圍（10⁻⁶ 到 10⁻²）判斷土壤行為是彈性、彈塑性還是破壞，以及該用的參數與試驗</li>
+    <li>分辨反覆載重與動態載重：載重時間要和系統的自然週期比較</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u02.html"><h4>下一單元 · 地震從哪裡來</h4><p>要知道土壤受到什麼樣的反覆載重，先得知道地震從哪裡來。</p></a>
+  </div>
+</header>
+
+<section class="sec" id="s1-1" data-num="1.1" data-short="為什麼" data-title="為什麼需要土壤動力學">
+  <div class="sec-head"><span class="sec-num">1.1</span><h2>為什麼需要土壤動力學</h2></div>
+  <p class="src">出處：Ch0–2 講義 1.1–1.2；Ch0 原講義 p.9–12</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>開挖工地旁的建物傾斜、開挖面冒出泥水。這可以叫做「土壤液化」嗎？</p>
+  </div>
+
+  <p>現象看起來很像：地面冒水冒砂、建物沉陷傾斜。但「液化」指的是一個特定機制：<b>飽和、疏鬆的砂土受到反覆剪應力</b>，土骨架想要變密卻來不及排水，超額孔隙水壓一圈一圈累積，有效應力 \(\sigma' = \sigma - u\) 降到接近零，土壤像液體一樣失去剪力強度。開挖、抽水或管湧造成的湧砂與沉陷，是<b>靜態</b>的水力梯度問題，沒有反覆載重。兩者共通的只有一句話：<b>孔隙水壓上升，有效應力下降</b>。</p>
+
+  <div class="callout intuition"><div class="ct">這門課要回答的兩個問題</div>
+    <p>什麼樣的載重算「動態」？土壤在動態載重下為什麼會軟化，甚至失去強度？前者在 <a href="#s1-2">1.2</a>（四個特徵），後者從<a href="u08.html">單元 8</a> 起貫穿後面所有單元。</p>
+  </div>
+
+  <h3>從震源到土壤：一條因果鏈</h3>
+  <div class="chain">
+    <div><b>震源</b>板塊運動在斷層累積應變，錯動時釋放能量。<br><small><a href="u02.html">單元 2</a></small></div>
+    <div><b>強地動</b>能量以地震波傳到工址，用振幅、頻率內容、延時描述。<br><small><a href="u03.html">單元 3</a>、<a href="u05.html">5</a></small></div>
+    <div><b>土壤反應</b>反覆剪應力作用在土壤上，應變大小決定行為。<br><small><a href="#s1-2">1.2</a>、<a href="u08.html#s8-1">8.1</a></small></div>
+    <div><b>災害</b>放大、沉陷、液化、邊坡滑動、結構損壞。<br><small>單元 8 之後</small></div>
+  </div>
+
+  <p><b>臺北市液化潛勢圖</b>把這條鏈一次算完：假設一個設計地震（地表 PGA），對每個鑽孔逐層算出地震引起的反覆剪應力比 CSR（<a href="u08.html#s8-1">8.1</a>）與土壤的抗液化強度，再沿深度加權積分成 Iwasaki 液化潛能指數 \(P_L\)。常用分級 \(P_L&lt;5\) 低、5–15 中、\(&gt;15\) 高。高潛勢集中在淡水河、基隆河兩岸的沖積層（社子、大同、萬華一帶）：地下水位淺、疏鬆砂層厚，正好同時滿足「飽和」與「疏鬆」。</p>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">下列哪一個情況最符合「土壤液化」的定義？</div>
+    <div class="opts">
+      <button class="opt">開挖底部因抽水造成管湧、冒砂，旁邊房屋沉陷</button>
+      <button class="opt">地震時河岸的飽和疏鬆砂層噴砂，地面上的管線浮起</button>
+      <button class="opt">黏土地基多年壓密，建物逐年沉陷</button>
+    </div>
+    <div class="fb">液化需要「反覆剪應力＋飽和＋疏鬆＋不排水」。開挖管湧是靜態滲流問題；壓密與時間有關但沒有慣性力，不是動態問題（1.2）。地震中埋設物上浮，是液化土的有效應力歸零、浮力大於上覆土重的典型現象。</div>
+  </div>
+</section>
+
+<section class="sec" id="s1-2" data-num="1.2" data-short="四個特徵" data-title="動態問題的四個特徵">
+  <div class="sec-head"><span class="sec-num">1.2</span><h2>動態問題的四個特徵</h2></div>
+  <p class="src">出處：Ch0–2 講義 4.2–4.5；Ch0 原講義 p.4–8</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>壓密也和時間有關，為什麼不算「土壤動力學」？</p>
+  </div>
+
+  <p>原講義列出動態問題的四個特徵：</p>
+  <ol>
+    <li><b>應變範圍</b>：應變越大，土壤越非線性，該用的參數與試驗方法跟著換。</li>
+    <li><b>載重速率</b>：一次載重的時間越短，越需要考慮動態效應（黏滯、慣性）。</li>
+    <li><b>反覆載重</b>：循環次數造成<b>軟化</b>（飽和疏鬆砂、軟黏土在不排水下孔隙水壓累積、勁度下降，極端情形就是液化；也稱疲勞問題）或<b>硬化</b>（乾砂或排水條件下土壤被搖密、勁度增加，但同時產生地震沉陷）。</li>
+    <li><b>慣性力</b>：這是定義。<b>慣性力 \(m\ddot u\) 不能忽略才是動態問題</b>。潛變、壓密與時間有關，但變化慢到慣性力可以忽略，所以不是動態問題。</li>
+  </ol>
+
+  <h3>應變範圍：行為、參數、試驗一起換</h3>
+  <div id="w-strain" data-title="應變範圍探索器"></div>
+
+  <h3>什麼時候要考慮慣性力：比較載重週期與自然週期</h3>
+  <p>用單元 4 的頻率比 \(\beta = T_n/T_{load}\)（= 外力頻率 / 自然頻率）判斷：載重比自然週期慢很多（β 很小）時系統來得及跟上，\(D \approx 1\)，靜力分析即可；β 接近 1 時慣性力與共振放大主導反應（<a href="../units/u04.html#s4-5">4.5</a>）。</p>
+  <div id="w-rate" data-title="載重時間 × 循環次數：哪些是動態問題"></div>
+
+  <div class="quiz" data-answer="2">
+    <div class="qh">小測驗</div>
+    <div class="qq">共振柱試驗、反覆三軸試驗、震測波傳試驗，依「能量測的應變」由小到大排列是？</div>
+    <div class="opts">
+      <button class="opt">反覆三軸 → 共振柱 → 震測</button>
+      <button class="opt">共振柱 → 震測 → 反覆三軸</button>
+      <button class="opt">震測 → 共振柱 → 反覆三軸</button>
+    </div>
+    <div class="fb">震測與波傳試驗的應變約 10⁻⁶–10⁻⁵（量 G<sub>max</sub>）；共振柱約 10⁻⁶–10⁻⁴；反覆載重試驗可到 10⁻³ 以上直到破壞。單元 8 的 G/G<sub>max</sub> 曲線就是把這些試驗接起來。</div>
+  </div>
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">停車場每天反覆載重上千次，為什麼仍屬靜態問題？</div>
+    <div class="opts">
+      <button class="opt">因為循環次數太少</button>
+      <button class="opt">因為每次載重的時間（分鐘到小時）遠大於系統自然週期，β ≈ 0，慣性力可忽略</button>
+      <button class="opt">因為停車場的土壤一定是乾的</button>
+    </div>
+    <div class="fb">「反覆」不等於「動態」。判斷的是慣性力：載重時間遠大於自然週期時，D ≈ 1、慣性力可忽略。波浪荷重、停車荷重屬於「反覆的靜態問題」，可能有疲勞（循環次數效應），但不需要動力分析。</div>
+  </div>
+</section>
+
+<section class="sec" id="s1-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>反覆 ≠ 動態</b>：停車、波浪荷重雖反覆，載重時間遠大於自然週期，慣性力可忽略。</li>
+    <li><b>液化 ≠ 冒砂</b>：液化需要反覆載重；開挖管湧是靜態滲流。共通點只有「孔隙水壓上升、有效應力下降」。</li>
+  </ul>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>要知道土壤受到什麼樣的反覆載重，先得知道地震從哪裡來。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../index.html"><span class="dir">← 回到</span>課程主頁</a>
+  <a class="next" href="../units/u02.html"><span class="dir">單元 2 →</span>地震從哪裡來</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/quake.js"></script>
+</body>
+</html>

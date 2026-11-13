@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3. 描述地動：時間域參數 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用的小樣式 */
+  .chain { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 1.4em 0; }
+  .chain > div { background: var(--tile); border-radius: 16px; padding: 14px 16px; position: relative; font-size: 14.5px; line-height: 1.5; }
+  .chain > div b { display: block; font-size: 16px; color: var(--accent); margin-bottom: 2px; }
+  .chain > div small { color: var(--muted); }
+  .bb-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 22px; align-items: center; }
+  .bb-wrap canvas { width: 100%; max-width: 280px; height: auto; display: block; margin: 0 auto; }
+  .bb-wrap .cap { text-align: center; font-size: 13px; color: var(--muted); }
+  .scale-tab td.on, .scale-tab th.on { background: var(--accent-soft); font-weight: 600; }
+  .strain-grid { width: 100%; }
+  .num-chip { display: inline-block; font-variant-numeric: tabular-nums; background: var(--inset); border-radius: 8px; padding: 0 6px; }
+</style>
+</head>
+<body data-page="u03" data-root="../" data-title="3. 地動參數">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 1 地震輸入 · 單元 3 · Describing Ground Motion in the Time Domain</div>
+  <h1>描述地動：時間域參數</h1>
+  <p class="lede"><b>一筆加速度紀錄，可以讀出很多數字。</b>PGA、PGV、PGD 描述振幅，Arias intensity、CAV 與顯著延時描述能量與持續時間。速度與位移要由加速度積分得到，而積分會把微小的偏差放大成漂移。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>兩筆 PGA 一樣的地震紀錄，破壞力一定一樣嗎？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>從一筆加速度紀錄算出 PGA、PGV、PGD</li>
+    <li>計算 Arias intensity、CAV、顯著延時 D5–95，並說明它們與 PGA 描述的是不同的東西</li>
+    <li>解釋加速度二次積分為什麼會漂移，以及去平均、帶通、高通各自解決什麼問題</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u02.html"><h4>上一單元 · 地震從哪裡來</h4><p>斷層錯動之後，工址記錄到一筆加速度歷時。下一單元學怎麼描述它。</p></a>
+    <a class="card" href="../units/u04.html"><h4>下一單元 · 單自由度振動</h4><p>振幅與延時都有了，還缺「頻率」。要談頻率，先學系統怎麼振動。</p></a>
+  </div>
+</header>
+
+<section class="sec" id="s3-1" data-num="3.1" data-short="強地動" data-title="強地動：PGA、PGV、PGD">
+  <div class="sec-head"><span class="sec-num">3.1</span><h2>強地動紀錄：PGA、PGV、PGD</h2></div>
+  <p class="src">出處：Ch0–2 講義 3.1–3.2；Ch2 原講義 p.2–6；HW1 Part B</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>兩個測站 PGA 一樣大，對土壤和結構的破壞也一樣嗎？</p>
+  </div>
+
+  <p>一筆地震紀錄有三個面向，工程上都會用到：</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>面向</th><th>常用參數</th><th>決定什麼</th></tr>
+    <tr><td>振幅</td><td>PGA、PGV、PGD</td><td>震度、液化評估的起點（CSR 用 PGA）</td></tr>
+    <tr><td>頻率內容</td><td>Fourier 頻譜、卓越週期 \(T_p\)、平均週期 \(T_m\)、PGV/PGA</td><td>哪些結構與土層會共振</td></tr>
+    <tr><td>延時</td><td>顯著延時 \(D_{5\text{–}95}\)、等值循環次數</td><td>反覆載重次數：搖越久越容易軟化、液化</td></tr>
+  </table></div>
+  <p>強震儀記錄的是三個分量的<b>加速度</b>（兩個水平、一個垂直），速度與位移由積分而得。積分在頻率域等於除以 \(i\omega\)（3.3），<b>越積分越強調低頻</b>：PGA 由高頻控制，PGV 由中週期控制，PGD 反映長週期。所以三個峰值通常出現在不同時刻。</p>
+
+  <h3>岩盤與土壤：PGA 小，PGV、PGD 反而大</h3>
+  <p>原講義 p.6 比較 1989 Loma Prieta 地震的 Gilroy No.1（岩盤）與 No.2（土壤）：兩站很近、震源距離相近，差別主要在場址。土壤站 PGA 較小（約 0.3 g vs 0.4 g），但 PGV、PGD 較大：土層濾掉部分高頻、放大長週期，<b>PGV/PGA 變大</b>。下面的互動圖用集集地震的 PEER 紀錄示範同一件事（<a href="../hw/hw1.html#b">HW1 Part B</a> 用的是同一批資料）。</p>
+
+  <div id="w-record" data-title="集集地震紀錄檢視器（PEER NGA-West2）"></div>
+
+  <div class="callout pitfall"><div class="ct">投影片勘誤：垂直分量不會是 E-W</div>
+    <p>Ch2 原講義 p.5、p.10 把垂直分量標為「Vertical acceleration (E-W)」。垂直分量的方向是 U-D（上下），E-W 是水平分量。讀圖時以分量的物理方向為準。</p>
+  </div>
+
+  <div class="callout intuition"><div class="ct">讀圖重點</div>
+    <p>垂直分量的頻率比水平高很多（主要由 P 波造成，波長較短），近震源時垂直 PGA 甚至可能超過水平（Loma Prieta 的例子垂直約 500 cm/s²）。單位換算：1 g = 981 cm/s²（gal），所以 463 cm/s² ≈ 0.47 g。</p>
+  </div>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">在上方檢視器比較 HWA035（V<sub>s30</sub> = 677 m/s）與 CHY078（V<sub>s30</sub> = 161 m/s）的水平分量。哪一個說法正確？</div>
+    <div class="opts">
+      <button class="opt">軟弱場址的 PGA 一定比較大</button>
+      <button class="opt">CHY078 的 PGV/PGA 與平均週期 T<sub>m</sub> 明顯較大，地動偏長週期</button>
+      <button class="opt">兩站的頻率內容相同，只有振幅不同</button>
+    </div>
+    <div class="fb">CHY078 的 T<sub>m</sub> 約 0.86–0.92 s，HWA035 約 0.50 s；PGV/PGA 也是 CHY078 較大。注意兩站距離不同（77 km vs 48 km），比較 PGA 大小時要同時考慮距離衰減；頻率內容的差異則主要來自場址。</div>
+  </div>
+</section>
+
+<section class="sec" id="s3-2" data-num="3.2" data-short="能量延時" data-title="累積參數：Arias intensity、CAV 與顯著延時">
+  <div class="sec-head"><span class="sec-num">3.2</span><h2>累積參數：Arias intensity、CAV 與顯著延時</h2></div>
+  <p class="src">出處：Ch0–2 講義 3.3；Ch2 原講義 p.3–4；HW1 參數表</p>
+
+  <p>PGA 只代表一個瞬間。文獻整理了 28 項地動參數，找出哪一個最能預測沉陷、液化、損壞，可分成四類：</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>類型</th><th>參數</th><th>反映什麼</th></tr>
+    <tr><td>峰值</td><td>PGA、PGV、PGD、PGV/PGA、SMA、EDA</td><td>最大振幅；PGV/PGA 兼反映頻率</td></tr>
+    <tr class="hl"><td>能量、累積</td><td>a<sub>rms</sub>、I<sub>a</sub>、CI、CAV、CAV<sub>5</sub>、SIR</td><td>振幅與延時的綜合效果</td></tr>
+    <tr><td>頻率、反應譜</td><td>PSA(T)、ASI、VSI、Housner 強度、T<sub>p</sub>、T<sub>m</sub></td><td>地動能量集中在哪些週期</td></tr>
+    <tr><td>延時</td><td>D<sub>u</sub>（uniform）、D<sub>b</sub>（bracketed）、D<sub>5–95</sub>（significant）</td><td>強震持續多久</td></tr>
+  </table></div>
+
+  <div class="eqbox">\[ I_a = \frac{\pi}{2g}\int_0^{t_{tot}} a^2(t)\,dt \;\;[\text{m/s}], \qquad CAV = \int_0^{t_{tot}} |a(t)|\,dt \;\;[\text{m/s}] \]
+  \[ H(t) = \frac{\int_0^t a^2\,d\tau}{\int_0^{t_{tot}} a^2\,d\tau}, \qquad D_{5\text{–}95} = t_{95} - t_5, \qquad T_m = \frac{\sum C_i^2/f_i}{\sum C_i^2}\;(0.25 \le f_i \le 20\text{ Hz}) \]</div>
+  <p>把 \(H(t)\) 對時間作圖就是 <b>Husid 圖</b>：一條從 0 爬到 1 的 S 形曲線，陡的那段就是強震段。由 5 % 到 95 % 經過的時間是顯著延時 \(D_{5\text{–}95}\)；後段的小振幅幾乎不增加能量。\(T_m\) 是 Rathje 等人的平均週期，用 Fourier 振幅平方加權的「平均週期」。</p>
+
+  <details class="derive"><summary>為什麼 I<sub>a</sub> 有 π/2g：一排 SDOF 吸收的能量</summary><div class="body">
+    <p>Arias（1970）把 I<sub>a</sub> 定義為「所有自然頻率的無阻尼 SDOF，每單位重量吸收的總能量」。對頻率 ω 積分後只剩下 \(\int a^2 dt\)，常數就是 π/2g。所以 I<sub>a</sub> 同時反映振幅（平方）與延時（積分長度），和液化、邊坡滑動這類累積損害的相關性通常比 PGA 好。</p>
+    <p>兩個實用的比例關係：振幅放大 k 倍，I<sub>a</sub> 放大 k² 倍、CAV 放大 k 倍；延時放大 k 倍，兩者都放大約 k 倍。<a href="../hw/hw1.html#b">HW1</a> Q5 中 AI 對 PGA 的迴歸斜率 1.66（接近 2，但被延時差異拉低）就是第一個關係。</p>
+  </div></details>
+
+  <div id="w-dur" data-title="PGA 相同、延時不同：累積參數怎麼變（合成地動）"></div>
+
+  <div class="callout example"><div class="ct">例：等振幅正弦的 I<sub>a</sub></div>
+    <p>振幅 0.3 g 的正弦波持續 10 s：\(\int a^2dt = A^2T/2\)。\(I_a = \frac{\pi}{2\times9.81}\times\frac{(2.94)^2\times10}{2} = 6.93\) m/s。真實地震的振幅只有一小段接近 PGA，所以集集各站（<a href="../hw/hw1.html#b">HW1</a>）的 I<sub>a</sub> 只有 0.1–1.1 m/s。</p>
+  </div>
+
+  <div class="callout link"><div class="ct">延時與液化</div>
+    <p>液化評估用「等值循環次數」把不規則地動換成 N 個均勻循環，N 隨規模與延時增加。同樣的 CSR，搖 15 圈比搖 5 圈更容易液化，這就是 3.2「反覆載重效應」在設計上的出口。</p>
+  </div>
+
+  <div class="quiz" data-answer="0">
+    <div class="qh">小測驗</div>
+    <div class="qq">把一筆地震紀錄的加速度全部乘以 2（延時不變），I<sub>a</sub> 與 D<sub>5–95</sub> 各變幾倍？</div>
+    <div class="opts">
+      <button class="opt">I<sub>a</sub> 4 倍，D<sub>5–95</sub> 不變</button>
+      <button class="opt">I<sub>a</sub> 2 倍，D<sub>5–95</sub> 2 倍</button>
+      <button class="opt">I<sub>a</sub> 4 倍，D<sub>5–95</sub> 減半</button>
+    </div>
+    <div class="fb">I<sub>a</sub> ∝ ∫a²dt → 4 倍。D<sub>5–95</sub> 由 H(t) 的「比例」決定，分子分母同乘 4，H(t) 完全不變，所以延時不變。這也說明 D<sub>5–95</sub> 只描述延時，與振幅無關（<a href="../hw/hw1.html#b">HW1</a> Q5(f) 中 D<sub>s</sub> 與 PGA 的 r ≈ −0.11）。</div>
+  </div>
+</section>
+
+<section class="sec" id="s3-3" data-num="3.3" data-short="積分漂移" data-title="由加速度積分：為什麼會漂移">
+  <div class="sec-head"><span class="sec-num">3.3</span><h2>由加速度積分：為什麼會漂移</h2></div>
+  <p class="src">出處：Ch0–2 講義 3.2、3.6；HW1 Q2–Q3、附錄 I、IV</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>把手機放在洗衣機上量 160 秒，直接積分兩次，算出洗衣機「移動」了 142 m。哪裡出錯了？</p>
+  </div>
+
+  <p>加速度計讀數總帶有一點零點偏差 \(\varepsilon\)（感測器偏移、手機微傾讓重力分量漏進來）。積分會把常數變成直線、直線變成拋物線：</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>量</th><th>偏差造成的誤差</th><th class="num">HW1 Z 方向（ε = −0.0108 m/s²、t = 161.7 s）</th></tr>
+    <tr><td>加速度</td><td>\(\varepsilon\)（常數）</td><td class="num">−0.0108 m/s²</td></tr>
+    <tr><td>速度</td><td>\(\varepsilon t\)（線性成長）</td><td class="num">−1.74 m/s</td></tr>
+    <tr class="hl"><td>位移</td><td>\(\tfrac12\varepsilon t^2\)（二次成長）</td><td class="num">−141 m（直接積分實得 −142.6 m）</td></tr>
+  </table></div>
+  <p>真實的速度峰值只有約 0.004 m/s，偏差造成的誤差大了 400 倍以上。在頻率域看更清楚：積分是除以 \(i\omega\)，</p>
+  <div class="eqbox">\[ V(\omega) = \frac{A(\omega)}{i\omega}, \qquad U(\omega) = -\frac{A(\omega)}{\omega^2} \]</div>
+  <p>頻率越低放大越多，常數偏差（\(\omega = 0\)）被放大到無限大。所以處理流程是：<b>去平均值</b>（拿掉常數）→ <b>0.1–30 Hz 帶通</b>（拿掉低頻漂移與高頻雜訊）→ 積分 → <b>0.1 Hz 高通</b>（每次積分後再清一次被放大的殘餘低頻）。代價是：低於 0.1 Hz 的真實運動（例如慢慢推動手機 10 cm）也一起被濾掉，位移只能當成「相對振動量」。</p>
+
+  <details class="derive"><summary>細節：零相位濾波、漸縮與補零、梯形法</summary><div class="body">
+    <ol class="steps">
+      <li><b>Butterworth</b>：通帶最平坦，不扭曲振幅。n 階的增益約 \(|H| \approx [1+(f_L/f)^{2n}]^{-1/2}[1+(f/f_H)^{2n}]^{-1/2}\)，截止頻率處 \(1/\sqrt2\)。</li>
+      <li><b>零相位（filtfilt）</b>：正向、反向各濾一次，相位互相抵消，波峰時間不變；實際增益是 \(|H|^2\)，截止頻率處 0.5。28 Hz 的成分約保留 74 %。</li>
+      <li><b>漸縮＋補零</b>：頭尾各 1 s 半餘弦窗讓訊號平滑歸零，再前後補 30 s 的零，讓 0.1 Hz 高通的暫態（時間常數約 \(1/2\pi f_L \approx 1.6\) s）在補零區內消失。</li>
+      <li><b>梯形法積分</b>：\(v_n = v_{n-1} + \tfrac12(a_{n-1}+a_n)\Delta t\)。若改用矩形法逐點累加，速度歷時會前移半個取樣間隔；14 Hz 的振動每週期只有約 7 點，這個差異不可忽略。AI、CAV 只要整段總和，用矩形法即可。</li>
+    </ol>
+  </div></details>
+
+  <div id="w-drift" data-title="手機紀錄的積分漂移（洗衣機實測資料）"></div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：濾波截止頻率不是越高越好</div>
+    <p>高通截止頻率調高，位移會更「乾淨」、更接近零，但真實的低頻運動也被削掉；調低則殘留更多漂移。<a href="../hw/hw1.html#a">HW1</a> 選 0.1 Hz 與 Part B 一致。PEER 的 PGD 用的是各紀錄自己的截止頻率，HW1 的 PGD 因此只適合做紀錄之間的相對比較。</p>
+  </div>
+
+  <div class="quiz" data-num="0.11" data-tol="0.05">
+    <div class="qh">小測驗</div>
+    <div class="qq">洗衣機的主要振動 14 Hz、加速度振幅 0.84 m/s²。若是簡諧振動，位移振幅約幾 mm？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="mm"><button class="btn">檢查</button></div>
+    <div class="fb">u = a/ω² = 0.84 / (2π × 14)² = 1.09×10⁻⁴ m ≈ 0.11 mm。處理後的位移圖上還看得到 ±1 mm、週期 7–8 s 的緩慢起伏，那是被二次積分放大的 0.1 Hz 附近殘餘雜訊，不是洗衣機真的在動。</div>
+  </div>
+</section>
+
+<section class="sec" id="s3-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">Arias intensity</div>\[ I_a = \frac{\pi}{2g}\int a^2\,dt \]</div>
+    <div class="fcard"><div class="ft">累積絕對速度</div>\[ CAV = \int |a|\,dt \]</div>
+    <div class="fcard"><div class="ft">顯著延時</div>\[ D_{5\text{–}95} = t_{95} - t_5 \]</div>
+    <div class="fcard"><div class="ft">積分 = 除以 iω</div>\[ V = A/i\omega,\; U = -A/\omega^2 \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>垂直分量不是 E-W</b>：原講義 Ch2 p.5、10 的標籤應為 Vertical (U-D)。</li>
+    <li><b>直接積分會漂移</b>：偏差 ε 使 v ≈ εt、u ≈ εt²/2；去平均只解決常數，還要帶通與積分後高通。</li>
+    <li><b>RotD100 ≠ 兩分量取大</b>：是旋轉到最不利方向的值，PGA<sub>RotD100</sub> 等於合成向量最大值。</li>
+  </ul>
+  <h3>自我檢測</h3>
+  <div class="quiz" data-num="0.0157" data-tol="0.05">
+    <div class="qh">綜合題 1</div>
+    <div class="qq">手機加速度偏差 ε = 0.002 m/s²，直接積分 125 s 後位移誤差約幾公里？（½εt²，填 km）</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="km"><button class="btn">檢查</button></div>
+    <div class="fb">½ × 0.002 × 125² = 15.6 m = 0.0156 km。即使偏差只有 0.0002 g，兩分鐘後就「移動」了 15 m，這就是為什麼一定要去平均與濾波。</div>
+  </div>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>振幅與延時都有了，還缺「頻率」。要談頻率，先學系統怎麼振動。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u02.html"><span class="dir">← 單元 2</span>地震從哪裡來</a>
+  <a class="next" href="../units/u04.html"><span class="dir">單元 4 →</span>單自由度振動</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/data/ch02_chy010.js"></script>
+<script src="../assets/data/ch02_hwa035.js"></script>
+<script src="../assets/data/ch02_chy065.js"></script>
+<script src="../assets/data/ch02_chy078.js"></script>
+<script src="../assets/data/ch02_phone.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/quake.js"></script>
+</body>
+</html>

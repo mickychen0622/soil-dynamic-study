@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6. 波在土中傳播 · 土壤動力學</title>
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+/* 單元專用：可編輯的分層表、熱圖、小型表單 */
+  .layer-tbl input[type=number] { width: 5.6em; border: 0; border-radius: 8px; padding: 5px 8px; background: var(--inset); color: var(--ink); font: inherit; font-size: 14px; }
+  .layer-tbl td, .layer-tbl th { padding: 6px 8px; }
+  .layer-tbl .x { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 16px; }
+  .cls-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 10px 0 4px; }
+  .cls-row .chip { background: var(--inset); border-radius: 14px; padding: 10px 14px; font-size: 13px; color: var(--muted); }
+  .cls-row .chip b { display: block; color: var(--ink); font-size: 20px; font-family: var(--font-display); }
+  svg image.heat { image-rendering: pixelated; }
+  .w-sub { font-size: 14px; font-weight: 600; margin: 14px 0 2px; }
+  .ans-box { border-left: 3px solid var(--accent); padding: 2px 0 2px 16px; margin: 1em 0; }
+</style>
+</head>
+<body data-page="u06" data-root="../" data-title="6. 波傳">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">階段 3 波與土壤性質 · 單元 6 · Waves in Soil</div>
+  <h1>波在土中傳播</h1>
+  <p class="lede"><b>想知道土壤有多硬，就聽它傳波。</b>剪力波速 \(V_s\) 一旦知道，剪力模數 \(G = \rho V_s^2\) 就跟著出來。這個單元從四種地震波出發，推導一維波動方程式，區分波速與質點速度，最後看表面波為什麼會頻散。</p>
+  <div class="callout question"><div class="ct">這個單元要回答</div><p>地震的能量怎麼從震源跑到工址？土壤有多硬，跟波跑多快有什麼關係？</p></div>
+
+  <h3>讀完這個單元，你應該能夠</h3>
+  <ol class="goals">
+    <li>說出 P、S、Rayleigh、Love 四種波的質點運動、波速與存在條件</li>
+    <li>由平衡、組成律、運動學推出一維波動方程式，分清 \(M\) 與 \(E\)</li>
+    <li>用 d'Alembert 解區分波速與質點速度，並以 \(\gamma \approx \text{PGV}/V_s\) 估計地震應變</li>
+    <li>解釋 Rayleigh 波與 Love 波的頻散從哪裡來</li>
+  </ol>
+
+  <h3>和前後單元的關係</h3>
+  <div class="grid2">
+    <a class="card" href="../units/u05.html"><h4>上一單元 · 頻率的觀點：頻譜、反應譜與卓越週期</h4><p>岩盤與軟土的頻率內容為什麼不同？答案在波怎麼穿過土層。</p></a>
+    <a class="card" href="../units/u07.html"><h4>下一單元 · 量測剪力波速與 Gmax</h4><p>波速和勁度連在一起之後，下一步是到現地與實驗室把 Vs 量出來。</p></a>
+  </div>
+</header>
+
+<section class="sec" id="s6-1" data-num="6.1" data-short="四種波" data-title="四種地震波">
+  <div class="sec-head"><span class="sec-num">6.1</span><h2>四種地震波</h2></div>
+  <p class="src">出處：Ch3 講義 1.2–1.15（投影片 p. 2–15）；郭安妮 Waves Part II 講義 p. 3–4</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>地震儀先記到一個小跳動，幾秒後才是大搖晃，最後還拖著一長串慢慢的晃動。這三段各是什麼波？</p>
+  </div>
+
+  <p>把地盤想成一塊半無限的彈性體。震源附近的擾動有兩條路可以走：<b>穿過內部</b>（實體波，body wave），或<b>貼著地表</b>（表面波，surface wave）。實體波有兩種，因為固體能抵抗兩種變形：體積改變（P 波）和形狀改變（S 波）。表面波則是實體波碰到地表與層介面後「被困住」的產物。</p>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th></th><th>P 波</th><th>S 波</th><th>Rayleigh 波</th><th>Love 波</th></tr>
+    <tr><td>類型</td><td>實體波</td><td>實體波</td><td>表面波</td><td>表面波</td></tr>
+    <tr><td>質點運動</td><td>平行傳播方向，一推一拉</td><td>垂直傳播方向（分成 SV、SH）</td><td>垂直面內的橢圓，地表為<b>逆行</b></td><td>水平、垂直於傳播方向左右擺</td></tr>
+    <tr><td>變形</td><td>體積改變</td><td>純剪，體積不變</td><td>P + SV 耦合</td><td>SH，純剪</td></tr>
+    <tr><td>波速</td><td>\(\sqrt{M/\rho}\)，最快</td><td>\(\sqrt{G/\rho}\)</td><td>約 0.87–0.95 \(V_s\)</td><td>介於上層與下層 \(V_s\) 之間</td></tr>
+    <tr><td>存在條件</td><td>任何介質</td><td>只有固體</td><td>自由表面</td><td>慢層覆於快層</td></tr>
+    <tr><td>頻散</td><td>無</td><td>無</td><td>只在層狀地盤</td><td>有</td></tr>
+  </table></div>
+
+  <div id="w-waves" data-title="四種波的質點運動"></div>
+
+  <h3>為什麼遠處的晃動常由表面波主導</h3>
+  <p>能量守恆加上幾何：實體波的波前是半球面，面積 \(\propto r^2\)，能量密度 \(\propto 1/r^2\)，振幅 \(\propto 1/r\)；表面波的波前是貼地的圓柱面，面積 \(\propto r\)，振幅只 \(\propto 1/\sqrt r\)。距離從 10 km 增加到 100 km，實體波振幅掉到 1/10，表面波只掉到 1/3.2。這種「攤薄」稱為<b>幾何阻尼</b>；材料本身吸收能量則是<b>材料阻尼</b>（<a href="u08.html">單元 8</a>）。</p>
+
+  <div class="callout example"><div class="ct">例：用 S–P 時間差估震源距離</div>
+    <p>P 與 S 從同一點出發，距離 \(d\) 處的到時差為 \(\Delta t = d/V_s - d/V_p\)。地殼典型 \(V_p \approx 6\) km/s、\(V_s \approx 3.5\) km/s：</p>
+    \[ d = \frac{\Delta t}{1/3.5 - 1/6} = 8.4\,\Delta t \quad (\text{km，}\Delta t \text{ 以秒計}) \]
+    <p>測站記到 S–P 時間差 5 s → 震源距離約 42 km。三個測站各畫一個圓，交點就是震央，這是最早的定位方法。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：照片不是唯一證據</div>
+    <p>講義用鐵軌的上下起伏說明 Rayleigh 波、左右蛇行說明 Love 波。這是示意：同樣的軌道變形也可能來自地盤沉陷、液化側潰或溫度造成的挫屈。看到現地照片時，要先排除其他成因。</p>
+  </div>
+
+  <div class="quiz" data-answer="3">
+    <div class="qh">小測驗</div>
+    <div class="qq">一個只有水平分量、而且垂直於傳播方向擺動的表面波，是哪一種？</div>
+    <div class="opts">
+      <button class="opt">P 波</button>
+      <button class="opt">SV 波</button>
+      <button class="opt">Rayleigh 波</button>
+      <button class="opt">Love 波</button>
+    </div>
+    <div class="fb">Love 波是 SH 波在軟層中來回全反射、建設性干涉而成，質點只在水平面內、垂直傳播方向擺動，沒有垂直分量。Rayleigh 波則同時有垂直與沿傳播方向的水平分量。</div>
+  </div>
+  <div class="quiz" data-num="84" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">測站記到 S–P 時間差 10 s，取 Vp = 6 km/s、Vs = 3.5 km/s，震源距離約幾 km？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="d (km)"><button class="btn">檢查</button></div>
+    <div class="fb">d = Δt / (1/Vs − 1/Vp) = 10 / (0.2857 − 0.1667) = 84 km。</div>
+  </div>
+</section>
+
+<section class="sec" id="s6-2" data-num="6.2" data-short="波動方程" data-title="桿中的一維波動方程式">
+  <div class="sec-head"><span class="sec-num">6.2</span><h2>桿中的一維波動方程式</h2></div>
+  <p class="src">出處：Ch3 講義 1.16–1.23（投影片 p. 16–23）；Richart et al. (1970) 書頁 72（PDF p. 93）</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>P 波速度有時寫成 \(\sqrt{E/\rho}\)，有時寫成 \(\sqrt{M/\rho}\)。哪一個才對？差多少？</p>
+  </div>
+
+  <p>三維彈性波很複雜，所以先把問題縮成一根無限長的桿。只需要三個要素：<b>① 平衡</b>（牛頓第二定律）、<b>② 組成律</b>（應力–應變）、<b>③ 運動學</b>（應變–位移）。</p>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 640 170" width="640" role="img" aria-label="桿元素的受力">
+      <g class="s-ink" fill="none" stroke-width="1.4">
+        <rect x="200" y="50" width="240" height="60" rx="2"/>
+        <line x1="60" y1="80" x2="200" y2="80" class="s-gray" stroke-dasharray="5 4"/>
+        <line x1="440" y1="80" x2="580" y2="80" class="s-gray" stroke-dasharray="5 4"/>
+        <line x1="200" y1="80" x2="140" y2="80" stroke-width="2"/><path d="M140 80 l9 -4.5 v9 z" class="f-ink"/>
+        <line x1="440" y1="80" x2="500" y2="80" stroke-width="2"/><path d="M500 80 l-9 -4.5 v9 z" class="f-ink"/>
+        <line x1="200" y1="132" x2="440" y2="132" stroke-width="1"/><line x1="200" y1="126" x2="200" y2="138" stroke-width="1"/><line x1="440" y1="126" x2="440" y2="138" stroke-width="1"/>
+        <line x1="320" y1="32" x2="380" y2="32" class="s-blue" stroke-width="1.6"/><path d="M380 32 l-8 -4 v8 z" class="f-blue"/>
+      </g>
+      <text x="130" y="68" class="txt" text-anchor="end">σ A</text>
+      <text x="510" y="68" class="txt">(σ + ∂σ/∂x dx) A</text>
+      <text x="320" y="150" class="txt" text-anchor="middle">dx</text>
+      <text x="320" y="86" class="txt" text-anchor="middle">質量 ρ A dx</text>
+      <text x="386" y="36" class="txt-blue">ü</text>
+      <text x="60" y="160" class="txt-muted">x →</text>
+    </svg>
+    <figcaption>長度 dx 的桿元素：兩端的力差推動質量</figcaption>
+  </figure>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th></th><th>縱波（↔ P 波）</th><th>扭轉波（↔ S 波）</th></tr>
+    <tr><td>未知量</td><td>軸向位移 \(u(x,t)\)</td><td>斷面轉角 \(\theta(x,t)\)</td></tr>
+    <tr><td>① 平衡</td><td>\(\dfrac{\partial\sigma}{\partial x} = \rho\,\ddot u\)</td><td>\(\dfrac{\partial T}{\partial x} = \rho J\,\ddot\theta\)</td></tr>
+    <tr><td>② 組成律</td><td>\(\sigma = M\varepsilon\)（側向受束制）</td><td>\(T = GJ\,\dfrac{\partial\theta}{\partial x}\)（純剪）</td></tr>
+    <tr><td>③ 運動學</td><td>\(\varepsilon = \partial u/\partial x\)</td><td>已含在扭轉率 \(\partial\theta/\partial x\) 內</td></tr>
+    <tr class="hl"><td>結果</td><td>\(\ddot u = V_p^2\,u''\)，\(V_p = \sqrt{M/\rho}\)</td><td>\(\ddot\theta = V_s^2\,\theta''\)，\(V_s = \sqrt{G/\rho}\)（\(J\) 相消）</td></tr>
+  </table></div>
+
+  <details class="derive"><summary>推導：縱波三步</summary><div class="body">
+    <ol class="steps">
+      <li>元素兩端的合力 \(\left(\sigma + \frac{\partial\sigma}{\partial x}dx\right)A - \sigma A = \rho A\,dx\,\ddot u\) → \(\partial\sigma/\partial x = \rho\ddot u\)。</li>
+      <li>代入 \(\sigma = M\,\partial u/\partial x\)：\(M\,\partial^2u/\partial x^2 = \rho\,\partial^2 u/\partial t^2\)。</li>
+      <li>整理成 \(\ddot u = (M/\rho)\,u''\)，係數的單位是速度平方，所以 \(V_p = \sqrt{M/\rho}\)。扭轉波把 \(u\to\theta\)、\(\sigma A \to T\)、\(\rho A \to \rho J\)、\(M \to G\)，兩邊的 \(J\) 相消。</li>
+    </ol>
+    <p>\(J\) 相消代表<b>扭轉波速與斷面大小無關</b>：同材料的細桿與粗桿 \(V_s\) 相同；扭轉又是純剪，沒有 Poisson 效應，量到的就是 \(G\)。這是共振柱選擇扭轉激振的原因（<a href="u09.html#s9-1">9.1</a>）。</p>
+  </div></details>
+
+  <h3>E 還是 M？看側向能不能變形</h3>
+  <p>細桿側面自由，受軸力時會側向膨脹，處於單軸<b>應力</b>，\(\sigma = E\varepsilon\)，波速 \(\sqrt{E/\rho}\)（rod velocity）。無限介質中的 P 波，側向被周圍材料束制，處於一維<b>應變</b>，要用束制模數：</p>
+  <div class="eqbox">\[ M = \frac{E(1-\nu)}{(1+\nu)(1-2\nu)}, \qquad \frac{V_p}{V_s} = \sqrt{\frac{M}{G}} = \sqrt{\frac{2-2\nu}{1-2\nu}} \]</div>
+  <p>\(\nu \to 0.5\) 時 \(M \to \infty\)。飽和土幾乎不可壓縮，所以 \(V_p\) 被孔隙水的體積模數拉到約 1500 m/s，與土骨架無關；\(V_s\) 則只由土骨架決定，因為水沒有剪力勁度。</p>
+
+  <div id="w-modulus" data-title="Poisson 比如何拉開 Vp 與 Vs"></div>
+
+  <div class="callout example"><div class="ct">例：鋼與水（SI 單位重算）</div>
+    <div class="tablewrap"><table class="data">
+      <tr><th>材料</th><th>模數</th><th>密度</th><th class="num">波速</th><th>檢查</th></tr>
+      <tr><td>鋼（P）</td><td>\(M \approx 279\) GPa（40.4×10⁶ psi）</td><td>7850 kg/m³</td><td class="num">≈ 5960 m/s</td><td>合理</td></tr>
+      <tr><td>鋼（S）</td><td>\(G = E/2(1+\nu) \approx 79\) GPa</td><td>7850 kg/m³</td><td class="num">≈ 3170 m/s</td><td>\(V_s/V_p = 0.53\) → \(\nu \approx 0.30\)</td></tr>
+      <tr><td>水（P）</td><td>\(K \approx 2.3\) GPa</td><td>1000 kg/m³</td><td class="num">≈ 1520 m/s</td><td>與實測聲速 1480–1500 m/s 相符</td></tr>
+      <tr><td>水（S）</td><td>\(G = 0\)</td><td></td><td class="num">0</td><td>流體不能傳剪力波</td></tr>
+    </table></div>
+    <p>阻抗 \(\rho V\) 也在這裡出現：由平衡與 \(\varepsilon = \dot u/V\)（6.4）可得 \(\sigma = \rho V\,\dot u\)。<b>比阻抗</b> \(\rho V\) 決定波在兩種材料介面上反射多少，是<a href="u10.html">單元 10</a> 場址放大的關鍵。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">投影片勘誤：硫化橡膠的數字</div>
+    <p>講義的例題表把硫化橡膠的模數寫成 167×10⁶ psi（比鋼大 4 倍），算出 \(V_p \approx 31\) km/s、波長 10,000 ft。橡膠幾乎不可壓縮，\(M \approx K\) 只有數 GPa，實際 \(V_p\) 約一千多 m/s：表中數字錯了兩個數量級（老師在錄影中指出）。教訓：每算出一個數字先問合不合理，比鋼快五倍的 P 波應該立刻讓你停下來。另外投影片 p. 6 寫 \(V_p = \sqrt{E/\rho}\)，那是細桿的縱波速度，無限介質要用 \(M\)。</p>
+  </div>
+
+  <div class="quiz" data-num="0.30" data-tol="0.05">
+    <div class="qh">小測驗</div>
+    <div class="qq">量到某材料 Vs/Vp = 0.53，Poisson 比 ν 約為多少？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="ν"><button class="btn">檢查</button></div>
+    <div class="fb">(Vp/Vs)² = 1/0.53² = 3.56 = (2 − 2ν)/(1 − 2ν) → 3.56 − 7.12ν = 2 − 2ν → ν = 1.56/5.12 = 0.30。地球物理常用這個方法由兩種波速估 ν。</div>
+  </div>
+</section>
+
+<section class="sec" id="s6-3" data-num="6.3" data-short="通解" data-title="d'Alembert 通解">
+  <div class="sec-head"><span class="sec-num">6.3</span><h2>d'Alembert 通解：形狀不變地平移</h2></div>
+  <p class="src">出處：Ch3 講義 1.24（投影片 p. 24）；HW2 附檔 wave_1d_demo_zh.html 的操作觀察</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>波動方程式從頭到尾沒說波長什麼樣子。為什麼正弦波、三角形、單一凸起都可以是它的解？</p>
+  </div>
+
+  <div class="eqbox">\[ u(x,t) = f(Vt - x) + g(Vt + x) \]</div>
+  <p>\(f\) 和 \(g\) 是<b>任意</b>函數。\(Vt - x\) 固定時 \(f\) 不變：時間增加 \(dt\)，同一個值出現在 \(x + V\,dt\)，所以 \(f\) 以速度 \(V\) 往 \(+x\) 走；\(g\) 往 \(-x\) 走。方程式只規定「形狀以 \(V\) 平移、不變形」，不管形狀本身。</p>
+
+  <details class="derive"><summary>自己驗證一次</summary><div class="body">
+    <ol class="steps">
+      <li>令 \(s = Vt - x\)。\(\partial f/\partial t = V f'(s)\)，\(\partial^2 f/\partial t^2 = V^2 f''(s)\)。</li>
+      <li>\(\partial f/\partial x = -f'(s)\)，\(\partial^2 f/\partial x^2 = f''(s)\)（負號平方為正）。</li>
+      <li>所以 \(\ddot f = V^2 f''\)，正好滿足波動方程式；\(g\) 同理。兩者都滿足，相加也滿足（線性）。</li>
+    </ol>
+  </div></details>
+
+  <p><b>什麼時候需要 \(g\)？</b>無限長桿從一端激發，只有 \(f\)。只要有<b>邊界</b>（固定端、自由端、兩層介面）就會反射，產生反向的 \(g\)。在固定端 \(x = 0\) 要求 \(u = 0\)：\(f(Vt) + g(Vt) = 0\)，所以 \(g = -f\)，反射波倒過來回來；兩個等振幅反向的正弦波疊加成<b>駐波</b>，固定端永遠不動（節點）。共振柱試體底部固定，試體內的扭轉就是這種駐波的一段。</p>
+
+  <div id="w-dalembert" data-title="一維行進波、駐波與固定端反射"></div>
+
+  <div class="callout intuition"><div class="ct">兩張圖、兩種看法</div>
+    <p>上圖是某一瞬間整根桿的「照片」，重複長度是波長 \(\lambda\)；下圖是固定位置 \(x_0\) 的「地震紀錄」，重複長度是週期 \(T\)。紅點追著波形以 \(V\) 前進，綠點只在原地上下動。按「前進 T/8」八次：紅點恰好走一個波長，綠點恰好完成一個週期，這就是 \(\lambda = VT\)。</p>
+  </div>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">兩個振幅相同、方向相反的正弦波疊加後，下列何者正確？</div>
+    <div class="opts">
+      <button class="opt">合成波以 2V 的速度前進</button>
+      <button class="opt">波形不再前進，某些點（節點）永遠不動</button>
+      <button class="opt">振幅處處加倍</button>
+    </div>
+    <div class="fb">sin(kx − ωt) + sin(kx + ωt) = 2 sin kx cos ωt：空間形狀 sin kx 固定，只隨時間脹縮，sin kx = 0 的點永遠不動。振幅只在腹點加倍，節點是 0。</div>
+  </div>
+</section>
+
+<section class="sec" id="s6-4" data-num="6.4" data-short="應變" data-title="波速、質點速度與應變">
+  <div class="sec-head"><span class="sec-num">6.4</span><h2>波速、質點速度與應變</h2></div>
+  <p class="src">出處：Ch3 講義 1.19、1.24、1.26（投影片 p. 19、24、26）</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>強震時地表最大速度約 0.3 m/s。土壤的剪應變大約多大？這個應變大到需要擔心勁度下降嗎？</p>
+  </div>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th></th><th>波速 \(V\)</th><th>質點速度 \(\dot u\)</th></tr>
+    <tr><td>意義</td><td>波形（擾動）前進多快</td><td>土粒在原地來回多快</td></tr>
+    <tr><td>取決於</td><td>只有材料：\(\sqrt{M/\rho}\)、\(\sqrt{G/\rho}\)</td><td>載重多強：\(\dot u = \sigma/(\rho V)\)</td></tr>
+    <tr><td>典型土壤值</td><td>100–500 m/s</td><td>地震時 0.01–1 m/s</td></tr>
+  </table></div>
+
+  <p>兩者的比值就是應變。對往 \(+x\) 走的波 \(u = f(Vt - x)\)：</p>
+  <div class="eqbox">\[ \frac{\partial u}{\partial x} = -f'(s), \quad \frac{\partial u}{\partial t} = Vf'(s) \quad\Rightarrow\quad |\varepsilon| = \frac{|\dot u|}{V_p}, \qquad |\gamma| = \frac{|\dot u|}{V_s} \approx \frac{\text{PGV}}{V_s} \]</div>
+  <p>物理圖像：\(dt\) 時間內波前前進 \(V\,dt\)；這段土的一端已經移動 \(\dot u\,dt\)，另一端還沒動，所以應變 \(= \dot u\,dt / V\,dt\)。它與 \(\varepsilon = \sigma/M = \rho V_p\dot u/(\rho V_p^2)\) 一致。</p>
+
+  <div id="w-wavestrain" data-title="由 PGV 與 Vs 估剪應變"></div>
+
+  <div class="callout example"><div class="ct">例：A = 1 cm、f = 5 Hz、V = 200 m/s 的諧和波</div>
+    <p>\(\dot u_{max} = \omega A = 2\pi \times 5 \times 0.01 = 0.314\) m/s，\(\varepsilon_{max} = 0.314/200 = 1.57\times10^{-3} = 0.16\,\%\)。</p>
+    <p>PGV = 0.3 m/s 時：密砂（300 m/s）0.1 %、中等密度砂（200 m/s）0.15 %、軟黏土（100 m/s）0.3 %，全部遠高於線性門檻應變約 \(10^{-3}\,\%\)。所以 MASW 或彎曲元件量到的 \(G_{max}\) 不能直接拿來做強震分析（<a href="u09.html#s9-2">9.2</a>、<a href="u08.html">單元 8</a>）。</p>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">為什麼寫「≈」：四個注意事項</div>
+    <p>① 公式需要<b>單向</b>傳播的波；地表附近上行波與反射波疊成駐波，自由表面處質點速度最大、剪應變卻是零。② 沿地表傳播的波（例如管線的軸向應變）要用沿地表的<b>視速度</b>，不是 \(V_s\)。③ \(V_s\) 本身隨應變降低，嚴格來說要迭代（等值線性的概念，<a href="u11.html">單元 11</a>）。④ 真實地震含多種波與頻散，PGV/\(V_s\) 只是量級估計。</p>
+  </div>
+
+  <div class="quiz" data-num="0.2" data-tol="0.03">
+    <div class="qh">小測驗</div>
+    <div class="qq">PGV = 0.5 m/s，土層 Vs = 250 m/s，剪應變約為幾 %？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="γ (%)"><button class="btn">檢查</button></div>
+    <div class="fb">γ ≈ 0.5/250 = 0.002 = 0.2 %。已經在 G/Gmax 明顯下降的範圍（單元 8）。</div>
+  </div>
+  <div class="quiz" data-answer="2">
+    <div class="qh">課後問題</div>
+    <div class="qq">同頻率下，波速減半而質點速度不變，波長與應變各變為幾倍？</div>
+    <div class="opts">
+      <button class="opt">波長 2 倍、應變 0.5 倍</button>
+      <button class="opt">波長不變、應變 2 倍</button>
+      <button class="opt">波長 0.5 倍、應變 2 倍</button>
+    </div>
+    <div class="fb">λ = V/f → 0.5 倍；γ = u̇/V → 2 倍。軟土波慢，同樣的震動在軟土中造成更大的應變，這是軟弱場址容易進入非線性的原因之一。</div>
+  </div>
+</section>
+
+<section class="sec" id="s6-5" data-num="6.5" data-short="波長" data-title="諧和波與波長">
+  <div class="sec-head"><span class="sec-num">6.5</span><h2>諧和波與波長：和誰比？</h2></div>
+  <p class="src">出處：Ch3 講義 1.25–1.27（投影片 p. 25–27）</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>同一個 5 Hz 的地震波，在岩盤中和軟土中的「長度」一樣嗎？這個長度要拿來和什麼比？</p>
+  </div>
+
+  <p>把 \(f\)、\(g\) 取成正弦，就是諧和波：</p>
+  <div class="eqbox">\[ u = A\cos(\bar\omega t - kx) + B\cos(\bar\omega t + kx), \qquad k = \frac{2\pi}{\lambda},\quad \bar\omega = \frac{2\pi}{T},\quad \frac{\bar\omega}{k} = \frac{\lambda}{T} = V \]</div>
+  <p>\(\bar\omega\) 上的橫線表示「外加的頻率」，由波源決定（地震、錘擊、共振柱線圈）；\(V\) 由材料決定；\(\lambda = V/f\) 由兩者共同決定。複數寫法 \(u = \mathrm{Re}[Ae^{i(\bar\omega t - kx)}]\) 只是 Euler 公式的簡寫：微分變成乘上 \(i\bar\omega\) 或 \(-ik\)，共振柱推導會用到。</p>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th></th><th>時間（站在同一點）</th><th>空間（凍結時間）</th></tr>
+    <tr><td>看到的</td><td>地震紀錄</td><td>整根桿的照片</td></tr>
+    <tr><td>重複長度</td><td>週期 \(T\)</td><td>波長 \(\lambda\)</td></tr>
+    <tr><td>相位前進率</td><td>\(\bar\omega = 2\pi/T\)（rad/s）</td><td>\(k = 2\pi/\lambda\)（rad/m）</td></tr>
+  </table></div>
+
+  <div id="w-lambda" data-title="波長比較器"></div>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>比較對象</th><th>典型長度</th><th>典型波長（頻率）</th><th>意義</th></tr>
+    <tr><td>共振柱試體</td><td>0.1 m</td><td>4 m（50 Hz，\(V_s\) = 200 m/s）</td><td>\(h/\lambda \approx 1/40\)：扭轉沿高度近乎線性，試體 ≈ 扭轉彈簧＋頂部質量 = SDOF</td></tr>
+    <tr><td>建築物基礎</td><td>10–30 m</td><td>20–40 m（5–10 Hz）</td><td>\(\lambda \gg\) 基礎：剛體平移；\(\lambda \approx\) 基礎：運動被平均化（土–結構互制）</td></tr>
+    <tr><td>土層厚度</td><td>10–30 m</td><td>20–200 m（1–10 Hz）</td><td>\(\lambda \approx 4H\) 時共振（單元 10）；MASW 用不同 \(\lambda\) 看不同深度</td></tr>
+  </table></div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：ω 和 k 的單位</div>
+    <p>\(\bar\omega\) 是 rad/s、\(k\) 是 rad/m，兩者都帶 \(2\pi\)。f = 5 Hz：\(V_s\) = 400、200、100 m/s 時 λ = 80、40、20 m，k = 0.079、0.157、0.314 rad/m。同頻率下，波越慢，k 越大、波長越短。</p>
+  </div>
+
+  <div class="quiz" data-num="90" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">週期 T = 0.5 s 的剪力波在 Vs = 180 m/s 的土層中，波長是幾 m？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="λ (m)"><button class="btn">檢查</button></div>
+    <div class="fb">λ = VsT = 180 × 0.5 = 90 m，比一般建築基礎大得多，基礎大致隨土體剛體運動。</div>
+  </div>
+</section>
+
+<section class="sec" id="s6-6" data-num="6.6" data-short="Rayleigh" data-title="Rayleigh 波">
+  <div class="sec-head"><span class="sec-num">6.6</span><h2>Rayleigh 波：貼著地表滾動</h2></div>
+  <p class="src">出處：Ch3 講義 1.10–1.11、4.22（投影片 p. 10–11）；郭安妮 Waves Part II 講義 p. 2</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>為什麼只在地表量 Rayleigh 波，就能「看見」不同深度的土層？</p>
+  </div>
+
+  <p>P 波與 SV 波在自由表面無法各自滿足「應力為零」的條件，兩者耦合成一個沿地表走、往下指數衰減的波：Rayleigh 波。把波速寫成 \(x = c_R/V_s\)，\(\kappa = V_p/V_s\)，自由表面條件給出：</p>
+  <div class="eqbox">\[ \left(2 - x^2\right)^2 = 4\sqrt{1 - x^2/\kappa^2}\,\sqrt{1 - x^2} \]</div>
+  <p>方程式裡只有速度比，<b>沒有波數、頻率或長度</b>，所以 \(c_R/V_s\) 是只由 \(\nu\) 決定的常數：均質半無限域的 Rayleigh 波<b>沒有頻散</b>。</p>
+
+  <div class="tablewrap"><table class="data">
+    <tr><th>\(\nu\)</th><th class="num">0</th><th class="num">0.25</th><th class="num">0.33</th><th class="num">0.40</th><th class="num">0.49</th></tr>
+    <tr><td>\(c_R/V_s\)</td><td class="num">0.874</td><td class="num">0.919</td><td class="num">0.932</td><td class="num">0.942</td><td class="num">0.954</td></tr>
+    <tr><td>\(V_s/c_R\)</td><td class="num">1.14</td><td class="num">1.09</td><td class="num">1.07</td><td class="num">1.06</td><td class="num">1.05</td></tr>
+  </table></div>
+  <p>整個 \(\nu\) 範圍只變 9 %。MASW 的經驗式 \(V_s \approx 1.1\,c\) 就是 \(V_s/c_R\) 的四捨五入；反算時 \(\nu\) 通常固定或假設，因為資料本來就分辨不出來（<a href="../hw/hw2.html#q1">HW2</a> 1(c)）。</p>
+
+  <details class="derive"><summary>推導：位移隨深度的形狀</summary><div class="body">
+    <ol class="steps">
+      <li>用勢函數 \(\phi = Ae^{-qz}e^{i(kx-\omega t)}\)、\(\psi = Be^{-sz}e^{i(kx-\omega t)}\)，\(q = k\sqrt{1-c^2/V_p^2}\)、\(s = k\sqrt{1-c^2/V_s^2}\)，\(z\) 向下。</li>
+      <li>\(u = \phi_x - \psi_z\)、\(w = \phi_z + \psi_x\)。地表剪應力為零給出 \(B = -2ikqA/(s^2+k^2)\)；正應力為零給出上面的頻率方程式。</li>
+      <li>代回：\(U(z) \propto e^{-qz} - \dfrac{2qs}{s^2+k^2}e^{-sz}\)，\(W(z) \propto \dfrac{q}{k}\left(e^{-qz} - \dfrac{2k^2}{s^2+k^2}e^{-sz}\right)\)，兩者相差 90°，所以質點畫橢圓。</li>
+      <li>\(\nu = 0.25\)：地表 \(|W/U| = 1.47\)；\(U\) 在 \(z = 0.19\lambda\) 變號（以下改為順行）；\(|W|\) 在 \(z = 0.076\lambda\) 最大；\(z = \lambda\) 時 \(W\) 只剩地表的 19 %。</li>
+    </ol>
+  </div></details>
+
+  <div id="w-rayleigh" data-title="Rayleigh 波：振幅隨深度與波速比"></div>
+
+  <div class="callout intuition"><div class="ct">長波看深、短波看淺</div>
+    <p>振幅大約在一個波長內消失，所以波長 \(\lambda\) 的 Rayleigh 波只「感覺」到地表下約 \(\lambda/2\)–\(\lambda/3\) 的土。層狀地盤中，不同頻率的波平均到不同深度的 \(V_s\)，速度就隨頻率改變：這就是<b>頻散</b>，也是 MASW 的物理基礎（<a href="u07.html#s7-2">7.2</a>）。均質半無限域沒有任何長度可以和 \(\lambda\) 比，所以不頻散。</p>
+  </div>
+
+  <div class="quiz" data-answer="1">
+    <div class="qh">小測驗</div>
+    <div class="qq">一個 λ = 30 m 的 Rayleigh 波（ν = 0.25），水平分量大約在什麼深度變號？</div>
+    <div class="opts">
+      <button class="opt">約 2.3 m</button>
+      <button class="opt">約 6 m</button>
+      <button class="opt">約 15 m</button>
+      <button class="opt">約 30 m</button>
+    </div>
+    <div class="fb">水平分量在 z ≈ 0.19λ ≈ 5.8 m 變號。2.3 m（0.076λ）是垂直分量最大的深度。</div>
+  </div>
+</section>
+
+<section class="sec" id="s6-7" data-num="6.7" data-short="Love 波" data-title="Love 波與幾何頻散">
+  <div class="sec-head"><span class="sec-num">6.7</span><h2>Love 波與幾何頻散</h2></div>
+  <p class="src">出處：Ch3 講義 1.12–1.13、4.18–4.21（投影片 p. 12–13）；老師補充影片的 Love 波推導</p>
+
+  <div class="callout question"><div class="ct">開場問題</div>
+    <p>均質半無限域裡沒有 Love 波。為什麼加上一層軟土，它就出現了，而且速度隨頻率改變？</p>
+  </div>
+
+  <p>模型：厚度 \(h\)、波速 \(V_1\) 的軟層覆於波速 \(V_2 &gt; V_1\) 的半無限域。質點只有水平、垂直傳播方向的位移 \(v\)（SH，純剪），所以只出現 \(\mu = \rho V^2\)。層內 \(c &gt; V_1\)，解是 cos（上下反彈）；半無限域 \(c &lt; V_2\)，解必須是衰減的指數，否則能量會往下漏掉。</p>
+
+  <div class="eqbox">\[ \tan\!\left(\omega h\sqrt{\frac{1}{V_1^2}-\frac{1}{c^2}}\right) = \frac{\mu_2\sqrt{1/c^2 - 1/V_2^2}}{\mu_1\sqrt{1/V_1^2 - 1/c^2}}, \qquad V_1 &lt; c &lt; V_2 \]</div>
+
+  <details class="derive"><summary>推導：兩個解、兩個介面條件</summary><div class="body">
+    <ol class="steps">
+      <li>SH 波動方程式 \(\ddot v = V^2\nabla^2 v\)，試 \(v = V(z)e^{i(kx-\omega t)}\)：\(V'' = k^2(1 - c^2/V_j^2)V\)。括號為負（\(c &gt; V_j\)）→ 三角函數；為正（\(c &lt; V_j\)）→ 指數。</li>
+      <li>層內：自由表面剪應力 \(\mu_1V'(0) = 0\) → \(V = A\cos q_1z\)，\(q_1 = \omega\sqrt{1/V_1^2-1/c^2}\)。</li>
+      <li>半無限域：只留衰減項 \(V = Be^{-q_2(z-h)}\)，\(q_2 = \omega\sqrt{1/c^2-1/V_2^2}\)。</li>
+      <li>\(z = h\) 位移連續：\(A\cos q_1h = B\)；剪應力連續：\(-\mu_1Aq_1\sin q_1h = -\mu_2Bq_2\)。相除得 \(\tan q_1h = \mu_2q_2/(\mu_1q_1)\)。</li>
+      <li>tan 是週期函數：\(q_1h = \arctan(\cdot) + m\pi\) 有多個解。最小的 \(c\) 是基本模態，其他是高階模態，第 \(m\) 階只在截止頻率 \(f_m = m/\big(2h\sqrt{1/V_1^2-1/V_2^2}\big)\) 以上存在（從 \(c = V_2\) 開始）。</li>
+    </ol>
+    <p>若 \(c &lt; V_1\)，層內也是指數，地表與介面條件無法同時滿足；若上層較快，方程式沒有實數解。所以 Love 波<b>一定要慢層在快層之上</b>。</p>
+  </div></details>
+
+  <p>關鍵在 \(\omega h\)：材料固定時，\(h\) 只以 \(f\cdot h\) 的形式出現，每個頻率對應不同的 \(c\)。高頻（\(\lambda \ll h\)）時 \(c \to V_1\)，波活在層內；低頻（\(\lambda \gg h\)）時 \(c \to V_2\)，薄層看不見。<b>頻散是長度尺度的特徵</b>：沒有 \(h\)，就沒有頻散。</p>
+
+  <div id="w-love" data-title="Love 波頻散曲線與振幅隨深度"></div>
+
+  <div class="callout example"><div class="ct">例：h = 10 m、V₁ = 150 m/s、V₂ = 400 m/s、ρ = 1.8 / 2.0 Mg/m³（基本模態）</div>
+    <div class="tablewrap"><table class="data">
+      <tr><th class="num">f (Hz)</th><th class="num">c (m/s)</th><th class="num">λ (m)</th><th class="num">λ/h</th><th class="num">介面振幅（地表 = 1）</th><th>解讀</th></tr>
+      <tr><td class="num">2</td><td class="num">383</td><td class="num">191</td><td class="num">19</td><td class="num">0.72</td><td>波幾乎沒注意到這一層</td></tr>
+      <tr><td class="num">5</td><td class="num">206</td><td class="num">41</td><td class="num">4.1</td><td class="num">0.14</td><td>兩層都看到</td></tr>
+      <tr><td class="num">20</td><td class="num">153</td><td class="num">7.6</td><td class="num">0.8</td><td class="num">0.03</td><td>波活在層內</td></tr>
+    </table></div>
+    <p>三個參數研究（按上方互動圖的按鈕重現）：\(V_2\) 改為 170 → 整條曲線擠在 150–170 之間，5 Hz 時 162 m/s（頻散需要速度對比）；\(h\) 加倍為 20 m → 2.5 Hz 時 206 m/s，和原本 5 Hz 相同（只依賴 \(f h\)）；第二模態的截止頻率 8.1 Hz，第三模態 16.2 Hz。</p>
+  </div>
+
+  <div class="quiz" data-num="206" data-tol="0.02">
+    <div class="qh">小測驗</div>
+    <div class="qq">講義例的層厚改為 h = 20 m（其他不變），2.5 Hz 的基本模態相速度是幾 m/s？</div>
+    <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="c (m/s)"><button class="btn">檢查</button></div>
+    <div class="fb">方程式只依賴 ωh：20 m × 2.5 Hz = 10 m × 5 Hz，所以 c 與原本 5 Hz 時相同，約 206 m/s。</div>
+  </div>
+
+  <div class="callout pitfall"><div class="ct">常見陷阱：Love 波的速度範圍</div>
+    <p>Love 波速度一定在 \(V_1\) 與 \(V_2\) 之間，不會低於上層 \(V_s\)，這點和 Rayleigh 波（低於 \(V_s\)）不同。講義說「Love 波通常略早於 Rayleigh 波抵達」也是這個原因。</p>
+  </div>
+</section>
+
+<section class="sec" id="s6-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
+  <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
+  <h3>公式卡</h3>
+  <div class="fcards">
+    <div class="fcard"><div class="ft">兩種體波波速</div>\[ V_p = \sqrt{M/\rho},\quad V_s = \sqrt{G/\rho} \]</div>
+    <div class="fcard"><div class="ft">束制模數與波速比</div>\[ \frac{V_p}{V_s} = \sqrt{\frac{2-2\nu}{1-2\nu}} \]</div>
+    <div class="fcard"><div class="ft">d'Alembert 通解</div>\[ u = f(Vt-x) + g(Vt+x) \]</div>
+    <div class="fcard"><div class="ft">應變與質點速度</div>\[ \gamma \approx \dot u/V_s \approx \text{PGV}/V_s \]</div>
+    <div class="fcard"><div class="ft">波長與波數</div>\[ \lambda = V/f,\quad k = 2\pi/\lambda = \bar\omega/V \]</div>
+    <div class="fcard"><div class="ft">Rayleigh 波</div>\[ c_R \approx 0.87\text{–}0.95\,V_s,\; V_s \approx 1.1\,c \]</div>
+    <div class="fcard"><div class="ft">Love 波頻散</div>\[ \tan(q_1h) = \frac{\mu_2q_2}{\mu_1q_1} \]</div>
+  </div>
+  <h3>常見陷阱</h3>
+  <ul class="pitfalls">
+    <li><b>E 還是 M</b>：細桿用 E，無限介質的 P 波用 M；ν → 0.5 時兩者差很多（投影片 p. 6）。</li>
+    <li><b>波速 ≠ 質點速度</b>：波速由材料決定，質點速度由載重決定；兩者的比值才是應變。</li>
+    <li><b>γ ≈ PGV/Vs 只是量級</b>：地表剪應變為零、沿地表傳播要用視速度、Vs 隨應變下降。</li>
+    <li><b>硫化橡膠的例題錯兩個數量級</b>：先檢查數字合不合理。</li>
+  </ul>
+  <h3>自我檢測</h3>
+  <div class="quiz" data-answer="2">
+    <div class="qh">綜合題 1</div>
+    <div class="qq">飽和砂層中，下列哪一個量最能反映土骨架的勁度？</div>
+    <div class="opts">
+      <button class="opt">Vp，因為它最快、最容易量</button>
+      <button class="opt">Vp/Vs 比值</button>
+      <button class="opt">Vs（或 Rayleigh 波相速度）</button>
+    </div>
+    <div class="fb">飽和時 Vp 被孔隙水拉到約 1500 m/s，與土骨架幾乎無關；水沒有剪力勁度，Vs 只由骨架決定。Vp/Vs 很大（5–15）反而常用來判斷是否飽和。</div>
+  </div>
+  <div class="callout link"><div class="ct">下一步</div>
+    <p>波速和勁度連在一起之後，下一步是到現地與實驗室把 Vs 量出來。</p>
+  </div>
+</section>
+
+</main>
+<div class="pager-wrap"><nav class="pager">
+  <a href="../units/u05.html"><span class="dir">← 單元 5</span>頻率的觀點：頻譜、反應譜與卓越週期</a>
+  <a class="next" href="../units/u07.html"><span class="dir">單元 7 →</span>量測剪力波速與 Gmax</a>
+</nav></div>
+<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+
+<script src="../assets/katex/katex.min.js"></script>
+<script src="../assets/katex/auto-render.min.js"></script>
+<script src="../assets/plot.js"></script>
+<script src="../assets/sdof.js"></script>
+<script src="../assets/common.js"></script>
+<script src="../assets/widgets/waves.js"></script>
+</body>
+</html>
