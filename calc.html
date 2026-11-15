@@ -1,0 +1,1073 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>計算題整理 · Soil Dynamics and Foundation Vibration</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .prob { background: var(--tile); border-radius: 20px; padding: 22px 26px 20px; margin: 18px 0; }
+  /* 寬螢幕：題目卡片排成兩欄（由左到右閱讀），標題與說明橫跨兩欄 */
+  @media (min-width: 1600px) {
+    section.sec:has(> .prob) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; align-items: start; }
+    section.sec:has(> .prob) > :not(.prob) { grid-column: 1 / -1; }
+    section.sec:has(> .prob) > .prob { margin: 0 0 24px; }
+  }
+  .prob .ph { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin-bottom: 6px; }
+  .prob .pno { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 18px; min-width: 2.4em; }
+  .prob h3 { margin: 0; font-size: 18px; }
+  .ptag { font-size: 12px; font-weight: 600; border-radius: 6px; padding: 1px 8px; background: var(--chip); color: var(--muted); white-space: nowrap; }
+  .ptag.exam { background: var(--orange-soft); color: var(--orange); }
+  .ptag.hw { background: var(--accent-soft); color: var(--accent); }
+  .ptag.hw3 { background: var(--green-soft); color: var(--green); }
+  .prob .pq { margin: 4px 0 6px; line-height: 1.7; }
+  .prob .pq ol { margin: 4px 0 0; padding-left: 1.4em; }
+  .prob details.derive { margin: 12px 0 0; }
+  .prob .ans { font-weight: 600; }
+  .prob .plink { font-size: 13.5px; color: var(--muted); margin: 10px 0 0; }
+  .prob .tablewrap { margin: .8em 0; }
+  .part-note { color: var(--muted); max-width: var(--measure); }
+  .zh-d { display: block; color: var(--muted); font-size: 13.5px; line-height: 1.6; margin-top: 2px; font-weight: 400; opacity: .9; }
+  .prob h3 .zh { color: var(--muted); font-size: 14px; font-weight: 500; margin-left: 8px; }
+  .part-note .zh-d { margin-top: 4px; }
+  #map-tbl td a { white-space: nowrap; }
+  @media (max-width: 760px) { .prob { padding: 18px 16px; border-radius: 16px; margin-left: -6px; margin-right: -6px; } }
+</style>
+</head>
+<body data-page="calc" data-root="" data-title="計算題整理">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">Worked Problems · 考古、作業、模擬考</div>
+  <h1>計算題整理</h1>
+  <p class="lede"><b>先練考過的，再練可能考的。</b>前面是 2025 年期中考與今年三次作業，後面是模擬考的各章計算題、基礎振動與國考計算題。每一題的解答預設收起來，先自己算再展開對答案；題號旁的連結回到推導那一節。</p>
+  <div class="callout link" style="text-align:left"><div class="ct">標籤</div>
+    <p><span class="ptag exam">2025 期中考</span> 考過的題目　<span class="ptag hw">作業</span> 今年作業　<span class="ptag hw3">HW3 類型</span> 模擬考中與 HW3 同型、數字不同的題目（作者轉述老師表示期中考與 HW3 相關）　<span class="ptag">往年作業</span> 2024 年作業原題。數值全部重新計算，與作業頁、模擬考詳解若有小差異，多半來自取捨位數或讀圖。</p>
+  </div>
+
+  <h3>題型地圖</h3>
+  <div class="tablewrap"><table class="data" id="map-tbl">
+    <tr><th>題型</th><th>考古、作業</th><th>模擬考</th><th>國考</th></tr>
+    <tr><td>SDOF 基本量與自由振動</td><td><a href="#e2">期中 Q2</a>、<a href="#e3">期中 Q3</a></td><td><a href="#m4-3">4.3</a>–<a href="#m4-9">4.9</a></td><td><a href="#mN15">N.15</a></td></tr>
+    <tr><td>受迫振動、共振、傳遞率、隔振</td><td><a href="#h3-4">HW3 Q4</a></td><td><a href="#m4-10">4.10</a>–<a href="#m4-16">4.16</a></td><td></td></tr>
+    <tr><td>共振柱、彎曲元件</td><td><a href="#h3-1a">HW3 Q1</a></td><td><a href="#m3-2">3.2</a>–<a href="#m3-5">3.5</a>、<a href="#m5-5">5.5</a></td><td><a href="#mN1">N.1</a>、<a href="#mN16">N.16</a></td></tr>
+    <tr><td>G<sub>max</sub>、模數折減、Masing 阻尼</td><td><a href="#h3-1b">HW3 Q1(b)</a>、<a href="#h3-2">Q2</a></td><td><a href="#m5-1">5.1</a>–<a href="#m5-6">5.6</a></td><td><a href="#mN18">N.18</a></td></tr>
+    <tr><td>下孔試驗、Vs30、場址週期</td><td><a href="#h3-3">HW3 Q3</a>、<a href="#h2">HW2 Q2</a></td><td><a href="#m6-4">6.4</a></td><td><a href="#mN3">N.3</a>、<a href="#mN7">N.7</a>、<a href="#mN13">N.13</a></td></tr>
+    <tr><td>波速、地動參數</td><td><a href="#h1">HW1</a></td><td><a href="#m1-1">1.1</a>、<a href="#m2-1">2.1</a>、<a href="#m2-2">2.2</a>、<a href="#m3-1">3.1</a></td><td><a href="#mN17">N.17</a></td></tr>
+    <tr><td>地盤反應</td><td></td><td><a href="#m6-1">6.1</a>–<a href="#m6-3">6.3</a></td><td></td></tr>
+    <tr><td>液化</td><td></td><td><a href="#m8-1">8.1</a>–<a href="#m8-5">8.5</a></td><td><a href="#mN24">N.24</a></td></tr>
+    <tr><td>基礎振動、波的反射與衰減</td><td></td><td><a href="#mR-1">R.1</a>–<a href="#mR-7">R.7</a></td><td><a href="#mN12">N.12</a></td></tr>
+  </table></div>
+</header>
+
+<section class="sec" id="c-exam" data-num="Exam" data-short="2025 Midterm" data-title="2025 Midterm calculation problems">
+  <div class="sec-head"><span class="sec-num">Part 1 · Past Exam</span><h2>2025 Midterm Exam (2025/11/13)</h2></div>
+  <p class="part-note">Question 1 (definitions, 40 pts) is covered in the <a href="glossary.html">Glossary</a>. The two calculation questions (30 pts) use the same machine-foundation SDOF system.<span class="zh-d">第 1 題名詞解釋見名詞總表；計算題兩題共 30 分，都是同一個機器基礎 SDOF。</span></p>
+
+  <article class="prob" id="e2">
+    <div class="ph"><span class="pno">Q2</span><h3>Machine foundation SDOF: ω<sub>n</sub>, ξ, ω<sub>d</sub>, δ<span class="zh">機器基礎 SDOF</span></h3><span class="ptag exam">2025 Midterm · 20 pts</span></div>
+    <div class="pq">A foundation–machine system is modeled as an SDOF system with W = 1000 kN, k = 200,000 kN/m and c = 2340 kN·s/m. Determine (a) the natural circular frequency ω<sub>n</sub>, (b) the damping ratio ξ, (c) the damped circular frequency ω<sub>d</sub> and (d) the logarithmic decrement δ (5 pts each).<span class="zh-d">基礎加機器重 1000 kN、彈簧 200,000 kN/m、阻尼器 2340 kN·s/m，求自然圓頻率、阻尼比、阻尼圓頻率、對數遞減。</span></div>
+    <details class="derive"><summary>Solution · 解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>Convert weight to mass: \(m = W/g = 1000/9.81 = 101.94\) t (kN divided by m/s² gives t).<span class="zh-d">重量除以 g 換成質量。</span></li>
+        <li>(a) \(\omega_n = \sqrt{k/m} = \sqrt{200{,}000/101.94} = 44.29\) rad/s (\(f_n\) = 7.05 Hz).<span class="zh-d">自然圓頻率。</span></li>
+        <li>(b) \(c_c = 2m\omega_n = 2(101.94)(44.29) = 9030\) kN·s/m, so \(\xi = c/c_c = 2340/9030 = 0.259\).<span class="zh-d">先求臨界阻尼係數，再求阻尼比。</span></li>
+        <li>(c) \(\omega_d = \omega_n\sqrt{1-\xi^2} = 44.29\sqrt{1-0.259^2} = 42.78\) rad/s.<span class="zh-d">阻尼圓頻率。</span></li>
+        <li>(d) \(\delta = 2\pi\xi/\sqrt{1-\xi^2} = 1.686\). With ξ = 0.26 the approximation \(2\pi\xi\) = 1.628 is about 3 % low, so use the exact form.<span class="zh-d">ξ 不小，近似式低估約 3 %，寫精確式。</span></li>
+      </ol>
+      <p class="ans">Answer: ω<sub>n</sub> = 44.3 rad/s; ξ = 0.259; ω<sub>d</sub> = 42.8 rad/s; δ = 1.69.</p>
+    </div></details>
+    <p class="plink">Concepts 觀念: <a href="units/u04.html#s4-2">4.2</a>, <a href="units/u04.html#s4-3">4.3</a>, <a href="units/u04.html#s4-9">4.9</a> · Similar 同型: <a href="#m4-3">4.3</a>, <a href="#mN15">N.15</a></p>
+  </article>
+
+  <article class="prob" id="e3">
+    <div class="ph"><span class="pno">Q3</span><h3>Undamped free vibration: phase angle and amplitude<span class="zh">無阻尼自由振動</span></h3><span class="ptag exam">2025 Midterm · 10 pts</span></div>
+    <div class="pq">For the same system, the initial displacement and velocity are u(0) = 0.05 m and u̇(0) = 0.01 m/s. <b>Ignoring damping</b>, determine (a) the phase angle of the displacement and (b) the displacement amplitude (5 pts each).<span class="zh-d">同一系統，初始位移 0.05 m、初速 0.01 m/s，不計阻尼，求相位角與位移振幅。</span></div>
+    <details class="derive"><summary>Solution · 解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>Undamped free vibration: \(u(t) = u_0\cos\omega_nt + \dfrac{\dot u_0}{\omega_n}\sin\omega_nt\), with \(\omega_n\) = 44.29 rad/s from Q2; \(\dot u_0/\omega_n = 0.01/44.29 = 2.258\times10^{-4}\) m.<span class="zh-d">無阻尼自由振動的通解，ωn 沿用 Q2。</span></li>
+        <li>(b) Amplitude \(\rho = \sqrt{u_0^2 + (\dot u_0/\omega_n)^2} = 0.0500\) m. The initial velocity is small, so the amplitude is almost equal to the initial displacement.<span class="zh-d">初速很小，振幅幾乎等於初始位移。</span></li>
+        <li>(a) Writing \(u = \rho\sin(\omega_nt + \theta)\): \(\tan\theta = u_0\omega_n/\dot u_0 = 221.5\), θ = 89.74° (1.566 rad). Writing \(u = \rho\cos(\omega_nt - \alpha)\): \(\tan\alpha = \dot u_0/(u_0\omega_n)\), α = 0.26°. Both describe the same motion; state which form you use.<span class="zh-d">sin 形式與 cos 形式的相位角不同，作答時寫清楚採用哪一種。</span></li>
+      </ol>
+      <p class="ans">Answer: amplitude ρ ≈ 0.0500 m; phase angle θ = 89.7° (sine form; 0.26° in cosine form).</p>
+    </div></details>
+    <p class="plink">Concepts 觀念: <a href="units/u04.html#s4-2">4.2</a> · With damping 加上阻尼: <a href="#m4-7">4.7</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-hw" data-num="HW" data-short="HW1–HW3" data-title="Key calculations in this year's homework">
+  <div class="sec-head"><span class="sec-num">Part 2 · Homework</span><h2>Key Calculations in This Year's Homework</h2></div>
+  <p class="part-note">Full solutions with interactive recalculation are on the homework pages. Each problem here lists the solution steps and key numbers for quick review; HW3 is the focus.<span class="zh-d">作業頁有完整解答；這裡只列解法步驟與關鍵數字，HW3 是重點。</span></p>
+
+  <article class="prob" id="h1">
+    <div class="ph"><span class="pno">HW1</span><h3>Strong-motion records: integration, spectrum and parameters<span class="zh">強地動紀錄</span></h3><span class="ptag hw">Homework</span></div>
+    <div class="pq">Part A: record washing-machine acceleration with phyphox and obtain the velocity, displacement and predominant frequency. Part B: for 30 Chi-Chi PEER records, compute the RotD100 PGA, PGV, PGD, CAV, AI, T<sub>m</sub> and D<sub>s</sub>, and plot them against PGA and R<sub>rup</sub>.<span class="zh-d">Part A 手機量洗衣機振動；Part B 集集地震 30 筆紀錄的地動參數。</span></div>
+    <details class="derive"><summary>Method and key results · 解法與關鍵數字</summary><div class="body">
+      <ol class="steps">
+        <li><b>Integration</b>: remove the mean → taper and zero-pad → 0.1–30 Hz zero-phase band-pass → trapezoidal integration to v → 0.1 Hz high-pass → integrate to u → 0.1 Hz high-pass. Without processing, the Z displacement drifts to −142.6 m because a bias ε gives u ≈ ½εt².<span class="zh-d">積分流程；不處理的話常數偏差會被放大成漂移。</span></li>
+        <li><b>Frequency</b>: FAS = Δt·|rfft(a)|; sampling rate \(f_s = 1/\Delta t\) = 100.34 Hz, Nyquist 50.17 Hz; predominant frequency 13.8–14.1 Hz (T<sub>p</sub> ≈ 0.071 s). Check: \(v \approx a/2\pi f = 0.84/(2\pi\times14) = 0.0096\) m/s, close to the measured 0.0093 m/s.<span class="zh-d">取樣率、Nyquist 頻率、卓越頻率；用主頻估速度驗算。</span></li>
+        <li><b>Parameters</b>: \(I_a = \frac{\pi}{2g}\int a^2dt\), \(CAV = \int|a|dt\), \(D_{5\text{–}95}\), \(T_m = \sum C_i^2/f_i\big/\sum C_i^2\). RotD100 is the maximum over rotation angles 0–179°; PGA<sub>RotD100</sub> equals the peak of the resultant vector.<span class="zh-d">參數定義；RotD100 是兩水平分量旋轉後的最大值。</span></li>
+        <li><b>Regression</b>: slope of AI vs PGA is 1.66 (theory 2) and of CAV 0.79 (theory 1); T<sub>m</sub> and D<sub>s</sub> are almost uncorrelated with PGA (r ≈ −0.1). Vertical components attenuate faster with distance than horizontal ones.<span class="zh-d">迴歸結果：頻率內容與延時和振幅幾乎無關。</span></li>
+      </ol>
+      <p class="ans">What the exam tests is the definitions and scaling: amplitude × k gives I<sub>a</sub> × k², CAV × k and D<sub>5–95</sub> unchanged. Practice: <a href="#m2-1">2.1</a>, <a href="#m2-2">2.2</a>.<span class="zh-d">考試會考參數定義與比例關係。</span></p>
+    </div></details>
+    <p class="plink">Full solution 完整解答: <a href="hw/hw1.html#a">HW1 Part A</a>, <a href="hw/hw1.html#b">Part B</a> · Concepts 觀念: <a href="units/u03.html#s3-2">3.2</a>, <a href="units/u03.html#s3-3">3.3</a>, <a href="units/u05.html#s5-1">5.1</a></p>
+  </article>
+
+  <article class="prob" id="h2">
+    <div class="ph"><span class="pno">HW2 Q2</span><h3>V<sub>s30</sub>: two averages and three site classification systems<span class="zh">Vs30 與場址分類</span></h3><span class="ptag hw">Homework</span></div>
+    <div class="pq">Profile: 5 m soft silty clay (120 m/s), 10 m medium dense sand (250 m/s), 15 m dense gravel (400 m/s). (a) Arithmetic average and travel-time average V<sub>s30</sub>. (b) NEHRP, Eurocode 8 and Taiwan code classes. (c) A site with 10 m of 80 m/s clay over 20 m of 600 m/s weathered rock. (Q1 is the MASW virtual lab with no hand calculation.)<span class="zh-d">三層剖面的兩種平均與三套分類；(c) 薄軟層場址。Q1 是虛擬實驗室操作，沒有手算。</span></div>
+    <details class="derive"><summary>Solution · 解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>Travel time of each layer h/V<sub>s</sub>: 5/120 = 0.0417, 10/250 = 0.0400, 15/400 = 0.0375 s; total 0.1192 s.<span class="zh-d">各層走時。</span></li>
+        <li>\(V_{s30} = 30/0.1192 = 251.7\) m/s; arithmetic average \((5\times120 + 10\times250 + 15\times400)/30 = 303.3\) m/s, 20 % higher. The soft clay is only 17 % of the thickness but 35 % of the travel time. Codes use the travel-time average because site response is controlled by the travel time (\(T \approx 4H/V_s\)) and the impedance contrast.<span class="zh-d">規範用走時平均：場址反應由波停留的時間與阻抗對比控制，兩者都由軟層主導。</span></li>
+        <li>Classes: NEHRP D (180–360), EC8 C (180–360), Taiwan Class 2 (180–270). Using 303 m/s would wrongly give Taiwan Class 1.<span class="zh-d">誤用算術平均會高估一類。</span></li>
+        <li>(c) \(V_{s30} = 30/(10/80 + 20/600) = 30/0.1583 = 189.5\) m/s (arithmetic 426.7 m/s) → NEHRP D, EC8 C, Taiwan Class 2. The impedance ratio is about 80/600 = 0.13, so resonant amplification is about 7.5, at \(f_0 = 80/(4\times10) = 2\) Hz.<span class="zh-d">薄軟層把場址拉低一類，且阻抗對比大、放大強。</span></li>
+      </ol>
+      <p class="ans">Answer: V<sub>s30</sub> = 252 m/s → NEHRP D, EC8 C, Taiwan Class 2; (c) 190 m/s, also D, C and Class 2.</p>
+    </div></details>
+    <p class="plink">Full solution 完整解答: <a href="hw/hw2.html#q2">HW2 Q2</a> · Concepts 觀念: <a href="units/u07.html#s7-5">7.5</a> · Similar 同型: <a href="#mN7">N.7</a>, <a href="#mN13">N.13</a></p>
+  </article>
+
+  <article class="prob" id="h3-1a">
+    <div class="ph"><span class="pno">HW3 Q1(a)</span><h3>Resonant column stage 1: f<sub>n</sub>, V<sub>s</sub>, G<sub>max</sub> and damping<span class="zh">共振柱 stage 1</span></h3><span class="ptag hw">Homework · key</span></div>
+    <div class="pq">Fixed–free resonant column on clean sand (e = 0.70, σ′<sub>m</sub> = 100 kPa, ρ = 1.95 t/m³); specimen d = 50 mm, H = 100 mm, I/I<sub>0</sub> = 0.10. From the stage 1 (γ = 0.0005 %) frequency response curve find f<sub>n</sub>, V<sub>s</sub> and G<sub>max</sub>; from the free-vibration peaks X<sub>1</sub>–X<sub>6</sub> = 88.80, 83.14, 77.94, 72.61, 67.75, 63.39 mV find the damping ratio.<span class="zh-d">由頻率響應求共振頻率、剪力波速、最大剪力模數，再由自由衰減求阻尼比。</span></div>
+    <details class="derive"><summary>Solution · 解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>Peak of the frequency response → \(f_n\) ≈ 108.2 Hz (108.3 Hz in Table 1).<span class="zh-d">頻率響應的峰值。</span></li>
+        <li>Solve \(\beta\tan\beta = I/I_0 = 0.10\): starting from \(\sqrt{0.10} = 0.316\), Newton's method converges to \(\beta = 0.3111\) rad. β depends only on I/I<sub>0</sub>, so all six stages share it.<span class="zh-d">解頻率方程式；β 只由 I/I0 決定，六個階段共用。</span></li>
+        <li>\(V_s = \omega_nH/\beta = 2\pi(108.22)(0.100)/0.3111 = 218.6\) m/s; \(G_{max} = \rho V_s^2 = 1.95\times218.6^2 = 93{,}200\) kPa.<span class="zh-d">反算 Vs 與 Gmax。</span></li>
+        <li>X<sub>1</sub> to X<sub>6</sub> span <b>5 cycles</b> (a common mistake is dividing by 6): \(\delta = \frac15\ln(88.80/63.39) = 0.0674\), \(D = \delta/2\pi = 1.07\,\%\).<span class="zh-d">六個峰相隔 5 個週期，不是 6。</span></li>
+      </ol>
+      <p class="ans">Answer: f<sub>n</sub> ≈ 108.2 Hz, β = 0.311, V<sub>s</sub> = 219 m/s, G<sub>max</sub> = 93.2 MPa, D = 1.07 %.</p>
+    </div></details>
+    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1a">HW3 Q1(a)</a> · Concepts 觀念: <a href="units/u09.html#s9-1">9.1</a>, <a href="units/u04.html#s4-9">4.9</a> · Similar 同型: <a href="#m3-3">3.3</a>, <a href="#m5-5">5.5</a></p>
+  </article>
+
+  <article class="prob" id="h3-1b">
+    <div class="ph"><span class="pno">HW3 Q1(b)</span><h3>Six stages: G/G<sub>max</sub>, D, reference strain and threshold strains<span class="zh">模數折減、阻尼與門檻應變</span></h3><span class="ptag hw">Homework · key</span></div>
+    <div class="pq">Six stages with γ = 0.0005, 0.001, 0.003, 0.01, 0.03, 0.1 % and f<sub>n</sub> = 108.3, 107.5, 104.7, 96.7, 82.7, 60.7 Hz. Plot G/G<sub>max</sub>–γ and D–γ, compare with the Darendeli clean-sand curves, estimate γ<sub>r</sub>, and locate each stage relative to γ<sub>tl</sub> and γ<sub>tv</sub>.<span class="zh-d">六個階段畫 G/Gmax 與 D 曲線，估參考應變，判斷各階段相對門檻應變的位置。</span></div>
+    <details class="derive"><summary>Solution · 解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>β is constant, so \(G \propto f_n^2\): \(G/G_{max} = (f_n/f_{n,1})^2\); neither ρ nor H is needed. Stage 6: \((60.7/108.22)^2 = 0.315\).<span class="zh-d">β 不變，G 與 fn² 成正比。</span></li>
+        <li>For each stage \(\delta = \frac15\ln(X_1/X_6)\); stage 6: \(\ln(70.62/1.13)/5 = 0.827\), D = 13.2 %.<span class="zh-d">每個階段用對數遞減求阻尼。</span></li>
+        <li>γ<sub>r</sub>: G/G<sub>max</sub> = 0.5 lies between stage 5 (0.03 %, 0.584) and stage 6 (0.1 %, 0.315); interpolating on log γ gives 0.0437 %, so γ<sub>r</sub> ≈ 0.043 % (Darendeli: 0.0352 %).<span class="zh-d">在對數應變軸上內插 G/Gmax = 0.5。</span></li>
+        <li>Thresholds for sand: γ<sub>tl</sub> ≈ 0.001 %, γ<sub>tv</sub> ≈ 0.01 %. Stage 1 is below γ<sub>tl</sub>; stage 4 is at γ<sub>tv</sub>; stages 5 and 6 exceed γ<sub>tv</sub>, so pore pressure would build up under undrained loading.<span class="zh-d">高於體積門檻應變時，不排水會累積孔隙水壓。</span></li>
+      </ol>
+      <div class="tablewrap"><table class="data">
+        <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">G/G<sub>max</sub></th><th class="num">D (%)</th></tr>
+        <tr><td>1</td><td class="num">0.0005</td><td class="num">1.000</td><td class="num">1.07</td></tr>
+        <tr><td>2</td><td class="num">0.001</td><td class="num">0.987</td><td class="num">1.19</td></tr>
+        <tr><td>3</td><td class="num">0.003</td><td class="num">0.936</td><td class="num">1.80</td></tr>
+        <tr><td>4</td><td class="num">0.01</td><td class="num">0.799</td><td class="num">3.60</td></tr>
+        <tr><td>5</td><td class="num">0.03</td><td class="num">0.584</td><td class="num">7.25</td></tr>
+        <tr><td>6</td><td class="num">0.1</td><td class="num">0.315</td><td class="num">13.16</td></tr>
+      </table></div>
+      <p class="ans">Answer: γ<sub>r</sub> ≈ 0.043 %; stage 1 &lt; γ<sub>tl</sub>; stages 5 and 6 &gt; γ<sub>tv</sub>.</p>
+    </div></details>
+    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1b">HW3 Q1(b)</a> · Concepts 觀念: <a href="units/u08.html#s8-5">8.5</a> · Similar 同型: <a href="#m5-5">5.5</a></p>
+  </article>
+
+  <article class="prob" id="h3-2">
+    <div class="ph"><span class="pno">HW3 Q2</span><h3>Masing loops and damping ratio<span class="zh">Masing 迴圈與阻尼比</span></h3><span class="ptag hw">Homework · key</span></div>
+    <div class="pq">Hyperbolic backbone with G<sub>max</sub> = 94,000 kPa and γ<sub>ref</sub> = 0.0004 (decimal); loading path 0 → γ<sub>c</sub> → −γ<sub>c</sub> → γ<sub>c</sub>. (a) Loops and D = E<sub>D</sub>/(4πE<sub>So</sub>) for γ<sub>c</sub> = 0.01 % and 0.1 %, compared with Q1. (b) Why the Masing damping differs from the measured values at very small and at large strains.<span class="zh-d">雙曲線骨幹的 Masing 迴圈，由面積求阻尼比並與量測比較；說明兩端為何不同。</span></div>
+    <details class="derive"><summary>Solution · 解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>Use <b>decimal</b> strain: \(\tau_c = G_{max}\gamma_c/(1+\gamma_c/\gamma_{ref})\). 0.01 % → \(94{,}000\times0.0001/1.25 = 7.52\) kPa; 0.1 % → \(94{,}000\times0.001/3.5 = 26.86\) kPa.<span class="zh-d">應變一律用小數。</span></li>
+        <li>Unloading branch \(\tau = \tau_c + 2f\!\left(\frac{\gamma-\gamma_c}{2}\right)\); integrate the loop area E<sub>D</sub> numerically; \(E_{So} = \frac12\tau_c\gamma_c\).<span class="zh-d">卸載分支是骨幹放大 2 倍；迴圈面積數值積分。</span></li>
+        <li>0.01 %: E<sub>D</sub> = 0.223, E<sub>So</sub> = 0.376 J/m³, D = 4.73 % (measured 3.60 %). 0.1 %: E<sub>D</sub> = 42.64, E<sub>So</sub> = 13.43 J/m³, D = 25.3 % (measured 13.2 %).<span class="zh-d">Masing 阻尼都高於量測值。</span></li>
+        <li>(b) Small strain: the backbone is nearly linear, unloading and reloading coincide and the Masing damping tends to zero, but tests still show about 1 % (D<sub>min</sub>, from micro-slip and viscosity). Large strain: Masing assumes the reversal curves are the backbone scaled by 2, so the loops are too fat and damping is overestimated. Darendeli corrects both ends with \(b(G/G_{max})^{0.1}D_{Masing} + D_{min}\).<span class="zh-d">小應變少了 Dmin，大應變迴圈太胖；Darendeli 兩端都修正。</span></li>
+      </ol>
+      <p class="ans">Answer: Masing damping 4.73 % and 25.3 %, i.e. 1.3 and 1.9 times the measured values, while the moduli agree (0.800 vs 0.799).</p>
+    </div></details>
+    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q2">HW3 Q2</a> · Concepts 觀念: <a href="units/u08.html#s8-7">8.7</a>, <a href="units/u08.html#s8-8">8.8</a> · Similar 同型: <a href="#m5-6">5.6</a></p>
+  </article>
+
+  <article class="prob" id="h3-3">
+    <div class="ph"><span class="pno">HW3 Q3</span><h3>Downhole test, G<sub>max</sub> comparison and equivalent linear properties<span class="zh">下孔試驗與等值線性參數</span></h3><span class="ptag hw">Homework · key</span></div>
+    <div class="pq">Three sand layers (0–4, 4–10, 10–20 m), water table at 1 m, ρ = 1.95 t/m³, K<sub>0</sub> = 0.5. Downhole S-wave arrivals at 2, 4, 7, 10, 15, 20 m: 13.5, 27.2, 41.3, 55.3, 74.2, 92.5 ms. (a) V<sub>s</sub> and G<sub>max</sub> of each layer; compare layer 3 with the resonant column and Hardin (1978). (b) G and D of layer 3 at γ<sub>eff</sub> = 0.05 %; can this analysis predict the excess pore pressure?<span class="zh-d">由走時求各層 Vs、Gmax，第 3 層和共振柱、Hardin 比較；有效應變 0.05 % 時的 G、D，能否預測孔隙水壓。</span></div>
+    <details class="derive"><summary>Solution · 解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>Add the origin (0, 0) and fit a line through the receivers at the top, inside and bottom of each layer; V<sub>s</sub> = 1/slope (× 1000 for ms/m): 147, 214, 269 m/s; G<sub>max</sub> = ρV<sub>s</sub>² = 42.2, 88.9, 140.9 MPa.<span class="zh-d">每層直線迴歸，斜率倒數即 Vs。</span></li>
+        <li>At 15 m: σ<sub>v</sub> = 1.95(9.81)(15) = 286.9 kPa, u = 9.81(14) = 137.3 kPa, σ′<sub>v</sub> = 149.6 kPa, \(\sigma'_m = \frac{1+2K_0}{3}\sigma'_v = 99.7\) kPa.<span class="zh-d">15 m 處的平均有效應力。</span></li>
+        <li>Hardin: \(F(0.70) = 1/(0.3+0.7\times0.49) = 1.555\), \(G_{max} = 625(1.555)\sqrt{100\times99.7} = 97.1\) MPa. Field 140.9 MPa &gt; Hardin 97 ≈ resonant column 93.2: reconstituted specimens lose fabric, aging and cementation, so the field value is about 45–50 % higher.<span class="zh-d">重模試體失去組構與老化，現地較高。</span></li>
+        <li>(b) 0.05 % lies between stages 5 and 6; log interpolation gives G/G<sub>max</sub> = 0.470 and D = 9.8 %; multiply by the <b>field</b> G<sub>max</sub>: G = 0.470 × 140.9 = 66.2 MPa.<span class="zh-d">內插後乘現地 Gmax。</span></li>
+        <li>Pore pressure cannot be predicted: equivalent linear analysis is a total stress method without shear–volume coupling. Since 0.05 % &gt; γ<sub>tv</sub>, pore pressure will build up in the field, so use an effective stress analysis or the empirical methods of Ch8.<span class="zh-d">等值線性是總應力分析，算不出孔隙水壓。</span></li>
+      </ol>
+      <p class="ans">Answer: V<sub>s</sub> = 147, 214, 269 m/s; layer 3 G<sub>max</sub> = 141 MPa (field), 93 MPa (resonant column), 97 MPa (Hardin); at γ<sub>eff</sub> = 0.05 %, G ≈ 66 MPa and D ≈ 9.8 %.</p>
+    </div></details>
+    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q3">HW3 Q3</a> · Concepts 觀念: <a href="units/u07.html#s7-1">7.1</a>, <a href="units/u07.html#s7-3">7.3</a>, <a href="units/u11.html#s11-1">11.1</a> · Similar 同型: <a href="#m6-4">6.4</a></p>
+  </article>
+
+  <article class="prob" id="h3-4">
+    <div class="ph"><span class="pno">HW3 Q4</span><h3>Isolation pad SDOF: damping, transmissibility and energy<span class="zh">隔振墊 SDOF</span></h3><span class="ptag hw">Homework · key</span></div>
+    <div class="pq">An instrument (m = 2000 kg) rests on an isolation pad; a shaker applies p<sub>0</sub> = 0.5 kN and the steady-state displacement is measured from 4 to 12 Hz. (a) f<sub>n</sub>, k, ρ<sub>s</sub>, ξ by the resonance amplification and half-power methods, and c. (b) Instrument amplitude for floor motion u<sub>g0</sub> = 0.05 mm at 15 Hz and 8 Hz; above which frequency is TR &lt; 1? (c) W<sub>D</sub>, W<sub>s</sub> and W<sub>D</sub>/(4πW<sub>s</sub>) at β = 1 and 0.5.<span class="zh-d">由力試驗求隔振墊性質；地板振動傳到儀器的振幅；每圈能量與阻尼比定義。</span></div>
+    <details class="derive"><summary>Solution · 解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>Peak 0.622 mm at 7.97 Hz. Resonance amplification: \(k = m(2\pi f_n)^2\), \(\rho_s = p_0/k\), \(U_{max}/\rho_s = 1/(2\xi\sqrt{1-\xi^2})\), corrected with \(f_{peak} = f_n\sqrt{1-2\xi^2}\) → ξ = 7.94 %. Half-power: f<sub>1</sub> = 7.28 Hz, f<sub>2</sub> = 8.56 Hz, \(\xi = (f_2-f_1)/(f_2+f_1) = 8.11\,\%\).<span class="zh-d">共振放大法與半功率法兩種求法。</span></li>
+        <li>Adopt f<sub>n</sub> = 8.02 Hz and ξ = 8.0 %: k = 5079 kN/m, \(c = 2\xi\sqrt{km} = 16.2\) kN·s/m.<span class="zh-d">取兩法平均。</span></li>
+        <li>(b) \(U = u_{g0}\,TR\), \(TR = D\sqrt{1+(2\xi\beta)^2}\). 15 Hz: β = 1.87, TR = 0.415 → 0.021 mm (reduced); 8 Hz: β ≈ 1, TR = 6.3 → 0.316 mm (resonance). TR = 1 at β = √2, so \(f &gt; \sqrt2f_n = 11.3\) Hz is needed for isolation.<span class="zh-d">β 大於 √2 才減振。</span></li>
+        <li>(c) \(\rho_d = \rho_sD\), \(W_D = \pi c\bar\omega\rho_d^2\), \(W_s = \frac12k\rho_d^2\): the ratio is 0.080 = ξ at β = 1 and 0.040 = ξβ at β = 0.5. Viscous energy loss per cycle is proportional to frequency, whereas hysteretic soil damping is frequency independent, so soils define \(\xi = W_D/4\pi W_s\) without the frequency ratio.<span class="zh-d">黏滯阻尼耗能與頻率成正比；土壤遲滯阻尼與頻率無關，所以定義中不含頻率比。</span></li>
+      </ol>
+      <p class="ans">Answer: f<sub>n</sub> = 8.02 Hz, k = 5079 kN/m, ξ ≈ 8 %, c = 16.2 kN·s/m; 0.021 mm at 15 Hz and 0.32 mm at 8 Hz; isolation above 11.3 Hz.</p>
+    </div></details>
+    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q4">HW3 Q4</a> · Concepts 觀念: <a href="units/u04.html#s4-8">4.8</a>, <a href="units/u04.html#s4-9">4.9</a>, <a href="units/u04.html#s4-10">4.10</a> · Similar 同型: <a href="#m4-14">4.14</a>, <a href="#m4-15">4.15</a>, <a href="#m4-16">4.16</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-m12" data-num="Ch1–2" data-short="模擬考：地震與地動" data-title="模擬考 Ch1–Ch2">
+  <div class="sec-head"><span class="sec-num">Part 3 · 模擬考 Ch1–Ch2</span><h2>地震規模與地動參數</h2></div>
+
+  <article class="prob" id="m1-1">
+    <div class="ph"><span class="pno">1.1</span><h3>地震矩與地震矩規模</h3></div>
+    <div class="pq">斷層破裂面長 40 km、寬 15 km，平均滑移 1.5 m，剛性模數 μ = 3.0×10¹¹ dyne/cm²。求 (a) M<sub>0</sub>　(b) M<sub>w</sub>　(c) M<sub>w</sub> 增加 1 與 2 時 M<sub>0</sub> 變幾倍　(d) 傾角 60°、上盤相對上移的斷層類型與應力狀態　(e) 為什麼大地震用 M<sub>w</sub> 而不用 M<sub>L</sub>。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>單位統一成 cm：A = (40×10⁵)(15×10⁵) = 6.0×10¹² cm²，D = 150 cm。\(M_0 = \mu AD = 3.0\times10^{11}\times6.0\times10^{12}\times150 = 2.7\times10^{26}\) dyne·cm。</li>
+        <li>\(M_w = (\log M_0 - 16.05)/1.5 = (26.431 - 16.05)/1.5 = 6.92\)。</li>
+        <li>\(M_0 \propto 10^{1.5M_w}\)：ΔM<sub>w</sub> = 1 → 31.6 倍；ΔM<sub>w</sub> = 2 → 1000 倍。</li>
+        <li>上盤上移 → 逆斷層，水平壓縮（σ<sub>1</sub> 水平、σ<sub>3</sub> 垂直）；傾角 60° 不是低角度的逆衝斷層。</li>
+        <li>M<sub>L</sub> 由約 0.1–1 s 的波振幅量得，大破裂增加的主要是長週期能量，M<sub>L</sub> 在約 7 飽和；M<sub>w</sub> 由破裂的物理量算出，不會飽和。</li>
+      </ol>
+      <p class="ans">答：M<sub>0</sub> = 2.7×10²⁶ dyne·cm，M<sub>w</sub> = 6.9；31.6 倍、1000 倍；逆斷層、水平壓縮。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u02.html#s2-3">2.3</a>、<a href="units/u02.html#s2-6">2.6</a></p>
+  </article>
+
+  <article class="prob" id="m2-1">
+    <div class="ph"><span class="pno">2.1</span><h3>理想化紀錄的地動參數</h3></div>
+    <div class="pq">\(a(t) = A_i\,g\sin(4\pi t)\)（2 Hz），A<sub>1</sub> = 0.10（0–2 s）、A<sub>2</sub> = 0.30（2–6 s）、A<sub>3</sub> = 0.04（6–10 s），每段為整數個週期。求 (a) PGA、T<sub>p</sub>　(b) 把最強段當簡諧運動估 PGV　(c) I<sub>a</sub>　(d) CAV　(e) 門檻 0.05 g 的 bracketed duration　(f) D<sub>5–95</sub>（各段內 I<sub>a</sub> 線性累積）。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) PGA = 0.30 g；只有一個頻率，T<sub>p</sub> = 1/2 = 0.5 s。</li>
+        <li>(b) 簡諧運動 \(v_{max} = a_{max}/\omega = 0.30(9.81)/(4\pi) = 0.234\) m/s。</li>
+        <li>(c) 整數週期的正弦 \(\int a^2dt = A^2T/2\)：\(I_a = \frac{\pi}{2g}\sum\frac{(A_ig)^2T_i}{2}\)，三段 0.154、2.774、0.049 m/s，合計 <b>2.98 m/s</b>。</li>
+        <li>(d) \(\int|a|dt = \frac{2}{\pi}A\,T\)：三段 1.249、7.494、0.999 m/s，CAV = <b>9.74 m/s</b>（0.993 g·s）。</li>
+        <li>(e) 第三段 0.04 g 從不超過 0.05 g。第一次超過：第一段 \(0.10\sin(4\pi t) = 0.05\) → t = 0.042 s；最後一次：第二段最後一個波谷之後，\(t = 6 - \arcsin(1/6)/(4\pi) = 5.987\) s。D<sub>b</sub> = <b>5.94 s</b>。</li>
+        <li>(f) 累積 I<sub>a</sub>：2 s 時 0.154、6 s 時 2.928、10 s 時 2.977。5 % = 0.149 → 落在第一段，t<sub>5</sub> = 2(0.149/0.154) = 1.93 s；95 % = 2.828 → 第二段，t<sub>95</sub> = 2 + 4(2.828−0.154)/2.774 = 5.86 s。D<sub>5–95</sub> = <b>3.92 s</b>。</li>
+      </ol>
+      <p class="ans">答：PGA 0.30 g、T<sub>p</sub> 0.5 s、PGV ≈ 0.23 m/s、I<sub>a</sub> = 2.98 m/s、CAV = 9.74 m/s、D<sub>b</sub> = 5.94 s、D<sub>5–95</sub> = 3.92 s。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u03.html#s3-2">3.2</a>、<a href="units/u03.html#dur">三種延時</a></p>
+  </article>
+
+  <article class="prob" id="m2-2">
+    <div class="ph"><span class="pno">2.2</span><h3>Husid 圖、延時、T<sub>p</sub> 與 T<sub>m</sub></h3><span class="ptag">往年作業</span></div>
+    <div class="pq">PGA = 0.42 g、I<sub>a</sub> = 1.06 m/s。正規化 Husid：t = 0、2.0、2.8、3.5、4.8、6.0、8.0、9.4、15、40 s 時 I<sub>a</sub>/I<sub>a,max</sub> = 0、0.02、0.05、0.45、0.75、0.86、0.92、0.95、0.99、1.00。5 % 阻尼 S<sub>a</sub>：T = 0.05、0.1、0.2、0.3、0.5、1.0、2.0 s → 0.60、1.10、1.30、1.05、0.35、0.12、0.05 g。FAS：f = 0.5、1、2、4、8、16 Hz → C = 0.02、0.05、0.10、0.12、0.06、0.02 g·s。求 (a) 積分出的速度、位移歷時為何和加速度很不同　(b) D<sub>5–75</sub>、D<sub>5–95</sub>　(c) T<sub>p</sub>　(d) T<sub>m</sub>　(e) 反應譜與 Fourier 譜的差別。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) 積分等於在頻率域除以 iω，越積分越強調低頻：加速度由高頻控制，速度、位移由中、長週期控制，形狀較平滑、峰值時間不同；未濾波時常數偏差還會被放大成漂移。</li>
+        <li>(b) 表上直接讀：t<sub>5</sub> = 2.8 s、t<sub>75</sub> = 4.8 s、t<sub>95</sub> = 9.4 s → D<sub>5–75</sub> = 2.0 s、D<sub>5–95</sub> = 6.6 s。</li>
+        <li>(c) T<sub>p</sub> 取 5 % 阻尼加速度反應譜最大值的週期：S<sub>a</sub> = 1.30 g @ <b>0.2 s</b>。</li>
+        <li>(d) \(T_m = \sum C_i^2(1/f_i)\big/\sum C_i^2\)：分子 0.0008 + 0.0025 + 0.0050 + 0.0036 + 0.00045 + 0.000025 = 0.01238，分母 0.0313，T<sub>m</sub> = <b>0.395 s</b>。</li>
+        <li>(e) Fourier 譜是地動本身各頻率成分的振幅；反應譜是一排 5 % 阻尼 SDOF 的最大反應，含共振放大，描述地動對結構的效果。</li>
+      </ol>
+      <p class="ans">答：D<sub>5–75</sub> = 2.0 s、D<sub>5–95</sub> = 6.6 s、T<sub>p</sub> = 0.2 s、T<sub>m</sub> = 0.40 s。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u03.html#s3-2">3.2</a>、<a href="units/u05.html#s5-2">5.2</a>、<a href="units/u05.html#s5-3">5.3</a>　作業：<a href="#h1">HW1</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-m3" data-num="Ch3" data-short="模擬考：地震波" data-title="模擬考 Ch3">
+  <div class="sec-head"><span class="sec-num">模擬考 Ch3</span><h2>波速、土柱頻率、共振柱與彎曲元件</h2></div>
+
+  <article class="prob" id="m3-1">
+    <div class="ph"><span class="pno">3.1</span><h3>實體波與表面波波速</h3></div>
+    <div class="pq">E = 100 MPa、ν = 0.30、ρ = 1.90 t/m³。求 (a) G、M　(b) v<sub>s</sub>、v<sub>p</sub>、細桿縱波 v<sub>c</sub>　(c) v<sub>R</sub>（ν = 0.3 時 v<sub>R</sub>/v<sub>s</sub> = 0.927）　(d) f = 10 Hz 時 S 波與 Rayleigh 波的波長、波數　(e) P 波阻抗；應力振幅 40 kPa 的 P 波造成的質點速度與軸應變。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) \(G = E/2(1+\nu) = 38{,}460\) kPa；\(M = \frac{E(1-\nu)}{(1+\nu)(1-2\nu)} = 134{,}600\) kPa。</li>
+        <li>(b) \(v_s = \sqrt{G/\rho} = 142.3\)、\(v_p = \sqrt{M/\rho} = 266.2\)、\(v_c = \sqrt{E/\rho} = 229.4\) m/s（v<sub>s</sub> &lt; v<sub>c</sub> &lt; v<sub>p</sub>）。</li>
+        <li>(c) \(v_R = 0.927\times142.3 = 131.9\) m/s。</li>
+        <li>(d) \(\lambda = v/f\)、\(k = 2\pi/\lambda\)：S 波 14.23 m、0.442 rad/m；Rayleigh 波 13.19 m、0.476 rad/m。</li>
+        <li>(e) \(Z = \rho v_p = 1.90\times266.2 = 505.7\) kN·s/m³；\(\dot u = \sigma/\rho v_p = 40/505.7 = 0.079\) m/s；\(\varepsilon = \dot u/v_p = 2.97\times10^{-4}\)（= σ/M，0.030 %）。</li>
+      </ol>
+      <p class="ans">答：G = 38.5 MPa、M = 134.6 MPa；v<sub>s</sub> 142、v<sub>p</sub> 266、v<sub>c</sub> 229、v<sub>R</sub> 132 m/s；ε = 2.97×10⁻⁴。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u06.html#s6-2">6.2</a>、<a href="units/u06.html#s6-4">6.4</a>、<a href="units/u06.html#s6-5">6.5</a>、<a href="units/u06.html#s6-6">6.6</a></p>
+  </article>
+
+  <article class="prob" id="m3-2">
+    <div class="ph"><span class="pno">3.2</span><h3>短土柱的自然頻率</h3></div>
+    <div class="pq">圓柱試體 L = 0.15 m，E = 120 MPa、G = 45 MPa、ρ = 1.85 t/m³。求 (a) v<sub>c</sub>、v<sub>s</sub>　(b) 自由–自由縱向振動前兩個自然頻率　(c) 固定–自由縱向前兩個　(d) 固定–自由扭轉第一個。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) \(v_c = \sqrt{120{,}000/1.85} = 254.7\) m/s，\(v_s = \sqrt{45{,}000/1.85} = 156.0\) m/s。</li>
+        <li>(b) 自由–自由：\(f_n = n\,v_c/2L\) → 849、1698 Hz。</li>
+        <li>(c) 固定–自由：\(f_n = (2n-1)v_c/4L\) → 424.5、1273 Hz。</li>
+        <li>(d) 扭轉固定–自由：\(f_1 = v_s/4L = 260\) Hz。</li>
+      </ol>
+      <p class="ans">答：849、1698 Hz；424、1273 Hz；260 Hz。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u06.html#s6-2">6.2</a>、<a href="units/u09.html#s9-1">9.1</a></p>
+  </article>
+
+  <article class="prob" id="m3-3">
+    <div class="ph"><span class="pno">3.3</span><h3>固定–自由扭轉共振柱</h3><span class="ptag hw3">HW3 相關</span></div>
+    <div class="pq">實心試體 d = 50 mm、h = 100 mm、ρ = 1.85 t/m³；頂部驅動系統 I<sub>0</sub> = 4.5×10⁻⁴ kg·m²；第一模態共振 80 Hz；自由衰減 X<sub>1</sub> = 1.00、X<sub>6</sub> = 0.55。求 (a) 試體 I 與 I/I<sub>0</sub>　(b) β　(c) V<sub>s</sub>、G　(d) δ、ξ。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) 試體質量 \(m = \rho\frac{\pi d^2}{4}h = 1850\times1.963\times10^{-3}\times0.1 = 0.3633\) kg；實心圓柱 \(I = md^2/8 = 1.135\times10^{-4}\) kg·m²；I/I<sub>0</sub> = 0.252。</li>
+        <li>(b) 解 \(\beta\tan\beta = 0.252\) → β = 0.482 rad（初值 \(\sqrt{0.252} = 0.502\)）。</li>
+        <li>(c) \(V_s = 2\pi f_nh/\beta = 2\pi(80)(0.1)/0.482 = 104.3\) m/s；\(G = \rho V_s^2 = 1.85\times104.3^2 = 20.1\) MPa。</li>
+        <li>(d) X<sub>1</sub> 到 X<sub>6</sub> 是 5 個週期：\(\delta = \frac15\ln(1/0.55) = 0.120\)，ξ = δ/2π = 1.9 %。</li>
+      </ol>
+      <p class="ans">答：I/I<sub>0</sub> = 0.252、β = 0.482、V<sub>s</sub> = 104 m/s、G = 20.1 MPa、ξ = 1.9 %。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u09.html#s9-1">9.1</a>　作業：<a href="#h3-1a">HW3 Q1(a)</a></p>
+  </article>
+
+  <article class="prob" id="m3-4">
+    <div class="ph"><span class="pno">3.4</span><h3>由頻率響應曲線求 G 與阻尼比</h3><span class="ptag">往年作業</span></div>
+    <div class="pq">軟粉質黏土試體高 152.4 mm、單位重 16.5 kN/m³，I/I<sub>0</sub> = 0.4。響應曲線：f = 36、37、38、39、40、41、42、43、44、45、46、48、50、55 Hz → 30、38、45、54、64、74、70、62、53、46、40、32、28、20 mV。求 (a) 共振頻率與 G　(b) 半功率法阻尼比。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) 峰值 74 mV @ f<sub>n</sub> = 41 Hz。ρ = 16.5/9.81 = 1.682 t/m³。解 \(\beta\tan\beta = 0.4\) → β = 0.593。\(V_s = 2\pi(41)(0.1524)/0.593 = 66.2\) m/s，\(G = 1.682\times66.2^2 = 7.37\) MPa。</li>
+        <li>(b) 半功率振幅 74/√2 = 52.3 mV。左側在 38–39 Hz 間內插 f<sub>1</sub> = 38.81 Hz；右側在 43–44 Hz 間 f<sub>2</sub> = 44.08 Hz。\(\xi = (f_2-f_1)/(2f_n) = 5.27/82 = 6.4\,\%\)（用 (f<sub>2</sub>−f<sub>1</sub>)/(f<sub>2</sub>+f<sub>1</sub>) 得 6.35 %）。</li>
+      </ol>
+      <p class="ans">答：f<sub>n</sub> = 41 Hz、G ≈ 7.4 MPa、ξ ≈ 6.4 %。點距 1 Hz，峰值位置與半功率點都有讀數誤差。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-9">4.9</a>、<a href="units/u09.html#s9-2">9.2</a></p>
+  </article>
+
+  <article class="prob" id="m3-5">
+    <div class="ph"><span class="pno">3.5</span><h3>彎曲元件試驗</h3></div>
+    <div class="pq">砂試體高 110 mm、ρ = 1.95 t/m³，兩端彎曲元件各伸入 5 mm，剪力波初達時間 0.62 ms。求 (a) 傳播距離　(b) V<sub>s</sub>　(c) G<sub>max</sub>。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) 尖端到尖端：\(L_{tt} = 110 - 2(5) = 100\) mm。</li>
+        <li>(b) \(V_s = 0.100/0.62\times10^{-3} = 161.3\) m/s。</li>
+        <li>(c) \(G_{max} = 1.95\times161.3^2 = 50.7\) MPa。</li>
+      </ol>
+      <p class="ans">答：100 mm、161 m/s、50.7 MPa。用試體全高 110 mm 會高估 V<sub>s</sub> 10 %、G<sub>max</sub> 21 %。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u07.html#s7-4">7.4</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-m4" data-num="Ch4" data-short="模擬考：振動理論" data-title="模擬考 Ch4">
+  <div class="sec-head"><span class="sec-num">模擬考 Ch4</span><h2>振動理論（16 題）</h2></div>
+  <p class="part-note">共用符號：\(\omega_n = \sqrt{k/m}\)、\(\xi = c/2m\omega_n\)、\(\beta = \bar\omega/\omega_n\)、\(\rho_s = p_0/k\)、\(D = 1/\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}\)、\(TR = D\sqrt{1+(2\xi\beta)^2}\)。</p>
+
+  <article class="prob" id="m4-1">
+    <div class="ph"><span class="pno">4.1</span><h3>SDOF：ω<sub>n</sub>、ξ、ω<sub>d</sub>、δ</h3><span class="ptag exam">= 2025 期中考 Q2</span></div>
+    <div class="pq">與 2025 期中考 Q2 相同，解答見 <a href="#e2">Part 1 Q2</a>。</div>
+  </article>
+  <article class="prob" id="m4-2">
+    <div class="ph"><span class="pno">4.2</span><h3>無阻尼自由振動</h3><span class="ptag exam">= 2025 期中考 Q3</span></div>
+    <div class="pq">與 2025 期中考 Q3 相同，解答見 <a href="#e3">Part 1 Q3</a>。</div>
+  </article>
+
+  <article class="prob" id="m4-3">
+    <div class="ph"><span class="pno">4.3</span><h3>SDOF 基本量（期中 Q2 同型）</h3></div>
+    <div class="pq">W = 800 kN、k = 150,000 kN/m、c = 1500 kN·s/m。求 (a) ω<sub>n</sub>、f<sub>n</sub>　(b) ξ　(c) ω<sub>D</sub>　(d) δ。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>m = 800/9.81 = 81.55 t；ω<sub>n</sub> = √(150,000/81.55) = 42.89 rad/s，f<sub>n</sub> = 6.83 Hz。</li>
+        <li>ξ = 1500/(2 × 81.55 × 42.89) = 0.214。</li>
+        <li>ω<sub>D</sub> = 42.89√(1 − 0.214²) = 41.89 rad/s。</li>
+        <li>δ = 2πξ/√(1−ξ²) = 1.380。</li>
+      </ol>
+      <p class="ans">答：42.9 rad/s、6.83 Hz、ξ = 0.214、41.9 rad/s、δ = 1.38。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-3">4.3</a></p>
+  </article>
+
+  <article class="prob" id="m4-4">
+    <div class="ph"><span class="pno">4.4</span><h3>機器基礎的自然頻率與週期</h3><span class="ptag">往年作業</span></div>
+    <div class="pq">基礎重 45 kN，彈簧 k = 10⁴ kN/m。求 (a) 自然頻率　(b) 週期。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <p>m = 45/9.81 = 4.587 t；ω<sub>n</sub> = √(10,000/4.587) = 46.69 rad/s；f<sub>n</sub> = ω<sub>n</sub>/2π = 7.43 Hz；T = 1/f<sub>n</sub> = 0.135 s。</p>
+      <p class="ans">答：f<sub>n</sub> = 7.43 Hz（46.7 rad/s），T = 0.135 s。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-2">4.2</a></p>
+  </article>
+
+  <article class="prob" id="m4-5">
+    <div class="ph"><span class="pno">4.5</span><h3>靜力釋放後的自由振動</h3><span class="ptag">往年作業</span></div>
+    <div class="pq">44.48 kN 的重物由無質量柱支撐；22.24 kN 的水平靜力造成 1.016 mm 位移。求 (a) ω<sub>n</sub>　(b) T<sub>n</sub>　(c) 突然移除水平力後的位移歷時。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>k = 22.24/1.016×10⁻³ = 21,890 kN/m；m = 44.48/9.81 = 4.534 t。</li>
+        <li>(a) ω<sub>n</sub> = √(21,890/4.534) = 69.48 rad/s；(b) T<sub>n</sub> = 2π/ω<sub>n</sub> = 0.0904 s。</li>
+        <li>(c) 初始條件 u(0) = 1.016 mm、u̇(0) = 0，無阻尼：\(u(t) = 1.016\cos(69.48t)\) mm。</li>
+      </ol>
+      <p class="ans">答：69.5 rad/s、0.090 s、u(t) = 1.016 cos(69.5t) mm。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-2">4.2</a></p>
+  </article>
+
+  <article class="prob" id="m4-6">
+    <div class="ph"><span class="pno">4.6</span><h3>黏滯阻尼自由振動</h3><span class="ptag">往年作業</span></div>
+    <div class="pq">W = 60 kN、k = 11,000 kN/m、c = 200 kN·s/m。求 (a) 阻尼類型　(b) δ 與相鄰振幅比 z<sub>n</sub>/z<sub>n+1</sub>　(c) 阻尼自然頻率。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>m = 6.116 t；c<sub>c</sub> = 2√(km) = 2√(11,000 × 6.116) = 518.8 kN·s/m；ξ = 200/518.8 = 0.386 &lt; 1 → <b>次阻尼</b>。</li>
+        <li>δ = 2π(0.386)/√(1−0.386²) = 2.625；z<sub>n</sub>/z<sub>n+1</sub> = e<sup>δ</sup> = 13.8。</li>
+        <li>f<sub>n</sub> = √(k/m)/2π = 6.75 Hz；f<sub>d</sub> = 6.75√(1−0.386²) = 6.23 Hz。</li>
+      </ol>
+      <p class="ans">答：次阻尼（ξ = 0.386）；δ = 2.63、振幅比 13.8；f<sub>d</sub> = 6.23 Hz。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-3">4.3</a></p>
+  </article>
+
+  <article class="prob" id="m4-7">
+    <div class="ph"><span class="pno">4.7</span><h3>有阻尼自由振動（期中 Q3 加阻尼）</h3></div>
+    <div class="pq">4.1 的系統（ω<sub>n</sub> = 44.29 rad/s、ξ = 0.259），u(0) = 0.05 m、u̇(0) = 0.01 m/s，考慮阻尼。求 (a) u(t)　(b) 包絡振幅與相位角　(c) 振幅衰減到初值 10 % 的時間與圈數。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>ξω<sub>n</sub> = 11.47 s⁻¹，ω<sub>D</sub> = 42.78 rad/s。\(u = e^{-\xi\omega_nt}(A\cos\omega_Dt + B\sin\omega_Dt)\)，A = u<sub>0</sub> = 0.05，\(B = (\dot u_0 + \xi\omega_nu_0)/\omega_D = (0.01 + 0.574)/42.78 = 0.01364\) m。</li>
+        <li>(a) \(u(t) = e^{-11.47t}(0.05\cos42.78t + 0.01364\sin42.78t)\) m。</li>
+        <li>(b) 包絡振幅 \(\sqrt{A^2+B^2} = 0.0518\) m；寫成 \(\rho e^{-\xi\omega_nt}\sin(\omega_Dt+\theta)\)，\(\tan\theta = A/B\)，θ = 74.7°。</li>
+        <li>(c) \(e^{-\xi\omega_nt} = 0.1\) → t = ln10/11.47 = 0.201 s；圈數 = t·ω<sub>D</sub>/2π = 1.37 圈（也等於 ln10/δ = 2.303/1.685）。</li>
+      </ol>
+      <p class="ans">答：包絡振幅 0.0518 m、θ = 74.7°；0.20 s、約 1.4 圈。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-3">4.3</a></p>
+  </article>
+
+  <article class="prob" id="m4-8">
+    <div class="ph"><span class="pno">4.8</span><h3>由自由振動紀錄求阻尼比</h3></div>
+    <div class="pq">第 1 個峰 10 mm、第 6 個峰 2 mm。求 (a) δ　(b) ξ　(c) 振幅減半需要幾圈。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>第 1 到第 6 峰相隔 5 圈：δ = ln(10/2)/5 = 0.322。</li>
+        <li>ξ = δ/√(4π²+δ²) = 0.0512（近似 δ/2π 相同）。</li>
+        <li>減半：n = ln2/δ = 2.15 圈。</li>
+      </ol>
+      <p class="ans">答：δ = 0.322、ξ = 5.1 %、約 2.2 圈。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-9">4.9</a></p>
+  </article>
+
+  <article class="prob" id="m4-9">
+    <div class="ph"><span class="pno">4.9</span><h3>由對數遞減反推系統參數</h3></div>
+    <div class="pq">質量 12 t 的基礎塊做自由振動，峰值 2.40 mm 經 5 圈降到 0.60 mm，阻尼週期 0.125 s。求 (a) δ　(b) ξ　(c) f<sub>n</sub>　(d) k　(e) c。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>δ = ln(2.40/0.60)/5 = 0.277；ξ = δ/√(4π²+δ²) = 0.0441。</li>
+        <li>f<sub>d</sub> = 1/0.125 = 8.00 Hz；f<sub>n</sub> = f<sub>d</sub>/√(1−ξ²) = 8.008 Hz。</li>
+        <li>k = m(2πf<sub>n</sub>)² = 12 × 50.31² = 30,380 kN/m；c = 2ξ√(km) = 53.2 kN·s/m。</li>
+      </ol>
+      <p class="ans">答：δ = 0.277、ξ = 4.4 %、f<sub>n</sub> = 8.01 Hz、k = 30,400 kN/m、c = 53 kN·s/m。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-9">4.9</a></p>
+  </article>
+
+  <article class="prob" id="m4-10">
+    <div class="ph"><span class="pno">4.10</span><h3>有阻尼穩態受迫振動</h3></div>
+    <div class="pq">4.1 的系統受 p(t) = 50 sin(30t) kN。求 (a) 穩態振幅　(b) 相位角　(c) 最大放大因子與發生的頻率　(d) 傳到地面的力振幅。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>β = 30/44.29 = 0.677；ρ<sub>s</sub> = 50/200,000 = 0.25 mm；D = 1/√((1−0.459)² + (2×0.259×0.677)²) = 1.550。</li>
+        <li>(a) 振幅 = 0.25 × 1.550 = <b>0.388 mm</b>；(b) \(\varphi = \tan^{-1}\frac{2\xi\beta}{1-\beta^2} = 33.0°\)。</li>
+        <li>(c) \(D_{max} = 1/(2\xi\sqrt{1-\xi^2}) = 2.00\)，在 \(\bar\omega = \omega_n\sqrt{1-2\xi^2} = 41.2\) rad/s（6.56 Hz）。</li>
+        <li>(d) TR = 1.550√(1 + 0.351²) = 1.643 → 傳到地面 82.1 kN（= √((ku)² + (cω̄u)²)）。β &lt; √2，力被放大。</li>
+      </ol>
+      <p class="ans">答：0.388 mm、33.0°、D<sub>max</sub> = 2.00 @ 41.2 rad/s、82.1 kN。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-4">4.4</a>、<a href="units/u04.html#s4-5">4.5</a>、<a href="units/u04.html#s4-10">4.10</a></p>
+  </article>
+
+  <article class="prob" id="m4-11">
+    <div class="ph"><span class="pno">4.11</span><h3>受迫振動：振幅與傳到地面的力</h3><span class="ptag">往年作業</span></div>
+    <div class="pq">基礎重 140 kN，k = 120,000 kN/m、ξ = 0.2，外力 Q = 46 sin(157t) kN。求 (a) 無阻尼自然頻率　(b) 振幅　(c) 傳到地面的最大動力。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>m = 14.27 t；ω<sub>n</sub> = √(120,000/14.27) = 91.70 rad/s（14.6 Hz）。</li>
+        <li>β = 157/91.70 = 1.712；D = 0.488；振幅 = (46/120,000)(0.488) = 0.187 mm。</li>
+        <li>TR = 0.488√(1 + 0.685²) = 0.592 → 46 × 0.592 = 27.2 kN（β &gt; √2，已隔振）。</li>
+      </ol>
+      <p class="ans">答：14.6 Hz（91.7 rad/s）、0.187 mm、27.2 kN。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-10">4.10</a></p>
+  </article>
+
+  <article class="prob" id="m4-12">
+    <div class="ph"><span class="pno">4.12</span><h3>暫態、穩態與總反應</h3><span class="ptag">往年作業</span></div>
+    <div class="pq">靜止的 SDOF：k = 17.5 kN/m、m = 453.6 kg、c = 525.4 N·s/m，受 Q(t) = 444.8 sin(πt) N。求暫態、穩態與總反應。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>ω<sub>n</sub> = √(17,500/453.6) = 6.211 rad/s；ξ = 525.4/(2 × 453.6 × 6.211) = 0.0932；ω<sub>D</sub> = 6.184 rad/s；ξω<sub>n</sub> = 0.579 s⁻¹。</li>
+        <li>穩態：β = π/6.211 = 0.506，ρ<sub>s</sub> = 444.8/17,500 = 25.42 mm，D = 1.333，振幅 33.88 mm，φ = 7.22°（0.126 rad）：\(u_p = 33.88\sin(\pi t - 0.126)\) mm。</li>
+        <li>暫態 \(u_h = e^{-0.579t}(A\sin6.184t + B\cos6.184t)\)。由 u(0) = 0：B = 33.88 sin(0.126) = 4.26 mm；由 u̇(0) = 0：\(A = (\xi\omega_nB - 33.88\pi\cos0.126)/\omega_D = -16.68\) mm。</li>
+        <li>總反應 \(u(t) = e^{-0.579t}(-16.68\sin6.184t + 4.26\cos6.184t) + 33.88\sin(\pi t - 0.126)\) mm；暫態約 1/0.579 ≈ 1.7 s 衰減到 1/e，數秒後只剩穩態。</li>
+      </ol>
+      <p class="ans">答：穩態振幅 33.9 mm、相位落後 7.2°；暫態係數 A = −16.7 mm、B = 4.26 mm。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-4">4.4</a>、<a href="units/u04.html#s4-7">4.7</a></p>
+  </article>
+
+  <article class="prob" id="m4-13">
+    <div class="ph"><span class="pno">4.13</span><h3>無阻尼受迫振動：地基受力</h3></div>
+    <div class="pq">無阻尼，p(t) = 150 sin(ω̄t) kN，ω̄ = 4800 rad/min；機器加基礎重 500 kN，k = 150,000 kN/m。求 (a) 振幅　(b) 傳到地基的最大、最小力。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>ω̄ = 4800/60 = 80 rad/s；m = 50.97 t，ω<sub>n</sub> = 54.25 rad/s；β = 1.475。</li>
+        <li>(a) \(u = \rho_s/(1-\beta^2) = 1.0/(1-2.175) = -0.851\) mm，振幅 0.851 mm（β &gt; 1，位移與外力反相）。</li>
+        <li>(b) 動態彈簧力 = k × 0.851 mm = 127.7 kN；加上靜重：最大 500 + 127.7 = 627.7 kN，最小 500 − 127.7 = 372.3 kN。</li>
+      </ol>
+      <p class="ans">答：0.851 mm；627.7 kN 與 372.3 kN。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-4">4.4</a></p>
+  </article>
+
+  <article class="prob" id="m4-14">
+    <div class="ph"><span class="pno">4.14</span><h3>由共振試驗求阻尼</h3><span class="ptag hw3">HW3 相關</span></div>
+    <div class="pq">定振幅 p<sub>0</sub> = 2.0 kN，靜勁度 k = 4000 kN/m。響應峰值 5.0 mm @ 12.0 Hz，振幅 5.0/√2 mm 出現在 11.4 與 12.6 Hz。求 (a) 半功率法 ξ　(b) 共振振幅法 ξ　(c) m、c（f<sub>n</sub> ≈ 12 Hz）　(d) 共振時每圈耗能並檢核 ξ = W<sub>D</sub>/(4πW<sub>s</sub>)。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) ξ = (12.6 − 11.4)/(12.6 + 11.4) = 0.050。</li>
+        <li>(b) ρ<sub>s</sub> = 2.0/4000 = 0.50 mm；ξ = ρ<sub>s</sub>/(2ρ<sub>max</sub>) = 0.5/10 = 0.050。</li>
+        <li>(c) m = k/(2πf<sub>n</sub>)² = 4000/75.40² = 0.704 t；c = 2ξ√(km) = 5.31 kN·s/m。</li>
+        <li>(d) \(W_D = \pi c\bar\omega\rho^2 = \pi(5.31)(75.4)(0.005)^2 = 0.0314\) kJ = 31.4 J；\(W_s = \frac12k\rho^2 = 50\) J；W<sub>D</sub>/(4πW<sub>s</sub>) = 0.050 = ξ ✓。</li>
+      </ol>
+      <p class="ans">答：兩法都是 ξ = 5 %；m = 0.70 t、c = 5.3 kN·s/m；W<sub>D</sub> = 31.4 J。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-8">4.8</a>、<a href="units/u04.html#s4-9">4.9</a>　作業：<a href="#h3-4">HW3 Q4</a></p>
+  </article>
+
+  <article class="prob" id="m4-15">
+    <div class="ph"><span class="pno">4.15</span><h3>由力試驗辨識隔振墊</h3><span class="ptag hw3">HW3 Q4 類型</span></div>
+    <div class="pq">儀器 m = 1500 kg 在隔振墊上；p<sub>0</sub> = 0.4 kN。穩態位移峰值 ρ<sub>max</sub> = 0.339 mm @ 約 10.0 Hz；振幅 0.240 mm（= ρ<sub>max</sub>/√2）在 8.84 與 10.86 Hz。(a) f<sub>n</sub>、k、ρ<sub>s</sub>　(b) 兩法求 ξ，再求 c　(c) 地板 u<sub>g0</sub> = 0.04 mm，25 Hz 與 10 Hz 時儀器振幅；多高頻率以上減振　(d) β = 1、0.5 的 W<sub>D</sub>、W<sub>s</sub> 與比值，並說明土壤阻尼比為何不含頻率比。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) f<sub>n</sub> ≈ 10.0 Hz；k = 1.5(2π × 10)² = 5922 kN/m；ρ<sub>s</sub> = 0.4/5922 = 0.0675 mm。</li>
+        <li>(b) 共振放大：ρ<sub>max</sub>/ρ<sub>s</sub> = 5.02 → ξ = 1/(2 × 5.02) = 0.0996；頻寬法：(10.86 − 8.84)/(10.86 + 8.84) = 0.1025。取 ξ ≈ 0.10，c = 2ξ√(km) = 18.8 kN·s/m。</li>
+        <li>(c) 25 Hz：β = 2.5，TR = 0.212 → 0.0085 mm（減振）；10 Hz：β = 1，TR = √(1+4ξ²)/(2ξ) = 5.10 → 0.204 mm（放大 5 倍）。f &gt; √2 × 10 = 14.1 Hz 才減振。</li>
+        <li>(d) β = 1：ρ<sub>d</sub> = 0.338 mm，W<sub>D</sub> = 0.424 J、W<sub>s</sub> = 0.338 J，比值 0.100 = ξ。β = 0.5：ρ<sub>d</sub> = 0.089 mm，W<sub>D</sub> = 0.0148 J、W<sub>s</sub> = 0.0236 J，比值 0.050 = ξβ。黏滯阻尼耗能 ∝ ω̄，土壤遲滯阻尼與頻率無關，所以直接定義 ξ = W<sub>D</sub>/(4πW<sub>s</sub>)。</li>
+      </ol>
+      <p class="ans">答：k = 5922 kN/m、ρ<sub>s</sub> = 0.068 mm、ξ ≈ 0.10、c ≈ 18.8 kN·s/m；25 Hz 0.0085 mm、10 Hz 0.204 mm；&gt; 14.1 Hz 減振。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-8">4.8</a>–<a href="units/u04.html#s4-10">4.10</a>　作業：<a href="#h3-4">HW3 Q4</a></p>
+  </article>
+
+  <article class="prob" id="m4-16">
+    <div class="ph"><span class="pno">4.16</span><h3>精密儀器隔振</h3><span class="ptag hw3">HW3 相關</span></div>
+    <div class="pq">儀器 500 kg，隔振器總勁度 k = 200 kN/m、ξ = 0.10；地板 30 Hz、振幅 0.05 mm。求 (a) 自然頻率　(b) β 與 TR　(c) 儀器振幅　(d) 隔振條件，以及 β &gt; √2 時增加 ξ 的影響。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) ω<sub>n</sub> = √(200/0.5) = 20 rad/s，f<sub>n</sub> = 3.18 Hz。</li>
+        <li>(b) β = 30/3.18 = 9.42；TR = D√(1+(2ξβ)²) = 0.0243。</li>
+        <li>(c) 0.05 × 0.0243 = 0.0012 mm（1.2 μm）。</li>
+        <li>(d) β &gt; √2 才有 TR &lt; 1。在隔振區阻尼越大傳遞越多：ξ = 0.05、0.20、0.30 時 TR = 0.016、0.044、0.065。但阻尼可限制通過共振時的振幅。</li>
+      </ol>
+      <p class="ans">答：3.18 Hz、β = 9.42、TR = 0.024、1.2 μm。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-10">4.10</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-m5" data-num="Ch5" data-short="模擬考：動態土壤性質" data-title="模擬考 Ch5">
+  <div class="sec-head"><span class="sec-num">模擬考 Ch5</span><h2>動態土壤性質</h2></div>
+
+  <article class="prob" id="m5-1">
+    <div class="ph"><span class="pno">5.1</span><h3>Hardin (1978) 求 G<sub>max</sub></h3><span class="ptag hw3">HW3 相關</span></div>
+    <div class="pq">飽和黏土 e = 0.90、PI = 40（OCR 指數 k = 0.30）、OCR = 2、K<sub>0</sub> = 0.60、ρ = 1.80 t/m³，σ′<sub>v0</sub> = 120 kPa，p<sub>a</sub> = 100 kPa。求 (a) σ′<sub>m</sub>　(b) F(e)、G<sub>max</sub>　(c) V<sub>s</sub>　(d) σ′<sub>v0</sub> 加倍時 G<sub>max</sub> 的變化。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) \(\sigma'_m = \frac{1+2K_0}{3}\sigma'_{v0} = \frac{2.2}{3}(120) = 88.0\) kPa。</li>
+        <li>(b) F(e) = 1/(0.3 + 0.7 × 0.81) = 1.153；OCR<sup>k</sup> = 2<sup>0.3</sup> = 1.231；\(G_{max} = 625(1.153)(1.231)\sqrt{100\times88} = 83{,}300\) kPa。</li>
+        <li>(c) V<sub>s</sub> = √(83,255/1.80) = 215 m/s。</li>
+        <li>(d) G<sub>max</sub> ∝ σ′<sub>m</sub><sup>0.5</sup> → 變 √2 = 1.41 倍（117.7 MPa），V<sub>s</sub> 變 2<sup>0.25</sup> = 1.19 倍。</li>
+      </ol>
+      <p class="ans">答：88 kPa、F(e) = 1.15、G<sub>max</sub> = 83.3 MPa、V<sub>s</sub> = 215 m/s、加倍後 ×1.41。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u07.html#s7-1">7.1</a>　作業：<a href="#h3-3">HW3 Q3</a></p>
+  </article>
+
+  <article class="prob" id="m5-2">
+    <div class="ph"><span class="pno">5.2</span><h3>由 SPT 經驗式求 G<sub>max</sub></h3></div>
+    <div class="pq">砂層 (N<sub>1</sub>)<sub>60</sub> = 15、N<sub>60</sub> = 12、σ′<sub>m</sub> = 75 kPa、ρ = 1.90 t/m³。用 (a) Seed et al. (1986)：\(G_{max} = 1000K_{2,max}\sqrt{\sigma'_m}\)（psf），\(K_{2,max} \approx 20(N_1)_{60}^{1/3}\)　(b) Imai &amp; Tonouchi (1982)：\(G_{max} = 325N_{60}^{0.68}\)（ksf）　(c) 換成 V<sub>s</sub> 並評論。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) K<sub>2,max</sub> = 20 × 15<sup>1/3</sup> = 49.3；σ′<sub>m</sub> = 75 kPa = 1566 psf（1 psf = 47.88 Pa）；G<sub>max</sub> = 1000 × 49.3 × √1566 = 1.952×10⁶ psf = <b>93.5 MPa</b>。</li>
+        <li>(b) 325 × 12<sup>0.68</sup> = 1761 ksf = <b>84.3 MPa</b>。</li>
+        <li>(c) V<sub>s</sub> = √(G/ρ)：222 與 211 m/s。兩式差約 10 %，在經驗式的離散範圍內；Seed 式要用 psf、Imai 式結果是 ksf，單位最容易錯。</li>
+      </ol>
+      <p class="ans">答：93.5 MPa（222 m/s）、84.3 MPa（211 m/s）。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u07.html#s7-1">7.1</a></p>
+  </article>
+
+  <article class="prob" id="m5-3">
+    <div class="ph"><span class="pno">5.3</span><h3>反覆試驗的割線模數與阻尼</h3><span class="ptag hw3">HW3 相關</span></div>
+    <div class="pq">反覆單剪迴圈 τ<sub>c</sub> = 40 kPa、γ<sub>c</sub> = 0.10 %、迴圈面積 E<sub>D</sub> = 0.025 kJ/m³。另一個不排水反覆三軸：σ<sub>d</sub> = 40 kPa、軸應變 ε<sub>a</sub> = 0.05 %。求 (a) 單剪 G<sub>sec</sub>　(b) 單剪 ξ　(c) 三軸的 τ、γ、G（ν = 0.5）　(d) 與 γ<sub>tl</sub>、γ<sub>tv</sub> 比較，對不排水試驗代表什麼。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) G<sub>sec</sub> = 40/0.001 = 40,000 kPa。</li>
+        <li>(b) E<sub>So</sub> = ½(40)(0.001) = 0.020 kJ/m³；ξ = 0.025/(4π × 0.020) = 9.9 %。</li>
+        <li>(c) τ = σ<sub>d</sub>/2 = 20 kPa；γ = ε<sub>a</sub>(1+ν) = 0.075 %；G = 20/0.00075 = 26,700 kPa（= E/2(1+ν)，E = 80 MPa）。</li>
+        <li>(d) 兩者應變（0.10 %、0.075 %）都遠高於 γ<sub>tl</sub> ≈ 0.001 % 與 γ<sub>tv</sub> ≈ 0.01 %：土壤已非線性，不排水時每圈累積超額孔隙水壓，G 會隨圈數下降。</li>
+      </ol>
+      <p class="ans">答：40 MPa、9.9 %；τ = 20 kPa、γ = 0.075 %、G = 26.7 MPa；都高於 γ<sub>tv</sub>。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u08.html#s8-3">8.3</a>、<a href="units/u08.html#s8-4">8.4</a>、<a href="units/u08.html#s8-5">8.5</a></p>
+  </article>
+
+  <article class="prob" id="m5-4">
+    <div class="ph"><span class="pno">5.4</span><h3>Darendeli 模數折減曲線</h3></div>
+    <div class="pq">正常壓密黏土 PI = 30、OCR = 1、σ′<sub>m</sub> = 100 kPa，現地 V<sub>s</sub> = 180 m/s、ρ = 1.80 t/m³。Darendeli：a = 0.92、φ<sub>1</sub> = 0.0352、φ<sub>2</sub> = 0.0010、φ<sub>3</sub> = 0.3246、φ<sub>4</sub> = 0.3483。求 (a) γ<sub>r</sub>　(b) γ = 0.01 %、0.1 % 的 G/G<sub>max</sub>　(c) 0.1 % 的 G 與 τ　(d) 同一個 γ<sub>r</sub> 的雙曲線（a = 1）在 0.1 % 的 G/G<sub>max</sub>。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) \(\gamma_r = (\phi_1 + \phi_2\,PI\cdot OCR^{\phi_3})(\sigma'_m/p_a)^{\phi_4} = (0.0352 + 0.030)(1)^{0.3483} = 0.0652\,\%\)。</li>
+        <li>(b) \(G/G_{max} = 1/[1+(\gamma/\gamma_r)^{0.92}]\)：0.01 % → 0.849；0.1 % → 0.403。</li>
+        <li>(c) G<sub>max</sub> = 1.80 × 180² = 58,320 kPa；G = 0.403 × 58,320 = 23,500 kPa；τ = Gγ = 23,500 × 0.001 = 23.5 kPa。</li>
+        <li>(d) 1/(1 + 0.1/0.0652) = 0.395，比 a = 0.92 略小。</li>
+      </ol>
+      <p class="ans">答：γ<sub>r</sub> = 0.065 %；0.849、0.403；G = 23.5 MPa、τ = 23.5 kPa；雙曲線 0.395。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u08.html#s8-6">8.6</a>、<a href="units/u08.html#s8-9">8.9</a></p>
+  </article>
+
+  <article class="prob" id="m5-5">
+    <div class="ph"><span class="pno">5.5</span><h3>多階段共振柱試驗</h3><span class="ptag hw3">HW3 Q1 類型</span></div>
+    <div class="pq">乾淨砂（PI = 0、OCR = 1）取自 16 m，重模 e = 0.65、σ′<sub>m</sub> = 104 kPa，固定–自由共振柱 d = 50 mm、H = 100 mm、ρ = 1.90 t/m³、I/I<sub>0</sub> = 0.15。五個階段：γ = 0.0005、0.003、0.01、0.03、0.1 %；f<sub>n</sub> = 141.0、136.0、124.5、106.5、77.2 Hz；X<sub>1</sub> = 75、82、78、90、70 mV；X<sub>6</sub> = 54.78、46.58、23.64、8.53、1.01 mV。(a) stage 1 的 β、V<sub>s</sub>、G<sub>max</sub>、阻尼比　(b) 證明 G/G<sub>max</sub> = (f<sub>n</sub>/f<sub>n,1</sub>)²，算各階段 G/G<sub>max</sub> 與阻尼　(c) γ<sub>r</sub>　(d) 各階段相對 γ<sub>tl</sub>、γ<sub>tv</sub>　(e) 共振柱的應變範圍與更大應變要用的試驗。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) 解 \(\beta\tan\beta = 0.15\) → β = 0.378。\(V_s = 2\pi(141)(0.1)/0.378 = 234.4\) m/s；G<sub>max</sub> = 1.90 × 234.4² = 104.4 MPa；δ = ln(75/54.78)/5 = 0.0628 → D = 1.00 %。</li>
+        <li>(b) β 由 I/I<sub>0</sub> 決定、各階段相同，\(V_s = 2\pi f_nH/\beta \propto f_n\)，\(G = \rho V_s^2 \propto f_n^2\)，所以 \(G/G_{max} = (f_n/f_{n,1})^2\)。</li>
+        <li>(c) G/G<sub>max</sub> = 0.5 在 stage 4（0.03 %，0.571）與 stage 5（0.1 %，0.300）之間，log γ 內插：γ<sub>r</sub> = 0.041 %。</li>
+        <li>(d) stage 1 &lt; γ<sub>tl</sub>（0.001 %）；stage 2 介於兩者之間；stage 3 ≈ γ<sub>tv</sub>（0.01 %）；stage 4、5 &gt; γ<sub>tv</sub>：開始產生永久體積變化，不排水時累積孔隙水壓。</li>
+        <li>(e) 共振柱約 10⁻⁴–10⁻¹ %；更大應變用反覆三軸、反覆單剪或扭剪試驗。</li>
+      </ol>
+      <div class="tablewrap"><table class="data">
+        <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">V<sub>s</sub> (m/s)</th><th class="num">G (MPa)</th><th class="num">G/G<sub>max</sub></th><th class="num">δ</th><th class="num">D (%)</th></tr>
+        <tr><td>1</td><td class="num">0.0005</td><td class="num">234.4</td><td class="num">104.4</td><td class="num">1.000</td><td class="num">0.0628</td><td class="num">1.00</td></tr>
+        <tr><td>2</td><td class="num">0.003</td><td class="num">226.1</td><td class="num">97.2</td><td class="num">0.930</td><td class="num">0.1131</td><td class="num">1.80</td></tr>
+        <tr><td>3</td><td class="num">0.01</td><td class="num">207.0</td><td class="num">81.4</td><td class="num">0.780</td><td class="num">0.2388</td><td class="num">3.80</td></tr>
+        <tr><td>4</td><td class="num">0.03</td><td class="num">177.1</td><td class="num">59.6</td><td class="num">0.571</td><td class="num">0.4712</td><td class="num">7.50</td></tr>
+        <tr><td>5</td><td class="num">0.1</td><td class="num">128.4</td><td class="num">31.3</td><td class="num">0.300</td><td class="num">0.8477</td><td class="num">13.49</td></tr>
+      </table></div>
+      <p class="ans">答：β = 0.378、V<sub>s</sub> = 234 m/s、G<sub>max</sub> = 104 MPa、D = 1.0 %；γ<sub>r</sub> ≈ 0.041 %。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u09.html#s9-1">9.1</a>、<a href="units/u08.html#s8-5">8.5</a>　作業：<a href="#h3-1a">HW3 Q1</a></p>
+  </article>
+
+  <article class="prob" id="m5-6">
+    <div class="ph"><span class="pno">5.6</span><h3>Masing 準則＋雙曲線骨幹</h3><span class="ptag hw3">HW3 Q2 類型</span></div>
+    <div class="pq">雙曲線骨幹 \(\tau = G_{max}\gamma/(1+\gamma/\gamma_{ref})\)，G<sub>max</sub> = 100,000 kPa、γ<sub>ref</sub> = 0.05 %，路徑 0 → γ<sub>c</sub> → −γ<sub>c</sub> → γ<sub>c</sub>。Masing 阻尼 \(D_{Masing} = \frac1\pi\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right) - 2\right]\)，x = γ<sub>c</sub>/γ<sub>ref</sub>。(a) γ<sub>c</sub> = 0.01 %、0.1 % 的 τ<sub>c</sub>、G/G<sub>max</sub>、E<sub>So</sub>　(b) 由 (γ<sub>c</sub>, τ<sub>c</sub>) 卸載的分支，γ<sub>c</sub> = 0.1 % 時 γ = 0 與 −γ<sub>c</sub> 的 τ　(c) D<sub>Masing</sub>、E<sub>D</sub>，與 5.5 比較　(d) 為什麼極小與大應變時不同；Darendeli 修正 \(D = b(G/G_{max})^{0.1}D_{Masing} + D_{min}\)，b ≈ 0.62、D<sub>min</sub> = 1.0 %。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) γ 用小數。0.01 %：x = 0.2，τ<sub>c</sub> = 100,000 × 0.0001/1.2 = 8.33 kPa，G/G<sub>max</sub> = 0.833，E<sub>So</sub> = ½τ<sub>c</sub>γ<sub>c</sub> = 0.417 J/m³。0.1 %：x = 2，τ<sub>c</sub> = 33.3 kPa，G/G<sub>max</sub> = 0.333，E<sub>So</sub> = 16.7 J/m³。</li>
+        <li>(b) \(\tau = \tau_c + 2G_{max}\dfrac{(\gamma-\gamma_c)/2}{1+|\gamma-\gamma_c|/(2\gamma_{ref})}\)。γ = 0：τ = 33.3 − 50.0 = −16.7 kPa；γ = −γ<sub>c</sub>：τ = −33.3 kPa，正好落回骨幹的 (−γ<sub>c</sub>, −τ<sub>c</sub>)。</li>
+        <li>(c) D<sub>Masing</sub>：0.01 % → 3.87 %，E<sub>D</sub> = 4πE<sub>So</sub>D = 0.202 J/m³；0.1 % → 22.4 %，E<sub>D</sub> = 46.9 J/m³。5.5 量到 3.80 % 與 13.49 %：小應變時接近，0.1 % 時 Masing 高估 1.7 倍。</li>
+        <li>(d) 0.001 %：D<sub>Masing</sub> = 0.42 %，但實測約 1 %（D<sub>min</sub>，微滑動與黏滯）；大應變時 Masing 的迴圈太胖。Darendeli 修正後：0.01 % → 0.62(0.833)<sup>0.1</sup>(3.87) + 1.0 = 3.35 %；0.1 % → 0.62(0.333)<sup>0.1</sup>(22.4) + 1.0 = 13.45 %，與 5.5 的 13.49 % 吻合。</li>
+      </ol>
+      <p class="ans">答：τ<sub>c</sub> = 8.33、33.3 kPa；D<sub>Masing</sub> = 3.9 %、22.4 %；Darendeli 修正 3.4 %、13.5 %。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u08.html#s8-7">8.7</a>、<a href="units/u08.html#s8-8">8.8</a>　作業：<a href="#h3-2">HW3 Q2</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-m6" data-num="Ch6" data-short="模擬考：地盤反應" data-title="模擬考 Ch6">
+  <div class="sec-head"><span class="sec-num">模擬考 Ch6</span><h2>地盤反應分析</h2></div>
+
+  <article class="prob" id="m6-1">
+    <div class="ph"><span class="pno">6.1</span><h3>剛性岩盤上的有阻尼均勻土層</h3></div>
+    <div class="pq">H = 25 m、V<sub>s</sub> = 180 m/s、ξ = 0.08。求 (a) T<sub>s</sub> 與前三個自然頻率　(b) 各頻率的峰值放大　(c) 3 Hz 的 |F<sub>2</sub>|　(d) 強震時 V<sub>s</sub> = 140 m/s、ξ = 0.12，重算 f<sub>0</sub> 與峰值並評論。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) T<sub>s</sub> = 4H/V<sub>s</sub> = 0.556 s；f<sub>n</sub> = (2n−1)V<sub>s</sub>/4H = 1.8、5.4、9.0 Hz。</li>
+        <li>(b) 峰值 ≈ 1/[ξ(2n−1)π/2] = 7.96、2.65、1.59（高階模態放大小）。</li>
+        <li>(c) 3 Hz：kH = ωH/V<sub>s</sub> = 2π(3)(25)/180 = 2.618 rad；\(|F| = 1/\sqrt{\cos^2(2.618) + (0.08\times2.618)^2} = 1.12\)。</li>
+        <li>(d) f<sub>0</sub> = 140/100 = 1.40 Hz（T<sub>s</sub> = 0.71 s），峰值 1/(0.12 × π/2) = 5.31：強震時土壤變軟、阻尼變大，場址週期變長、放大變小。</li>
+      </ol>
+      <p class="ans">答：T<sub>s</sub> = 0.56 s；1.8、5.4、9.0 Hz；7.96、2.65、1.59；|F| = 1.12；1.40 Hz、5.31。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u10.html#s10-5">10.5</a>、<a href="units/u10.html#s10-6">10.6</a></p>
+  </article>
+
+  <article class="prob" id="m6-2">
+    <div class="ph"><span class="pno">6.2</span><h3>彈性岩盤的影響</h3></div>
+    <div class="pq">6.1 的土層（ρ<sub>s</sub> = 1.90 t/m³、V<sub>s</sub> = 180 m/s、ξ = 0.08）位於彈性岩盤（ρ<sub>r</sub> = 2.40 t/m³、V<sub>r</sub> = 1200 m/s）。求 (a) 阻抗比　(b) 無阻尼時最大放大　(c) ξ = 0.08 時近似最大放大，與剛性岩盤比較　(d) 等效輻射阻尼比。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) α<sub>z</sub> = (1.90 × 180)/(2.40 × 1200) = 0.119。</li>
+        <li>(b) 無阻尼：1/α<sub>z</sub> = 8.42（剛性岩盤時為無限大）。</li>
+        <li>(c) \(1/(\alpha_z + \xi\pi/2) = 1/(0.119 + 0.126) = 4.09\)；剛性岩盤 1/(ξπ/2) = 7.96，彈性岩盤約減半。</li>
+        <li>(d) 令 ξ<sub>rad</sub>π/2 = α<sub>z</sub>：ξ<sub>rad</sub> = 2α<sub>z</sub>/π = 0.076，與材料阻尼 0.08 相當。</li>
+      </ol>
+      <p class="ans">答：α<sub>z</sub> = 0.119、8.42、4.09（剛性 7.96）、ξ<sub>rad</sub> = 7.6 %。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u10.html#s10-7">10.7</a></p>
+  </article>
+
+  <article class="prob" id="m6-3">
+    <div class="ph"><span class="pno">6.3</span><h3>等值線性分析的一次疊代</h3><span class="ptag hw3">HW3 相關</span></div>
+    <div class="pq">25 m 土層為 5.4 的黏土（γ<sub>r</sub> = 0.0652 %、a = 0.92、V<sub>s,max</sub> = 180 m/s）。第一次用 G<sub>max</sub> 分析 M<sub>w</sub> = 7.0 地震，中點最大剪應變 0.15 %。求 (a) R<sub>γ</sub>、γ<sub>eff</sub>　(b) 應變相容的 G/G<sub>max</sub>　(c) 更新的 V<sub>s</sub>、f<sub>0</sub>　(d) 傳到 25 Hz 所需的最大子層厚度　(e) 下一步。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) R<sub>γ</sub> = (M−1)/10 = 0.6；γ<sub>eff</sub> = 0.6 × 0.15 = 0.09 %。</li>
+        <li>(b) G/G<sub>max</sub> = 1/[1 + (0.09/0.0652)<sup>0.92</sup>] = 0.426。</li>
+        <li>(c) V<sub>s</sub> = 180√0.426 = 117.5 m/s；f<sub>0</sub> = V<sub>s</sub>/4H = 1.18 Hz（原本 1.80 Hz）。</li>
+        <li>(d) λ<sub>min</sub> = V<sub>s</sub>/f<sub>max</sub> = 117.5/25 = 4.70 m，h ≤ λ<sub>min</sub>/5 = 0.94 m（用 V<sub>s,max</sub> 為 1.44 m；應以軟化後較小的 V<sub>s</sub> 控制）。</li>
+        <li>(e) 同時由阻尼曲線更新 ξ，用新的 G、ξ 再做一次線性分析，求新的 γ<sub>max</sub>，重複到各層 G、ξ 的變化小於約 5–10 %。</li>
+      </ol>
+      <p class="ans">答：γ<sub>eff</sub> = 0.09 %、G/G<sub>max</sub> = 0.43、V<sub>s</sub> = 118 m/s、f<sub>0</sub> = 1.18 Hz、h ≤ 0.94 m。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u11.html#s11-1">11.1</a>、<a href="units/u11.html#s11-2">11.2</a></p>
+  </article>
+
+  <article class="prob" id="m6-4">
+    <div class="ph"><span class="pno">6.4</span><h3>下孔試驗、G<sub>max</sub> 比較與應變相容性質</h3><span class="ptag hw3">HW3 Q3 類型</span></div>
+    <div class="pq">三層砂：0–5 m 疏鬆、5–12 m 中密、12–20 m 緊密；地下水位 1.5 m、ρ = 1.90 t/m³、K<sub>0</sub> = 0.5。下孔到時：2.5、5、8、12、16、20 m → 17.9、35.7、50.0、69.0、83.3、97.6 ms。5.5 的試體取自第 3 層 16 m。(a) 各層 V<sub>s</sub>、G<sub>max</sub>　(b) 第 3 層與共振柱（5.5）、Hardin（e = 0.65、16 m 的 σ′<sub>m</sub>、p<sub>a</sub> = 100 kPa）比較　(c) 20 m 土層的小應變基本週期　(d) γ<sub>eff</sub> = 0.05 % 時第 3 層的 G 與阻尼　(e) 能否預測孔隙水壓。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) 加入原點，各層迴歸（此題資料恰為直線）：斜率 7.14、4.76、3.575 ms/m → V<sub>s</sub> = 140、210、280 m/s；G<sub>max</sub> = 37.3、84.0、148.7 MPa。</li>
+        <li>(b) 16 m：σ<sub>v</sub> = 1.90(9.81)(16) = 298.2 kPa，u = 9.81(14.5) = 142.2 kPa，σ′<sub>v</sub> = 156.0 kPa，σ′<sub>m</sub> = (2/3)(156.0) = 104.0 kPa（= 共振柱的壓密應力）。F(0.65) = 1.679，Hardin G<sub>max</sub> = 625(1.679)√(100 × 104.0) = 107.0 MPa；共振柱 104.4 MPa；現地 148.7 MPa 約高 40 %（重模失去組構、老化與膠結）。</li>
+        <li>(c) \(T_s = 4\sum h_i/V_{si} = 4(5/140 + 7/210 + 8/280) = 0.39\) s。</li>
+        <li>(d) 0.05 % 介於 5.5 的 stage 4（0.03 %：0.571、7.50 %）與 stage 5（0.1 %：0.300、13.49 %）之間，log 內插 x = 0.424：G/G<sub>max</sub> = 0.456、D = 10.0 %；G = 0.456 × 148.7 = 67.7 MPa（用<b>現地</b> G<sub>max</sub>）。</li>
+        <li>(e) 不能：等值線性是總應力分析；0.05 % &gt; γ<sub>tv</sub>，飽和砂會累積孔壓，要用有效應力分析或液化評估。</li>
+      </ol>
+      <p class="ans">答：V<sub>s</sub> = 140、210、280 m/s；第 3 層現地 149、共振柱 104、Hardin 107 MPa；T<sub>s</sub> = 0.39 s；G ≈ 68 MPa、D ≈ 10 %。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u07.html#s7-3">7.3</a>、<a href="units/u09.html#s9-4">9.4</a>、<a href="units/u11.html#s11-1">11.1</a>　作業：<a href="#h3-3">HW3 Q3</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-m8" data-num="Ch8" data-short="模擬考：液化" data-title="模擬考 Ch8">
+  <div class="sec-head"><span class="sec-num">模擬考 Ch8</span><h2>土壤液化</h2></div>
+
+  <article class="prob" id="m8-1">
+    <div class="ph"><span class="pno">8.1</span><h3>反覆三軸抗液化曲線與現地 CRR</h3></div>
+    <div class="pq">乾淨砂等向壓密不排水反覆三軸（σ′<sub>3c</sub> = 100 kPa）：σ<sub>d</sub> = 50 kPa 時 N<sub>L</sub> = 12 圈達初始液化（r<sub>u</sub> = 1），σ<sub>d</sub> = 36 kPa 時 N<sub>L</sub> = 45。求 (a) 各試驗 CSR<sub>tx</sub>　(b) CRR = aN<sup>−b</sup> 的 a、b　(c) N = 15 的 CRR<sub>tx</sub>　(d) K<sub>0</sub> = 0.5、c<sub>r</sub> = (1+K<sub>0</sub>)/2、二維修正 0.9 的現地 CRR　(e) b 的物理意義。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) CSR<sub>tx</sub> = σ<sub>d</sub>/(2σ′<sub>3c</sub>) = 0.25、0.18。</li>
+        <li>(b) \(b = \ln(0.25/0.18)/\ln(45/12) = 0.249\)；\(a = 0.25\times12^{0.249} = 0.464\)。</li>
+        <li>(c) CRR<sub>tx</sub> = 0.464 × 15<sup>−0.249</sup> = 0.237。</li>
+        <li>(d) c<sub>r</sub> = 0.75；CRR<sub>field</sub> = 0.9 × 0.75 × 0.237 = 0.160。</li>
+        <li>(e) b 是 log CRR–log N 的斜率：b 越大，CRR 隨圈數下降越快，大振幅的一圈相當於越多小圈；它也是換算 N<sub>eq</sub> 與 MSF 的指數。</li>
+      </ol>
+      <p class="ans">答：0.25、0.18；a = 0.464、b = 0.249；CRR<sub>tx</sub>(15) = 0.237；現地 0.160。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u12.html#s12-3">12.3</a>、<a href="units/u12.html#s12-4">12.4</a></p>
+  </article>
+
+  <article class="prob" id="m8-2">
+    <div class="ph"><span class="pno">8.2</span><h3>等值均勻圈數</h3></div>
+    <div class="pq">雨流計數：τ<sub>max</sub> 1 圈、0.8τ<sub>max</sub> 2 圈、0.6τ<sub>max</sub> 4 圈、0.4τ<sub>max</sub> 8 圈。求 (a) b = 0.25 時 τ<sub>ref</sub> = 0.65τ<sub>max</sub> 的 N<sub>eq</sub>　(b) 對應的規模　(c) b ≈ 0.33（1/b = 3）時的 N<sub>eq</sub>。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) \(N_{eq} = \sum N_i(\tau_i/0.65\tau_{max})^{1/b}\)，1/b = 4：1(1/0.65)⁴ + 2(0.8/0.65)⁴ + 4(0.6/0.65)⁴ + 8(0.4/0.65)⁴ = 5.60 + 4.59 + 2.90 + 1.15 = 14.2。</li>
+        <li>(b) 約 15 圈 → M ≈ 7.5（講義表：6.75 約 10、7.5 約 15）。</li>
+        <li>(c) 1/b = 3：3.64 + 3.73 + 3.15 + 1.86 = 12.4。b 越大、指數越小，大圈的權重越低，N<sub>eq</sub> 越少。</li>
+      </ol>
+      <p class="ans">答：14.2 圈（M ≈ 7.5）；12.4 圈。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u13.html#s13-2">13.2</a></p>
+  </article>
+
+  <article class="prob" id="m8-3">
+    <div class="ph"><span class="pno">8.3</span><h3>SPT 液化評估：Youd et al. (2001)</h3></div>
+    <div class="pq">水平地盤粉質砂，地下水位 1.5 m；γ<sub>t</sub> = 18.0（水位以上）、19.5 kN/m³（以下）。a<sub>max</sub> = 0.30g、M<sub>w</sub> = 6.5。z = 5.0 m：N<sub>m</sub> = 9、ER = 75 %、C<sub>B</sub> = 1.0、C<sub>R</sub> = 0.85、C<sub>S</sub> = 1.0、FC = 20 %。求 σ<sub>v0</sub>、σ′<sub>v0</sub>、r<sub>d</sub>、CSR；N<sub>60</sub>、C<sub>N</sub>、(N<sub>1</sub>)<sub>60</sub>、(N<sub>1</sub>)<sub>60cs</sub>；CRR<sub>7.5</sub>、MSF、K<sub>σ</sub>、CRR；FS<sub>L</sub>。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>σ<sub>v0</sub> = 18.0(1.5) + 19.5(3.5) = 95.25 kPa；u = 9.81(3.5) = 34.34 kPa；σ′<sub>v0</sub> = 60.91 kPa。</li>
+        <li>r<sub>d</sub>（Youd 有理式，z = 5 m）= 0.966；CSR = 0.65(0.30)(95.25/60.91)(0.966) = <b>0.294</b>。</li>
+        <li>N<sub>60</sub> = 9(75/60)(1.0)(0.85)(1.0) = 9.56；C<sub>N</sub> = (100/60.91)<sup>0.5</sup> = 1.281 ≤ 1.7；(N<sub>1</sub>)<sub>60</sub> = 12.25。</li>
+        <li>FC = 20 %：α = exp(1.76 − 190/400) = 3.61，β = 0.99 + 20<sup>1.5</sup>/1000 = 1.079；(N<sub>1</sub>)<sub>60cs</sub> = 3.61 + 1.079(12.25) = 16.84。</li>
+        <li>\(CRR_{7.5} = \frac{1}{34-N} + \frac{N}{135} + \frac{50}{(10N+45)^2} - \frac{1}{200} = 0.179\)；MSF = 10<sup>2.24</sup>/6.5<sup>2.56</sup> = 1.442；σ′<sub>v0</sub> &lt; 100 kPa → K<sub>σ</sub> = 1.0；CRR = 0.179 × 1.442 = <b>0.258</b>。</li>
+        <li>FS<sub>L</sub> = 0.258/0.294 = <b>0.88 &lt; 1</b>，液化。</li>
+      </ol>
+      <p class="ans">答：CSR = 0.294、(N<sub>1</sub>)<sub>60cs</sub> = 16.8、CRR = 0.258、FS<sub>L</sub> = 0.88（液化）。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u13.html#s13-3">13.3</a>、<a href="units/u13.html#s13-4">13.4</a></p>
+  </article>
+
+  <article class="prob" id="m8-4">
+    <div class="ph"><span class="pno">8.4</span><h3>同一點用 HBF (2012)</h3></div>
+    <div class="pq">8.3 的同一點（z = 5.0 m、N = 9、E<sub>m</sub> = 75 %、FC = 20 %、M<sub>w</sub> = 6.5、a<sub>max</sub> = 0.30g）改用 HBF (2012)：求 r<sub>d</sub>、CSR；C<sub>N</sub>、(N<sub>1</sub>)<sub>60</sub>；K<sub>s</sub>、(N<sub>1</sub>)<sub>60cs</sub>；CRR<sub>7.5</sub>、MSF、CRR；FS<sub>L</sub>，並與 8.3 比較。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>r<sub>d</sub> = 1 − 0.01z = 0.95；CSR = 0.65(0.30)(95.25/60.91)(0.95) = 0.290。</li>
+        <li>σ′<sub>v0</sub> = 60.91 kPa = 0.621 kg/cm²；C<sub>N</sub> = 1/√0.621 = 1.269；N<sub>60</sub> = 9 × 75/60 = 11.25（HBF 只修正能量）；(N<sub>1</sub>)<sub>60</sub> = 14.28。</li>
+        <li>K<sub>s</sub> = 1 + 0.07√(FC − 10) = 1.221；(N<sub>1</sub>)<sub>60cs</sub> = 1.221 × 14.28 = 17.44。</li>
+        <li>CRR<sub>7.5</sub> = 0.08 + 0.0035N/(1 − N/39) = 0.08 + 0.0610/0.553 = 0.190；MSF = (6.5/7.5)<sup>−3.3</sup> = 1.604；CRR = 0.305。</li>
+        <li>FS<sub>L</sub> = 0.305/0.290 = <b>1.05</b>。</li>
+      </ol>
+      <p class="ans">答：CSR = 0.290、CRR = 0.305、FS<sub>L</sub> = 1.05。Youd 判定液化（0.88）、HBF 剛好不液化：差異主要來自 MSF（1.60 vs 1.44）與 C<sub>R</sub>、細料修正。同一套方法的公式不可混用，報告要寫明方法。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u13.html#s13-4">13.4</a></p>
+  </article>
+
+  <article class="prob" id="m8-5">
+    <div class="ph"><span class="pno">8.5</span><h3>液化潛能指數</h3></div>
+    <div class="pq">鑽孔安全係數：2–4 m 0.75、4–6 m 0.80、6–8 m 0.95、8–12 m 1.10（0–2 m 在水位以上、12–20 m 為黏土，都不液化）。(a) 以各層中點計算 P<sub>L</sub>　(b) 嚴重程度　(c) 地盤改良使 2–6 m 的 FS<sub>L</sub> 提高到 1.2，重算 P<sub>L</sub>。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) \(P_L = \sum F\,W\,\Delta z\)，F = 1 − FS<sub>L</sub>，W = 10 − 0.5z<sub>mid</sub>：2–4 m：0.25 × 8.5 × 2 = 4.25；4–6 m：0.20 × 7.5 × 2 = 3.00；6–8 m：0.05 × 6.5 × 2 = 0.65；8–12 m：FS &gt; 1，F = 0。P<sub>L</sub> = 7.9。</li>
+        <li>(b) 5 &lt; P<sub>L</sub> ≤ 15 → 中度。</li>
+        <li>(c) 2–6 m 的 F = 0，只剩 6–8 m：P<sub>L</sub> = 0.65 → 輕微。淺層的權重大，改良淺層最有效。</li>
+      </ol>
+      <p class="ans">答：P<sub>L</sub> = 7.9（中度）；改良後 0.65（輕微）。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u14.html#s14-1">14.1</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-mR" data-num="R" data-short="模擬考：基礎振動" data-title="模擬考 Part R">
+  <div class="sec-head"><span class="sec-num">模擬考 Part R · Richart, Hall &amp; Woods (1970)</span><h2>基礎振動與波的方法</h2></div>
+
+  <article class="prob" id="mR-1">
+    <div class="ph"><span class="pno">R.1</span><h3>旋轉質量激振</h3></div>
+    <div class="pq">壓縮機總質量 m = 20 t、支承 k = 50,000 kN/m、ξ = 0.10；不平衡質量矩 m<sub>e</sub>e = 5 kg·m（0.005 t·m），轉速 600 rpm。求 (a) f<sub>n</sub> 與振幅最大的頻率　(b) 運轉時振幅　(c) 最大振幅　(d) 傳到基座的力。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) ω<sub>n</sub> = √(50,000/20) = 50 rad/s，f<sub>n</sub> = 7.96 Hz；旋轉質量的峰在 f<sub>n</sub>/√(1−2ξ²) = 8.04 Hz。</li>
+        <li>(b) 600 rpm → ω̄ = 62.83 rad/s，β = 1.257，D = 1.584；振幅 = (m<sub>e</sub>e/m)β²D = (0.005/20)(1.579)(1.584) = 0.625 mm。</li>
+        <li>(c) A<sub>max</sub> = (m<sub>e</sub>e/m)/(2ξ√(1−ξ²)) = 0.25/0.199 = 1.26 mm。</li>
+        <li>(d) Q<sub>0</sub> = m<sub>e</sub>eω̄² = 0.005 × 62.83² = 19.7 kN；TR = 1.633 → 32.2 kN。</li>
+      </ol>
+      <p class="ans">答：7.96 Hz、峰在 8.04 Hz；0.625 mm；1.26 mm；32.2 kN。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-11">4.11</a>、<a href="units/u04.html#s4-10">4.10</a></p>
+  </article>
+
+  <article class="prob" id="mR-2">
+    <div class="ph"><span class="pno">R.2</span><h3>Lysmer 類比：定力激振</h3></div>
+    <div class="pq">直徑 3 m 圓形混凝土基礎，機器加基礎 350 kN；垂直力 Q<sub>0</sub> = 30 kN（與頻率無關），運轉 600 cpm。土壤 γ = 18.5 kN/m³、G = 40,000 kPa、ν = 0.3。求 (a) 振幅最大的頻率　(b) 該頻率的振幅　(c) 運轉頻率的振幅。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>m = 350/9.81 = 35.68 t；ρ = 18.5/9.81 = 1.886 t/m³；r<sub>0</sub> = 1.5 m。k<sub>z</sub> = 4Gr<sub>0</sub>/(1−ν) = 342,900 kN/m；f<sub>n</sub> = √(k<sub>z</sub>/m)/2π = 15.6 Hz。</li>
+        <li>B<sub>z</sub> = (1−ν)m/(4ρr<sub>0</sub>³) = 0.981；ξ<sub>z</sub> = 0.425/√0.981 = 0.429（由 c<sub>z</sub> = 3002 kN·s/m 驗算相同）。</li>
+        <li>(a) 定力：f<sub>m</sub> = f<sub>n</sub>√(1−2ξ²) = 12.4 Hz。</li>
+        <li>(b) ρ<sub>s</sub> = 30/342,900 = 0.0875 mm；A<sub>max</sub> = ρ<sub>s</sub>/(2ξ√(1−ξ²)) = 0.113 mm。</li>
+        <li>(c) 600 cpm = 10 Hz，β = 0.641，D = 1.241 → 0.109 mm。</li>
+      </ol>
+      <p class="ans">答：12.4 Hz；0.113 mm；0.109 mm。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-11">4.11</a></p>
+  </article>
+
+  <article class="prob" id="mR-3">
+    <div class="ph"><span class="pno">R.3</span><h3>Lysmer 類比：旋轉質量激振</h3></div>
+    <div class="pq">剛性圓形基礎 r<sub>0</sub> = 1.5 m、總質量 60 t；土壤 G = 30 MPa、ν = 0.33、ρ = 1.9 t/m³；不平衡質量矩 2 kg·m，900 rpm。垂直振動求 (a) B<sub>z</sub>、ξ<sub>z</sub>　(b) f<sub>n</sub> 與振幅最大的頻率　(c) 運轉時與峰值的振幅。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) B<sub>z</sub> = (0.67/4)(60)/(1.9 × 3.375) = 1.567；ξ<sub>z</sub> = 0.425/√1.567 = 0.340。</li>
+        <li>(b) k<sub>z</sub> = 4(30,000)(1.5)/0.67 = 268,700 kN/m；f<sub>n</sub> = 10.65 Hz；旋轉質量 f<sub>m</sub> = f<sub>n</sub>/√(1−2ξ²) = 12.1 Hz。</li>
+        <li>(c) 900 rpm = 15 Hz，β = 1.408，D = 0.729；振幅 = (0.002/60)β²D = 0.048 mm；峰值 (m<sub>e</sub>e/m)/(2ξ√(1−ξ²)) = 0.052 mm。</li>
+      </ol>
+      <p class="ans">答：B<sub>z</sub> = 1.57、ξ<sub>z</sub> = 0.34；10.65 Hz、峰在 12.1 Hz；0.048 mm、0.052 mm。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-11">4.11</a></p>
+  </article>
+
+  <article class="prob" id="mR-4">
+    <div class="ph"><span class="pno">R.4</span><h3>介面的反射與透射</h3></div>
+    <div class="pq">剪力波由岩盤（ρ = 2.4 t/m³、V<sub>s</sub> = 1000 m/s）垂直向上進入土層（ρ = 1.8 t/m³、V<sub>s</sub> = 200 m/s）。求 (a) 透射、反射的位移振幅比　(b) 應力振幅比　(c) 評論。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>阻抗 Z<sub>1</sub> = 2.4 × 1000 = 2400（岩盤，入射側）、Z<sub>2</sub> = 1.8 × 200 = 360；α = Z<sub>2</sub>/Z<sub>1</sub> = 0.15。</li>
+        <li>(a) 位移：透射 2/(1+α) = 1.74；反射 (1−α)/(1+α) = 0.74。</li>
+        <li>(b) 應力：透射 2α/(1+α) = 0.26；反射 −(1−α)/(1+α) = −0.74。</li>
+        <li>(c) 波由硬進入軟：位移放大約 1.74 倍、應力只剩 26 %，這是軟土放大地動的原因之一；大部分能量被反射回岩盤。</li>
+      </ol>
+      <p class="ans">答：位移 1.74、0.74；應力 0.26、−0.74。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u06.html#s6-2">6.2</a>、<a href="units/u10.html#s10-7">10.7</a></p>
+  </article>
+
+  <article class="prob" id="mR-5">
+    <div class="ph"><span class="pno">R.5</span><h3>兩層震測折射</h3></div>
+    <div class="pq">上層 V<sub>1</sub> = 400 m/s、厚 H = 6 m，下層 V<sub>2</sub> = 1600 m/s。求 (a) 交越距離　(b) 截距時間　(c) x = 30 m 的初達時間。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) \(x_c = 2H\sqrt{(V_2+V_1)/(V_2-V_1)} = 12\sqrt{2000/1200} = 15.5\) m。</li>
+        <li>(b) \(t_i = 2H\sqrt{V_2^2-V_1^2}/(V_1V_2) = 12(1549)/640{,}000 = 29.0\) ms。</li>
+        <li>(c) 30 m &gt; x<sub>c</sub>，折射波先到：t = 30/1600 + 0.0290 = 47.8 ms（直達波 75 ms）。</li>
+      </ol>
+      <p class="ans">答：15.5 m、29.0 ms、47.8 ms。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u07.html#s7-3">7.3</a>　國考同型：<a href="#mN17">N.17</a></p>
+  </article>
+
+  <article class="prob" id="mR-6">
+    <div class="ph"><span class="pno">R.6</span><h3>Rayleigh 波隨距離衰減</h3></div>
+    <div class="pq">距振動源 r<sub>1</sub> = 5 m 處 Rayleigh 波垂直振幅 0.10 mm，求 r<sub>2</sub> = 20 m 處：(a) 只考慮幾何阻尼　(b) 加上材料阻尼 α = 0.04 m⁻¹（Bornitz）　(c) 對照：沿地表的實體波只考慮幾何阻尼。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(a) A ∝ 1/√r：0.10√(5/20) = 0.050 mm。</li>
+        <li>(b) × e<sup>−0.04(15)</sup> = × 0.549 → 0.027 mm。</li>
+        <li>(c) 沿地表的實體波 A ∝ 1/r²：0.10(5/20)² = 0.0063 mm，衰減快得多，所以遠處的地表振動以 Rayleigh 波為主。</li>
+      </ol>
+      <p class="ans">答：0.050、0.027、0.0063 mm。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u06.html#s6-8">6.8</a></p>
+  </article>
+
+  <article class="prob" id="mR-7">
+    <div class="ph"><span class="pno">R.7</span><h3>隔振溝深度</h3></div>
+    <div class="pq">振動源 30 Hz，土壤 V<sub>s</sub> = 150 m/s、ν = 0.30。依 Woods (1968) 求 (a) 主動隔振　(b) 被動隔振所需溝深。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>ν = 0.3：c<sub>R</sub> ≈ 0.927V<sub>s</sub> = 139 m/s；λ<sub>R</sub> = 139/30 = 4.64 m。</li>
+        <li>(a) 主動：H ≈ 0.6λ<sub>R</sub> = 2.8 m。</li>
+        <li>(b) 被動：H ≈ 1.33λ<sub>R</sub> = 6.2 m（郭老師講義 1.25λ<sub>R</sub> → 5.8 m），溝長 ≥ 3λ<sub>R</sub> ≈ 14 m。</li>
+      </ol>
+      <p class="ans">答：λ<sub>R</sub> = 4.64 m；主動 2.8 m、被動 6.2 m。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u06.html#s6-8">6.8</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-mN" data-num="國考" data-short="國考計算題" data-title="國考計算題">
+  <div class="sec-head"><span class="sec-num">模擬考 Part C · 國考</span><h2>大地技師國考的計算題</h2></div>
+  <p class="part-note">只收計算題。N.6（Mononobe–Okabe 地震土壓力、Richards &amp; Elms）不在本課講義範圍，未收錄；其餘申論題見模擬考原檔。</p>
+
+  <article class="prob" id="mN1">
+    <div class="ph"><span class="pno">N.1</span><h3>共振柱求 E、G、ν</h3><span class="ptag">114 年 · 25 分</span></div>
+    <div class="pq">均勻級配乾砂共振柱：扭轉振動量得 V<sub>s</sub> = 230 m/s，垂直（縱向）振動量得縱波波速 385 m/s；e = 0.5、G<sub>s</sub> = 2.65。(一) 說明縱向共振柱求 E 的原理　(二) 計算 E、G　(三) 柏松比。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(一) 試體當細桿縱向振動，側向可自由變形（單軸應力），共振頻率給出桿波速 \(v_c = \sqrt{E/\rho}\)（由頻率方程求），\(E = \rho v_c^2\)；扭轉振動則給 V<sub>s</sub>、G。</li>
+        <li>(二) 乾密度 ρ = G<sub>s</sub>ρ<sub>w</sub>/(1+e) = 2.65/1.5 = 1.767 t/m³；E = 1.767 × 385² = 261.9 MPa；G = 1.767 × 230² = 93.5 MPa。</li>
+        <li>(三) ν = E/(2G) − 1 = 0.40。</li>
+      </ol>
+      <p class="ans">答：E = 262 MPa、G = 93.5 MPa、ν = 0.40。若誤把 385 m/s 當無限介質的 P 波（M），會得 ν = 0.22，所以要先判斷是桿波還是 P 波。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u06.html#s6-2">6.2</a>、<a href="units/u09.html#s9-1">9.1</a></p>
+  </article>
+
+  <article class="prob" id="mN3">
+    <div class="ph"><span class="pno">N.3</span><h3>多層土的主頻、共振樓層與 V<sub>p</sub></h3><span class="ptag">113 年 · 20 分</span></div>
+    <div class="pq">岩盤在地下 50 m，五層各 10 m，V<sub>s</sub> = 130、140、160、170、180 m/s；地下水位 10 m，水位以上 ν = 0.33、以下 0.44。(一) 自然主頻與易共振樓層數　(二) 各層 V<sub>p</sub>　(三) 實驗室為何以量 V<sub>s</sub> 或 G 為主。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(一) Σh/V<sub>s</sub> = 10(1/130 + 1/140 + 1/160 + 1/170 + 1/180) = 0.3252 s；T = 4Σh/V<sub>s</sub> = 1.30 s，f<sub>n</sub> = 0.77 Hz。建物 T ≈ 0.1N → 約 13 層樓最易共振。</li>
+        <li>(二) \(V_p = V_s\sqrt{(2-2\nu)/(1-2\nu)}\)：第 1 層（ν = 0.33）258 m/s；第 2–5 層（ν = 0.44）428、489、519、550 m/s。</li>
+        <li>(三) 地震以 SH 波垂直向上傳播為主，地盤反應由 G、V<sub>s</sub> 控制；飽和土的 V<sub>p</sub> 被孔隙水控制，不反映土骨架勁度。</li>
+      </ol>
+      <p class="ans">答：T = 1.30 s、f<sub>n</sub> = 0.77 Hz、約 13 層；V<sub>p</sub> = 258、428、489、519、550 m/s。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u10.html#s10-6">10.6</a>、<a href="units/u06.html#s6-2">6.2</a></p>
+  </article>
+
+  <article class="prob" id="mN7">
+    <div class="ph"><span class="pno">N.7</span><h3>Vs30 與共振主頻</h3><span class="ptag">112 年 · (三) 20 分</span></div>
+    <div class="pq">V<sub>s</sub> 剖面：0–5 m 145、5–15 m 180、15–27 m 215、27–40 m 420 m/s。求 V<sub>s30</sub>；若岩盤定義為 V<sub>s</sub> &gt; 360 m/s，求場址共振主頻。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>前 30 m：5/145 + 10/180 + 12/215 + 3/420 = 0.0345 + 0.0556 + 0.0558 + 0.0071 = 0.1530 s；V<sub>s30</sub> = 30/0.1530 = 196 m/s（臺灣第二類）。</li>
+        <li>岩盤在 27 m：土層走時 0.1459 s；T = 4 × 0.1459 = 0.583 s，f<sub>0</sub> = 1.71 Hz（平均 V<sub>s</sub> = 27/0.1459 = 185 m/s）。</li>
+      </ol>
+      <p class="ans">答：V<sub>s30</sub> = 196 m/s；f<sub>0</sub> = 1.71 Hz（T = 0.58 s）。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u07.html#s7-5">7.5</a>、<a href="units/u10.html#s10-6">10.6</a>　作業：<a href="#h2">HW2 Q2</a></p>
+  </article>
+
+  <article class="prob" id="mN12">
+    <div class="ph"><span class="pno">N.12</span><h3>Lysmer 類比、避免共振、共振振幅</h3><span class="ptag">110 年 · 25 分</span></div>
+    <div class="pq">圓形基礎 r<sub>0</sub> = 2 m，機器加基礎 735 kN，動載重 3 Hz、振幅 20 kN；土壤 γ = 18.5 kN/m³、G = 18,000 kPa、ν = 0.4。(一) 阻尼比與阻尼自然頻率　(二) 避免共振的條件與檢核　(三) 不滿足時的解決方案　(四) 共振時位移振幅。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>(一) m = 74.92 t、ρ = 1.886 t/m³；k<sub>z</sub> = 4(18,000)(2)/0.6 = 240,000 kN/m；c<sub>z</sub> = 3.4(4)√(18,000 × 1.886)/0.6 = 4176 kN·s/m；ξ = c<sub>z</sub>/(2√(k<sub>z</sub>m)) = 0.492（B<sub>z</sub> = 0.745，0.425/√B<sub>z</sub> 相同）。f<sub>n</sub> = 9.01 Hz，f<sub>d</sub> = f<sub>n</sub>√(1−ξ²) = 7.84 Hz。</li>
+        <li>(二) 運轉頻率要避開共振區，常用 f<sub>op</sub>/f<sub>n</sub> ≤ 0.5（低調）或 ≥ 1.5（高調）。β = 3/9.01 = 0.333 → 低調設計，符合；運轉時振幅 (20/240,000)(1.055) = 0.088 mm。</li>
+        <li>(三) 改變 f<sub>n</sub>：加大基礎半徑或改良地盤（提高 k<sub>z</sub>）、改樁基；或加重基礎改成高調；或調整轉速、加隔振支承。</li>
+        <li>(四) β = 1：ρ<sub>s</sub>/(2ξ) = 0.0833/0.984 = 0.085 mm；定力激振的真正峰在 f<sub>n</sub>√(1−2ξ²) = 6.47 Hz，0.097 mm。</li>
+      </ol>
+      <p class="ans">答：ξ = 0.49、f<sub>d</sub> = 7.84 Hz；β = 0.33 符合低調；共振振幅約 0.085 mm（峰值 0.097 mm）。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-11">4.11</a></p>
+  </article>
+
+  <article class="prob" id="mN13">
+    <div class="ph"><span class="pno">N.13</span><h3>Vs30、地盤分類、F<sub>a</sub>、卓越週期</h3><span class="ptag">109 年 · 20 分</span></div>
+    <div class="pq">剖面：0–10 m 軟弱黏土 V<sub>s</sub> = 100 m/s、10–28 m 黏土 150 m/s、28 m 以下軟岩 400 m/s。求 V<sub>s30</sub>、耐震規範地盤分類、短週期 F<sub>a</sub> 的範圍、卓越週期 T<sub>p</sub>。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>V<sub>s30</sub> = 30/(10/100 + 18/150 + 2/400) = 30/0.225 = 133 m/s &lt; 180 → <b>第三類（軟弱）地盤</b>。</li>
+        <li>111 年版表 2-4(a)，第三類：S<sub>S</sub> ≤ 0.5 → 1.2、0.6 → 1.2、0.7 → 1.1、≥ 0.8 → 1.0，所以 F<sub>a</sub> = 1.0–1.2（震區越強越小，土壤非線性）。</li>
+        <li>以軟岩為基盤，上方 28 m：T<sub>p</sub> ≈ 4(10/100 + 18/150) = 0.88 s。</li>
+      </ol>
+      <p class="ans">答：V<sub>s30</sub> = 133 m/s、第三類地盤、F<sub>a</sub> = 1.0–1.2、T<sub>p</sub> ≈ 0.88 s。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u07.html#s7-5">7.5</a>、<a href="units/u10.html#s10-6">10.6</a></p>
+  </article>
+
+  <article class="prob" id="mN15">
+    <div class="ph"><span class="pno">N.15</span><h3>SDOF 振動基礎（期中 Q2 同型）</h3><span class="ptag">109 年 · 25 分</span></div>
+    <div class="pq">基礎重 780 kN，k = 200,000 kN/m、C = 2400 kN·s/m。求 (一) 臨界阻尼係數　(二) 阻尼比 D　(三) 阻尼自然頻率；受 Q(t) = Q<sub>0</sub> sin ωt，Q<sub>0</sub> = 25 kN、ω = 10 rad/s，求 (四) 頻率比　(五) 垂直位移振幅。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>m = 79.51 t；(一) c<sub>c</sub> = 2√(km) = 7976 kN·s/m；(二) D = 2400/7976 = 0.301。</li>
+        <li>(三) ω<sub>n</sub> = 50.15 rad/s；ω<sub>d</sub> = ω<sub>n</sub>√(1−D²) = 47.83 rad/s（f<sub>d</sub> = 7.61 Hz）。</li>
+        <li>(四) β = 10/50.15 = 0.199。</li>
+        <li>(五) 放大因子 1/√((1−0.0398)² + (2 × 0.301 × 0.199)²) = 1.033；振幅 = (25/200,000)(1.033) = 0.129 mm。</li>
+      </ol>
+      <p class="ans">答：c<sub>c</sub> = 7976 kN·s/m、D = 0.30、ω<sub>d</sub> = 47.8 rad/s、β = 0.20、0.129 mm。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u04.html#s4-3">4.3</a>、<a href="units/u04.html#s4-4">4.4</a>　同型：<a href="#e2">期中 Q2</a></p>
+  </article>
+
+  <article class="prob" id="mN16">
+    <div class="ph"><span class="pno">N.16</span><h3>自由–自由扭轉共振柱求 G<sub>max</sub></h3><span class="ptag">108 年 · (一) 10 分</span></div>
+    <div class="pq">自由–自由扭轉共振柱：試體直徑 50 mm、高 110 mm、質量 380 g、含水量 10 %，第一模態自然頻率 550 Hz。求 G<sub>max</sub>。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>體積 V = π(0.05)²/4 × 0.11 = 2.160×10⁻⁴ m³；總密度 ρ = 0.380/2.160×10⁻⁴ = 1759 kg/m³（含水的總質量，含水量不必用）。</li>
+        <li>自由–自由第一模態：試體長 = 半波長，\(f_1 = V_s/2h\) → V<sub>s</sub> = 2(0.11)(550) = 121 m/s。</li>
+        <li>G<sub>max</sub> = 1.759 × 121² = 25.8 MPa。</li>
+      </ol>
+      <p class="ans">答：G<sub>max</sub> ≈ 25,800 kPa。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u09.html#s9-1">9.1</a>、<a href="units/u06.html#s6-2">6.2</a></p>
+  </article>
+
+  <article class="prob" id="mN17">
+    <div class="ph"><span class="pno">N.17</span><h3>P 波折射：層厚與模數</h3><span class="ptag">108 年 · 30 分</span></div>
+    <div class="pq">點震源 P 波折射：x = 7.5、15.0、23.0、30.5、45.5、61.0、76.0、91.5 m 的初達時間 49.08、81.96、122.8、148.2、174.2、202.8、228.6、256.7 ms。γ = 17.5 kN/m³、ν = 0.3。求第一層的 E、G、厚度 z；第二層的 E、G。提示 \(z = \frac{x_c}{2}\sqrt{(V_2-V_1)/(V_2+V_1)}\)。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>走時曲線在 30–45 m 之間轉折。前 4 點迴歸：斜率 4.40 ms/m → V<sub>1</sub> = 228 m/s（截距約 17 ms，不通過原點）；後 4 點：斜率 1.79 ms/m → V<sub>2</sub> = 560 m/s。</li>
+        <li>兩直線交點 x<sub>c</sub> = 29.2 m；z = (29.2/2)√(332/788) = 9.5 m。</li>
+        <li>ρ = 17.5/9.81 = 1.784 t/m³；由 V<sub>p</sub> 求 M = ρV<sub>p</sub>²，\(E = M\frac{(1+\nu)(1-2\nu)}{1-\nu}\)、G = E/2(1+ν)：第一層 E = 68.6 MPa、G = 26.4 MPa；第二層 E = 415 MPa、G = 160 MPa。</li>
+      </ol>
+      <p class="ans">答：V<sub>1</sub> ≈ 228、V<sub>2</sub> ≈ 560 m/s；z ≈ 9.5 m；E<sub>1</sub> = 69、G<sub>1</sub> = 26 MPa；E<sub>2</sub> = 415、G<sub>2</sub> = 160 MPa。若直達波強迫通過原點，V<sub>1</sub> 只有 195 m/s，答案會不同，作答時要說明怎麼擬合。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u06.html#s6-2">6.2</a>　同型：<a href="#mR-5">R.5</a></p>
+  </article>
+
+  <article class="prob" id="mN18">
+    <div class="ph"><span class="pno">N.18</span><h3>由 Hardin &amp; Richart 建立 G–γ 關係</h3><span class="ptag">107 年 · 30 分</span></div>
+    <div class="pq">0–10 m 砂土，地下水位 2 m；e = 0.8、水位以上 w = 10 %、φ′ = 30°、G<sub>s</sub> = 2.65。說明 8 m 深處如何建立完整的 G–γ 關係（提示 \(G_{max} = 3230\frac{(2.97-e)^2}{1+e}\sqrt{\sigma'_0}\)，kPa）。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>單位重：γ<sub>d</sub> = 2.65(9.81)/1.8 = 14.44；水位以上 γ = 14.44(1.1) = 15.89；γ<sub>sat</sub> = (2.65+0.8)(9.81)/1.8 = 18.80 kN/m³。</li>
+        <li>8 m：σ<sub>v</sub> = 15.89(2) + 18.80(6) = 144.6 kPa，u = 58.9 kPa，σ′<sub>v</sub> = 85.7 kPa；K<sub>0</sub> = 1 − sin30° = 0.5；σ′<sub>0</sub> = σ′<sub>m</sub> = (2/3)(85.7) = 57.2 kPa。</li>
+        <li>G<sub>max</sub> = 3230(2.17)²/1.8 × √57.2 = 63.9 MPa。</li>
+        <li>剪力強度：\(\tau_{max} = \sqrt{\left[\frac{1+K_0}{2}\sigma'_v\sin\phi'\right]^2 - \left[\frac{1-K_0}{2}\sigma'_v\right]^2} = 24.0\) kPa；γ<sub>r</sub> = τ<sub>max</sub>/G<sub>max</sub> = 0.0375 %。</li>
+        <li>雙曲線 \(G = G_{max}/(1+\gamma/\gamma_r)\)：γ = 0.001 %、0.01 %、0.1 % 時 G/G<sub>max</sub> = 0.97、0.79、0.27；阻尼可再由 Masing 或經驗曲線得到。</li>
+      </ol>
+      <p class="ans">答：σ′<sub>0</sub> = 57 kPa、G<sub>max</sub> = 64 MPa、τ<sub>max</sub> = 24 kPa、γ<sub>r</sub> = 0.038 %，G = G<sub>max</sub>/(1+γ/γ<sub>r</sub>)。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u07.html#s7-1">7.1</a>、<a href="units/u08.html#s8-6">8.6</a></p>
+  </article>
+
+  <article class="prob" id="mN24">
+    <div class="ph"><span class="pno">N.24</span><h3>Seed 簡易法的平均反覆剪應力</h3><span class="ptag">105 年 · (二) 10 分</span></div>
+    <div class="pq">地下水位 4 m；水位以上 γ = 18.0、以下 18.5 kN/m³；a<sub>h,max</sub> = 0.23g；r<sub>d</sub> = 1 − 0.015z。求 3 m 與 6 m 處的平均反覆剪應力。</div>
+    <details class="derive"><summary>解題步驟與答案</summary><div class="body">
+      <ol class="steps">
+        <li>\(\tau_{av} = 0.65\frac{a_{max}}{g}\sigma_v r_d\)（用總應力）。</li>
+        <li>3 m：σ<sub>v</sub> = 54.0 kPa，r<sub>d</sub> = 0.955，τ<sub>av</sub> = 0.65(0.23)(54.0)(0.955) = 7.71 kPa。</li>
+        <li>6 m：σ<sub>v</sub> = 18.0(4) + 18.5(2) = 109.0 kPa，r<sub>d</sub> = 0.910，τ<sub>av</sub> = 14.83 kPa。</li>
+      </ol>
+      <p class="ans">答：7.7 kPa、14.8 kPa（CSR 還要除以 σ′<sub>v0</sub>；3 m 在水位以上不會液化）。</p>
+    </div></details>
+    <p class="plink">觀念：<a href="units/u13.html#s13-3">13.3</a></p>
+  </article>
+</section>
+
+</main>
+<footer class="site">CIE 5014 Soil Dynamics and Foundation Vibration · Personal Study Notes · From Prof. Dr. Yu-Wei Hwang 2026 Slides、Homework and Reference</footer>
+
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/auto-render.min.js"></script>
+<script src="assets/common.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>土壤動力學學習網站</title>
+<title>Soil Dynamics and Foundation Vibration</title>
 <link rel="stylesheet" href="assets/katex/katex.min.css">
 <link rel="stylesheet" href="assets/style.css">
 <style>
@@ -43,15 +43,16 @@
 <main>
   <header class="hero">
     <div class="eyebrow">CIE 5014 · 2026 Fall</div>
-    <h1>土壤動力學</h1>
+    <h1>Soil Dynamics and Foundation Vibration</h1>
     <p class="lede"><b>地震從岩盤傳上來，經過土層，到了地表會變成什麼樣子？</b>要回答它，得先知道地震怎麼來、系統怎麼振、波怎麼傳、土壤有多硬又消耗多少能量，再把它們組合成地盤反應分析，最後用來判斷土壤會不會液化。這個網站把整門課拆成 14 個觀念單元，照學習的先後排列。</p>
     <a class="btn primary" href="units/u01.html">從單元 1 開始</a>
     <a class="btn" href="glossary.html" style="font-size:17px;padding:11px 24px;margin:34px 0 0 8px;display:inline-block">名詞總表</a>
+    <a class="btn" href="calc.html" style="font-size:17px;padding:11px 24px;margin:34px 0 0 8px;display:inline-block">計算題整理</a>
   </header>
 
   <section class="sec" id="map">
     <h2 class="center">學習路線</h2>
-    <p class="center sub">五個階段、十四個單元。每個單元只講一組觀念，前一個單元是後一個的工具。</p>
+    <p class="center sub">五個 Part、十四個單元。每個單元只講一組觀念，前一個單元是後一個的工具。</p>
     <div id="stages"></div>
     <p class="future">Ch7 局部場址效應與設計地震（講義發布後加入）</p>
   </section>
@@ -95,7 +96,7 @@
     </table></div>
   </section>
 </main>
-<footer class="site">個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+<footer class="site">CIE 5014 Soil Dynamics and Foundation Vibration · Personal Study Notes · From Prof. Dr. Yu-Wei Hwang 2026 Slides、Homework and Reference</footer>
 
 <script src="assets/katex/katex.min.js"></script>
 <script src="assets/katex/auto-render.min.js"></script>
@@ -120,7 +121,7 @@ document.addEventListener('sd:ready', () => {
     14: '液化了會怎樣？P_L、沉陷、側潰、流動破壞與減災。'
   };
   const box = document.getElementById('stages');
-  box.innerHTML = SITE.stages.map((s, i) => `<div class="stage"><div class="stage-h"><span class="k">階段 ${i + 1}</span><h3>${s}</h3></div>
+  box.innerHTML = SITE.stages.map((s, i) => `<div class="stage"><div class="stage-h"><span class="k">Part ${i + 1}</span><h3>${s}</h3></div>
     <div class="units">${SITE.units.filter(u => u.stage === i).map(u => `<a class="unit" href="${u.href}">
       <div class="no">單元 ${u.n}</div><div class="t">${u.name}</div><p class="q">${Q[u.n]}</p></a>`).join('')}</div></div>`).join('');
 

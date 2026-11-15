@@ -5,7 +5,7 @@
 (function () {
   /* 學習路線：以觀念分單元，不照講義章節；作業獨立成頁 */
   const SITE = {
-    title: '土壤動力學 學習網站',
+    title: 'Soil Dynamics and Foundation Vibration',
     stages: ['地震輸入', '振動與頻率', '波與土壤性質', '地盤反應', '土壤液化'],
     units: [
       { n: 1, stage: 0, short: '動態問題', name: '什麼是動態問題' },
@@ -46,20 +46,21 @@
       return `<a href="#${s.id}">${n}<span>${short}</span></a>`;
     }).join('')}</div>`;
     const item = (o, inner) => `<a class="sn-item${o.id === page ? ' cur' : ''}" href="${root}${o.href}">${inner}</a>${o.id === page && secs.length ? secList() : ''}`;
-    const units = SITE.stages.map((s, i) => `<div class="sn-stage">階段 ${i + 1} · ${s}</div>${
+    const units = SITE.stages.map((s, i) => `<div class="sn-stage">Part ${i + 1} · ${s}</div>${
       SITE.units.filter(u => u.stage === i).map(u => item(u, `<b>${u.n}</b><span>${u.name}</span>`)).join('')}`).join('');
     const hws = SITE.hws.map(h => item(h, `<b>${h.short.replace('HW', 'H')}</b><span>${h.short} ${h.name}</span>`)).join('');
     const side = document.createElement('aside');
     side.className = 'sidenav';
-    side.innerHTML = `<div class="sn-top"><a class="brand" href="${root}index.html">土壤動力學</a>
+    side.innerHTML = `<div class="sn-top"><a class="brand" href="${root}index.html">Soil Dynamics and Foundation Vibration</a>
         <button class="icon-btn" id="themeBtn" title="切換深淺色">◐</button></div>
       <nav class="sn-scroll">
         <a class="sn-item sn-home${page === 'home' ? ' cur' : ''}" href="${root}index.html"><b>⌂</b><span>首頁 · 學習路線</span></a>
         ${item({ id: 'glossary', href: 'glossary.html' }, '<b>≡</b><span>名詞總表</span>')}
+        ${item({ id: 'calc', href: 'calc.html' }, '<b>∑</b><span>計算題整理</span>')}
         ${units}<div class="sn-stage">作業</div>${hws}</nav>`;
     const mbar = document.createElement('header');
     mbar.className = 'mbar';
-    mbar.innerHTML = `<button class="icon-btn sn-toggle" title="導覽">☰</button><a class="ln-title" href="#top">${document.body.dataset.title || '土壤動力學'}</a>`;
+    mbar.innerHTML = `<button class="icon-btn sn-toggle" title="導覽">☰</button><a class="ln-title" href="#top">${document.body.dataset.title || 'Soil Dynamics and Foundation Vibration'}</a>`;
     const scrim = document.createElement('div');
     scrim.className = 'sn-scrim';
     document.body.prepend(scrim);

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>11. 等值線性與非線性分析 · 土壤動力學</title>
+<title>11. 等值線性與非線性分析 · Soil Dynamics and Foundation Vibration</title>
 <link rel="stylesheet" href="../assets/katex/katex.min.css">
 <link rel="stylesheet" href="../assets/style.css">
 <style>
@@ -21,7 +21,7 @@
 <main>
 
 <header class="hero" id="top">
-  <div class="eyebrow">階段 4 地盤反應 · 單元 11 · Equivalent-Linear and Nonlinear Analysis</div>
+  <div class="eyebrow">Part 4 地盤反應 · 單元 11 · Equivalent-Linear and Nonlinear Analysis</div>
   <h1>等值線性與非線性分析</h1>
   <p class="lede"><b>讓土壤性質跟著應變走。</b>等值線性分析反覆更新每一層的 \(G\) 與 \(\xi\)，直到與算出的應變相容；應變太大時改用時間域的非線性分析；地形與結構物不再是水平成層時，就需要二維與三維模型。</p>
   <div class="callout question"><div class="ct">這個單元要回答</div><p>強震時土壤變軟，線性分析還能用嗎？</p></div>
@@ -256,7 +256,7 @@
 
 <section class="sec" id="s11-sum" data-num="重點" data-short="重點整理" data-title="重點整理">
   <div class="sec-head"><span class="sec-num">重點</span><h2>重點整理</h2></div>
-  <p>單元 10、11 只記一條鏈：<b>水平成層 + 垂直 SH 波 → 轉換函數（剛性 → 彈性岩盤 → 多層）→ FFT 流程 → 等值線性疊代 → 必要時非線性或二、三維</b>。強震下 \(G\) 下降、\(\xi\) 上升，結果是場址週期變長、高頻被濾掉。下一章（Ch7）看真實場址在地震中記錄到什麼，用來檢驗這些理論；<a href="u12.html">階段 5</a>（Ch8）用本單元輸出的 \(\tau_{max}(z)\) 評估液化。</p>
+  <p>單元 10、11 只記一條鏈：<b>水平成層 + 垂直 SH 波 → 轉換函數（剛性 → 彈性岩盤 → 多層）→ FFT 流程 → 等值線性疊代 → 必要時非線性或二、三維</b>。強震下 \(G\) 下降、\(\xi\) 上升，結果是場址週期變長、高頻被濾掉。下一章（Ch7）看真實場址在地震中記錄到什麼，用來檢驗這些理論；<a href="u12.html">Part 5</a>（Ch8）用本單元輸出的 \(\tau_{max}(z)\) 評估液化。</p>
   <h3>公式卡</h3>
   <div class="fcards">
     <div class="fcard"><div class="ft">有效應變</div>\[ \gamma_{eff} = R_\gamma\gamma_{max},\; R_\gamma = \frac{M-1}{10} \]</div>
@@ -287,7 +287,7 @@
     <div class="fb">γ &gt; 0.5–1 % 已超出等值線性的可靠範圍：極軟層像隔震墊，地表加速度被低估，真正的問題是大變形。先檢查曲線是否超過強度，再用非線性分析（以等值線性為基準）比較。增加疊代次數不能解決模型本身的限制。</div>
   </div>
   <div class="callout link"><div class="ct">下一步</div>
-    <p>從斷層到地表的運動算完了。階段 5 用這些剪應力判斷土壤會不會液化：從單元 12 的易致性開始。</p>
+    <p>從斷層到地表的運動算完了。Part 5 用這些剪應力判斷土壤會不會液化：從單元 12 的易致性開始。</p>
   </div>
 </section>
 
@@ -296,7 +296,7 @@
   <a href="../units/u10.html"><span class="dir">← 單元 10</span>一維線性地盤反應</a>
   <a class="next" href="../units/u12.html"><span class="dir">單元 12 →</span>液化易致性與反覆試驗</a>
 </nav></div>
-<footer class="site">CIE 5014 土壤動力學與基礎振動 · 個人學習整理 · 內容依據黃郁惟老師 2026 秋季講義、作業與課程參考資料改寫</footer>
+<footer class="site">CIE 5014 Soil Dynamics and Foundation Vibration · Personal Study Notes · From Prof. Dr. Yu-Wei Hwang 2026 Slides、Homework and Reference</footer>
 
 <script src="../assets/katex/katex.min.js"></script>
 <script src="../assets/katex/auto-render.min.js"></script>
