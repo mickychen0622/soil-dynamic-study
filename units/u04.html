@@ -509,17 +509,17 @@
 
   <h3>情況 a：機器的力傳到地面多少？</h3>
   <p>機器產生 \(p_0\sin\bar\omega t\)，經彈簧與阻尼器傳到地面。彈簧力幅值 \(p_0D\)、阻尼力幅值 \(2\xi\beta p_0D\)，兩者差 90°，平方和開根號：</p>
-  <div class="eqbox">\[ TR = \frac{F_{\text{傳到地面}}}{p_0} = D\sqrt{1 + (2\xi\beta)^2} \]</div>
+  <div class="eqbox">\[ TR_1 = \frac{F_{\text{傳到地面}}}{p_0} = D\sqrt{1 + (2\xi\beta)^2} \]</div>
 
   <h3>情況 b：地面在搖，質量動多少？</h3>
   <p>地面 \(u_g = u_{g0}\sin\bar\omega t\)。慣性力作用在總加速度上，彈簧與阻尼器只感受相對運動，等效外力為 \(-m\ddot u_g\)。結果：</p>
-  <div class="eqbox">\[ \frac{u^t_{max}}{u_{g0}} = D\sqrt{1 + (2\xi\beta)^2} \;(=TR), \qquad \frac{u_{max}}{u_{g0}} = \beta^2 D \;\;(\text{相對位移，即彈簧伸長量}) \]</div>
-  <p>力由質量傳到地面、運動由地面傳到質量，是<b>同一個函數</b>。兩者都等於 \(|k + ic\bar\omega| / |k - m\bar\omega^2 + ic\bar\omega|\)：分子是傳遞的彈簧與阻尼器，分母是系統的動態勁度。</p>
+  <div class="eqbox">\[ TR_2 = \frac{u^t_{max}}{u_{g0}} = D\sqrt{1 + (2\xi\beta)^2}, \qquad \frac{u_{max}}{u_{g0}} = \beta^2 D \;\;(\text{相對位移，即彈簧伸長量}) \]</div>
+  <p>力由質量傳到地面（\(TR_1\)）、運動由地面傳到質量（\(TR_2\)），是<b>同一個函數</b>，\(TR_1 = TR_2\)。兩者都等於 \(|k + ic\bar\omega| / |k - m\bar\omega^2 + ic\bar\omega|\)：分子是傳遞的彈簧與阻尼器，分母是系統的動態勁度。</p>
 
-  <details class="derive"><summary>推導：TR 的兩個關鍵</summary><div class="body">
+  <details class="derive"><summary>推導：TR₁、TR₂ 的兩個關鍵</summary><div class="body">
     <ol class="steps">
-      <li>所有曲線在 \(\beta = \sqrt2\) 通過 \(TR = 1\)：\(\beta^2 = 2\) 時 \((1-\beta^2)^2 = 1\)，\(TR^2 = (1+8\xi^2)/(1+8\xi^2) = 1\)，與 \(\xi\) 無關。</li>
-      <li>\(\beta &gt; \sqrt2\) 時 \((1-\beta^2)^2 &gt; 1\)，\(TR^2 = (1+4\xi^2\beta^2)/((1-\beta^2)^2+4\xi^2\beta^2) &lt; 1\)；分子分母加同一個正數 \(4\xi^2\beta^2\) 會把比值往 1 推，所以<b>阻尼越大，傳遞越多</b>。</li>
+      <li>所有曲線在 \(\beta = \sqrt2\) 通過 \(TR_1 = TR_2 = 1\)：\(\beta^2 = 2\) 時 \((1-\beta^2)^2 = 1\)，\(TR_1^2 = TR_2^2 = (1+8\xi^2)/(1+8\xi^2) = 1\)，與 \(\xi\) 無關。</li>
+      <li>\(\beta &gt; \sqrt2\) 時 \((1-\beta^2)^2 &gt; 1\)，\(TR_1^2 = TR_2^2 = (1+4\xi^2\beta^2)/((1-\beta^2)^2+4\xi^2\beta^2) &lt; 1\)；分子分母加同一個正數 \(4\xi^2\beta^2\) 會把比值往 1 推，所以<b>阻尼越大，傳遞越多</b>。</li>
       <li>地動情況：相對位移 \(u = \beta^2u_{g0}D\sin(\bar\omega t-\varphi)\)，總位移 \(u_g + u\) 用餘弦定理相加，並用 \(\cos\varphi = D(1-\beta^2)\)，整理後與 \(D^2(1+4\xi^2\beta^2)\) 相同。</li>
     </ol>
   </div></details>
@@ -533,10 +533,10 @@
   </ol>
 
   <div class="callout example"><div class="ct">例：1800 rpm 的機器</div>
-    <p>1800 rpm = 30 Hz。要 \(TR &lt; 1\)：\(f_n &lt; 30/1.41 = 21\) Hz。要 \(TR &lt; 10\%\)（阻尼可忽略）：\(TR \approx 1/(\beta^2-1)\) → \(\beta = \sqrt{11} = 3.3\) → \(f_n \approx 9\) Hz，機器自重下的靜態沉陷 \(g/\omega^2 \approx 3\) mm。</p>
+    <p>1800 rpm = 30 Hz。要 \(TR_1 &lt; 1\)：\(f_n &lt; 30/1.41 = 21\) Hz。要 \(TR_1 &lt; 10\%\)（阻尼可忽略）：\(TR_1 \approx 1/(\beta^2-1)\) → \(\beta = \sqrt{11} = 3.3\) → \(f_n \approx 9\) Hz，機器自重下的靜態沉陷 \(g/\omega^2 \approx 3\) mm。</p>
   </div>
   <div class="callout example"><div class="ct">例：基礎隔震</div>
-    <p>固定基底週期 0.5 s 的建築加上隔震器，週期拉長到 3 s；地震主要週期約 0.5 s → \(\beta = 3/0.5 = 6\)。輕阻尼時 \(TR \approx 1/35 \approx 3\%\)；隔震器刻意給 15 % 阻尼以限制位移，\(TR\) 約 6 %，仍大幅降低。代價是相對位移：\(\beta\) 大時 \(\beta^2D \to 1\)，隔震層要伸長整個地表位移，所以隔震建築周圍要留隔震溝。</p>
+    <p>固定基底週期 0.5 s 的建築加上隔震器，週期拉長到 3 s；地震主要週期約 0.5 s → \(\beta = 3/0.5 = 6\)。輕阻尼時 \(TR_2 \approx 1/35 \approx 3\%\)；隔震器刻意給 15 % 阻尼以限制位移，\(TR_2\) 約 6 %，仍大幅降低。代價是相對位移：\(\beta\) 大時 \(\beta^2D \to 1\)，隔震層要伸長整個地表位移，所以隔震建築周圍要留隔震溝。</p>
   </div>
 
   <div class="callout link"><div class="ct">作業應用</div>
@@ -545,7 +545,7 @@
 
   <div class="quiz" data-num="21.2" data-tol="0.02">
     <div class="qh">小測驗</div>
-    <div class="qq">機器轉速 1800 rpm，要讓傳到地面的力小於不平衡力（TR &lt; 1），支承的自然頻率要低於多少 Hz？</div>
+    <div class="qq">機器轉速 1800 rpm，要讓傳到地面的力小於不平衡力（TR<sub>1</sub> &lt; 1），支承的自然頻率要低於多少 Hz？</div>
     <div class="numrow"><input class="ans" type="text" inputmode="decimal" placeholder="fn (Hz)"><button class="btn">檢查</button></div>
     <div class="fb">1800 rpm = 30 Hz；β &gt; √2 → fn &lt; 30/√2 = 21.2 Hz。</div>
   </div>
@@ -638,7 +638,7 @@
     <div class="fcard"><div class="ft">能量定義</div>\[ \xi = \frac{W_D}{4\pi W_S},\; W_D = \pi c\bar\omega\rho_d^2 \]</div>
     <div class="fcard"><div class="ft">對數遞減</div>\[ \xi \approx \frac{1}{2\pi m}\ln\frac{u_n}{u_{n+m}} \]</div>
     <div class="fcard"><div class="ft">半功率頻寬</div>\[ \xi \approx \frac{f_2-f_1}{f_2+f_1} \]</div>
-    <div class="fcard"><div class="ft">傳遞率</div>\[ TR = D\sqrt{1+(2\xi\beta)^2},\; \beta &gt; \sqrt2 \]</div>
+    <div class="fcard"><div class="ft">傳遞率</div>\[ TR_1 = TR_2 = D\sqrt{1+(2\xi\beta)^2},\; \beta &gt; \sqrt2 \]</div>
     <div class="fcard"><div class="ft">Lysmer 類比</div>\[ k_z = \frac{4Gr_0}{1-\nu},\; c_z = \frac{3.4r_0^2\sqrt{G\rho}}{1-\nu} \]</div>
     <div class="fcard"><div class="ft">輻射阻尼（垂直）</div>\[ B_z = \frac{(1-\nu)m}{4\rho r_0^3},\; \xi_z = \frac{0.425}{\sqrt{B_z}} \]</div>
   </div>

@@ -113,7 +113,7 @@
 
     <tr><td>題目方向</td>
       <td><b>正算</b>：給 m、k、c → 求 ω<sub>n</sub>、ξ、ω<sub>d</sub>、δ → 由初始條件求 u(t)。</td>
-      <td><b>反算</b>：給量測的 U<sub>max</sub>、f<sub>peak</sub>、f<sub>1</sub>、f<sub>2</sub> → 求 f<sub>n</sub>、k、ξ、c → 再正算 TR 與每圈能量。</td></tr>
+      <td><b>反算</b>：給量測的 U<sub>max</sub>、f<sub>peak</sub>、f<sub>1</sub>、f<sub>2</sub> → 求 f<sub>n</sub>、k、ξ、c → 再正算 TR<sub>2</sub> 與每圈能量。</td></tr>
 
     <tr><td>運動方程式<br><a class="cl" href="units/u04.html#s4-1">§4.1</a></td>
       <td>\[\begin{aligned}
@@ -172,8 +172,8 @@
 \end{aligned}\]</td>
       <td>地板振動傳到儀器（傳遞率）：
 \[\begin{aligned}
-&TR = \frac{U}{u_{g0}} = \frac{\sqrt{1+(2\xi\beta)^2}}{\sqrt{(1-\beta^2)^2 + (2\xi\beta)^2}} \\
-&TR \lt 1 \iff \beta \gt \sqrt2 \iff f \gt \sqrt2\,f_n
+&D = \frac{1}{\sqrt{(1-\beta^2)^2 + (2\xi\beta)^2}},\qquad TR_2 = \frac{U_{total}}{u_{g0}} = D\sqrt{1+(2\xi\beta)^2} \\
+&TR_2 \lt 1 \iff \beta \gt \sqrt2 \iff f \gt \sqrt2\,f_n
 \end{aligned}\]</td></tr>
 
     <tr><td>能量<br><a class="cl" href="units/u04.html#s4-8">§4.8</a></td>
@@ -190,7 +190,7 @@
 
     <tr><td>本題結果</td>
       <td>ω<sub>n</sub> = 44.29 rad/s、ξ = 0.259、ω<sub>d</sub> = 42.78 rad/s、δ = 1.686；無阻尼 ρ = 0.0500 m、θ = 89.74°；一圈後振幅剩 18.5 %，第一圈消散 96.6 % 能量。</td>
-      <td>f<sub>n</sub> = 8.02 Hz、k = 5079 kN/m、ρ<sub>s</sub> = 0.0984 mm、ξ = 0.080、c = 16.2 kN·s/m；15 Hz 時 TR = 0.415（儀器 0.021 mm），f &gt; 11.3 Hz 才減振。</td></tr>
+      <td>f<sub>n</sub> = 8.02 Hz、k = 5079 kN/m、ρ<sub>s</sub> = 0.0984 mm、ξ = 0.080、c = 16.2 kN·s/m；15 Hz 時 TR<sub>2</sub> = 0.415（儀器 0.021 mm），f &gt; 11.3 Hz 才減振。</td></tr>
 
     <tr><td>阻尼大小</td>
       <td>ξ = 0.259，<b>大</b>：不計阻尼只能估第一個振幅，之後高估 5 倍以上。</td>
@@ -351,13 +351,25 @@ u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_
       <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
           <p class="given"><b>Given</b> m = 2000 kg = 2.0 t, p<sub>0</sub> = 0.5 kN; measured peak U<sub>max</sub> = 0.622 mm at f<sub>peak</sub> = 7.97 Hz; U<sub>max</sub>/√2 at f<sub>1</sub> = 7.28 Hz, f<sub>2</sub> = 8.56 Hz</p>
           <div class="stp"><div class="sh">(a1) Resonance amplification method (iterate f<sub>n</sub> and ξ)<span class="zh">共振放大法</span><a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
+        <p>The displacement peak occurs at β = √(1−2ξ²), slightly below f<sub>n</sub>. Start with f<sub>n</sub> ≈ f<sub>peak</sub> = 7.97 Hz, correct f<sub>n</sub> with the ξ obtained, and repeat until f<sub>n</sub> no longer changes.</p>
+        <p><b>Iteration 1</b> (f<sub>n</sub> = 7.97 Hz)</p>
+    \[\begin{aligned}
+    k &= m(2\pi f_n)^2 = 2.0\,[2\pi(7.97)]^2 = 5015\ \text{kN/m},\qquad \rho_s = \frac{p_0}{k} = \frac{0.5}{5015} = 0.0997\ \text{mm} \\
+    \frac{U_{max}}{\rho_s} &= \frac{0.622}{0.0997} = 6.24 = \frac{1}{2\xi\sqrt{1-\xi^2}} \;\Rightarrow\; \xi\sqrt{1-\xi^2} = 0.0801 \;\Rightarrow\; \xi = 0.0804 \\
+    f_n &= \frac{f_{peak}}{\sqrt{1-2\xi^2}} = \frac{7.97}{\sqrt{1-2(0.0804)^2}} = 8.02\ \text{Hz} \;\neq\; 7.97\ \text{Hz}\quad(\text{repeat})
+    \end{aligned}\]
+        <p><b>Iteration 2</b> (f<sub>n</sub> = 8.02 Hz)</p>
     \[\begin{aligned}
     k &= m(2\pi f_n)^2 = 2.0\,[2\pi(8.02)]^2 = 5079\ \text{kN/m},\qquad \rho_s = \frac{p_0}{k} = \frac{0.5}{5079} = 0.0984\ \text{mm} \\
-    \frac{U_{max}}{\rho_s} &= \frac{0.622}{0.0984} = 6.32 = \frac{1}{2\xi\sqrt{1-\xi^2}} \;\Rightarrow\; \xi = 0.0794 \\
-    f_n &= \frac{f_{peak}}{\sqrt{1-2\xi^2}} = \frac{7.97}{\sqrt{1-2(0.0794)^2}} = 8.02\ \text{Hz}\quad(\text{converged})
+    \frac{U_{max}}{\rho_s} &= \frac{0.622}{0.0984} = 6.32 = \frac{1}{2\xi\sqrt{1-\xi^2}} \;\Rightarrow\; \xi\sqrt{1-\xi^2} = 0.0791 \;\Rightarrow\; \xi = 0.0794 \\
+    f_n &= \frac{f_{peak}}{\sqrt{1-2\xi^2}} = \frac{7.97}{\sqrt{1-2(0.0794)^2}} = 8.02\ \text{Hz}\quad(\text{unchanged, converged})
     \end{aligned}\]</div>
           <div class="stp"><div class="sh">(a2) Half-power bandwidth method<span class="zh">半功率法</span><a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
-    \[\xi = \frac{f_2-f_1}{f_2+f_1} = \frac{8.56-7.28}{8.56+7.28} = 0.081\]</div>
+        <p><b>Step 1</b> Half-power amplitude (energy ∝ U², so U<sub>max</sub>/√2 carries half the peak energy):</p>
+    \[U_{hp} = \frac{U_{max}}{\sqrt2} = \frac{0.622}{1.414} = 0.440\ \text{mm}\]
+        <p><b>Step 2</b> On the measured response curve, draw a horizontal line at U = 0.440 mm; it cuts the curve on both sides of the peak at f<sub>1</sub> = 7.28 Hz and f<sub>2</sub> = 8.56 Hz.</p>
+        <p><b>Step 3</b> For small damping the half-power points are at β<sub>1,2</sub> ≈ 1 ∓ ξ, so</p>
+    \[\xi = \frac{f_2-f_1}{f_2+f_1} = \frac{8.56-7.28}{8.56+7.28} = \frac{1.28}{15.84} = 0.081\]</div>
           <div class="stp"><div class="sh">(a3) Adopted values and c<span class="zh">採用值與阻尼係數</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
     \[\begin{aligned}
     \xi &= \tfrac12(0.0794 + 0.081) = \boxed{0.080},\qquad f_n = \boxed{8.02\ \text{Hz}},\qquad k = \boxed{5079\ \text{kN/m}} \\
@@ -369,18 +381,21 @@ u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_
 
     <div class="part" id="h3-4b">
       <div class="part-h"><b>Part B</b> Floor vibration transmitted to the instrument<span class="zh">地板振動傳到儀器</span><span class="ptag hw">HW3 Q4(b)</span></div>
-      <div class="pq">Nearby construction shakes the floor with u<sub>g0</sub> = 0.05 mm. Determine the instrument amplitude at 15 Hz and at 8 Hz. Above which frequency is TR &lt; 1?<span class="zh-d">地板振幅 0.05 mm，求 15 Hz 與 8 Hz 時儀器的振幅；多高頻率以上減振。</span></div>
+      <div class="pq">Nearby construction shakes the floor with u<sub>g0</sub> = 0.05 mm. Determine the instrument amplitude at 15 Hz and at 8 Hz. Above which frequency is TR<sub>2</sub> &lt; 1?<span class="zh-d">地板振幅 0.05 mm，求 15 Hz 與 8 Hz 時儀器的振幅；多高頻率以上減振。</span></div>
       <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
           <p class="given"><b>Given</b> f<sub>n</sub> = 8.02 Hz, ξ = 0.080 (Part A); u<sub>g0</sub> = 0.05 mm</p>
           <div class="stp"><div class="sh">(b) Floor motion transmitted to the instrument (u<sub>g0</sub> = 0.05 mm)<span class="zh">地板振動傳到儀器</span><a class="cl" href="units/u04.html#s4-10">§4.10</a></div>
     \[\begin{aligned}
-    TR &= \frac{\sqrt{1+(2\xi\beta)^2}}{\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}},\qquad U = u_{g0}\,TR \\
-    15\ \text{Hz}: &\quad \beta = \frac{15}{8.02} = 1.870,\quad 2\xi\beta = 2(0.080)(1.870) = 0.300 \\
-    &\quad TR = \frac{\sqrt{1+0.300^2}}{\sqrt{(1-1.870^2)^2+0.300^2}} = 0.415,\quad U = 0.05(0.415) = \boxed{0.021\ \text{mm}} \\
-    8\ \text{Hz}: &\quad \beta = 0.998,\quad TR = 6.33,\quad U = 0.05(6.33) = \boxed{0.316\ \text{mm}} \\
-    TR \lt 1: &\quad \beta \gt \sqrt2 \;\Rightarrow\; f \gt \sqrt2(8.02) = \boxed{11.3\ \text{Hz}}
+    D &= \frac{1}{\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}},\qquad TR_2 = \frac{U_{total}}{u_{g0}} = D\sqrt{1+(2\xi\beta)^2},\qquad U_{total} = u_{g0}\,TR_2 \\
+    15\ \text{Hz}: &\quad \beta = \frac{15}{8.02} = 1.870,\quad 1-\beta^2 = -2.497,\quad 2\xi\beta = 2(0.080)(1.870) = 0.300 \\
+    &\quad D = \frac{1}{\sqrt{(-2.497)^2+0.300^2}} = \frac{1}{2.515} = 0.3976 \\
+    &\quad TR_2 = 0.3976\sqrt{1+0.300^2} = 0.3976(1.044) = 0.415,\quad U_{total} = 0.05(0.415) = \boxed{0.021\ \text{mm}} \\
+    8\ \text{Hz}: &\quad \beta = \frac{8}{8.02} = 0.998,\quad 1-\beta^2 = 0.004,\quad 2\xi\beta = 2(0.080)(0.998) = 0.160 \\
+    &\quad D = \frac{1}{\sqrt{0.004^2+0.160^2}} = \frac{1}{0.160} = 6.25 \\
+    &\quad TR_2 = 6.25\sqrt{1+0.160^2} = 6.25(1.013) = 6.33,\quad U_{total} = 0.05(6.33) = \boxed{0.316\ \text{mm}} \\
+    TR_2 \lt 1: &\quad \beta \gt \sqrt2 \;\Rightarrow\; f \gt \sqrt2(8.02) = \boxed{11.3\ \text{Hz}}
     \end{aligned}\]</div>
-          <p class="ans">Ans. 15 Hz: 0.021 mm (reduced); 8 Hz: 0.316 mm (amplified 6.3 times); isolation for f &gt; 11.3 Hz</p>
+          <p class="ans">Ans. 15 Hz: 0.021 mm (reduced); 8 Hz: 0.316 mm (amplified 6.3 times); TR<sub>2</sub> &lt; 1 for f &gt; 11.3 Hz</p>
         </div></details>
     </div>
 
@@ -835,7 +850,7 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
 
 <section class="sec" id="c-m4" data-num="Ch4" data-short="模擬考：振動理論" data-title="模擬考 Ch4">
   <div class="sec-head"><span class="sec-num">Part 3 · 模擬考 Ch4</span><h2>振動理論（16 題）</h2></div>
-  <p class="part-note">共用符號：\(\omega_n = \sqrt{k/m}\)、\(\xi = c/2m\omega_n\)、\(\beta = \bar\omega/\omega_n\)、\(\rho_s = p_0/k\)、\(D = 1/\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}\)、\(TR = D\sqrt{1+(2\xi\beta)^2}\)。</p>
+  <p class="part-note">共用符號：\(\omega_n = \sqrt{k/m}\)、\(\xi = c/2m\omega_n\)、\(\beta = \bar\omega/\omega_n\)、\(\rho_s = p_0/k\)、\(D = 1/\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}\)、\(TR_1 = TR_2 = D\sqrt{1+(2\xi\beta)^2}\)（TR<sub>1</sub>：力由質量傳到地面；TR<sub>2</sub>：運動由地面傳到質量）。</p>
 
   <article class="prob" id="m4-1">
     <div class="ph"><span class="pno">4.1</span><h3>SDOF：ω<sub>n</sub>、ξ、ω<sub>d</sub>、δ</h3><span class="ptag exam">= 2025 期中考 Q2</span></div>
@@ -1002,10 +1017,10 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
     \end{aligned}\]</div>
       <div class="stp"><div class="sh">(d) 傳到地面的力<a class="cl" href="units/u04.html#s4-10">§4.10</a></div>
     \[\begin{aligned}
-    TR &= D\sqrt{1+(2\xi\beta)^2} = 1.550\sqrt{1+0.351^2} = 1.643 \\
-    F_T &= TR\cdot p_0 = 1.643(50) = \boxed{82.1\ \text{kN}}
+    TR_1 &= D\sqrt{1+(2\xi\beta)^2} = 1.550\sqrt{1+0.351^2} = 1.643 \\
+    F_T &= TR_1\cdot p_0 = 1.643(50) = \boxed{82.1\ \text{kN}}
     \end{aligned}\]
-        <p>β = 0.677 &lt; √2 → TR &gt; 1，傳到地面的力大於外力。</p></div>
+        <p>β = 0.677 &lt; √2 → TR<sub>1</sub> &gt; 1，傳到地面的力大於外力。</p></div>
       <p class="ans">答：0.388 mm、33.0°、D<sub>max</sub> = 2.00 @ 41.2 rad/s、82.1 kN</p>
     </div></details>
   </article>
@@ -1028,10 +1043,10 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
     \end{aligned}\]</div>
       <div class="stp"><div class="sh">(c) 傳到地面的最大動力<a class="cl" href="units/u04.html#s4-10">§4.10</a></div>
     \[\begin{aligned}
-    TR &= D\sqrt{1+(2\xi\beta)^2} = 0.488\sqrt{1+0.685^2} = 0.591 \\
-    F_T &= TR\cdot Q_0 = 0.591(46) = \boxed{27.2\ \text{kN}}
+    TR_1 &= D\sqrt{1+(2\xi\beta)^2} = 0.488\sqrt{1+0.685^2} = 0.591 \\
+    F_T &= TR_1\cdot Q_0 = 0.591(46) = \boxed{27.2\ \text{kN}}
     \end{aligned}\]
-        <p>β = 1.712 &gt; √2 → TR &lt; 1，傳力小於外力。</p></div>
+        <p>β = 1.712 &gt; √2 → TR<sub>1</sub> &lt; 1，傳力小於外力。</p></div>
       <p class="ans">答：ω<sub>n</sub> = 91.7 rad/s（14.6 Hz）、0.187 mm、27.2 kN</p>
     </div></details>
   </article>
@@ -1142,11 +1157,11 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
     \end{aligned}\]</div>
       <div class="stp"><div class="sh">(c) 地板振動傳到儀器的振幅<a class="cl" href="units/u04.html#s4-10">§4.10</a></div>
     \[\begin{aligned}
-    TR &= \frac{\sqrt{1+(2\xi\beta)^2}}{\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}},\quad U = u_{g0}\,TR \\
-    25\ \text{Hz}:\ \beta &= 2.5,\quad TR = \frac{\sqrt{1+0.5^2}}{\sqrt{(1-6.25)^2+0.5^2}} = 0.212,\quad U = 0.04(0.212) = \boxed{0.0085\ \text{mm}} \\
-    10\ \text{Hz}:\ \beta &= 1,\quad TR = \frac{\sqrt{1+(2\xi)^2}}{2\xi} = \frac{\sqrt{1.04}}{0.2} = 5.10,\quad U = 0.04(5.10) = \boxed{0.204\ \text{mm}}
+    TR_2 &= \frac{\sqrt{1+(2\xi\beta)^2}}{\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}},\quad U = u_{g0}\,TR_2 \\
+    25\ \text{Hz}:\ \beta &= 2.5,\quad TR_2 = \frac{\sqrt{1+0.5^2}}{\sqrt{(1-6.25)^2+0.5^2}} = 0.212,\quad U = 0.04(0.212) = \boxed{0.0085\ \text{mm}} \\
+    10\ \text{Hz}:\ \beta &= 1,\quad TR_2 = \frac{\sqrt{1+(2\xi)^2}}{2\xi} = \frac{\sqrt{1.04}}{0.2} = 5.10,\quad U = 0.04(5.10) = \boxed{0.204\ \text{mm}}
     \end{aligned}\]
-        <p>TR &lt; 1 需 β &gt; √2 → f &gt; √2 f<sub>n</sub> = √2 × 10.0 = <b>14.1 Hz</b> 以上才減振。</p></div>
+        <p>TR<sub>2</sub> &lt; 1 需 β &gt; √2 → f &gt; √2 f<sub>n</sub> = √2 × 10.0 = <b>14.1 Hz</b> 以上才減振。</p></div>
       <div class="stp"><div class="sh">(d) 每圈耗能 W<sub>D</sub>、應變能 W<sub>s</sub><a class="cl" href="units/u04.html#s4-8">§4.8</a></div>
     \[\begin{aligned}
     \rho_d &= \rho_sD,\quad W_D = \pi c\bar\omega\rho_d^2,\quad W_s = \tfrac12k\rho_d^2 \\
@@ -1167,7 +1182,7 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
 
   <article class="prob" id="m4-16">
     <div class="ph"><span class="pno">4.16</span><h3>精密儀器隔振</h3><span class="ptag hw3">HW3 相關</span></div>
-    <div class="pq">儀器 500 kg，隔振器總勁度 k = 200 kN/m、ξ = 0.10；地板 30 Hz、振幅 0.05 mm。求 (a) 自然頻率　(b) β 與 TR　(c) 儀器振幅　(d) 隔振條件，以及 β &gt; √2 時增加 ξ 的影響。</div>
+    <div class="pq">儀器 500 kg，隔振器總勁度 k = 200 kN/m、ξ = 0.10；地板 30 Hz、振幅 0.05 mm。求 (a) 自然頻率　(b) β 與 TR<sub>2</sub>　(c) 儀器振幅　(d) 隔振條件，以及 β &gt; √2 時增加 ξ 的影響。</div>
     <details class="derive"><summary>完整作答</summary><div class="body sol">
       <p class="given"><b>已知</b> m = 500 kg = 0.5 t, k = 200 kN/m, ξ = 0.10；地板 f = 30 Hz、u<sub>g0</sub> = 0.05 mm</p>
       <div class="stp"><div class="sh">(a) 自然頻率<a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
@@ -1175,14 +1190,14 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
       <div class="stp"><div class="sh">(b) 頻率比與傳遞率<a class="cl" href="units/u04.html#s4-10">§4.10</a></div>
     \[\begin{aligned}
     \beta &= \frac{f}{f_n} = \frac{30}{3.18} = \boxed{9.42} \\
-    TR &= \frac{\sqrt{1+(2\xi\beta)^2}}{\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}} = \frac{\sqrt{1+1.885^2}}{\sqrt{(1-88.83)^2+1.885^2}} = \boxed{0.0243}
+    TR_2 &= \frac{\sqrt{1+(2\xi\beta)^2}}{\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}} = \frac{\sqrt{1+1.885^2}}{\sqrt{(1-88.83)^2+1.885^2}} = \boxed{0.0243}
     \end{aligned}\]</div>
       <div class="stp"><div class="sh">(c) 儀器振幅<a class="cl" href="units/u04.html#s4-10">§4.10</a></div>
-    \[U = u_{g0}\,TR = 0.05(0.0243) = 1.2\times10^{-3}\ \text{mm} = \boxed{1.2\ \mu\text{m}}\]</div>
+    \[U = u_{g0}\,TR_2 = 0.05(0.0243) = 1.2\times10^{-3}\ \text{mm} = \boxed{1.2\ \mu\text{m}}\]</div>
       <div class="stp"><div class="sh">(d) 隔振條件與阻尼的影響<a class="cl" href="units/u04.html#s4-10">§4.10</a></div>
-        <p>隔振條件：TR &lt; 1 需 β &gt; √2，即 f &gt; √2 f<sub>n</sub> = 4.50 Hz。</p>
-        <p>在 β &gt; √2 的範圍，ξ 越大 TR 越大（本題 ξ = 0.05、0.10、0.20、0.30 時 TR = 0.016、0.024、0.044、0.065），隔振效果變差；但阻尼可限制啟動、停機通過共振時的振幅。</p></div>
-      <p class="ans">答：f<sub>n</sub> = 3.18 Hz、β = 9.42、TR = 0.024、儀器振幅 1.2 μm；β &gt; √2 才隔振，此區增加 ξ 反而使 TR 增大</p>
+        <p>隔振條件：TR<sub>2</sub> &lt; 1 需 β &gt; √2，即 f &gt; √2 f<sub>n</sub> = 4.50 Hz。</p>
+        <p>在 β &gt; √2 的範圍，ξ 越大 TR<sub>2</sub> 越大（本題 ξ = 0.05、0.10、0.20、0.30 時 TR<sub>2</sub> = 0.016、0.024、0.044、0.065），隔振效果變差；但阻尼可限制啟動、停機通過共振時的振幅。</p></div>
+      <p class="ans">答：f<sub>n</sub> = 3.18 Hz、β = 9.42、TR<sub>2</sub> = 0.024、儀器振幅 1.2 μm；β &gt; √2 才隔振，此區增加 ξ 反而使 TR<sub>2</sub> 增大</p>
     </div></details>
   </article>
 </section>
@@ -1708,8 +1723,8 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
       <div class="stp"><div class="sh">(d) 傳到基座的力<a class="cl" href="units/u04.html#s4-10">§4.10</a></div>
     \[\begin{aligned}
     Q_0 &= m_e e\,\bar\omega^2 = 0.005(62.83)^2 = 19.7\ \text{kN} \\
-    TR &= D\sqrt{1+(2\xi\beta)^2} = 1.584\sqrt{1+0.251^2} = 1.633 \\
-    F_T &= TR \times Q_0 = 1.633 \times 19.7 = \boxed{32.2\ \text{kN}}
+    TR_1 &= D\sqrt{1+(2\xi\beta)^2} = 1.584\sqrt{1+0.251^2} = 1.633 \\
+    F_T &= TR_1 \times Q_0 = 1.633 \times 19.7 = \boxed{32.2\ \text{kN}}
     \end{aligned}\]</div>
       <p class="ans">答：f<sub>n</sub> = 7.96 Hz，振幅最大在 8.04 Hz；運轉振幅 0.625 mm；最大振幅 1.26 mm；傳到基座 32.2 kN。</p>
     </div></details>

@@ -537,15 +537,15 @@ document.addEventListener('sd:ready', () => {
     SD.buttons(body, '範例', [
       { label: '風扇隔振（講義例）', on: () => ctl.set({ rpm: 1500, m: 500, p0: 300, xi: 0.05, b: 3.5 }) },
       { label: '同一台改 ξ = 0.2', on: () => ctl.set({ rpm: 1500, m: 500, p0: 300, xi: 0.2, b: 3.5 }) },
-      { label: '1800 rpm、TR ≈ 10 %', on: () => ctl.set({ rpm: 1800, xi: 0.01, b: 3.32 }) }
+      { label: '1800 rpm、TR₁ ≈ 10 %', on: () => ctl.set({ rpm: 1800, xi: 0.01, b: 3.32 }) }
     ]);
-    const p = new Plot(body, { h: 320, xlim: [0, 5], ylim: [0.01, 30], logy: true, xlabel: '頻率比 β', ylabel: '傳遞率 TR' });
+    const p = new Plot(body, { h: 320, xlim: [0, 5], ylim: [0.01, 30], logy: true, xlabel: '頻率比 β', ylabel: '傳遞率 TR_1 = TR_2' });
     p.legend([{ label: '參考 ξ = 0、0.1、0.2、0.5', c: 'gray' }, { label: '目前 ξ', c: 'blue', w: 2.2 }, { label: '相對位移 β²D', c: 'red', dash: true }, { label: '運轉點', c: 'blue', line: false, marker: 'circle', fill: true }]);
-    p.readout(bb => `β = ${bb.toFixed(2)}　TR = ${S.TR(bb, ctl.xi).toFixed(4)}　β²D = ${(bb * bb * S.D(bb, ctl.xi)).toFixed(3)}`);
+    p.readout(bb => `β = ${bb.toFixed(2)}　TR₁ = TR₂ = ${S.TR(bb, ctl.xi).toFixed(4)}　β²D = ${(bb * bb * S.D(bb, ctl.xi)).toFixed(3)}`);
     const st = SD.stats(body, [
       { k: 'fop', label: '運轉頻率 (Hz)' }, { k: 'fn', label: '支承自然頻率 f_n (Hz)' }, { k: 'k', label: '支承總勁度 k (kN/m)' },
-      { k: 'dst', label: '靜態沉陷 (mm)' }, { k: 'tr', label: '運轉時 TR', hl: true }, { k: 'F', label: '運轉時傳到地面的力', hl: true },
-      { k: 'trr', label: '啟動通過共振時 TR' }, { k: 'Fr', label: '通過共振時傳遞的力' }
+      { k: 'dst', label: '靜態沉陷 (mm)' }, { k: 'tr', label: '運轉時 TR₁', hl: true }, { k: 'F', label: '運轉時傳到地面的力', hl: true },
+      { k: 'trr', label: '啟動通過共振時 TR₁' }, { k: 'Fr', label: '通過共振時傳遞的力' }
     ]);
     SD.div(body, 'w-note', '不平衡力與轉速平方成正比，所以通過共振（轉速較低）時的不平衡力只有運轉時的 1/β²。比較 ξ = 0.05 與 0.2：運轉時 0.2 傳得較多，但通過共振時少很多，這就是阻尼的折衷。');
     function draw() {
