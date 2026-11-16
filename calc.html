@@ -30,6 +30,17 @@
   .prob .part-h b { color: var(--accent); }
   .prob .part-h .zh { color: var(--muted); font-size: 14px; font-weight: 500; }
   .prob .pq { margin: 4px 0 6px; line-height: 1.7; }
+  /* 題組開頭給的圖與表（照原題的 Fig. / Table 編號） */
+  .prob .givens { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 18px 28px; align-items: end; margin: 16px 0 4px; }
+  .prob .givens figure { margin: 0; }
+  .prob .givens figure.wide, .prob .givens .gtab { grid-column: 1 / -1; }
+  .prob .givens svg { display: block; max-width: 100%; height: auto; margin: 0 auto; font-family: "Times New Roman", var(--font-text); }
+  .prob .givens figcaption, .prob .givens .tcap { font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+  .prob .givens .tcap { margin: 0 0 2px; }
+  .prob .givens figcaption .zh, .prob .givens .tcap .zh { margin-left: 8px; }
+  .prob .givens .tablewrap { margin: 0; }
+  .prob .givens table.data { font-size: 14px; }
+  .prob .givens table.data th, .prob .givens table.data td { padding: 6px 10px; }
   .prob .pq ol { margin: 4px 0 0; padding-left: 1.4em; }
   .prob details.derive { margin: 12px 0 0; }
   .prob .ans { font-weight: 600; }
@@ -46,8 +57,14 @@
   .sol .stp { margin: 14px 0 0; }
   .sol .sh { font-weight: 600; line-height: 1.6; }
   .sol .sh .zh { color: var(--muted); font-weight: 500; font-size: 13.5px; margin-left: 6px; }
-  .sol .cl { font-size: 12.5px; font-weight: 500; margin-left: 8px; padding: 1px 8px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); text-decoration: none; white-space: nowrap; }
-  .sol .cl:hover { text-decoration: underline; }
+  .sol .cl, #cmp-tbl .cl { font-size: 12.5px; font-weight: 500; margin-left: 8px; padding: 1px 8px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); text-decoration: none; white-space: nowrap; }
+  .sol .cl:hover, #cmp-tbl .cl:hover { text-decoration: underline; }
+  #cmp-tbl td:first-child { font-weight: 600; white-space: nowrap; width: 8.5em; }
+  #cmp-tbl th:not(:first-child) { width: 46%; }
+  #cmp-tbl td:first-child .cl { display: inline-block; margin: 4px 4px 0 0; }
+  #cmp-tbl th a { color: inherit; }
+  #cmp-tbl .katex-display { margin: 6px 0 2px; text-align: left; }
+  #cmp-tbl .katex-display > .katex { text-align: left; }
   .sol .katex-display { margin: 6px 0 4px; text-align: left; }
   .sol .katex-display > .katex { text-align: left; padding-left: 1.2em; }
   .sol .stp > p { margin: 4px 0 0 1.2em; line-height: 1.7; }
@@ -83,9 +100,111 @@
   </table></div>
 </header>
 
-<section class="sec" id="c-exam" data-num="Exam" data-short="2025 Midterm" data-title="2025 Midterm calculation problems">
-  <div class="sec-head"><span class="sec-num">Part 1 · Pre-exam Guessing</span><h2>2025 Midterm Exam</h2></div>
-  <p class="part-note">Question 1 (definitions) is covered in the <a href="glossary.html">Glossary</a>. Questions 2 and 3 use the same machine-foundation SDOF system, so they are combined below into one problem set: Parts A and B are the original exam questions, Parts C–E are our own extensions.<span class="zh-d">第 1 題名詞解釋見名詞總表。第 2、3 題是同一個機器基礎 SDOF，合併成一個題組：Part A、B 是期中考原題，Part C–E 是自己延伸的練習。</span></p>
+<section class="sec" id="c-cmp" data-num="1" data-short="自由與強迫振動比較" data-title="SDOF free vs forced vibration">
+  <div class="sec-head"><span class="sec-num">Part 1 · Pre-exam Guessing</span><h2>SDOF 自由振動與強迫振動比較</h2></div>
+  <p class="part-note">Problem sets 1.1 and 1.2 use the same m–k–c model. 1.1 is free vibration started by initial conditions (forward problem); 1.2 is steady-state forced vibration identified from a measured response curve (inverse problem). 1.3 follows one clean sand from the resonant column to the field.<span class="zh-d">1.1 與 1.2 是同一個 m–k–c 模型：1.1 是初始條件起振的自由振動（正算），1.2 是由量測曲線反推參數的穩態強迫振動（反算）。1.3 是同一種乾淨砂從共振柱到現地。</span></p>
+
+  <div class="tablewrap"><table class="data" id="cmp-tbl">
+    <tr><th>項目</th><th><a href="#c-exam">1.1 自由振動</a>（2025 期中 Q2–Q3）</th><th><a href="#c-forced">1.2 強迫振動</a>（HW3 Set 2）</th></tr>
+
+    <tr><td>情境</td>
+      <td>機器基礎 W = 1000 kN、k = 200,000 kN/m、c = 2340 kN·s/m；給 u<sub>0</sub> = 0.05 m、u̇<sub>0</sub> = 0.01 m/s 後放手，<b>沒有外力</b>。</td>
+      <td>儀器 m = 2000 kg 放在隔振墊上；振動機 p<sub>0</sub> = 0.5 kN 掃 4–12 Hz，量<b>穩態振幅</b>；之後改成地板振動 u<sub>g0</sub> = 0.05 mm。</td></tr>
+
+    <tr><td>題目方向</td>
+      <td><b>正算</b>：給 m、k、c → 求 ω<sub>n</sub>、ξ、ω<sub>d</sub>、δ → 由初始條件求 u(t)。</td>
+      <td><b>反算</b>：給量測的 U<sub>max</sub>、f<sub>peak</sub>、f<sub>1</sub>、f<sub>2</sub> → 求 f<sub>n</sub>、k、ξ、c → 再正算 TR 與每圈能量。</td></tr>
+
+    <tr><td>運動方程式<br><a class="cl" href="units/u04.html#s4-1">§4.1</a></td>
+      <td>\[\begin{aligned}
+&m\ddot u + c\dot u + ku = 0 \\
+&u(0) = u_0,\qquad \dot u(0) = \dot u_0
+\end{aligned}\]</td>
+      <td>\[\begin{aligned}
+&m\ddot u + c\dot u + ku = p_0\sin\bar\omega t \\
+&\text{floor: } m\ddot u^t + c\dot u^t + ku^t = c\dot u_g + ku_g, \\
+&\qquad u_g = u_{g0}\sin\bar\omega t
+\end{aligned}\]</td></tr>
+
+    <tr class="hl"><td>共同的系統參數<br><a class="cl" href="units/u04.html#s4-3">§4.3</a></td>
+      <td colspan="2">\[\begin{aligned}
+&m = \frac{W}{g},\qquad \omega_n = \sqrt{\frac{k}{m}},\qquad f_n = \frac{\omega_n}{2\pi},\qquad T_n = \frac{1}{f_n} \\
+&c_c = 2\sqrt{km} = 2m\omega_n,\qquad \xi = \frac{c}{c_c} = \frac{c}{2\sqrt{km}}
+\end{aligned}\]</td></tr>
+
+    <tr><td>解的形式<br><a class="cl" href="units/u04.html#s4-2">§4.2</a> <a class="cl" href="units/u04.html#s4-4">§4.4</a></td>
+      <td>齊次解（暫態），以 ω<sub>n</sub> 或 ω<sub>d</sub> 振動：
+\[\begin{aligned}
+&\xi = 0:\ u = u_0\cos\omega_nt + \frac{\dot u_0}{\omega_n}\sin\omega_nt = \rho\sin(\omega_nt+\theta) \\
+&\rho = \sqrt{u_0^2 + \left(\frac{\dot u_0}{\omega_n}\right)^2},\qquad \tan\theta = \frac{u_0\,\omega_n}{\dot u_0} \\
+&\xi \lt 1:\ u = e^{-\xi\omega_nt}\left(u_0\cos\omega_dt + \frac{\dot u_0 + \xi\omega_nu_0}{\omega_d}\sin\omega_dt\right) \\
+&\omega_d = \omega_n\sqrt{1-\xi^2} \\
+&\xi = 1:\ u = \left[u_0 + (\dot u_0 + \omega_nu_0)\,t\right]e^{-\omega_nt}
+\end{aligned}\]</td>
+      <td>特解（穩態），以外力頻率 ω̄ 振動；暫態很快消失：
+\[\begin{aligned}
+&u_p = \rho_sD\sin(\bar\omega t - \varphi) \\
+&\beta = \frac{\bar\omega}{\omega_n} = \frac{f}{f_n},\qquad \rho_s = \frac{p_0}{k} \\
+&D = \frac{1}{\sqrt{(1-\beta^2)^2 + (2\xi\beta)^2}} \\
+&\tan\varphi = \frac{2\xi\beta}{1-\beta^2}\qquad(\beta = 1:\ \varphi = 90^\circ)
+\end{aligned}\]</td></tr>
+
+    <tr><td>求阻尼比<br><a class="cl" href="units/u04.html#s4-9">§4.9</a></td>
+      <td>由 c 直接算，或由自由衰減的峰值：
+\[\begin{aligned}
+&\delta = \ln\frac{u_i}{u_{i+1}} = \frac{2\pi\xi}{\sqrt{1-\xi^2}} \\
+&\frac{u_{n+1}}{u_1} = e^{-n\delta},\qquad T_d = \frac{2\pi}{\omega_d} \\
+&t_r = \frac{\ln(1/r)}{\xi\omega_n},\qquad N_r = \frac{\ln(1/r)}{\delta}
+\end{aligned}\]</td>
+      <td>由頻率響應曲線（共振放大法、半功率法）：
+\[\begin{aligned}
+&\beta_{peak} = \sqrt{1-2\xi^2} \;\Rightarrow\; f_n = \frac{f_{peak}}{\sqrt{1-2\xi^2}} \\
+&\frac{U_{max}}{\rho_s} = D_{max} = \frac{1}{2\xi\sqrt{1-\xi^2}} \approx \frac{1}{2\xi} \\
+&\xi = \frac{f_2-f_1}{f_2+f_1} \approx \frac{f_2-f_1}{2f_n}\quad(U = U_{max}/\sqrt2) \\
+&k = m(2\pi f_n)^2,\qquad c = 2\xi\sqrt{km}
+\end{aligned}\]</td></tr>
+
+    <tr><td>力與傳遞<br><a class="cl" href="units/u04.html#s4-1">§4.1</a> <a class="cl" href="units/u04.html#s4-10">§4.10</a></td>
+      <td>彈簧力與地盤反力（u 由靜平衡位置量起）：
+\[\begin{aligned}
+&f_S = ku,\qquad \Delta_{st} = \frac{W}{k} \\
+&R = W + ku,\qquad R_{min} = W - k\rho \lt 0 \;\Rightarrow\; \text{lift-off}
+\end{aligned}\]</td>
+      <td>地板振動傳到儀器（傳遞率）：
+\[\begin{aligned}
+&TR = \frac{U}{u_{g0}} = \frac{\sqrt{1+(2\xi\beta)^2}}{\sqrt{(1-\beta^2)^2 + (2\xi\beta)^2}} \\
+&TR \lt 1 \iff \beta \gt \sqrt2 \iff f \gt \sqrt2\,f_n
+\end{aligned}\]</td></tr>
+
+    <tr><td>能量<br><a class="cl" href="units/u04.html#s4-8">§4.8</a></td>
+      <td>無阻尼時守恆，有阻尼時每圈按振幅平方衰減：
+\[\begin{aligned}
+&E = \tfrac12ku_0^2 + \tfrac12m\dot u_0^2 = \tfrac12k\rho^2 \\
+&\frac{\Delta E}{E} = 1 - e^{-2\delta}\quad(\text{per cycle})
+\end{aligned}\]</td>
+      <td>穩態每圈輸入 = 阻尼消散：
+\[\begin{aligned}
+&W_D = \pi c\bar\omega\rho_d^2,\qquad W_s = \tfrac12k\rho_d^2,\qquad \rho_d = \rho_sD \\
+&\frac{W_D}{4\pi W_s} = \xi\beta\qquad(= \xi\ \text{at}\ \beta = 1)
+\end{aligned}\]</td></tr>
+
+    <tr><td>本題結果</td>
+      <td>ω<sub>n</sub> = 44.29 rad/s、ξ = 0.259、ω<sub>d</sub> = 42.78 rad/s、δ = 1.686；無阻尼 ρ = 0.0500 m、θ = 89.74°；一圈後振幅剩 18.5 %，第一圈消散 96.6 % 能量。</td>
+      <td>f<sub>n</sub> = 8.02 Hz、k = 5079 kN/m、ρ<sub>s</sub> = 0.0984 mm、ξ = 0.080、c = 16.2 kN·s/m；15 Hz 時 TR = 0.415（儀器 0.021 mm），f &gt; 11.3 Hz 才減振。</td></tr>
+
+    <tr><td>阻尼大小</td>
+      <td>ξ = 0.259，<b>大</b>：不計阻尼只能估第一個振幅，之後高估 5 倍以上。</td>
+      <td>ξ = 0.080，<b>小</b>：共振峰尖、半功率法的小阻尼近似成立；共振時放大約 1/(2ξ) = 6.3 倍。</td></tr>
+
+    <tr><td>怎麼認題</td>
+      <td>只給初始位移、初速；問 u(t)、相位角、幾圈後剩多少、衰減時間。</td>
+      <td>給外力或地板振動的頻率；問穩態振幅、共振、放大倍數、隔振頻率。</td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="c-exam" data-num="1.1" data-short="SDOF 自由振動" data-title="SDOF free vibration (2025 Midterm Q2-Q3)">
+  <div class="sec-head"><span class="sec-num">Part 1 · 1.1</span><h2>SDOF 自由振動（2025 期中 Q2–Q3 題組）</h2></div>
+  <p class="part-note">Question 1 (definitions) is covered in the <a href="glossary.html">Glossary</a>. Questions 2 and 3 use the same machine-foundation SDOF system, so they are combined below into one problem set: Part A and Part B (c)–(d) are the original exam questions; the rest of Part B, Part C and Part D are our own extensions.<span class="zh-d">第 1 題名詞解釋見名詞總表。第 2、3 題是同一個機器基礎 SDOF，合併成一個題組：Part A 與 Part B (c)–(d) 是期中考原題；Part B 其餘小題、Part C、Part D 是自己延伸的練習。</span></p>
 
   <article class="prob full" id="e2">
     <div class="ph"><span class="pno">Q2–Q3</span><h3>Machine foundation SDOF: properties and free vibration<span class="zh">機器基礎 SDOF 題組</span></h3><span class="ptag exam">2025 Midterm</span></div>
@@ -115,58 +234,48 @@ c_c &= 2m\omega_n = 2(101.94)(44.29) = 9030\ \text{kN}\cdot\text{s/m} \\
     </div>
 
     <div class="part" id="e3">
-      <div class="part-h"><b>Part B</b> Undamped free vibration<span class="zh">無阻尼自由振動</span><span class="ptag exam">Midterm Q3</span></div>
-      <div class="pq"><b>Ignoring damping</b>, determine (a) the phase angle of the displacement and (b) the displacement amplitude.<span class="zh-d">不計阻尼，求位移的相位角與振幅。</span></div>
+      <div class="part-h"><b>Part B</b> Undamped free vibration<span class="zh">無阻尼自由振動</span><span class="ptag exam">Midterm Q3 (c)–(d)</span><span class="ptag ext">Extension (a)–(b), (e)–(h)</span></div>
+      <div class="pq"><b>Ignoring damping</b>, determine (a) the natural period T<sub>n</sub> and frequency f<sub>n</sub>, (b) the displacement history u(t), (c) the displacement amplitude, (d) the phase angle of the displacement, (e) the times of the first displacement peak and the first zero crossing, (f) the maximum velocity and acceleration, (g) the maximum spring force and (h) the total energy of the system.<span class="zh-d">不計阻尼：(a) 週期與頻率　(b) 位移歷時　(c) 振幅　(d) 相位角　(e) 第一次峰值與通過零點的時間　(f) 最大速度與加速度　(g) 最大彈簧力　(h) 總能量。(c)、(d) 是期中原題。</span></div>
       <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-        <p class="given"><b>Given</b> ω<sub>n</sub> = 44.29 rad/s (Part A), u<sub>0</sub> = 0.05 m, u̇<sub>0</sub> = 0.01 m/s, damping ignored</p>
-        <div class="stp"><div class="sh">Equation of motion<span class="zh">無阻尼自由振動解</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+        <p class="given"><b>Given</b> m = 101.94 t, k = 200,000 kN/m, ω<sub>n</sub> = 44.29 rad/s (Part A); u<sub>0</sub> = 0.05 m, u̇<sub>0</sub> = 0.01 m/s; damping ignored</p>
+        <div class="stp"><div class="sh">(a) Natural period and frequency<span class="zh">自然週期與頻率</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+\[T_n = \frac{2\pi}{\omega_n} = \frac{2\pi}{44.29} = \boxed{0.142\ \text{s}},\qquad f_n = \frac{1}{T_n} = \boxed{7.05\ \text{Hz}}\]</div>
+        <div class="stp"><div class="sh">(b) Displacement history<span class="zh">位移歷時</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
 \[\begin{aligned}
-u(t) &= u_0\cos\omega_nt + \frac{\dot u_0}{\omega_n}\sin\omega_nt = \rho\sin(\omega_nt+\theta) \\
-\frac{\dot u_0}{\omega_n} &= \frac{0.01}{44.29} = 2.258\times10^{-4}\ \text{m}
+u(t) &= u_0\cos\omega_nt + \frac{\dot u_0}{\omega_n}\sin\omega_nt,\qquad \frac{\dot u_0}{\omega_n} = \frac{0.01}{44.29} = 2.258\times10^{-4}\ \text{m} \\
+u(t) &= \boxed{0.05\cos44.29t + 2.258\times10^{-4}\sin44.29t\ \text{(m)}}
 \end{aligned}\]</div>
-        <div class="stp"><div class="sh">(a) Phase angle<span class="zh">相位角</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+        <div class="stp"><div class="sh">(c) Displacement amplitude<span class="zh">位移振幅</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+        <p>Writing (b) as u(t) = ρ sin(ω<sub>n</sub>t + θ):</p>
+\[\rho = \sqrt{u_0^2 + \left(\frac{\dot u_0}{\omega_n}\right)^2} = \sqrt{0.05^2 + (2.258\times10^{-4})^2} = \boxed{0.0500\ \text{m}}\]</div>
+        <div class="stp"><div class="sh">(d) Phase angle<span class="zh">相位角</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
 \[\begin{aligned}
 \tan\theta &= \frac{u_0}{\dot u_0/\omega_n} = \frac{u_0\,\omega_n}{\dot u_0} = \frac{0.05(44.29)}{0.01} = 221.5 \\
 \theta &= \tan^{-1}(221.5) = \boxed{89.74^\circ\ (1.566\ \text{rad})}
 \end{aligned}\]</div>
-        <div class="stp"><div class="sh">(b) Displacement amplitude<span class="zh">位移振幅</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
-\[\rho = \sqrt{u_0^2 + \left(\frac{\dot u_0}{\omega_n}\right)^2} = \sqrt{0.05^2 + (2.258\times10^{-4})^2} = \boxed{0.0500\ \text{m}}\]</div>
-        <p class="ans">Ans. θ = 89.7° (for u = ρ sin(ω<sub>n</sub>t + θ)); ρ = 0.0500 m</p>
-      </div></details>
-    </div>
-
-    <div class="part" id="e2c">
-      <div class="part-h"><b>Part C</b> More on the undamped response<span class="zh">無阻尼反應延伸</span><span class="ptag ext">Extension</span></div>
-      <div class="pq">Still ignoring damping, determine (a) the displacement history u(t), (b) the natural period T<sub>n</sub> and frequency f<sub>n</sub>, (c) the maximum velocity and acceleration, (d) the times of the first displacement peak and the first zero crossing, (e) the total energy of the system and (f) the maximum spring force.<span class="zh-d">仍不計阻尼：位移歷時、週期與頻率、最大速度與加速度、第一次峰值與通過零點的時間、總能量、最大彈簧力。</span></div>
-      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-        <p class="given"><b>Given</b> m = 101.94 t, k = 200,000 kN/m, ω<sub>n</sub> = 44.29 rad/s, ρ = 0.0500 m, θ = 89.74° = 1.5663 rad</p>
-        <div class="stp"><div class="sh">(a) Displacement history<span class="zh">位移歷時</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
-\[u(t) = u_0\cos\omega_nt + \frac{\dot u_0}{\omega_n}\sin\omega_nt = \boxed{0.05\cos44.29t + 2.258\times10^{-4}\sin44.29t\ \text{(m)}}\]</div>
-        <div class="stp"><div class="sh">(b) Natural period and frequency<span class="zh">自然週期與頻率</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
-\[T_n = \frac{2\pi}{\omega_n} = \frac{2\pi}{44.29} = \boxed{0.142\ \text{s}},\qquad f_n = \frac{1}{T_n} = \boxed{7.05\ \text{Hz}}\]</div>
-        <div class="stp"><div class="sh">(c) Maximum velocity and acceleration<span class="zh">最大速度與加速度</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
-\[\begin{aligned}
-\dot u_{max} &= \omega_n\rho = 44.29(0.0500) = \boxed{2.21\ \text{m/s}} \\
-\ddot u_{max} &= \omega_n^2\rho = 44.29^2(0.0500) = \boxed{98.1\ \text{m/s}^2}\ (= 10.0\,g)
-\end{aligned}\]</div>
-        <div class="stp"><div class="sh">(d) First peak and first zero crossing<span class="zh">第一次峰值與通過零點</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+        <div class="stp"><div class="sh">(e) First peak and first zero crossing<span class="zh">第一次峰值與通過零點</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
 \[\begin{aligned}
 \text{peak: } \omega_nt_1 + \theta = \frac{\pi}{2} &\;\Rightarrow\; t_1 = \frac{\pi/2 - 1.5663}{44.29} = \boxed{1.0\times10^{-4}\ \text{s}} \\
 \text{zero: } \omega_nt_2 + \theta = \pi &\;\Rightarrow\; t_2 = \frac{\pi - 1.5663}{44.29} = \boxed{0.0356\ \text{s}}
 \end{aligned}\]</div>
-        <div class="stp"><div class="sh">(e) Total energy (conserved)<span class="zh">總能量</span><a class="cl" href="units/u04.html#s4-8">§4.8</a></div>
+        <div class="stp"><div class="sh">(f) Maximum velocity and acceleration<span class="zh">最大速度與加速度</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+\[\begin{aligned}
+\dot u_{max} &= \omega_n\rho = 44.29(0.0500) = \boxed{2.21\ \text{m/s}} \\
+\ddot u_{max} &= \omega_n^2\rho = 44.29^2(0.0500) = \boxed{98.1\ \text{m/s}^2}\ (= 10.0\,g)
+\end{aligned}\]</div>
+        <div class="stp"><div class="sh">(g) Maximum spring force<span class="zh">最大彈簧力</span><a class="cl" href="units/u04.html#s4-1">§4.1</a></div>
+\[f_{S,max} = k\rho = 200{,}000(0.0500) = \boxed{10{,}000\ \text{kN}}\]</div>
+        <div class="stp"><div class="sh">(h) Total energy (conserved)<span class="zh">總能量</span><a class="cl" href="units/u04.html#s4-8">§4.8</a></div>
 \[\begin{aligned}
 E &= \tfrac12ku_0^2 + \tfrac12m\dot u_0^2 = \tfrac12(200{,}000)(0.05)^2 + \tfrac12(101.94)(0.01)^2 = 250.0 + 0.005 = \boxed{250\ \text{kJ}} \\
 &= \tfrac12k\rho^2 = \tfrac12(200{,}000)(0.0500)^2 = 250\ \text{kJ}\ \checkmark
 \end{aligned}\]</div>
-        <div class="stp"><div class="sh">(f) Maximum spring force<span class="zh">最大彈簧力</span><a class="cl" href="units/u04.html#s4-1">§4.1</a></div>
-\[f_{S,max} = k\rho = 200{,}000(0.0500) = \boxed{10{,}000\ \text{kN}}\]</div>
-        <p class="ans">Ans. u(t) = 0.05 cos 44.29t + 2.26×10⁻⁴ sin 44.29t m; T<sub>n</sub> = 0.142 s, f<sub>n</sub> = 7.05 Hz; u̇<sub>max</sub> = 2.21 m/s, ü<sub>max</sub> = 98.1 m/s²; t<sub>1</sub> = 0.0001 s, t<sub>2</sub> = 0.0356 s; E = 250 kJ; f<sub>S,max</sub> = 10,000 kN</p>
+        <p class="ans">Ans. (a) T<sub>n</sub> = 0.142 s, f<sub>n</sub> = 7.05 Hz; (b) u(t) = 0.05 cos 44.29t + 2.26×10⁻⁴ sin 44.29t m; (c) ρ = 0.0500 m; (d) θ = 89.7° (for u = ρ sin(ω<sub>n</sub>t + θ)); (e) t<sub>1</sub> = 0.0001 s, t<sub>2</sub> = 0.0356 s; (f) u̇<sub>max</sub> = 2.21 m/s, ü<sub>max</sub> = 98.1 m/s²; (g) f<sub>S,max</sub> = 10,000 kN; (h) E = 250 kJ</p>
       </div></details>
     </div>
 
     <div class="part" id="e2d">
-      <div class="part-h"><b>Part D</b> Damped free vibration<span class="zh">有阻尼自由振動</span><span class="ptag ext">Extension</span></div>
+      <div class="part-h"><b>Part C</b> Damped free vibration<span class="zh">有阻尼自由振動</span><span class="ptag ext">Extension</span></div>
       <div class="pq">Now include damping. Determine (a) the displacement history u(t), (b) the envelope amplitude and phase angle, (c) the damped period T<sub>d</sub>, (d) the ratio of peak amplitudes after 1 and 3 cycles, (e) the time and number of cycles for the amplitude to decay to 10 % and 1 %, and (f) the fraction of energy dissipated in the first cycle.<span class="zh-d">考慮阻尼：位移歷時、包絡振幅與相位角、阻尼週期、1 圈與 3 圈後的振幅比、衰減到 10 % 與 1 % 的時間與圈數、第一圈消散的能量比例。</span></div>
       <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
         <p class="given"><b>Given</b> ω<sub>n</sub> = 44.29 rad/s, ξ = 0.259, ω<sub>d</sub> = 42.78 rad/s, δ = 1.686 (Part A); u<sub>0</sub> = 0.05 m, u̇<sub>0</sub> = 0.01 m/s</p>
@@ -196,11 +305,11 @@ r = 0.01: &\quad t = \frac{4.605}{11.48} = \boxed{0.401\ \text{s}},\qquad N = \f
     </div>
 
     <div class="part" id="e2e">
-      <div class="part-h"><b>Part E</b> Discussion<span class="zh">判斷與討論</span><span class="ptag ext">Extension</span></div>
+      <div class="part-h"><b>Part D</b> Discussion<span class="zh">判斷與討論</span><span class="ptag ext">Extension</span></div>
       <div class="pq">(a) Is it reasonable to ignore damping as in Part B? (b) Taking u from the static equilibrium position, will the foundation lift off the ground? (c) If the dashpot were increased to c = c<sub>c</sub>, write u(t) and describe the motion. (d) Part B gives θ = 89.74°; why do some solutions give 0.26°?<span class="zh-d">(a) 不計阻尼是否合理　(b) 位移由靜平衡位置量起，基礎會不會上舉　(c) 若 c = c<sub>c</sub>，寫出 u(t) 並描述運動　(d) 為什麼有的解答相位角是 0.26°。</span></div>
       <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
         <div class="stp"><div class="sh">(a) Ignoring damping<span class="zh">不計阻尼是否合理</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
-        <p>The initial amplitudes are close (0.0500 m undamped vs 0.0518 m envelope), so ignoring damping is acceptable only for the initial amplitude. With ξ = 0.259, the amplitude drops to 18.5 % after one cycle (Part D), so the undamped solution overestimates the later response by more than 5 times and cannot describe the motion beyond the first cycle.</p></div>
+        <p>The initial amplitudes are close (0.0500 m undamped vs 0.0518 m envelope), so ignoring damping is acceptable only for the initial amplitude. With ξ = 0.259, the amplitude drops to 18.5 % after one cycle (Part C), so the undamped solution overestimates the later response by more than 5 times and cannot describe the motion beyond the first cycle.</p></div>
         <div class="stp"><div class="sh">(b) Lift-off check<span class="zh">基礎上舉檢核</span><a class="cl" href="units/u04.html#s4-1">§4.1</a></div>
 \[\begin{aligned}
 \Delta_{st} &= \frac{W}{k} = \frac{1000}{200{,}000} = 0.005\ \text{m} = 5\ \text{mm} \\
@@ -228,143 +337,9 @@ u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_
   </article>
 </section>
 
-<section class="sec" id="c-hw3" data-num="HW3" data-short="HW3 題組" data-title="HW3 problem sets">
-  <div class="sec-head"><span class="sec-num">Part 1 · Pre-exam Guessing</span><h2>HW3 Problem Sets</h2></div>
-  <p class="part-note">HW3 is grouped into two problem sets: Set 1 (Q1–Q3) follows one clean sand from the resonant column to the field, and each part builds on the previous ones; Set 2 (Q4) is an isolation pad unrelated to the site. Full solutions with interactive recalculation are on the <a href="hw/hw3.html">HW3 page</a>.<span class="zh-d">HW3 分成兩個題組：Set 1（Q1–Q3）同一種乾淨砂，從共振柱一路到現地，後面的 Part 會用到前面的結果；Set 2（Q4）是與場址無關的隔振墊。含互動重算的完整解答在 HW3 頁。</span></p>
-
-  <article class="prob full" id="hw3-s1">
-    <div class="ph"><span class="pno">Set 1</span><h3>Clean sand: laboratory and field dynamic properties<span class="zh">乾淨砂的動態性質</span></h3><span class="ptag hw">HW3 Q1–Q3</span></div>
-    <div class="pq">A site consists of three sand layers (0–4, 4–10 and 10–20 m) with the water table at 1 m, ρ = 1.95 t/m³ and K<sub>0</sub> = 0.5. A reconstituted specimen of the layer-3 clean sand (e = 0.70, σ′<sub>m</sub> = 100 kPa) is tested in a fixed–free resonant column: d = 50 mm, H = 100 mm, I/I<sub>0</sub> = 0.10.<span class="zh-d">三層砂場址（0–4、4–10、10–20 m），地下水位 1 m、ρ = 1.95 t/m³、K<sub>0</sub> = 0.5；第 3 層乾淨砂重模試體（e = 0.70、σ′<sub>m</sub> = 100 kPa）做固定–自由共振柱試驗。</span></div>
-
-    <div class="part" id="h3-1a">
-      <div class="part-h"><b>Part A</b> Resonant column stage 1<span class="zh">共振柱 stage 1</span><span class="ptag hw">HW3 Q1(a)</span></div>
-      <div class="pq">From the stage 1 (γ = 0.0005 %) frequency response curve find f<sub>n</sub>, V<sub>s</sub> and G<sub>max</sub>; from the free-vibration peaks X<sub>1</sub>–X<sub>6</sub> = 88.80, 83.14, 77.94, 72.61, 67.75, 63.39 mV find the damping ratio.<span class="zh-d">由 stage 1 頻率響應求共振頻率、剪力波速、小應變剪力模數，再由自由衰減求阻尼比。</span></div>
-      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-          <p class="given"><b>Given</b> fixed–free, H = 0.100 m, ρ = 1.95 t/m³, I/I<sub>0</sub> = 0.10; X<sub>1</sub> = 88.80 mV, X<sub>6</sub> = 63.39 mV</p>
-          <div class="stp"><div class="sh">(1) Resonant frequency<span class="zh">共振頻率</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
-          <p>Peak of the stage 1 frequency response curve: <b>f<sub>n</sub> ≈ 108.2 Hz</b>.</p></div>
-          <div class="stp"><div class="sh">(2) Frequency equation (Newton's method)<span class="zh">頻率方程式與牛頓法迭代</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
-    \[\begin{aligned}
-    \frac{I}{I_0} &= \beta\tan\beta = 0.10 \\
-    f(\beta) &= \beta\tan\beta - 0.10,\qquad f'(\beta) = \tan\beta + \beta\sec^2\beta,\qquad \beta_{k+1} = \beta_k - \frac{f(\beta_k)}{f'(\beta_k)}
-    \end{aligned}\]
-    <p>Initial guess: for small β, tan β ≈ β, so β² ≈ 0.10 → β<sub>0</sub> = √0.10 = 0.3162 rad.</p>
-    <div class="tablewrap"><table class="data">
-      <tr><th>k</th><th class="num">β<sub>k</sub> (rad)</th><th class="num">β<sub>k</sub> tan β<sub>k</sub></th><th class="num">f(β<sub>k</sub>)</th><th class="num">f′(β<sub>k</sub>)</th><th class="num">β<sub>k+1</sub></th></tr>
-      <tr><td>0</td><td class="num">0.31623</td><td class="num">0.10347</td><td class="num">3.47×10⁻³</td><td class="num">0.6773</td><td class="num">0.31110</td></tr>
-      <tr><td>1</td><td class="num">0.31110</td><td class="num">0.10003</td><td class="num">3.2×10⁻⁵</td><td class="num">0.6648</td><td class="num">0.31105</td></tr>
-      <tr><td>2</td><td class="num">0.31105</td><td class="num">0.10000</td><td class="num">≈ 0</td><td class="num">0.6647</td><td class="num">0.31105</td></tr>
-    </table></div>
-    \[\beta_1 = 0.31623 - \frac{0.00347}{0.6773} = 0.31110,\qquad \beta_2 = 0.31110 - \frac{0.000032}{0.6648} = 0.31105 \;\Rightarrow\; \boxed{\beta = 0.3111\ \text{rad}}\]</div>
-          <div class="stp"><div class="sh">(3) V<sub>s</sub> and G<sub>max</sub><span class="zh">剪力波速與小應變剪力模數</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
-    \[\begin{aligned}
-    V_s &= \frac{\omega_nH}{\beta} = \frac{2\pi f_nH}{\beta} = \frac{2\pi(108.22)(0.100)}{0.3111} = \boxed{218.6\ \text{m/s}} \\
-    G_{max} &= \rho V_s^2 = 1.95(218.6)^2 = 93{,}200\ \text{kPa} = \boxed{93.2\ \text{MPa}}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(4) Damping ratio (X<sub>1</sub> → X<sub>6</sub> = 5 cycles)<span class="zh">阻尼比</span><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
-    \[\begin{aligned}
-    \delta &= \frac{1}{n}\ln\frac{X_1}{X_{n+1}} = \frac{1}{5}\ln\frac{88.80}{63.39} = 0.0674 \\
-    D &= \frac{\delta}{2\pi} = \frac{0.0674}{2\pi} = \boxed{1.07\,\%}
-    \end{aligned}\]</div>
-          <p class="ans">Ans. f<sub>n</sub> ≈ 108.2 Hz, β = 0.311, V<sub>s</sub> = 219 m/s, G<sub>max</sub> = 93.2 MPa, D = 1.07 %</p>
-    </div></details>
-      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1a">HW3 Q1(a)</a> · Similar 同型: <a href="#m3-3">3.3</a>, <a href="#m5-5">5.5</a></p>
-    </div>
-
-    <div class="part" id="h3-1b">
-      <div class="part-h"><b>Part B</b> Modulus reduction, damping and threshold strains<span class="zh">模數折減、阻尼與門檻應變</span><span class="ptag hw">HW3 Q1(b)</span></div>
-      <div class="pq">Six stages with γ = 0.0005, 0.001, 0.003, 0.01, 0.03, 0.1 % and f<sub>n</sub> = 108.3, 107.5, 104.7, 96.7, 82.7, 60.7 Hz. Plot G/G<sub>max</sub>–γ and D–γ, compare with the Darendeli clean-sand curves, estimate γ<sub>r</sub>, and locate each stage relative to γ<sub>tl</sub> and γ<sub>tv</sub>.<span class="zh-d">六個階段畫 G/Gmax 與 D 曲線，估參考應變，判斷各階段相對門檻應變的位置。</span></div>
-      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-          <p class="given"><b>Given</b> f<sub>n</sub> = 108.3 (108.22), 107.5, 104.7, 96.7, 82.7, 60.7 Hz at γ = 0.0005–0.1 %; β = 0.3111 for all stages (same I/I<sub>0</sub>)</p>
-          <div class="stp"><div class="sh">(1) Modulus reduction<span class="zh">模數折減</span><a class="cl" href="units/u08.html#s8-5">§8.5</a></div>
-    \[\begin{aligned}
-    G &= \rho V_s^2 = \rho\left(\frac{2\pi f_nH}{\beta}\right)^2 \propto f_n^2 \;\Rightarrow\; \frac{G}{G_{max}} = \left(\frac{f_n}{f_{n,1}}\right)^2 \\
-    \text{Stage 6:}\quad \frac{G}{G_{max}} &= \left(\frac{60.7}{108.22}\right)^2 = \boxed{0.315}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(2) Damping of each stage<span class="zh">各階段阻尼比</span><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
-    \[\text{Stage 6:}\quad \delta = \frac15\ln\frac{70.62}{1.13} = 0.827,\qquad D = \frac{0.827}{2\pi} = \boxed{13.2\,\%}\]
-          <div class="tablewrap"><table class="data">
-            <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">G/G<sub>max</sub></th><th class="num">D (%)</th></tr>
-            <tr><td>1</td><td class="num">0.0005</td><td class="num">108.22</td><td class="num">1.000</td><td class="num">1.07</td></tr>
-            <tr><td>2</td><td class="num">0.001</td><td class="num">107.5</td><td class="num">0.987</td><td class="num">1.19</td></tr>
-            <tr><td>3</td><td class="num">0.003</td><td class="num">104.7</td><td class="num">0.936</td><td class="num">1.80</td></tr>
-            <tr><td>4</td><td class="num">0.01</td><td class="num">96.7</td><td class="num">0.799</td><td class="num">3.60</td></tr>
-            <tr><td>5</td><td class="num">0.03</td><td class="num">82.7</td><td class="num">0.584</td><td class="num">7.25</td></tr>
-            <tr><td>6</td><td class="num">0.1</td><td class="num">60.7</td><td class="num">0.315</td><td class="num">13.16</td></tr>
-          </table></div></div>
-          <div class="stp"><div class="sh">(3) Reference strain (G/G<sub>max</sub> = 0.5, interpolate on log γ)<span class="zh">參考應變</span><a class="cl" href="units/u08.html#s8-6">§8.6</a></div>
-    \[\begin{aligned}
-    x &= \frac{0.584 - 0.5}{0.584 - 0.315} = 0.312 \\
-    \log\gamma_r &= \log0.03 + 0.312\log\frac{0.1}{0.03} = -1.360 \;\Rightarrow\; \boxed{\gamma_r = 0.044\,\%}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(4) Threshold strains (sand: γ<sub>tl</sub> ≈ 0.001 %, γ<sub>tv</sub> ≈ 0.01 %)<span class="zh">門檻應變</span><a class="cl" href="units/u08.html#s8-5">§8.5</a></div>
-          <p>Stage 1 (0.0005 %) &lt; γ<sub>tl</sub>: linear elastic. Stages 2–3: between γ<sub>tl</sub> and γ<sub>tv</sub>: nonlinear, no permanent volume change. Stage 4 ≈ γ<sub>tv</sub>. Stages 5–6 &gt; γ<sub>tv</sub>: permanent volume change; excess pore pressure under undrained loading.</p></div>
-          <p class="ans">Ans. G/G<sub>max</sub> = 1.000 → 0.315, D = 1.07 → 13.2 %; γ<sub>r</sub> ≈ 0.044 % (Darendeli 0.035 %); stage 1 &lt; γ<sub>tl</sub>, stages 5–6 &gt; γ<sub>tv</sub></p>
-    </div></details>
-      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1b">HW3 Q1(b)</a> · Similar 同型: <a href="#m5-5">5.5</a></p>
-    </div>
-
-    <div class="part" id="h3-2">
-      <div class="part-h"><b>Part C</b> Masing loops and damping ratio<span class="zh">Masing 迴圈與阻尼比</span><span class="ptag hw">HW3 Q2</span></div>
-      <div class="pq">Hyperbolic backbone with G<sub>max</sub> = 94,000 kPa and γ<sub>ref</sub> = 0.0004 (decimal); loading path 0 → γ<sub>c</sub> → −γ<sub>c</sub> → γ<sub>c</sub>. (a) Loops and D = E<sub>D</sub>/(4πE<sub>So</sub>) for γ<sub>c</sub> = 0.01 % and 0.1 %, compared with the measured values in Part B. (b) Why the Masing damping differs from the measured values at very small and at large strains.<span class="zh-d">雙曲線骨幹的 Masing 迴圈，由面積求阻尼比並與量測比較；說明兩端為何不同。</span></div>
-      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-          <p class="given"><b>Given</b> G<sub>max</sub> = 94,000 kPa, γ<sub>ref</sub> = 0.0004; γ<sub>c</sub> = 0.0001 (0.01 %) and 0.001 (0.1 %); strains in decimal</p>
-          <div class="stp"><div class="sh">(1) Backbone and Masing branches<span class="zh">骨幹與卸載、再載分支</span><a class="cl" href="units/u08.html#s8-7">§8.7</a></div>
-    \[f(\gamma) = \frac{G_{max}\gamma}{1+|\gamma|/\gamma_{ref}},\qquad \text{unloading: } \tau = \tau_c + 2f\!\left(\frac{\gamma-\gamma_c}{2}\right),\qquad \text{reloading: } \tau = -\tau_c + 2f\!\left(\frac{\gamma+\gamma_c}{2}\right)\]</div>
-          <div class="stp"><div class="sh">(2) γ<sub>c</sub> = 0.01 % (x = γ<sub>c</sub>/γ<sub>ref</sub> = 0.25)<span class="zh">小應變</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
-    \[\begin{aligned}
-    \tau_c &= \frac{94{,}000(0.0001)}{1+0.25} = 7.52\ \text{kPa},\qquad E_{So} = \tfrac12\tau_c\gamma_c = \tfrac12(7.52)(0.0001) = 0.376\ \text{J/m}^3 \\
-    D &= \frac1\pi\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right) - 2\right] = \frac1\pi\left[4(5)\left(1-\frac{\ln1.25}{0.25}\right) - 2\right] = \boxed{4.73\,\%} \\
-    E_D &= 4\pi E_{So}D = 4\pi(0.376)(0.0473) = 0.223\ \text{J/m}^3
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(3) γ<sub>c</sub> = 0.1 % (x = 2.5)<span class="zh">大應變</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
-    \[\begin{aligned}
-    \tau_c &= \frac{94{,}000(0.001)}{1+2.5} = 26.86\ \text{kPa},\qquad E_{So} = \tfrac12(26.86)(0.001) = 13.43\ \text{J/m}^3 \\
-    D &= \frac1\pi\left[4(1.4)\left(1-\frac{\ln3.5}{2.5}\right) - 2\right] = \boxed{25.3\,\%} \\
-    E_D &= 4\pi(13.43)(0.253) = 42.6\ \text{J/m}^3
-    \end{aligned}\]
-          <p>Compared with Q1: 4.73 % vs 3.60 % (×1.3); 25.3 % vs 13.2 % (×1.9).</p></div>
-          <div class="stp"><div class="sh">(4) Why Masing differs from measurements<span class="zh">兩端差異的原因</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
-          <p>Very small strain: the backbone is linear, so D<sub>Masing</sub> → 0, but soils show D<sub>min</sub> ≈ 1 % (micro-slip, viscosity) → Masing underestimates. Large strain: reversal curves = backbone scaled by 2 give loops that are too fat → Masing overestimates. Correction: D = b(G/G<sub>max</sub>)<sup>0.1</sup>D<sub>Masing</sub> + D<sub>min</sub> (Darendeli).</p></div>
-          <p class="ans">Ans. 0.01 %: τ<sub>c</sub> = 7.52 kPa, D = 4.73 %; 0.1 %: τ<sub>c</sub> = 26.9 kPa, D = 25.3 % (measured 3.60 %, 13.2 %)</p>
-    </div></details>
-      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q2">HW3 Q2</a> · Similar 同型: <a href="#m5-6">5.6</a></p>
-    </div>
-
-    <div class="part" id="h3-3">
-      <div class="part-h"><b>Part D</b> Downhole test and equivalent linear properties<span class="zh">下孔試驗與等值線性參數</span><span class="ptag hw">HW3 Q3</span></div>
-      <div class="pq">Downhole S-wave arrivals at 2, 4, 7, 10, 15 and 20 m are 13.5, 27.2, 41.3, 55.3, 74.2 and 92.5 ms. (a) Determine V<sub>s</sub> and G<sub>max</sub> of each layer and compare layer 3 with the resonant column (Part A) and Hardin (1978). (b) Determine G and D of layer 3 at γ<sub>eff</sub> = 0.05 % using the curves of Part B. Can this analysis predict the excess pore pressure?<span class="zh-d">由下孔走時求各層 V<sub>s</sub>、G<sub>max</sub>，第 3 層和共振柱（Part A）、Hardin 比較；用 Part B 的曲線求 γ<sub>eff</sub> = 0.05 % 時的 G、D，能否預測孔隙水壓。</span></div>
-      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-          <p class="given"><b>Given</b> ρ = 1.95 t/m³, water table 1 m, K<sub>0</sub> = 0.5; arrivals (z, t) = (2, 13.5), (4, 27.2), (7, 41.3), (10, 55.3), (15, 74.2), (20, 92.5) m, ms; e = 0.70; RC: G<sub>max</sub> = 93.2 MPa</p>
-          <div class="stp"><div class="sh">(a1) V<sub>s</sub> of each layer (least-squares line of t vs z)<span class="zh">各層 Vs</span><a class="cl" href="units/u07.html#s7-3">§7.3</a></div>
-    \[\begin{aligned}
-    \text{Layer 1 } (0, 2, 4\ \text{m}): &\quad \text{slope} = 6.800\ \text{ms/m} \;\Rightarrow\; V_s = \frac{1000}{6.800} = \boxed{147\ \text{m/s}} \\
-    \text{Layer 2 } (4, 7, 10\ \text{m}): &\quad \text{slope} = 4.683\ \text{ms/m} \;\Rightarrow\; V_s = \boxed{214\ \text{m/s}} \\
-    \text{Layer 3 } (10, 15, 20\ \text{m}): &\quad \text{slope} = 3.720\ \text{ms/m} \;\Rightarrow\; V_s = \boxed{269\ \text{m/s}}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(a2) G<sub>max</sub> = ρV<sub>s</sub>²<span class="zh">小應變剪力模數</span><a class="cl" href="units/u07.html#s7-1">§7.1</a></div>
-    \[G_{max} = 1.95(147.1)^2 = 42.2,\quad 1.95(213.5)^2 = 88.9,\quad 1.95(268.8)^2 = \boxed{140.9\ \text{MPa}}\]</div>
-          <div class="stp"><div class="sh">(a3) Hardin (1978) at 15 m<span class="zh">Hardin 經驗式</span><a class="cl" href="units/u07.html#s7-1">§7.1</a></div>
-    \[\begin{aligned}
-    \sigma_v &= 1.95(9.81)(15) = 286.9\ \text{kPa},\qquad u = 9.81(15-1) = 137.3\ \text{kPa} \\
-    \sigma'_v &= 286.9 - 137.3 = 149.6\ \text{kPa},\qquad \sigma'_m = \frac{1+2K_0}{3}\sigma'_v = \frac{2}{3}(149.6) = 99.7\ \text{kPa} \\
-    F(e) &= \frac{1}{0.3+0.7e^2} = \frac{1}{0.3+0.7(0.70)^2} = 1.555 \\
-    G_{max} &= 625\,F(e)\,OCR^k\sqrt{p_a\sigma'_m} = 625(1.555)(1)\sqrt{100(99.7)} = \boxed{97.1\ \text{MPa}}
-    \end{aligned}\]
-          <p>Field 140.9 MPa &gt; Hardin 97.1 ≈ RC 93.2 MPa: reconstituted specimens lose fabric, aging and cementation.</p></div>
-          <div class="stp"><div class="sh">(b1) G and D at γ<sub>eff</sub> = 0.05 % (log interpolation between stages 5 and 6)<span class="zh">應變相容性質</span><a class="cl" href="units/u11.html#s11-1">§11.1</a></div>
-    \[\begin{aligned}
-    x &= \frac{\log(0.05/0.03)}{\log(0.1/0.03)} = 0.424 \\
-    G/G_{max} &= 0.584 + 0.424(0.315 - 0.584) = 0.470,\qquad D = 7.25 + 0.424(13.16 - 7.25) = \boxed{9.8\,\%} \\
-    G &= 0.470 \times G_{max,field} = 0.470(140.9) = \boxed{66.2\ \text{MPa}}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(b2) Excess pore pressure?<span class="zh">能否預測孔隙水壓</span><a class="cl" href="units/u11.html#s11-3">§11.3</a></div>
-          <p>No. Equivalent linear analysis is a total stress analysis with no shear–volume coupling; since 0.05 % &gt; γ<sub>tv</sub>, pore pressure will build up, so an effective stress analysis or the Ch8 liquefaction methods are needed.</p></div>
-          <p class="ans">Ans. V<sub>s</sub> = 147, 214, 269 m/s; G<sub>max</sub> = 42.2, 88.9, 140.9 MPa; layer 3: field 141 &gt; Hardin 97 ≈ RC 93 MPa; γ<sub>eff</sub> = 0.05 %: G = 66 MPa, D = 9.8 %</p>
-    </div></details>
-      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q3">HW3 Q3</a> · Similar 同型: <a href="#m6-4">6.4</a></p>
-    </div>
-  </article>
+<section class="sec" id="c-forced" data-num="1.2" data-short="SDOF 強迫振動" data-title="SDOF forced vibration (HW3 Set 2)">
+  <div class="sec-head"><span class="sec-num">Part 1 · 1.2</span><h2>SDOF 強迫振動（HW3 Set 2 隔振墊）</h2></div>
+  <p class="part-note">HW3 Q4 is grouped into one problem set: the pad properties are identified from the measured response curve, then used for transmissibility and energy per cycle. Full solutions with interactive recalculation are on the <a href="hw/hw3.html#q4">HW3 page</a>.<span class="zh-d">HW3 Q4 整理成一個題組：先由量測的頻率響應反推隔振墊性質，再算傳遞率與每圈能量。含互動重算的完整解答在 HW3 頁。</span></p>
 
   <article class="prob full" id="h3-4">
     <div class="ph"><span class="pno">Set 2</span><h3>Isolation pad SDOF<span class="zh">隔振墊 SDOF</span></h3><span class="ptag hw">HW3 Q4</span></div>
@@ -429,6 +404,155 @@ u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_
     </div>
 
     <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q4">HW3 Q4</a> · Similar 同型: <a href="#m4-14">4.14</a>, <a href="#m4-15">4.15</a>, <a href="#m4-16">4.16</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-hw3" data-num="1.3" data-short="共振柱到現地" data-title="Resonant column to the field (HW3 Set 1)">
+  <div class="sec-head"><span class="sec-num">Part 1 · 1.3</span><h2>共振柱到現地（HW3 Set 1）</h2></div>
+  <p class="part-note">HW3 Q1–Q3 follow one clean sand from the resonant column to the field, and each part builds on the previous ones. Full solutions with interactive recalculation are on the <a href="hw/hw3.html">HW3 page</a>.<span class="zh-d">HW3 Q1–Q3 是同一種乾淨砂，從共振柱一路到現地，後面的 Part 會用到前面的結果。含互動重算的完整解答在 HW3 頁。</span></p>
+
+  <article class="prob full" id="hw3-s1">
+    <div class="ph"><span class="pno">Set 1</span><h3>Clean sand: laboratory and field dynamic properties<span class="zh">乾淨砂的動態性質</span></h3><span class="ptag hw">HW3 Q1–Q3</span></div>
+    <div class="pq">A level site consists of three sand layers over a stiffer base (Fig. 1) with the water table at 1 m, ρ = 1.95 t/m³ and K<sub>0</sub> = 0.5. A reconstituted specimen of the layer-3 clean sand (e = 0.70, σ′<sub>m</sub> = 100 kPa) is tested in a fixed–free resonant column (Fig. 2; d = 50 mm, H = 100 mm, I/I<sub>0</sub> = 0.10). The driving amplitude is increased in six stages; at each stage γ and f<sub>n</sub> are recorded, then the drive is switched off and six successive free-vibration peaks X<sub>1</sub>–X<sub>6</sub> are recorded (Table 1, Fig. 4).<span class="zh-d">三層砂場址（0–4、4–10、10–20 m），地下水位 1 m、ρ = 1.95 t/m³、K<sub>0</sub> = 0.5；第 3 層乾淨砂重模試體（e = 0.70、σ′<sub>m</sub> = 100 kPa）做固定–自由共振柱試驗：驅動振幅分六階段加大，記錄 γ、f<sub>n</sub> 與關掉驅動後的六個峰值（Table 1）。</span></div>
+
+    <div class="givens">
+      <figure><svg viewBox="0 0 500 310" width="500" height="310" role="img" aria-label="Soil profile and downhole test"><rect x="110" y="46" width="220" height="48" class="f-gray" fill-opacity="0.08"/><line x1="110" y1="94" x2="330" y2="94" class="s-ink" stroke-width="0.8"/><rect x="110" y="94" width="220" height="72" class="f-gray" fill-opacity="0.18"/><line x1="110" y1="166" x2="330" y2="166" class="s-ink" stroke-width="0.8"/><rect x="110" y="166" width="220" height="120" class="f-gray" fill-opacity="0.3"/><line x1="110" y1="286" x2="330" y2="286" class="s-ink" stroke-width="0.8"/><rect x="110" y="286" width="220" height="18" fill="none" class="s-ink" stroke-width="0.8"/><line x1="110" y1="304" x2="120" y2="286" class="s-ink" stroke-width="0.7"/><line x1="120" y1="304" x2="130" y2="286" class="s-ink" stroke-width="0.7"/><line x1="130" y1="304" x2="140" y2="286" class="s-ink" stroke-width="0.7"/><line x1="140" y1="304" x2="150" y2="286" class="s-ink" stroke-width="0.7"/><line x1="150" y1="304" x2="160" y2="286" class="s-ink" stroke-width="0.7"/><line x1="160" y1="304" x2="170" y2="286" class="s-ink" stroke-width="0.7"/><line x1="170" y1="304" x2="180" y2="286" class="s-ink" stroke-width="0.7"/><line x1="180" y1="304" x2="190" y2="286" class="s-ink" stroke-width="0.7"/><line x1="190" y1="304" x2="200" y2="286" class="s-ink" stroke-width="0.7"/><line x1="200" y1="304" x2="210" y2="286" class="s-ink" stroke-width="0.7"/><line x1="210" y1="304" x2="220" y2="286" class="s-ink" stroke-width="0.7"/><line x1="220" y1="304" x2="230" y2="286" class="s-ink" stroke-width="0.7"/><line x1="230" y1="304" x2="240" y2="286" class="s-ink" stroke-width="0.7"/><line x1="240" y1="304" x2="250" y2="286" class="s-ink" stroke-width="0.7"/><line x1="250" y1="304" x2="260" y2="286" class="s-ink" stroke-width="0.7"/><line x1="260" y1="304" x2="270" y2="286" class="s-ink" stroke-width="0.7"/><line x1="270" y1="304" x2="280" y2="286" class="s-ink" stroke-width="0.7"/><line x1="280" y1="304" x2="290" y2="286" class="s-ink" stroke-width="0.7"/><line x1="290" y1="304" x2="300" y2="286" class="s-ink" stroke-width="0.7"/><line x1="300" y1="304" x2="310" y2="286" class="s-ink" stroke-width="0.7"/><line x1="310" y1="304" x2="320" y2="286" class="s-ink" stroke-width="0.7"/><line x1="320" y1="304" x2="330" y2="286" class="s-ink" stroke-width="0.7"/><line x1="60" y1="46" x2="340" y2="46" class="s-ink" stroke-width="1.4"/><line x1="84" y1="46" x2="84" y2="304" class="s-ink" stroke-width="0.9"/><line x1="84" y1="46" x2="89" y2="46" class="s-ink" stroke-width="0.9"/><text x="79.0" y="49.5" text-anchor="end" font-size="12" class="f-ink">0</text><line x1="84" y1="94" x2="89" y2="94" class="s-ink" stroke-width="0.9"/><text x="79.0" y="97.5" text-anchor="end" font-size="12" class="f-ink">4</text><line x1="84" y1="166" x2="89" y2="166" class="s-ink" stroke-width="0.9"/><text x="79.0" y="169.5" text-anchor="end" font-size="12" class="f-ink">10</text><line x1="84" y1="226" x2="89" y2="226" class="s-ink" stroke-width="0.9"/><text x="79.0" y="229.5" text-anchor="end" font-size="12" class="f-ink">15</text><line x1="84" y1="286" x2="89" y2="286" class="s-ink" stroke-width="0.9"/><text x="79.0" y="289.5" text-anchor="end" font-size="12" class="f-ink">20</text><text x="52.0" y="166.0" text-anchor="middle" font-size="12" class="f-ink" transform="rotate(-90 52 166)">Depth (m)</text><rect x="196" y="46" width="10" height="244" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><polygon points="195,64.0 207,64.0 201,71.0" class="f-ink"/><text x="190.0" y="71.0" text-anchor="end" font-size="10" class="f-ink">2 m</text><polygon points="195,88.0 207,88.0 201,95.0" class="f-ink"/><text x="190.0" y="95.0" text-anchor="end" font-size="10" class="f-ink">4 m</text><polygon points="195,124.0 207,124.0 201,131.0" class="f-ink"/><text x="190.0" y="131.0" text-anchor="end" font-size="10" class="f-ink">7 m</text><polygon points="195,160.0 207,160.0 201,167.0" class="f-ink"/><text x="190.0" y="167.0" text-anchor="end" font-size="10" class="f-ink">10 m</text><polygon points="195,220.0 207,220.0 201,227.0" class="f-ink"/><text x="190.0" y="227.0" text-anchor="end" font-size="10" class="f-ink">15 m</text><polygon points="195,280.0 207,280.0 201,287.0" class="f-ink"/><text x="190.0" y="287.0" text-anchor="end" font-size="10" class="f-ink">20 m</text><rect x="118" y="6" width="56" height="16" fill="none" class="s-ink" stroke-width="0.9"/><text x="146.0" y="18.0" text-anchor="middle" font-size="10" class="f-ink">recorder</text><polyline points="174,14 201,14 201,46" fill="none" class="s-ink" stroke-width="0.9"/><rect x="214" y="41" width="32" height="5" class="f-gray"/><text x="230.0" y="36.0" text-anchor="middle" font-size="10" class="f-ink">plank (source)</text><line x1="276" y1="43.5" x2="250" y2="43.5" class="s-ink" stroke-width="1"/><polygon points="248,43.5 254,40.5 254,46.5" class="f-ink"/><text x="282.0" y="36.0" text-anchor="start" font-size="10" class="f-ink">hammer blow</text><polygon points="262,51 274,51 268,58" fill="none" class="s-ink" stroke-width="0.9"/><line x1="255" y1="59" x2="281" y2="59" class="s-ink" stroke-width="0.9"/><text x="280.0" y="60.0" text-anchor="start" font-size="10" class="f-ink">GWT 1 m</text><rect x="258" y="221" width="10" height="10" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="258.0" y="217.0" text-anchor="start" font-size="10" class="f-ink">RC sample</text><text x="338.0" y="73.5" text-anchor="start" font-size="12" class="f-ink">Layer 1: loose sand</text><text x="338.0" y="133.5" text-anchor="start" font-size="12" class="f-ink">Layer 2: medium dense sand</text><text x="338.0" y="229.5" text-anchor="start" font-size="12" class="f-ink">Layer 3: dense sand</text><text x="338.0" y="301.5" text-anchor="start" font-size="12" class="f-ink">stiffer base</text></svg><figcaption>Fig. 1 Soil profile and setup of the downhole test<span class="zh">土層剖面與下孔試驗配置</span></figcaption></figure>
+      <figure><svg viewBox="0 0 300 244" width="300" height="244" role="img" aria-label="Fixed-free resonant column device"><path d="M 95 40 Q 140 16 185 40" fill="none" class="s-ink" stroke-width="1.1"/><polygon points="188,42 179,41 184,34" class="f-ink"/><text x="140.0" y="20.0" text-anchor="middle" font-size="12" class="f-ink">torque T<tspan baseline-shift="sub" font-size="8">0</tspan> cos ωt</text><rect x="130" y="52" width="20" height="14" class="f-gray"/><text x="156.0" y="63.0" text-anchor="start" font-size="10" class="f-ink">accelerometer</text><rect x="85" y="66" width="110" height="14" class="f-gray" fill-opacity=".35" stroke-width="0.9" stroke="var(--ink)"/><text x="200.0" y="77.0" text-anchor="start" font-size="10" class="f-ink">top cap + drive (I<tspan baseline-shift="sub" font-size="8">0</tspan>)</text><rect x="112" y="80" width="56" height="112" class="f-gray" fill-opacity=".22" stroke-width="0.9" stroke="var(--ink)"/><text x="140.0" y="132.0" text-anchor="middle" font-size="10" class="f-ink">soil</text><text x="140.0" y="145.0" text-anchor="middle" font-size="10" class="f-ink">specimen</text><rect x="70" y="192" width="140" height="9" class="f-gray" fill-opacity=".5" stroke-width="0.9" stroke="var(--ink)"/><text x="215.0" y="200.0" text-anchor="start" font-size="10" class="f-ink">fixed base</text><line x1="64" y1="211" x2="72" y2="201" class="s-ink" stroke-width="0.7"/><line x1="74" y1="211" x2="82" y2="201" class="s-ink" stroke-width="0.7"/><line x1="84" y1="211" x2="92" y2="201" class="s-ink" stroke-width="0.7"/><line x1="94" y1="211" x2="102" y2="201" class="s-ink" stroke-width="0.7"/><line x1="104" y1="211" x2="112" y2="201" class="s-ink" stroke-width="0.7"/><line x1="114" y1="211" x2="122" y2="201" class="s-ink" stroke-width="0.7"/><line x1="124" y1="211" x2="132" y2="201" class="s-ink" stroke-width="0.7"/><line x1="134" y1="211" x2="142" y2="201" class="s-ink" stroke-width="0.7"/><line x1="144" y1="211" x2="152" y2="201" class="s-ink" stroke-width="0.7"/><line x1="154" y1="211" x2="162" y2="201" class="s-ink" stroke-width="0.7"/><line x1="164" y1="211" x2="172" y2="201" class="s-ink" stroke-width="0.7"/><line x1="174" y1="211" x2="182" y2="201" class="s-ink" stroke-width="0.7"/><line x1="184" y1="211" x2="192" y2="201" class="s-ink" stroke-width="0.7"/><line x1="194" y1="211" x2="202" y2="201" class="s-ink" stroke-width="0.7"/><line x1="204" y1="211" x2="212" y2="201" class="s-ink" stroke-width="0.7"/><line x1="98" y1="80" x2="98" y2="192" class="s-ink" stroke-width="0.8"/><polygon points="98,80 95,87 101,87" class="f-ink"/><polygon points="98,192 95,185 101,185" class="f-ink"/><text x="90.0" y="140.0" text-anchor="end" font-size="12" class="f-ink">H</text><line x1="112" y1="222" x2="168" y2="222" class="s-ink" stroke-width="0.8"/><polygon points="112,222 119,219 119,225" class="f-ink"/><polygon points="168,222 161,219 161,225" class="f-ink"/><text x="140.0" y="236.0" text-anchor="middle" font-size="12" class="f-ink">d</text></svg><figcaption>Fig. 2 Fixed–free resonant column device<span class="zh">固定–自由共振柱</span></figcaption></figure>
+      <div class="gtab"><div class="tcap">Table 1 Results of the resonant column test<span class="zh">共振柱試驗結果</span></div><div class="tablewrap"><table class="data"><tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">X<sub>1</sub> (mV)</th><th class="num">X<sub>2</sub> (mV)</th><th class="num">X<sub>3</sub> (mV)</th><th class="num">X<sub>4</sub> (mV)</th><th class="num">X<sub>5</sub> (mV)</th><th class="num">X<sub>6</sub> (mV)</th></tr><tr><td>1</td><td class="num">0.0005</td><td class="num">108.3</td><td class="num">88.80</td><td class="num">83.14</td><td class="num">77.94</td><td class="num">72.61</td><td class="num">67.75</td><td class="num">63.39</td></tr><tr><td>2</td><td class="num">0.001</td><td class="num">107.5</td><td class="num">92.53</td><td class="num">86.39</td><td class="num">80.01</td><td class="num">73.54</td><td class="num">68.50</td><td class="num">63.65</td></tr><tr><td>3</td><td class="num">0.003</td><td class="num">104.7</td><td class="num">67.79</td><td class="num">61.37</td><td class="num">54.00</td><td class="num">48.10</td><td class="num">42.79</td><td class="num">38.54</td></tr><tr><td>4</td><td class="num">0.01</td><td class="num">96.7</td><td class="num">83.23</td><td class="num">66.63</td><td class="num">52.99</td><td class="num">42.00</td><td class="num">33.54</td><td class="num">26.83</td></tr><tr><td>5</td><td class="num">0.03</td><td class="num">82.7</td><td class="num">92.49</td><td class="num">58.41</td><td class="num">37.10</td><td class="num">23.71</td><td class="num">14.96</td><td class="num">9.49</td></tr><tr><td>6</td><td class="num">0.1</td><td class="num">60.7</td><td class="num">70.62</td><td class="num">31.07</td><td class="num">13.67</td><td class="num">5.95</td><td class="num">2.60</td><td class="num">1.13</td></tr></table></div></div>
+      <figure><svg viewBox="0 0 364 222" width="364" height="222" role="img" aria-label="Stage 1 frequency response"><rect x="52" y="10" width="300" height="170" fill="none" class="s-ink" stroke-width="0.9"/><line x1="52.0" y1="180" x2="52.0" y2="176" class="s-ink" stroke-width="0.9"/><line x1="52.0" y1="10" x2="52.0" y2="14" class="s-ink" stroke-width="0.9"/><text x="52.0" y="194.0" text-anchor="middle" font-size="12" class="f-ink">96</text><line x1="102.0" y1="180" x2="102.0" y2="176" class="s-ink" stroke-width="0.9"/><line x1="102.0" y1="10" x2="102.0" y2="14" class="s-ink" stroke-width="0.9"/><text x="102.0" y="194.0" text-anchor="middle" font-size="12" class="f-ink">100</text><line x1="152.0" y1="180" x2="152.0" y2="176" class="s-ink" stroke-width="0.9"/><line x1="152.0" y1="10" x2="152.0" y2="14" class="s-ink" stroke-width="0.9"/><text x="152.0" y="194.0" text-anchor="middle" font-size="12" class="f-ink">104</text><line x1="202.0" y1="180" x2="202.0" y2="176" class="s-ink" stroke-width="0.9"/><line x1="202.0" y1="10" x2="202.0" y2="14" class="s-ink" stroke-width="0.9"/><text x="202.0" y="194.0" text-anchor="middle" font-size="12" class="f-ink">108</text><line x1="252.0" y1="180" x2="252.0" y2="176" class="s-ink" stroke-width="0.9"/><line x1="252.0" y1="10" x2="252.0" y2="14" class="s-ink" stroke-width="0.9"/><text x="252.0" y="194.0" text-anchor="middle" font-size="12" class="f-ink">112</text><line x1="302.0" y1="180" x2="302.0" y2="176" class="s-ink" stroke-width="0.9"/><line x1="302.0" y1="10" x2="302.0" y2="14" class="s-ink" stroke-width="0.9"/><text x="302.0" y="194.0" text-anchor="middle" font-size="12" class="f-ink">116</text><line x1="352.0" y1="180" x2="352.0" y2="176" class="s-ink" stroke-width="0.9"/><line x1="352.0" y1="10" x2="352.0" y2="14" class="s-ink" stroke-width="0.9"/><text x="352.0" y="194.0" text-anchor="middle" font-size="12" class="f-ink">120</text><line x1="52" y1="180.0" x2="56" y2="180.0" class="s-ink" stroke-width="0.9"/><line x1="352" y1="180.0" x2="348" y2="180.0" class="s-ink" stroke-width="0.9"/><text x="46.0" y="183.5" text-anchor="end" font-size="12" class="f-ink">0</text><line x1="52" y1="151.7" x2="56" y2="151.7" class="s-ink" stroke-width="0.9"/><line x1="352" y1="151.7" x2="348" y2="151.7" class="s-ink" stroke-width="0.9"/><text x="46.0" y="155.2" text-anchor="end" font-size="12" class="f-ink">10</text><line x1="52" y1="123.3" x2="56" y2="123.3" class="s-ink" stroke-width="0.9"/><line x1="352" y1="123.3" x2="348" y2="123.3" class="s-ink" stroke-width="0.9"/><text x="46.0" y="126.8" text-anchor="end" font-size="12" class="f-ink">20</text><line x1="52" y1="95.0" x2="56" y2="95.0" class="s-ink" stroke-width="0.9"/><line x1="352" y1="95.0" x2="348" y2="95.0" class="s-ink" stroke-width="0.9"/><text x="46.0" y="98.5" text-anchor="end" font-size="12" class="f-ink">30</text><line x1="52" y1="66.7" x2="56" y2="66.7" class="s-ink" stroke-width="0.9"/><line x1="352" y1="66.7" x2="348" y2="66.7" class="s-ink" stroke-width="0.9"/><text x="46.0" y="70.2" text-anchor="end" font-size="12" class="f-ink">40</text><line x1="52" y1="38.3" x2="56" y2="38.3" class="s-ink" stroke-width="0.9"/><line x1="352" y1="38.3" x2="348" y2="38.3" class="s-ink" stroke-width="0.9"/><text x="46.0" y="41.8" text-anchor="end" font-size="12" class="f-ink">50</text><line x1="52" y1="10.0" x2="56" y2="10.0" class="s-ink" stroke-width="0.9"/><line x1="352" y1="10.0" x2="348" y2="10.0" class="s-ink" stroke-width="0.9"/><text x="46.0" y="13.5" text-anchor="end" font-size="12" class="f-ink">60</text><text x="202.0" y="212.0" text-anchor="middle" font-size="12" class="f-ink">Frequency (Hz)</text><text x="16.0" y="95.0" text-anchor="middle" font-size="12" class="f-ink" transform="rotate(-90 16.0 95.0)">Accelerometer output (mV)</text><circle cx="52.0" cy="163.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="55.1" cy="162.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="58.2" cy="162.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="61.4" cy="162.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="64.5" cy="162.0" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="67.6" cy="161.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="70.8" cy="161.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="73.9" cy="160.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="77.0" cy="160.4" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="80.1" cy="159.9" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="83.2" cy="159.3" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="86.4" cy="158.4" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="89.5" cy="158.5" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="92.6" cy="157.4" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="95.8" cy="156.9" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="98.9" cy="156.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="102.0" cy="156.1" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="105.1" cy="155.0" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="108.2" cy="154.4" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="111.4" cy="153.0" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="114.5" cy="153.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="117.6" cy="152.1" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="120.8" cy="150.9" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="123.9" cy="149.9" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="127.0" cy="149.0" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="130.1" cy="147.0" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="133.2" cy="145.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="136.4" cy="145.0" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="139.5" cy="143.3" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="142.6" cy="141.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="145.8" cy="139.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="148.9" cy="137.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="152.0" cy="134.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="155.1" cy="131.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="158.2" cy="129.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="161.4" cy="126.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="164.5" cy="123.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="167.6" cy="118.1" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="170.8" cy="113.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="173.9" cy="109.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="177.0" cy="103.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="180.1" cy="97.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="183.2" cy="90.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="186.4" cy="76.0" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="189.5" cy="66.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="192.6" cy="53.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="195.8" cy="41.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="198.9" cy="26.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="202.0" cy="15.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="205.1" cy="9.9" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="208.2" cy="13.5" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="211.4" cy="24.1" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="214.5" cy="38.4" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="217.6" cy="49.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="220.8" cy="62.5" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="223.9" cy="77.4" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="227.0" cy="84.4" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="230.1" cy="94.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="233.2" cy="102.3" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="236.4" cy="108.3" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="239.5" cy="114.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="242.6" cy="119.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="245.8" cy="123.3" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="248.9" cy="126.5" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="252.0" cy="130.5" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="255.1" cy="133.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="258.2" cy="136.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="261.4" cy="138.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="264.5" cy="140.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="267.6" cy="142.3" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="270.8" cy="144.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="273.9" cy="145.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="277.0" cy="147.5" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="280.1" cy="148.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="283.2" cy="150.0" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="286.4" cy="151.3" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="289.5" cy="152.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="292.6" cy="153.5" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="295.8" cy="154.1" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="298.9" cy="155.1" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="302.0" cy="156.1" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="305.1" cy="156.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="308.2" cy="157.4" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="311.4" cy="158.4" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="314.5" cy="158.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="317.6" cy="159.6" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="320.8" cy="159.9" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="323.9" cy="159.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="327.0" cy="161.3" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="330.1" cy="161.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="333.2" cy="161.5" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="336.4" cy="162.2" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="339.5" cy="162.7" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="342.6" cy="163.4" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="345.8" cy="163.8" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="348.9" cy="163.5" r="2" fill="none" class="s-ink" stroke-width="0.8"/><circle cx="352.0" cy="164.3" r="2" fill="none" class="s-ink" stroke-width="0.8"/></svg><figcaption>Fig. 3 Frequency response curve of stage 1 (γ = 0.0005 %)<span class="zh">stage 1 頻率響應曲線</span></figcaption></figure>
+      <figure><svg viewBox="0 0 364 234" width="364" height="234" role="img" aria-label="Free vibration decay, stage 4"><rect x="52" y="22" width="300" height="170" fill="none" class="s-ink" stroke-width="0.9"/><line x1="70.8" y1="192" x2="70.8" y2="188" class="s-ink" stroke-width="0.9"/><line x1="70.8" y1="22" x2="70.8" y2="26" class="s-ink" stroke-width="0.9"/><text x="70.8" y="206.0" text-anchor="middle" font-size="12" class="f-ink">&#8722;10</text><line x1="108.2" y1="192" x2="108.2" y2="188" class="s-ink" stroke-width="0.9"/><line x1="108.2" y1="22" x2="108.2" y2="26" class="s-ink" stroke-width="0.9"/><text x="108.2" y="206.0" text-anchor="middle" font-size="12" class="f-ink">0</text><line x1="145.8" y1="192" x2="145.8" y2="188" class="s-ink" stroke-width="0.9"/><line x1="145.8" y1="22" x2="145.8" y2="26" class="s-ink" stroke-width="0.9"/><text x="145.8" y="206.0" text-anchor="middle" font-size="12" class="f-ink">10</text><line x1="183.2" y1="192" x2="183.2" y2="188" class="s-ink" stroke-width="0.9"/><line x1="183.2" y1="22" x2="183.2" y2="26" class="s-ink" stroke-width="0.9"/><text x="183.2" y="206.0" text-anchor="middle" font-size="12" class="f-ink">20</text><line x1="220.8" y1="192" x2="220.8" y2="188" class="s-ink" stroke-width="0.9"/><line x1="220.8" y1="22" x2="220.8" y2="26" class="s-ink" stroke-width="0.9"/><text x="220.8" y="206.0" text-anchor="middle" font-size="12" class="f-ink">30</text><line x1="258.2" y1="192" x2="258.2" y2="188" class="s-ink" stroke-width="0.9"/><line x1="258.2" y1="22" x2="258.2" y2="26" class="s-ink" stroke-width="0.9"/><text x="258.2" y="206.0" text-anchor="middle" font-size="12" class="f-ink">40</text><line x1="295.8" y1="192" x2="295.8" y2="188" class="s-ink" stroke-width="0.9"/><line x1="295.8" y1="22" x2="295.8" y2="26" class="s-ink" stroke-width="0.9"/><text x="295.8" y="206.0" text-anchor="middle" font-size="12" class="f-ink">50</text><line x1="333.2" y1="192" x2="333.2" y2="188" class="s-ink" stroke-width="0.9"/><line x1="333.2" y1="22" x2="333.2" y2="26" class="s-ink" stroke-width="0.9"/><text x="333.2" y="206.0" text-anchor="middle" font-size="12" class="f-ink">60</text><line x1="52" y1="192.0" x2="56" y2="192.0" class="s-ink" stroke-width="0.9"/><line x1="352" y1="192.0" x2="348" y2="192.0" class="s-ink" stroke-width="0.9"/><text x="46.0" y="195.5" text-anchor="end" font-size="12" class="f-ink">&#8722;100</text><line x1="52" y1="149.5" x2="56" y2="149.5" class="s-ink" stroke-width="0.9"/><line x1="352" y1="149.5" x2="348" y2="149.5" class="s-ink" stroke-width="0.9"/><text x="46.0" y="153.0" text-anchor="end" font-size="12" class="f-ink">&#8722;50</text><line x1="52" y1="107.0" x2="56" y2="107.0" class="s-ink" stroke-width="0.9"/><line x1="352" y1="107.0" x2="348" y2="107.0" class="s-ink" stroke-width="0.9"/><text x="46.0" y="110.5" text-anchor="end" font-size="12" class="f-ink">0</text><line x1="52" y1="64.5" x2="56" y2="64.5" class="s-ink" stroke-width="0.9"/><line x1="352" y1="64.5" x2="348" y2="64.5" class="s-ink" stroke-width="0.9"/><text x="46.0" y="68.0" text-anchor="end" font-size="12" class="f-ink">50</text><line x1="52" y1="22.0" x2="56" y2="22.0" class="s-ink" stroke-width="0.9"/><line x1="352" y1="22.0" x2="348" y2="22.0" class="s-ink" stroke-width="0.9"/><text x="46.0" y="25.5" text-anchor="end" font-size="12" class="f-ink">100</text><text x="202.0" y="224.0" text-anchor="middle" font-size="12" class="f-ink">Time (ms)</text><text x="16.0" y="107.0" text-anchor="middle" font-size="12" class="f-ink" transform="rotate(-90 16.0 107.0)">Output (mV)</text><line x1="52.0" y1="107.0" x2="352.0" y2="107.0" class="s-gray" stroke-width="0.6"/><polyline points="52.0,174.4 52.4,172.9 52.8,171.2 53.1,169.3 53.5,167.2 53.9,164.8 54.2,162.2 54.6,159.4 55.0,156.4 55.4,153.3 55.7,149.9 56.1,146.4 56.5,142.8 56.9,139.0 57.2,135.1 57.6,131.2 58.0,127.1 58.4,122.9 58.7,118.7 59.1,114.4 59.5,110.2 59.9,105.9 60.2,101.6 60.6,97.3 61.0,93.1 61.4,88.9 61.7,84.7 62.1,80.7 62.5,76.8 62.9,72.9 63.2,69.2 63.6,65.7 64.0,62.3 64.4,59.0 64.7,56.0 65.1,53.1 65.5,50.4 65.9,47.9 66.2,45.7 66.6,43.6 67.0,41.8 67.4,40.3 67.7,39.0 68.1,37.9 68.5,37.1 68.9,36.6 69.2,36.3 69.6,36.3 70.0,36.5 70.4,37.0 70.7,37.8 71.1,38.8 71.5,40.0 71.9,41.6 72.2,43.3 72.6,45.3 73.0,47.5 73.4,49.9 73.7,52.6 74.1,55.4 74.5,58.5 74.9,61.7 75.2,65.1 75.6,68.6 76.0,72.3 76.4,76.1 76.7,80.0 77.1,84.0 77.5,88.1 77.9,92.3 78.2,96.5 78.6,100.8 79.0,105.1 79.4,109.4 79.7,113.7 80.1,118.0 80.5,122.2 80.9,126.3 81.2,130.4 81.6,134.5 82.0,138.4 82.4,142.2 82.7,145.8 83.1,149.3 83.5,152.7 83.9,155.9 84.2,158.9 84.6,161.7 85.0,164.4 85.4,166.8 85.7,169.0 86.1,170.9 86.5,172.6 86.9,174.1 87.2,175.4 87.6,176.3 88.0,177.1 88.4,177.5 88.7,177.7 89.1,177.7 89.5,177.4 89.9,176.8 90.2,176.0 90.6,174.9 91.0,173.5 91.4,172.0 91.7,170.1 92.1,168.1 92.5,165.8 92.9,163.3 93.2,160.6 93.6,157.7 94.0,154.6 94.4,151.3 94.7,147.9 95.1,144.3 95.5,140.6 95.9,136.8 96.2,132.8 96.6,128.8 97.0,124.6 97.4,120.4 97.7,116.2 98.1,111.9 98.5,107.6 98.9,103.3 99.2,99.1 99.6,94.8 100.0,90.6 100.4,86.4 100.7,82.4 101.1,78.4 101.5,74.5 101.9,70.8 102.2,67.1 102.6,63.7 103.0,60.3 103.4,57.2 103.7,54.2 104.1,51.5 104.5,48.9 104.9,46.6 105.2,44.4 105.6,42.6 106.0,40.9 106.4,39.5 106.7,38.3 107.1,37.4 107.5,36.8 107.9,36.4 108.2,36.3 108.6,36.5 109.0,37.1 109.4,37.9 109.7,38.9 110.1,40.2 110.5,41.8 110.9,43.5 111.2,45.5 111.6,47.7 112.0,50.2 112.4,52.8 112.7,55.6 113.1,58.6 113.5,61.7 113.9,65.0 114.2,68.5 114.6,72.1 115.0,75.7 115.4,79.5 115.7,83.4 116.1,87.3 116.5,91.3 116.9,95.4 117.2,99.5 117.6,103.5 118.0,107.6 118.4,111.6 118.7,115.7 119.1,119.6 119.5,123.5 119.9,127.4 120.2,131.1 120.6,134.7 121.0,138.2 121.4,141.6 121.7,144.9 122.1,147.9 122.5,150.9 122.9,153.6 123.2,156.2 123.6,158.5 124.0,160.7 124.4,162.7 124.7,164.4 125.1,166.0 125.5,167.3 125.9,168.3 126.2,169.2 126.6,169.8 127.0,170.2 127.4,170.3 127.7,170.2 128.1,169.9 128.5,169.4 128.9,168.6 129.2,167.6 129.6,166.4 130.0,164.9 130.4,163.3 130.7,161.5 131.1,159.4 131.5,157.2 131.9,154.8 132.2,152.2 132.6,149.5 133.0,146.7 133.4,143.7 133.7,140.5 134.1,137.3 134.5,134.0 134.9,130.6 135.2,127.1 135.6,123.5 136.0,119.9 136.4,116.3 136.7,112.7 137.1,109.0 137.5,105.4 137.9,101.8 138.2,98.2 138.6,94.7 139.0,91.2 139.4,87.8 139.7,84.5 140.1,81.3 140.5,78.2 140.9,75.2 141.2,72.3 141.6,69.6 142.0,67.0 142.4,64.6 142.7,62.4 143.1,60.3 143.5,58.4 143.9,56.7 144.2,55.2 144.6,53.9 145.0,52.8 145.4,51.9 145.7,51.2 146.1,50.7 146.5,50.4 146.9,50.3 147.2,50.5 147.6,50.8 148.0,51.4 148.4,52.1 148.7,53.1 149.1,54.3 149.5,55.6 149.9,57.1 150.2,58.8 150.6,60.7 151.0,62.7 151.4,64.9 151.7,67.3 152.1,69.7 152.5,72.3 152.9,75.0 153.2,77.9 153.6,80.8 154.0,83.8 154.4,86.8 154.7,90.0 155.1,93.2 155.5,96.4 155.9,99.6 156.2,102.9 156.6,106.1 157.0,109.4 157.4,112.6 157.7,115.8 158.1,118.9 158.5,122.0 158.9,125.0 159.2,128.0 159.6,130.8 160.0,133.6 160.4,136.2 160.7,138.7 161.1,141.1 161.5,143.3 161.9,145.4 162.2,147.4 162.6,149.2 163.0,150.8 163.4,152.3 163.7,153.6 164.1,154.7 164.5,155.6 164.9,156.4 165.2,156.9 165.6,157.3 166.0,157.5 166.4,157.5 166.7,157.3 167.1,157.0 167.5,156.4 167.9,155.7 168.2,154.8 168.6,153.7 169.0,152.5 169.4,151.1 169.7,149.5 170.1,147.8 170.5,145.9 170.9,143.9 171.2,141.8 171.6,139.6 172.0,137.2 172.4,134.8 172.7,132.2 173.1,129.6 173.5,126.9 173.9,124.2 174.2,121.3 174.6,118.5 175.0,115.6 175.4,112.7 175.7,109.8 176.1,106.9 176.5,104.0 176.9,101.2 177.2,98.3 177.6,95.5 178.0,92.8 178.4,90.1 178.7,87.6 179.1,85.0 179.5,82.6 179.9,80.3 180.2,78.1 180.6,76.0 181.0,74.0 181.4,72.2 181.7,70.5 182.1,68.9 182.5,67.5 182.9,66.3 183.2,65.1 183.6,64.2 184.0,63.4 184.4,62.8 184.7,62.3 185.1,62.1 185.5,61.9 185.9,62.0 186.2,62.2 186.6,62.6 187.0,63.1 187.4,63.8 187.8,64.7 188.1,65.7 188.5,66.8 188.9,68.1 189.2,69.6 189.6,71.1 190.0,72.8 190.4,74.6 190.8,76.5 191.1,78.6 191.5,80.7 191.9,82.9 192.3,85.2 192.6,87.6 193.0,90.0 193.4,92.4 193.8,95.0 194.1,97.5 194.5,100.1 194.9,102.7 195.3,105.2 195.6,107.8 196.0,110.4 196.4,112.9 196.8,115.5 197.1,117.9 197.5,120.3 197.9,122.7 198.3,125.0 198.6,127.2 199.0,129.3 199.4,131.4 199.8,133.3 200.1,135.1 200.5,136.9 200.9,138.5 201.3,139.9 201.6,141.3 202.0,142.5 202.4,143.6 202.8,144.5 203.1,145.3 203.5,146.0 203.9,146.5 204.3,146.9 204.6,147.1 205.0,147.1 205.4,147.0 205.8,146.8 206.1,146.4 206.5,145.9 206.9,145.2 207.3,144.4 207.6,143.5 208.0,142.4 208.4,141.2 208.8,139.9 209.1,138.5 209.5,137.0 209.9,135.3 210.3,133.6 210.6,131.8 211.0,129.8 211.4,127.9 211.8,125.8 212.1,123.7 212.5,121.5 212.9,119.3 213.3,117.1 213.6,114.8 214.0,112.5 214.4,110.2 214.8,107.9 215.1,105.6 215.5,103.3 215.9,101.0 216.3,98.8 216.6,96.6 217.0,94.5 217.4,92.4 217.8,90.4 218.1,88.4 218.5,86.6 218.9,84.8 219.3,83.1 219.6,81.5 220.0,80.0 220.4,78.6 220.8,77.3 221.1,76.1 221.5,75.1 221.9,74.2 222.3,73.4 222.6,72.7 223.0,72.1 223.4,71.7 223.8,71.5 224.1,71.3 224.5,71.3 224.9,71.4 225.3,71.6 225.6,72.0 226.0,72.5 226.4,73.1 226.8,73.9 227.1,74.7 227.5,75.7 227.9,76.8 228.3,78.0 228.6,79.3 229.0,80.7 229.4,82.2 229.8,83.8 230.1,85.4 230.5,87.1 230.9,88.9 231.3,90.8 231.6,92.7 232.0,94.6 232.4,96.6 232.8,98.6 233.1,100.7 233.5,102.7 233.9,104.8 234.3,106.8 234.6,108.9 235.0,110.9 235.4,112.9 235.8,114.9 236.1,116.8 236.5,118.7 236.9,120.5 237.3,122.3 237.6,124.1 238.0,125.7 238.4,127.3 238.8,128.8 239.1,130.2 239.5,131.5 239.9,132.7 240.3,133.8 240.6,134.8 241.0,135.8 241.4,136.5 241.8,137.2 242.1,137.8 242.5,138.3 242.9,138.6 243.3,138.8 243.6,138.9 244.0,138.9 244.4,138.8 244.8,138.5 245.1,138.1 245.5,137.7 245.9,137.1 246.3,136.4 246.6,135.6 247.0,134.7 247.4,133.7 247.8,132.6 248.1,131.4 248.5,130.1 248.9,128.8 249.3,127.3 249.6,125.8 250.0,124.3 250.4,122.7 250.8,121.0 251.1,119.3 251.5,117.5 251.9,115.8 252.3,114.0 252.6,112.1 253.0,110.3 253.4,108.5 253.8,106.6 254.1,104.8 254.5,103.0 254.9,101.2 255.3,99.5 255.6,97.7 256.0,96.1 256.4,94.4 256.8,92.8 257.1,91.3 257.5,89.9 257.9,88.5 258.3,87.2 258.6,85.9 259.0,84.8 259.4,83.7 259.8,82.7 260.1,81.9 260.5,81.1 260.9,80.4 261.3,79.8 261.6,79.3 262.0,79.0 262.4,78.7 262.8,78.5 263.1,78.5 263.5,78.5 263.9,78.7 264.3,78.9 264.6,79.3 265.0,79.7 265.4,80.3 265.8,80.9 266.1,81.7 266.5,82.5 266.9,83.4 267.3,84.5 267.6,85.5 268.0,86.7 268.4,87.9 268.8,89.2 269.1,90.6 269.5,92.0 269.9,93.4 270.3,94.9 270.6,96.5 271.0,98.0 271.4,99.6 271.8,101.3 272.1,102.9 272.5,104.5 272.9,106.2 273.3,107.8 273.6,109.4 274.0,111.1 274.4,112.6 274.8,114.2 275.1,115.7 275.5,117.2 275.9,118.7 276.3,120.1 276.6,121.4 277.0,122.7 277.4,123.9 277.8,125.1 278.1,126.1 278.5,127.2 278.9,128.1 279.3,128.9 279.6,129.7 280.0,130.4 280.4,130.9 280.8,131.4 281.1,131.8 281.5,132.2 281.9,132.4 282.3,132.5 282.6,132.5 283.0,132.4 283.4,132.3 283.8,132.0 284.1,131.7 284.5,131.2 284.9,130.7 285.3,130.1 285.6,129.4 286.0,128.7 286.4,127.8 286.8,126.9 287.1,125.9 287.5,124.8 287.9,123.7 288.3,122.6 288.6,121.3 289.0,120.1 289.4,118.7 289.8,117.4 290.1,116.0 290.5,114.6 290.9,113.2 291.3,111.7 291.6,110.2 292.0,108.8 292.4,107.3 292.8,105.8 293.1,104.4 293.5,103.0 293.9,101.5 294.3,100.2 294.6,98.8 295.0,97.5 295.4,96.2 295.8,95.0 296.1,93.8 296.5,92.6 296.9,91.6 297.3,90.6 297.6,89.6 298.0,88.7 298.4,87.9 298.8,87.2 299.1,86.5 299.5,85.9 299.9,85.4 300.3,85.0 300.6,84.7 301.0,84.4 301.4,84.3 301.8,84.2 302.1,84.2 302.5,84.3 302.9,84.4 303.3,84.7 303.6,85.0 304.0,85.4 304.4,85.9 304.8,86.5 305.1,87.1 305.5,87.8 305.9,88.6 306.3,89.5 306.6,90.4 307.0,91.3 307.4,92.3 307.8,93.4 308.1,94.5 308.5,95.7 308.9,96.8 309.3,98.1 309.6,99.3 310.0,100.6 310.4,101.9 310.8,103.2 311.1,104.5 311.5,105.8 311.9,107.1 312.3,108.4 312.6,109.7 313.0,111.0 313.4,112.3 313.8,113.5 314.1,114.7 314.5,115.9 314.9,117.0 315.3,118.1 315.6,119.1 316.0,120.1 316.4,121.1 316.8,122.0 317.1,122.8 317.5,123.6 317.9,124.3 318.3,124.9 318.6,125.5 319.0,126.0 319.4,126.4 319.8,126.7 320.1,127.0 320.5,127.2 320.9,127.4 321.3,127.4 321.6,127.4 322.0,127.3 322.4,127.1 322.8,126.9 323.1,126.5 323.5,126.2 323.9,125.7 324.3,125.2 324.6,124.6 325.0,123.9 325.4,123.2 325.8,122.5 326.1,121.6 326.5,120.8 326.9,119.8 327.3,118.9 327.6,117.9 328.0,116.8 328.4,115.8 328.8,114.7 329.1,113.5 329.5,112.4 329.9,111.2 330.3,110.1 330.6,108.9 331.0,107.7 331.4,106.6 331.8,105.4 332.1,104.2 332.5,103.1 332.9,102.0 333.3,100.9 333.6,99.8 334.0,98.8 334.4,97.8 334.8,96.8 335.1,95.9 335.5,95.0 335.9,94.2 336.3,93.4 336.6,92.7 337.0,92.0 337.4,91.4 337.8,90.8 338.1,90.3 338.5,89.9 338.9,89.6 339.3,89.3 339.6,89.0 340.0,88.9 340.4,88.8 340.8,88.7 341.1,88.8 341.5,88.9 341.9,89.1 342.3,89.3 342.6,89.6 343.0,90.0 343.4,90.4 343.8,90.9 344.1,91.4" fill="none" class="s-ink" stroke-width="1"/><line x1="108.25" y1="22" x2="108.25" y2="192" class="s-gray" stroke-width="0.8" stroke-dasharray="3 3"/><text x="102.6" y="16.0" text-anchor="end" font-size="10" class="" style="fill:var(--muted)">drive on</text><text x="113.9" y="16.0" text-anchor="start" font-size="10" class="" style="fill:var(--muted)">drive switched off</text><circle cx="108.2" cy="36.3" r="2.4" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="111.2" y="31.3" text-anchor="start" font-size="10" class="f-ink">X<tspan baseline-shift="sub" font-size="8">1</tspan></text><circle cx="147.0" cy="50.4" r="2.4" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="150.0" y="45.4" text-anchor="start" font-size="10" class="f-ink">X<tspan baseline-shift="sub" font-size="8">2</tspan></text><circle cx="185.8" cy="62.0" r="2.4" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="188.8" y="57.0" text-anchor="start" font-size="10" class="f-ink">X<tspan baseline-shift="sub" font-size="8">3</tspan></text><circle cx="224.6" cy="71.3" r="2.4" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="227.6" y="66.3" text-anchor="start" font-size="10" class="f-ink">X<tspan baseline-shift="sub" font-size="8">4</tspan></text><circle cx="263.4" cy="78.5" r="2.4" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="266.4" y="73.5" text-anchor="start" font-size="10" class="f-ink">X<tspan baseline-shift="sub" font-size="8">5</tspan></text><circle cx="302.1" cy="84.2" r="2.4" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="305.1" y="79.2" text-anchor="start" font-size="10" class="f-ink">X<tspan baseline-shift="sub" font-size="8">6</tspan></text></svg><figcaption>Fig. 4 Free vibration decay after the drive is switched off (stage 4)<span class="zh">關掉驅動後的自由衰減（stage 4）</span></figcaption></figure>
+      <figure class="wide"><svg viewBox="0 0 500 192" width="500" height="192" role="img" aria-label="Masing loading path and hysteresis loop"><rect x="46" y="14" width="170" height="150" fill="none" class="s-ink" stroke-width="0.9"/><line x1="46" y1="29.0" x2="50" y2="29.0" class="s-ink" stroke-width="0.9"/><text x="40.0" y="32.5" text-anchor="end" font-size="12" class="f-ink">γ<tspan baseline-shift="sub" font-size="8">c</tspan></text><line x1="46" y1="89.0" x2="50" y2="89.0" class="s-ink" stroke-width="0.9"/><text x="40.0" y="92.5" text-anchor="end" font-size="12" class="f-ink">0</text><line x1="46" y1="149.0" x2="50" y2="149.0" class="s-ink" stroke-width="0.9"/><text x="40.0" y="152.5" text-anchor="end" font-size="12" class="f-ink">&#8722;γ<tspan baseline-shift="sub" font-size="8">c</tspan></text><line x1="46" y1="89.0" x2="216" y2="89.0" class="s-gray" stroke-width="0.6" stroke-dasharray="3 3"/><polyline points="56.6,89.0 104.4,29.0 152.2,149.0 200.1,29.0" fill="none" class="s-ink" stroke-width="1.2"/><circle cx="56.6" cy="89.0" r="2.6" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="60.6" y="104.0" text-anchor="middle" font-size="10" class="f-ink">O</text><circle cx="104.4" cy="29.0" r="2.6" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="104.4" y="22.0" text-anchor="middle" font-size="10" class="f-ink">A</text><circle cx="152.2" cy="149.0" r="2.6" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="152.2" y="164.0" text-anchor="middle" font-size="10" class="f-ink">B</text><circle cx="200.1" cy="29.0" r="2.6" style="fill:var(--tile)" class="s-ink" stroke-width="0.9"/><text x="200.1" y="22.0" text-anchor="middle" font-size="10" class="f-ink">A</text><text x="131.0" y="182.0" text-anchor="middle" font-size="12" class="f-ink">Loading sequence</text><text x="16.0" y="89.0" text-anchor="middle" font-size="12" class="f-ink" transform="rotate(-90 16 89.0)">γ</text><rect x="262" y="14" width="220" height="150" fill="none" class="s-ink" stroke-width="0.9"/><line x1="372.0" y1="14" x2="372.0" y2="164" class="s-gray" stroke-width="0.7"/><line x1="262" y1="89.0" x2="482" y2="89.0" class="s-gray" stroke-width="0.7"/><polygon points="467.7,29.5 464.5,36.1 461.3,42.3 458.1,48.0 454.9,53.3 451.7,58.2 448.5,62.8 445.3,67.1 442.1,71.1 439.0,74.9 435.8,78.5 432.6,81.9 429.4,85.0 426.2,88.0 423.0,90.9 419.8,93.6 416.6,96.1 413.4,98.6 410.3,100.9 407.1,103.1 403.9,105.2 400.7,107.3 397.5,109.2 394.3,111.0 391.1,112.8 387.9,114.5 384.8,116.1 381.6,117.7 378.4,119.2 375.2,120.7 372.0,122.1 368.8,123.4 365.6,124.7 362.4,126.0 359.2,127.2 356.1,128.3 352.9,129.5 349.7,130.6 346.5,131.6 343.3,132.7 340.1,133.6 336.9,134.6 333.7,135.5 330.6,136.4 327.4,137.3 324.2,138.2 321.0,139.0 317.8,139.8 314.6,140.6 311.4,141.3 308.2,142.1 305.0,142.8 301.9,143.5 298.7,144.2 295.5,144.9 292.3,145.5 289.1,146.1 285.9,146.8 282.7,147.4 279.5,148.0 276.3,148.5 276.3,148.5 279.5,141.9 282.7,135.7 285.9,130.0 289.1,124.7 292.3,119.8 295.5,115.2 298.7,110.9 301.9,106.9 305.0,103.1 308.2,99.5 311.4,96.1 314.6,93.0 317.8,90.0 321.0,87.1 324.2,84.4 327.4,81.9 330.6,79.4 333.7,77.1 336.9,74.9 340.1,72.8 343.3,70.7 346.5,68.8 349.7,67.0 352.9,65.2 356.1,63.5 359.2,61.9 362.4,60.3 365.6,58.8 368.8,57.3 372.0,55.9 375.2,54.6 378.4,53.3 381.6,52.0 384.8,50.8 387.9,49.7 391.1,48.5 394.3,47.4 397.5,46.4 400.7,45.3 403.9,44.4 407.1,43.4 410.3,42.5 413.4,41.6 416.6,40.7 419.8,39.8 423.0,39.0 426.2,38.2 429.4,37.4 432.6,36.7 435.8,35.9 439.0,35.2 442.1,34.5 445.3,33.8 448.5,33.1 451.7,32.5 454.9,31.9 458.1,31.2 461.3,30.6 464.5,30.0 467.7,29.5" class="f-gray" fill-opacity=".22"/><polygon points="372.0,89.0 467.7,89.0 467.7,29.5" class="f-gray" fill-opacity=".55"/><polyline points="467.7,29.5 464.5,36.1 461.3,42.3 458.1,48.0 454.9,53.3 451.7,58.2 448.5,62.8 445.3,67.1 442.1,71.1 439.0,74.9 435.8,78.5 432.6,81.9 429.4,85.0 426.2,88.0 423.0,90.9 419.8,93.6 416.6,96.1 413.4,98.6 410.3,100.9 407.1,103.1 403.9,105.2 400.7,107.3 397.5,109.2 394.3,111.0 391.1,112.8 387.9,114.5 384.8,116.1 381.6,117.7 378.4,119.2 375.2,120.7 372.0,122.1 368.8,123.4 365.6,124.7 362.4,126.0 359.2,127.2 356.1,128.3 352.9,129.5 349.7,130.6 346.5,131.6 343.3,132.7 340.1,133.6 336.9,134.6 333.7,135.5 330.6,136.4 327.4,137.3 324.2,138.2 321.0,139.0 317.8,139.8 314.6,140.6 311.4,141.3 308.2,142.1 305.0,142.8 301.9,143.5 298.7,144.2 295.5,144.9 292.3,145.5 289.1,146.1 285.9,146.8 282.7,147.4 279.5,148.0 276.3,148.5" fill="none" class="s-ink" stroke-width="1.2"/><polyline points="276.3,148.5 279.5,141.9 282.7,135.7 285.9,130.0 289.1,124.7 292.3,119.8 295.5,115.2 298.7,110.9 301.9,106.9 305.0,103.1 308.2,99.5 311.4,96.1 314.6,93.0 317.8,90.0 321.0,87.1 324.2,84.4 327.4,81.9 330.6,79.4 333.7,77.1 336.9,74.9 340.1,72.8 343.3,70.7 346.5,68.8 349.7,67.0 352.9,65.2 356.1,63.5 359.2,61.9 362.4,60.3 365.6,58.8 368.8,57.3 372.0,55.9 375.2,54.6 378.4,53.3 381.6,52.0 384.8,50.8 387.9,49.7 391.1,48.5 394.3,47.4 397.5,46.4 400.7,45.3 403.9,44.4 407.1,43.4 410.3,42.5 413.4,41.6 416.6,40.7 419.8,39.8 423.0,39.0 426.2,38.2 429.4,37.4 432.6,36.7 435.8,35.9 439.0,35.2 442.1,34.5 445.3,33.8 448.5,33.1 451.7,32.5 454.9,31.9 458.1,31.2 461.3,30.6 464.5,30.0 467.7,29.5" fill="none" class="s-ink" stroke-width="1.2"/><polyline points="276.3,148.5 279.5,147.9 282.7,147.3 285.9,146.7 289.1,146.0 292.3,145.3 295.5,144.6 298.7,143.8 301.9,142.9 305.0,142.0 308.2,141.1 311.4,140.1 314.6,139.0 317.8,137.9 321.0,136.6 324.2,135.3 327.4,133.9 330.6,132.3 333.7,130.7 336.9,128.9 340.1,126.9 343.3,124.7 346.5,122.3 349.7,119.7 352.9,116.8 356.1,113.5 359.2,109.8 362.4,105.7 365.6,100.9 368.8,95.4 372.0,89.0 375.2,82.6 378.4,77.1 381.6,72.3 384.8,68.2 387.9,64.5 391.1,61.2 394.3,58.3 397.5,55.7 400.7,53.3 403.9,51.1 407.1,49.1 410.3,47.3 413.4,45.7 416.6,44.1 419.8,42.7 423.0,41.4 426.2,40.1 429.4,39.0 432.6,37.9 435.8,36.9 439.0,36.0 442.1,35.1 445.3,34.2 448.5,33.4 451.7,32.7 454.9,32.0 458.1,31.3 461.3,30.7 464.5,30.1 467.7,29.5" fill="none" class="s-ink" stroke-width="0.9" stroke-dasharray="4 3"/><text x="471.7" y="25.5" text-anchor="start" font-size="10" class="f-ink">A</text><text x="272.3" y="160.5" text-anchor="end" font-size="10" class="f-ink">B</text><text x="312.7" y="36.9" text-anchor="middle" font-size="10" class="f-ink">E<tspan baseline-shift="sub" font-size="8">D</tspan> (loop area)</text><line x1="314.6" y1="47.3" x2="338.5" y2="99.4" class="s-ink" stroke-width="0.7"/><text x="431.3" y="114.0" text-anchor="middle" font-size="10" class="f-ink">E<tspan baseline-shift="sub" font-size="8">So</tspan></text><line x1="431.3" y1="105.7" x2="448.5" y2="78.6" class="s-ink" stroke-width="0.7"/><line x1="383.5" y1="149.4" x2="402.6" y2="149.4" class="s-ink" stroke-width="0.9" stroke-dasharray="4 3"/><text x="406.4" y="152.9" text-anchor="start" font-size="10" class="f-ink">backbone</text><text x="372.0" y="182.0" text-anchor="middle" font-size="12" class="f-ink">γ</text><text x="252.0" y="89.0" text-anchor="end" font-size="12" class="f-ink">τ</text></svg><figcaption>Fig. 5 Loading path and the resulting hysteresis loop (Masing rule)<span class="zh">加載路徑與 Masing 遲滯迴圈</span></figcaption></figure>
+      <div class="gtab"><div class="tcap">Table 2 S-wave arrival times in the downhole test<span class="zh">下孔試驗 S 波到達時間</span></div><div class="tablewrap"><table class="data"><tr><th>Depth (m)</th><td class="num">2</td><td class="num">4</td><td class="num">7</td><td class="num">10</td><td class="num">15</td><td class="num">20</td></tr><tr><th>Time (ms)</th><td class="num">13.5</td><td class="num">27.2</td><td class="num">41.3</td><td class="num">55.3</td><td class="num">74.2</td><td class="num">92.5</td></tr></table></div></div>
+    </div>
+
+    <div class="part" id="h3-1a">
+      <div class="part-h"><b>Part A</b> Resonant column stage 1<span class="zh">共振柱 stage 1</span><span class="ptag hw">HW3 Q1(a)</span></div>
+      <div class="pq">From the stage 1 frequency response curve (Fig. 3) find f<sub>n</sub>, V<sub>s</sub> and G<sub>max</sub>; from the stage 1 free-vibration peaks (Table 1) find the damping ratio by the logarithmic decrement method.<span class="zh-d">由 stage 1 頻率響應求共振頻率、剪力波速、小應變剪力模數，再由自由衰減求阻尼比。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> fixed–free, H = 0.100 m, ρ = 1.95 t/m³, I/I<sub>0</sub> = 0.10; X<sub>1</sub> = 88.80 mV, X<sub>6</sub> = 63.39 mV</p>
+          <div class="stp"><div class="sh">(1) Resonant frequency<span class="zh">共振頻率</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
+          <p>Peak of the stage 1 frequency response curve: <b>f<sub>n</sub> ≈ 108.2 Hz</b>.</p></div>
+          <div class="stp"><div class="sh">(2) Frequency equation (Newton's method)<span class="zh">頻率方程式與牛頓法迭代</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
+    \[\begin{aligned}
+    \frac{I}{I_0} &= \beta\tan\beta = 0.10 \\
+    f(\beta) &= \beta\tan\beta - 0.10,\qquad f'(\beta) = \tan\beta + \beta\sec^2\beta,\qquad \beta_{k+1} = \beta_k - \frac{f(\beta_k)}{f'(\beta_k)}
+    \end{aligned}\]
+    <p>Initial guess: for small β, tan β ≈ β, so β² ≈ 0.10 → β<sub>0</sub> = √0.10 = 0.3162 rad.</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>k</th><th class="num">β<sub>k</sub> (rad)</th><th class="num">β<sub>k</sub> tan β<sub>k</sub></th><th class="num">f(β<sub>k</sub>)</th><th class="num">f′(β<sub>k</sub>)</th><th class="num">β<sub>k+1</sub></th></tr>
+      <tr><td>0</td><td class="num">0.31623</td><td class="num">0.10347</td><td class="num">3.47×10⁻³</td><td class="num">0.6773</td><td class="num">0.31110</td></tr>
+      <tr><td>1</td><td class="num">0.31110</td><td class="num">0.10003</td><td class="num">3.2×10⁻⁵</td><td class="num">0.6648</td><td class="num">0.31105</td></tr>
+      <tr><td>2</td><td class="num">0.31105</td><td class="num">0.10000</td><td class="num">≈ 0</td><td class="num">0.6647</td><td class="num">0.31105</td></tr>
+    </table></div>
+    \[\beta_1 = 0.31623 - \frac{0.00347}{0.6773} = 0.31110,\qquad \beta_2 = 0.31110 - \frac{0.000032}{0.6648} = 0.31105 \;\Rightarrow\; \boxed{\beta = 0.3111\ \text{rad}}\]</div>
+          <div class="stp"><div class="sh">(3) V<sub>s</sub> and G<sub>max</sub><span class="zh">剪力波速與小應變剪力模數</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
+    \[\begin{aligned}
+    V_s &= \frac{\omega_nH}{\beta} = \frac{2\pi f_nH}{\beta} = \frac{2\pi(108.22)(0.100)}{0.3111} = \boxed{218.6\ \text{m/s}} \\
+    G_{max} &= \rho V_s^2 = 1.95(218.6)^2 = 93{,}200\ \text{kPa} = \boxed{93.2\ \text{MPa}}
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(4) Damping ratio (X<sub>1</sub> → X<sub>6</sub> = 5 cycles)<span class="zh">阻尼比</span><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
+    \[\begin{aligned}
+    \delta &= \frac{1}{n}\ln\frac{X_1}{X_{n+1}} = \frac{1}{5}\ln\frac{88.80}{63.39} = 0.0674 \\
+    D &= \frac{\delta}{2\pi} = \frac{0.0674}{2\pi} = \boxed{1.07\,\%}
+    \end{aligned}\]</div>
+          <p class="ans">Ans. f<sub>n</sub> ≈ 108.2 Hz, β = 0.311, V<sub>s</sub> = 219 m/s, G<sub>max</sub> = 93.2 MPa, D = 1.07 %</p>
+    </div></details>
+      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1a">HW3 Q1(a)</a> · Similar 同型: <a href="#m3-3">3.3</a>, <a href="#m5-5">5.5</a></p>
+    </div>
+
+    <div class="part" id="h3-1b">
+      <div class="part-h"><b>Part B</b> Modulus reduction, damping and threshold strains<span class="zh">模數折減、阻尼與門檻應變</span><span class="ptag hw">HW3 Q1(b)</span></div>
+      <div class="pq">Repeat Part A for all six stages (Table 1). Plot G/G<sub>max</sub>–γ and D–γ, compare with the Darendeli clean-sand curves, estimate γ<sub>r</sub>, and locate each stage relative to γ<sub>tl</sub> and γ<sub>tv</sub>.<span class="zh-d">六個階段畫 G/Gmax 與 D 曲線，估參考應變，判斷各階段相對門檻應變的位置。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> f<sub>n</sub> = 108.3 (108.22), 107.5, 104.7, 96.7, 82.7, 60.7 Hz at γ = 0.0005–0.1 %; β = 0.3111 for all stages (same I/I<sub>0</sub>)</p>
+          <div class="stp"><div class="sh">(1) Modulus reduction<span class="zh">模數折減</span><a class="cl" href="units/u08.html#s8-5">§8.5</a></div>
+    \[\begin{aligned}
+    G &= \rho V_s^2 = \rho\left(\frac{2\pi f_nH}{\beta}\right)^2 \propto f_n^2 \;\Rightarrow\; \frac{G}{G_{max}} = \left(\frac{f_n}{f_{n,1}}\right)^2 \\
+    \text{Stage 6:}\quad \frac{G}{G_{max}} &= \left(\frac{60.7}{108.22}\right)^2 = \boxed{0.315}
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(2) Damping of each stage<span class="zh">各階段阻尼比</span><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
+    \[\text{Stage 6:}\quad \delta = \frac15\ln\frac{70.62}{1.13} = 0.827,\qquad D = \frac{0.827}{2\pi} = \boxed{13.2\,\%}\]
+          <div class="tablewrap"><table class="data">
+            <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">G/G<sub>max</sub></th><th class="num">D (%)</th></tr>
+            <tr><td>1</td><td class="num">0.0005</td><td class="num">108.22</td><td class="num">1.000</td><td class="num">1.07</td></tr>
+            <tr><td>2</td><td class="num">0.001</td><td class="num">107.5</td><td class="num">0.987</td><td class="num">1.19</td></tr>
+            <tr><td>3</td><td class="num">0.003</td><td class="num">104.7</td><td class="num">0.936</td><td class="num">1.80</td></tr>
+            <tr><td>4</td><td class="num">0.01</td><td class="num">96.7</td><td class="num">0.799</td><td class="num">3.60</td></tr>
+            <tr><td>5</td><td class="num">0.03</td><td class="num">82.7</td><td class="num">0.584</td><td class="num">7.25</td></tr>
+            <tr><td>6</td><td class="num">0.1</td><td class="num">60.7</td><td class="num">0.315</td><td class="num">13.16</td></tr>
+          </table></div></div>
+          <div class="stp"><div class="sh">(3) Reference strain (G/G<sub>max</sub> = 0.5, interpolate on log γ)<span class="zh">參考應變</span><a class="cl" href="units/u08.html#s8-6">§8.6</a></div>
+    \[\begin{aligned}
+    x &= \frac{0.584 - 0.5}{0.584 - 0.315} = 0.312 \\
+    \log\gamma_r &= \log0.03 + 0.312\log\frac{0.1}{0.03} = -1.360 \;\Rightarrow\; \boxed{\gamma_r = 0.044\,\%}
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(4) Threshold strains (sand: γ<sub>tl</sub> ≈ 0.001 %, γ<sub>tv</sub> ≈ 0.01 %)<span class="zh">門檻應變</span><a class="cl" href="units/u08.html#s8-5">§8.5</a></div>
+          <p>Stage 1 (0.0005 %) &lt; γ<sub>tl</sub>: linear elastic. Stages 2–3: between γ<sub>tl</sub> and γ<sub>tv</sub>: nonlinear, no permanent volume change. Stage 4 ≈ γ<sub>tv</sub>. Stages 5–6 &gt; γ<sub>tv</sub>: permanent volume change; excess pore pressure under undrained loading.</p></div>
+          <p class="ans">Ans. G/G<sub>max</sub> = 1.000 → 0.315, D = 1.07 → 13.2 %; γ<sub>r</sub> ≈ 0.044 % (Darendeli 0.035 %); stage 1 &lt; γ<sub>tl</sub>, stages 5–6 &gt; γ<sub>tv</sub></p>
+    </div></details>
+      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1b">HW3 Q1(b)</a> · Similar 同型: <a href="#m5-5">5.5</a></p>
+    </div>
+
+    <div class="part" id="h3-2">
+      <div class="part-h"><b>Part C</b> Masing loops and damping ratio<span class="zh">Masing 迴圈與阻尼比</span><span class="ptag hw">HW3 Q2</span></div>
+      <div class="pq">Hyperbolic backbone with G<sub>max</sub> = 94,000 kPa and γ<sub>ref</sub> = 0.0004 (decimal); loading path 0 → γ<sub>c</sub> → −γ<sub>c</sub> → γ<sub>c</sub> (Fig. 5). (a) Loops and D = E<sub>D</sub>/(4πE<sub>So</sub>) for γ<sub>c</sub> = 0.01 % and 0.1 %, compared with the measured values in Part B. (b) Why the Masing damping differs from the measured values at very small and at large strains.<span class="zh-d">雙曲線骨幹的 Masing 迴圈，由面積求阻尼比並與量測比較；說明兩端為何不同。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> G<sub>max</sub> = 94,000 kPa, γ<sub>ref</sub> = 0.0004; γ<sub>c</sub> = 0.0001 (0.01 %) and 0.001 (0.1 %); strains in decimal</p>
+          <div class="stp"><div class="sh">(1) Backbone and Masing branches<span class="zh">骨幹與卸載、再載分支</span><a class="cl" href="units/u08.html#s8-7">§8.7</a></div>
+    \[f(\gamma) = \frac{G_{max}\gamma}{1+|\gamma|/\gamma_{ref}},\qquad \text{unloading: } \tau = \tau_c + 2f\!\left(\frac{\gamma-\gamma_c}{2}\right),\qquad \text{reloading: } \tau = -\tau_c + 2f\!\left(\frac{\gamma+\gamma_c}{2}\right)\]</div>
+          <div class="stp"><div class="sh">(2) γ<sub>c</sub> = 0.01 % (x = γ<sub>c</sub>/γ<sub>ref</sub> = 0.25)<span class="zh">小應變</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
+    \[\begin{aligned}
+    \tau_c &= \frac{94{,}000(0.0001)}{1+0.25} = 7.52\ \text{kPa},\qquad E_{So} = \tfrac12\tau_c\gamma_c = \tfrac12(7.52)(0.0001) = 0.376\ \text{J/m}^3 \\
+    D &= \frac1\pi\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right) - 2\right] = \frac1\pi\left[4(5)\left(1-\frac{\ln1.25}{0.25}\right) - 2\right] = \boxed{4.73\,\%} \\
+    E_D &= 4\pi E_{So}D = 4\pi(0.376)(0.0473) = 0.223\ \text{J/m}^3
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(3) γ<sub>c</sub> = 0.1 % (x = 2.5)<span class="zh">大應變</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
+    \[\begin{aligned}
+    \tau_c &= \frac{94{,}000(0.001)}{1+2.5} = 26.86\ \text{kPa},\qquad E_{So} = \tfrac12(26.86)(0.001) = 13.43\ \text{J/m}^3 \\
+    D &= \frac1\pi\left[4(1.4)\left(1-\frac{\ln3.5}{2.5}\right) - 2\right] = \boxed{25.3\,\%} \\
+    E_D &= 4\pi(13.43)(0.253) = 42.6\ \text{J/m}^3
+    \end{aligned}\]
+          <p>Compared with Q1: 4.73 % vs 3.60 % (×1.3); 25.3 % vs 13.2 % (×1.9).</p></div>
+          <div class="stp"><div class="sh">(4) Why Masing differs from measurements<span class="zh">兩端差異的原因</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
+          <p>Very small strain: the backbone is linear, so D<sub>Masing</sub> → 0, but soils show D<sub>min</sub> ≈ 1 % (micro-slip, viscosity) → Masing underestimates. Large strain: reversal curves = backbone scaled by 2 give loops that are too fat → Masing overestimates. Correction: D = b(G/G<sub>max</sub>)<sup>0.1</sup>D<sub>Masing</sub> + D<sub>min</sub> (Darendeli).</p></div>
+          <p class="ans">Ans. 0.01 %: τ<sub>c</sub> = 7.52 kPa, D = 4.73 %; 0.1 %: τ<sub>c</sub> = 26.9 kPa, D = 25.3 % (measured 3.60 %, 13.2 %)</p>
+    </div></details>
+      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q2">HW3 Q2</a> · Similar 同型: <a href="#m5-6">5.6</a></p>
+    </div>
+
+    <div class="part" id="h3-3">
+      <div class="part-h"><b>Part D</b> Downhole test and equivalent linear properties<span class="zh">下孔試驗與等值線性參數</span><span class="ptag hw">HW3 Q3</span></div>
+      <div class="pq">The downhole S-wave arrival times are listed in Table 2 (setup in Fig. 1; vertical travel path). (a) Determine V<sub>s</sub> and G<sub>max</sub> of each layer and compare layer 3 with the resonant column (Part A) and Hardin (1978). (b) Determine G and D of layer 3 at γ<sub>eff</sub> = 0.05 % using the curves of Part B. Can this analysis predict the excess pore pressure?<span class="zh-d">由下孔走時求各層 V<sub>s</sub>、G<sub>max</sub>，第 3 層和共振柱（Part A）、Hardin 比較；用 Part B 的曲線求 γ<sub>eff</sub> = 0.05 % 時的 G、D，能否預測孔隙水壓。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> ρ = 1.95 t/m³, water table 1 m, K<sub>0</sub> = 0.5; arrivals (z, t) = (2, 13.5), (4, 27.2), (7, 41.3), (10, 55.3), (15, 74.2), (20, 92.5) m, ms; e = 0.70; RC: G<sub>max</sub> = 93.2 MPa</p>
+          <div class="stp"><div class="sh">(a1) V<sub>s</sub> of each layer (least-squares line of t vs z)<span class="zh">各層 Vs</span><a class="cl" href="units/u07.html#s7-3">§7.3</a></div>
+    \[\begin{aligned}
+    \text{Layer 1 } (0, 2, 4\ \text{m}): &\quad \text{slope} = 6.800\ \text{ms/m} \;\Rightarrow\; V_s = \frac{1000}{6.800} = \boxed{147\ \text{m/s}} \\
+    \text{Layer 2 } (4, 7, 10\ \text{m}): &\quad \text{slope} = 4.683\ \text{ms/m} \;\Rightarrow\; V_s = \boxed{214\ \text{m/s}} \\
+    \text{Layer 3 } (10, 15, 20\ \text{m}): &\quad \text{slope} = 3.720\ \text{ms/m} \;\Rightarrow\; V_s = \boxed{269\ \text{m/s}}
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(a2) G<sub>max</sub> = ρV<sub>s</sub>²<span class="zh">小應變剪力模數</span><a class="cl" href="units/u07.html#s7-1">§7.1</a></div>
+    \[G_{max} = 1.95(147.1)^2 = 42.2,\quad 1.95(213.5)^2 = 88.9,\quad 1.95(268.8)^2 = \boxed{140.9\ \text{MPa}}\]</div>
+          <div class="stp"><div class="sh">(a3) Hardin (1978) at 15 m<span class="zh">Hardin 經驗式</span><a class="cl" href="units/u07.html#s7-1">§7.1</a></div>
+    \[\begin{aligned}
+    \sigma_v &= 1.95(9.81)(15) = 286.9\ \text{kPa},\qquad u = 9.81(15-1) = 137.3\ \text{kPa} \\
+    \sigma'_v &= 286.9 - 137.3 = 149.6\ \text{kPa},\qquad \sigma'_m = \frac{1+2K_0}{3}\sigma'_v = \frac{2}{3}(149.6) = 99.7\ \text{kPa} \\
+    F(e) &= \frac{1}{0.3+0.7e^2} = \frac{1}{0.3+0.7(0.70)^2} = 1.555 \\
+    G_{max} &= 625\,F(e)\,OCR^k\sqrt{p_a\sigma'_m} = 625(1.555)(1)\sqrt{100(99.7)} = \boxed{97.1\ \text{MPa}}
+    \end{aligned}\]
+          <p>Field 140.9 MPa &gt; Hardin 97.1 ≈ RC 93.2 MPa: reconstituted specimens lose fabric, aging and cementation.</p></div>
+          <div class="stp"><div class="sh">(b1) G and D at γ<sub>eff</sub> = 0.05 % (log interpolation between stages 5 and 6)<span class="zh">應變相容性質</span><a class="cl" href="units/u11.html#s11-1">§11.1</a></div>
+    \[\begin{aligned}
+    x &= \frac{\log(0.05/0.03)}{\log(0.1/0.03)} = 0.424 \\
+    G/G_{max} &= 0.584 + 0.424(0.315 - 0.584) = 0.470,\qquad D = 7.25 + 0.424(13.16 - 7.25) = \boxed{9.8\,\%} \\
+    G &= 0.470 \times G_{max,field} = 0.470(140.9) = \boxed{66.2\ \text{MPa}}
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(b2) Excess pore pressure?<span class="zh">能否預測孔隙水壓</span><a class="cl" href="units/u11.html#s11-3">§11.3</a></div>
+          <p>No. Equivalent linear analysis is a total stress analysis with no shear–volume coupling; since 0.05 % &gt; γ<sub>tv</sub>, pore pressure will build up, so an effective stress analysis or the Ch8 liquefaction methods are needed.</p></div>
+          <p class="ans">Ans. V<sub>s</sub> = 147, 214, 269 m/s; G<sub>max</sub> = 42.2, 88.9, 140.9 MPa; layer 3: field 141 &gt; Hardin 97 ≈ RC 93 MPa; γ<sub>eff</sub> = 0.05 %: G = 66 MPa, D = 9.8 %</p>
+    </div></details>
+      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q3">HW3 Q3</a> · Similar 同型: <a href="#m6-4">6.4</a></p>
+    </div>
   </article>
 </section>
 
@@ -813,8 +937,8 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
   </article>
 
   <article class="prob" id="m4-7">
-    <div class="ph"><span class="pno">4.7</span><h3>有阻尼自由振動（期中 Q3 加阻尼）</h3><span class="ptag ext">= 期中題組 Part D</span></div>
-    <div class="pq">與 2025 期中考題組的延伸 Part D 相同，解答見 <a href="#e2d">Part 1 題組 Part D</a>。</div>
+    <div class="ph"><span class="pno">4.7</span><h3>有阻尼自由振動（期中 Q3 加阻尼）</h3><span class="ptag ext">= 期中題組 Part C</span></div>
+    <div class="pq">與 2025 期中考題組的延伸 Part C 相同，解答見 <a href="#e2d">Part 1 題組 Part C</a>。</div>
   </article>
 
   <article class="prob" id="m4-8">
@@ -1181,7 +1305,7 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
     <div class="pq">乾淨砂（PI = 0、OCR = 1）取自 16 m，重模 e = 0.65、σ′<sub>m</sub> = 104 kPa，固定–自由共振柱 d = 50 mm、H = 100 mm、ρ = 1.90 t/m³、I/I<sub>0</sub> = 0.15。五個階段：γ = 0.0005、0.003、0.01、0.03、0.1 %；f<sub>n</sub> = 141.0、136.0、124.5、106.5、77.2 Hz；X<sub>1</sub> = 75、82、78、90、70 mV；X<sub>6</sub> = 54.78、46.58、23.64、8.53、1.01 mV。(a) stage 1 的 β、V<sub>s</sub>、G<sub>max</sub>、阻尼比　(b) 證明 G/G<sub>max</sub> = (f<sub>n</sub>/f<sub>n,1</sub>)²，算各階段 G/G<sub>max</sub> 與阻尼　(c) γ<sub>r</sub>　(d) 各階段相對 γ<sub>tl</sub>、γ<sub>tv</sub>　(e) 共振柱的應變範圍與更大應變要用的試驗。</div>
     <details class="derive"><summary>完整作答</summary><div class="body sol">
       <p class="given"><b>已知</b> d = 50 mm、H = 0.100 m、ρ = 1.90 t/m³、I/I<sub>0</sub> = 0.15；五階段 f<sub>n</sub>、X<sub>1</sub>、X<sub>6</sub> 如題</p>
-      <div class="stp"><div class="sh">(a) Stage 1：β、V<sub>s</sub>、G<sub>max</sub>、D<a class="cl" href="units/u09.html#s9-1">§9.1</a><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
+      <div class="stp"><div class="sh">(a) Stage 1：β、V<sub>s</sub>、G<sub>max</sub>、ξ<a class="cl" href="units/u09.html#s9-1">§9.1</a><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
     <p>β tan β = I/I<sub>0</sub> = 0.15 用牛頓法：f(β) = β tan β − 0.15、f′(β) = tan β + β sec²β；初值 β<sub>0</sub> = √0.15 = 0.3873 rad（β 小時 tan β ≈ β）。</p>
     <div class="tablewrap"><table class="data">
       <tr><th>k</th><th class="num">β<sub>k</sub> (rad)</th><th class="num">β<sub>k</sub> tan β<sub>k</sub></th><th class="num">f(β<sub>k</sub>)</th><th class="num">f′(β<sub>k</sub>)</th><th class="num">β<sub>k+1</sub></th></tr>
@@ -1195,7 +1319,7 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
     V_s &=\frac{2\pi f_n H}{\beta} = \frac{2\pi(141.0)(0.100)}{0.378} = \boxed{234.4\ \text{m/s}} \\
     G_{max} &= \rho V_s^2 = 1.90(234.4)^2 = \boxed{104{,}400\ \text{kPa}} \\
     \delta &= \frac{1}{5}\ln\frac{X_1}{X_6} = \frac{1}{5}\ln\frac{75}{54.78} = 0.0628 \\
-    D &= \frac{\delta}{2\pi} = \frac{0.0628}{2\pi} = \boxed{1.00\%}
+    \xi &= \frac{\delta}{2\pi} = \frac{0.0628}{2\pi} = \boxed{1.00\%}
     \end{aligned}\]</div>
       <div class="stp"><div class="sh">(b) 證明 G/G<sub>max</sub> = (f<sub>n</sub>/f<sub>n,1</sub>)²，各階段結果<a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
     \[\begin{aligned}
@@ -1203,10 +1327,10 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
     &V_s = \frac{2\pi f_nH}{\beta} \propto f_n,\quad G = \rho V_s^2 \propto f_n^2
     \;\Rightarrow\; \frac{G}{G_{max}} = \left(\frac{f_n}{f_{n,1}}\right)^2 \\
     &\text{Stage 5: } \frac{G}{G_{max}} = \left(\frac{77.2}{141.0}\right)^2 = 0.300,\quad
-    \delta = \frac15\ln\frac{70}{1.01} = 0.848,\quad D = \frac{0.848}{2\pi} = 13.49\%
+    \delta = \frac15\ln\frac{70}{1.01} = 0.848,\quad \xi = \frac{0.848}{2\pi} = 13.49\%
     \end{aligned}\]
         <div class="tablewrap"><table class="data">
-          <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">V<sub>s</sub> (m/s)</th><th class="num">G (MPa)</th><th class="num">G/G<sub>max</sub></th><th class="num">δ</th><th class="num">D (%)</th></tr>
+          <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">V<sub>s</sub> (m/s)</th><th class="num">G (MPa)</th><th class="num">G/G<sub>max</sub></th><th class="num">δ</th><th class="num">ξ (%)</th></tr>
           <tr><td>1</td><td class="num">0.0005</td><td class="num">141.0</td><td class="num">234.4</td><td class="num">104.4</td><td class="num">1.000</td><td class="num">0.0628</td><td class="num">1.00</td></tr>
           <tr><td>2</td><td class="num">0.003</td><td class="num">136.0</td><td class="num">226.1</td><td class="num">97.2</td><td class="num">0.930</td><td class="num">0.1131</td><td class="num">1.80</td></tr>
           <tr><td>3</td><td class="num">0.01</td><td class="num">124.5</td><td class="num">207.0</td><td class="num">81.4</td><td class="num">0.780</td><td class="num">0.2388</td><td class="num">3.80</td></tr>
@@ -1222,16 +1346,16 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
         <p>γ<sub>tl</sub> ≈ 0.001 %、γ<sub>tv</sub> ≈ 0.01 %：stage 1 &lt; γ<sub>tl</sub>（線性）；stage 2 介於 γ<sub>tl</sub> 與 γ<sub>tv</sub>（非線性、無永久體積變化）；stage 3 ≈ γ<sub>tv</sub>；stage 4、5 &gt; γ<sub>tv</sub>（產生永久體積變化，不排水時累積孔隙水壓）。</p></div>
       <div class="stp"><div class="sh">(e) 共振柱的應變範圍<a class="cl" href="units/u09.html#s9-3">§9.3</a></div>
         <p>共振柱約 10⁻⁴–10⁻¹ %；更大應變用反覆三軸、反覆單剪或反覆扭剪試驗。</p></div>
-      <p class="ans">答：β = 0.378、V<sub>s</sub> = 234 m/s、G<sub>max</sub> = 104.4 MPa、D = 1.00 %；G/G<sub>max</sub> = 1.000、0.930、0.780、0.571、0.300，D = 1.00、1.80、3.80、7.50、13.49 %；γ<sub>r</sub> ≈ 0.041 %。</p>
+      <p class="ans">答：β = 0.378、V<sub>s</sub> = 234 m/s、G<sub>max</sub> = 104.4 MPa、ξ = 1.00 %；G/G<sub>max</sub> = 1.000、0.930、0.780、0.571、0.300，ξ = 1.00、1.80、3.80、7.50、13.49 %；γ<sub>r</sub> ≈ 0.041 %。</p>
     </div></details>
     <p class="plink">作業：<a href="#h3-1a">HW3 Q1</a></p>
   </article>
 
   <article class="prob" id="m5-6">
     <div class="ph"><span class="pno">5.6</span><h3>Masing 準則＋雙曲線骨幹</h3><span class="ptag hw3">HW3 Q2 類型</span></div>
-    <div class="pq">雙曲線骨幹 \(\tau = G_{max}\gamma/(1+\gamma/\gamma_{ref})\)，G<sub>max</sub> = 100,000 kPa、γ<sub>ref</sub> = 0.05 %，路徑 0 → γ<sub>c</sub> → −γ<sub>c</sub> → γ<sub>c</sub>。Masing 阻尼 \(D_{Masing} = \frac1\pi\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right) - 2\right]\)，x = γ<sub>c</sub>/γ<sub>ref</sub>。(a) γ<sub>c</sub> = 0.01 %、0.1 % 的 τ<sub>c</sub>、G/G<sub>max</sub>、E<sub>So</sub>　(b) 由 (γ<sub>c</sub>, τ<sub>c</sub>) 卸載的分支，γ<sub>c</sub> = 0.1 % 時 γ = 0 與 −γ<sub>c</sub> 的 τ　(c) D<sub>Masing</sub>、E<sub>D</sub>，與 5.5 比較　(d) 為什麼極小與大應變時不同；Darendeli 修正 \(D = b(G/G_{max})^{0.1}D_{Masing} + D_{min}\)，b ≈ 0.62、D<sub>min</sub> = 1.0 %。</div>
+    <div class="pq">雙曲線骨幹 \(\tau = G_{max}\gamma/(1+\gamma/\gamma_{ref})\)，G<sub>max</sub> = 100,000 kPa、γ<sub>ref</sub> = 0.05 %，路徑 0 → γ<sub>c</sub> → −γ<sub>c</sub> → γ<sub>c</sub>。Masing 阻尼 \(\xi_{Masing} = \frac1\pi\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right) - 2\right]\)，x = γ<sub>c</sub>/γ<sub>ref</sub>。(a) γ<sub>c</sub> = 0.01 %、0.1 % 的 τ<sub>c</sub>、G/G<sub>max</sub>、E<sub>So</sub>　(b) 由 (γ<sub>c</sub>, τ<sub>c</sub>) 卸載的分支，γ<sub>c</sub> = 0.1 % 時 γ = 0 與 −γ<sub>c</sub> 的 τ　(c) ξ<sub>Masing</sub>、E<sub>D</sub>，與 5.5 比較　(d) 為什麼極小與大應變時不同；Darendeli 修正 \(\xi = b(G/G_{max})^{0.1}\xi_{Masing} + \xi_{min}\)，b ≈ 0.62、ξ<sub>min</sub> = 1.0 %。</div>
     <details class="derive"><summary>完整作答</summary><div class="body sol">
-      <p class="given"><b>已知</b> G<sub>max</sub> = 100,000 kPa、γ<sub>ref</sub> = 0.05 % = 0.0005；x = γ<sub>c</sub>/γ<sub>ref</sub>；Darendeli b = 0.62、D<sub>min</sub> = 1.0 %</p>
+      <p class="given"><b>已知</b> G<sub>max</sub> = 100,000 kPa、γ<sub>ref</sub> = 0.05 % = 0.0005；x = γ<sub>c</sub>/γ<sub>ref</sub>；Darendeli b = 0.62、ξ<sub>min</sub> = 1.0 %</p>
       <div class="stp"><div class="sh">(a) τ<sub>c</sub>、G/G<sub>max</sub>、E<sub>So</sub><a class="cl" href="units/u08.html#s8-6">§8.6</a></div>
     \[\begin{aligned}
     \gamma_c = 0.0001,\ x = 0.2:&\quad \tau_c = \frac{G_{max}\gamma_c}{1+x} = \frac{100{,}000(0.0001)}{1.2} = \boxed{8.33\ \text{kPa}},\quad
@@ -1250,22 +1374,22 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
         <p>γ = −γ<sub>c</sub> 時 τ = −τ<sub>c</sub>，回到骨幹曲線上的 (−γ<sub>c</sub>, −τ<sub>c</sub>)。</p></div>
       <div class="stp"><div class="sh">(c) Masing 阻尼與 E<sub>D</sub><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
     \[\begin{aligned}
-    D_{Masing} &= \frac{1}{\pi}\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right)-2\right] \\
+    \xi_{Masing} &= \frac{1}{\pi}\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right)-2\right] \\
     x = 0.2:&\quad \frac1\pi\left[4(6)\left(1-\frac{0.1823}{0.2}\right)-2\right] = \boxed{3.87\%} \\
-    &\quad E_D = 4\pi E_{So}D = 4\pi(0.4167)(0.03865) = \boxed{0.202\ \text{J/m}^3} \\
+    &\quad E_D = 4\pi E_{So}\xi = 4\pi(0.4167)(0.03865) = \boxed{0.202\ \text{J/m}^3} \\
     x = 2:&\quad \frac1\pi\left[4(1.5)\left(1-\frac{1.0986}{2}\right)-2\right] = \boxed{22.4\%} \\
     &\quad E_D =4\pi(16.67)(0.2241) = \boxed{46.9\ \text{J/m}^3}
     \end{aligned}\]
         <p>與 5.5 實測比較：0.01 % 時 3.87 % 對 3.80 %，接近；0.1 % 時 22.4 % 對 13.49 %，Masing 高估約 1.7 倍。</p></div>
       <div class="stp"><div class="sh">(d) 兩端差異與 Darendeli 修正<a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
     \[\begin{aligned}
-    \gamma_c = 0.001\%,\ x = 0.02:&\quad D_{Masing} = 0.42\% \;\lt\; D_{min} \approx 1\% \\
-    D &= b\left(\frac{G}{G_{max}}\right)^{0.1}D_{Masing} + D_{min} \\
-    0.01\%:&\quad D = 0.62(0.833)^{0.1}(3.87) + 1.0 = \boxed{3.35\%} \\
-    0.1\%:&\quad D = 0.62(0.333)^{0.1}(22.4) + 1.0 = \boxed{13.45\%}
+    \gamma_c = 0.001\%,\ x = 0.02:&\quad \xi_{Masing} = 0.42\% \;\lt\; \xi_{min} \approx 1\% \\
+    \xi &= b\left(\frac{G}{G_{max}}\right)^{0.1}\xi_{Masing} + \xi_{min} \\
+    0.01\%:&\quad \xi = 0.62(0.833)^{0.1}(3.87) + 1.0 = \boxed{3.35\%} \\
+    0.1\%:&\quad \xi = 0.62(0.333)^{0.1}(22.4) + 1.0 = \boxed{13.45\%}
     \end{aligned}\]
-        <p>極小應變時 Masing 迴圈趨近零面積，但土壤仍有微滑動與黏滯造成的 D<sub>min</sub>；大應變時 Masing 假設卸載曲線為骨幹放大 2 倍，迴圈過胖而高估阻尼。修正後 0.1 % 的 13.45 % 與 5.5 實測 13.49 % 吻合。</p></div>
-      <p class="ans">答：τ<sub>c</sub> = 8.33、33.3 kPa；G/G<sub>max</sub> = 0.833、0.333；E<sub>So</sub> = 0.417、16.7 J/m³；卸載 τ(0) = −16.7 kPa、τ(−γ<sub>c</sub>) = −33.3 kPa；D<sub>Masing</sub> = 3.87 %、22.4 %；Darendeli 修正 3.35 %、13.45 %。</p>
+        <p>極小應變時 Masing 迴圈趨近零面積，但土壤仍有微滑動與黏滯造成的 ξ<sub>min</sub>；大應變時 Masing 假設卸載曲線為骨幹放大 2 倍，迴圈過胖而高估阻尼。修正後 0.1 % 的 13.45 % 與 5.5 實測 13.49 % 吻合。</p></div>
+      <p class="ans">答：τ<sub>c</sub> = 8.33、33.3 kPa；G/G<sub>max</sub> = 0.833、0.333；E<sub>So</sub> = 0.417、16.7 J/m³；卸載 τ(0) = −16.7 kPa、τ(−γ<sub>c</sub>) = −33.3 kPa；ξ<sub>Masing</sub> = 3.87 %、22.4 %；Darendeli 修正 3.35 %、13.45 %。</p>
     </div></details>
     <p class="plink">作業：<a href="#h3-2">HW3 Q2</a></p>
   </article>
@@ -1388,16 +1512,16 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
     T_s &= 4\sum\frac{h_i}{V_{si}} = 4\left(\frac{5}{140}+\frac{7}{210}+\frac{8}{280}\right) \\
     &= 4(0.0357+0.0333+0.0286) = \boxed{0.39\ \text{s}}
     \end{aligned}\]</div>
-      <div class="stp"><div class="sh">(d) γ<sub>eff</sub> = 0.05 % 時第 3 層的 G 與 D<a class="cl" href="units/u11.html#s11-1">§11.1</a></div>
+      <div class="stp"><div class="sh">(d) γ<sub>eff</sub> = 0.05 % 時第 3 層的 G 與 ξ<a class="cl" href="units/u11.html#s11-1">§11.1</a></div>
     \[\begin{aligned}
     x &= \frac{\log0.05-\log0.03}{\log0.1-\log0.03} = 0.424 \\
     \frac{G}{G_{max}} &= 0.571 + 0.424(0.300-0.571) = \boxed{0.456} \\
-    D &= 7.50 + 0.424(13.49-7.50) = \boxed{10.0\%} \\
+    \xi &= 7.50 + 0.424(13.49-7.50) = \boxed{10.0\%} \\
     G &= \frac{G}{G_{max}}\times G_{max,field} = 0.4556(148.7) = \boxed{67.7\ \text{MPa}}
     \end{aligned}\]</div>
       <div class="stp"><div class="sh">(e) 能否預測孔隙水壓<a class="cl" href="units/u11.html#s11-1">§11.1</a></div>
         <p>不能。等值線性分析是總應力分析，不含剪力–體積耦合；且 0.05 % &gt; γ<sub>tv</sub>，飽和砂會累積孔隙水壓，須用有效應力分析或液化評估。</p></div>
-      <p class="ans">答：V<sub>s</sub> = 140、210、280 m/s，G<sub>max</sub> = 37.3、84.0、148.7 MPa；第 3 層現地 148.7、共振柱 104.4、Hardin 107.0 MPa；T<sub>s</sub> = 0.39 s；G = 67.7 MPa、D = 10.0 %；不能預測孔隙水壓。</p>
+      <p class="ans">答：V<sub>s</sub> = 140、210、280 m/s，G<sub>max</sub> = 37.3、84.0、148.7 MPa；第 3 層現地 148.7、共振柱 104.4、Hardin 107.0 MPa；T<sub>s</sub> = 0.39 s；G = 67.7 MPa、ξ = 10.0 %；不能預測孔隙水壓。</p>
     </div></details>
     <p class="plink">作業：<a href="#h3-3">HW3 Q3</a></p>
   </article>
