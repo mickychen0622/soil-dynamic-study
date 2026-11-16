@@ -15,6 +15,7 @@
     section.sec:has(> .prob) > .prob { margin: 0 0 24px; }
     /* 展開解答的卡片橫跨兩欄，讓算式有足夠寬度 */
     section.sec:has(> .prob) > .prob:has(details[open]) { grid-column: 1 / -1; }
+    section.sec:has(> .prob) > .prob.full { grid-column: 1 / -1; }
   }
   .prob .ph { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; margin-bottom: 6px; }
   .prob .pno { font-family: var(--font-display); font-weight: 700; color: var(--accent); font-size: 18px; min-width: 2.4em; }
@@ -23,6 +24,11 @@
   .ptag.exam { background: var(--orange-soft); color: var(--orange); }
   .ptag.hw { background: var(--accent-soft); color: var(--accent); }
   .ptag.hw3 { background: var(--green-soft); color: var(--green); }
+  .ptag.ext { background: var(--chip); color: var(--ink); }
+  .prob .part { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 14px; }
+  .prob .part-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 16.5px; font-weight: 600; margin-bottom: 4px; }
+  .prob .part-h b { color: var(--accent); }
+  .prob .part-h .zh { color: var(--muted); font-size: 14px; font-weight: 500; }
   .prob .pq { margin: 4px 0 6px; line-height: 1.7; }
   .prob .pq ol { margin: 4px 0 0; padding-left: 1.4em; }
   .prob details.derive { margin: 12px 0 0; }
@@ -55,16 +61,16 @@
 <main>
 
 <header class="hero" id="top">
-  <div class="eyebrow">Worked Problems · 考古、作業、模擬考</div>
+  <div class="eyebrow">Worked Problems · 考前猜題、作業、模擬考與考古題</div>
   <h1>計算題整理</h1>
-  <p class="lede"><b>先練考過的，再練可能考的。</b>前面是 2025 年期中考與今年三次作業，後面是模擬考的各章計算題、基礎振動與國考計算題。每一題的解答預設收起來，先自己算再展開對答案。解答照考試作答的寫法：已知 → 公式 → 代入 → 結果；觀念不在解答裡解釋，點小題旁的 <b>§</b> 標籤回到章節。</p>
+  <p class="lede"><b>先練考前猜題，再練其他。</b>Part 1 考前猜題（Pre-exam Guessing）：2025 年期中考與 HW3（作者轉述老師表示期中考與 HW3 相關），都整理成題組。Part 2 是 HW1、HW2。Part 3 是模擬考各章計算題、基礎振動與國考考古題。每一題的解答預設收起來，先自己算再展開對答案。解答照考試作答的寫法：已知 → 公式 → 代入 → 結果；觀念不在解答裡解釋，點小題旁的 <b>§</b> 標籤回到章節。</p>
   <div class="callout link" style="text-align:left"><div class="ct">標籤</div>
-    <p><span class="ptag exam">2025 期中考</span> 考過的題目　<span class="ptag hw">作業</span> 今年作業　<span class="ptag hw3">HW3 類型</span> 模擬考中與 HW3 同型、數字不同的題目（作者轉述老師表示期中考與 HW3 相關）　<span class="ptag">往年作業</span> 2024 年作業原題。數值全部重新計算，與作業頁、模擬考詳解若有小差異，多半來自取捨位數或讀圖。</p>
+    <p><span class="ptag exam">2025 期中考</span> 考過的題目　<span class="ptag hw">作業</span> 今年作業　<span class="ptag ext">Extension</span> 自己延伸的練習　<span class="ptag hw3">HW3 類型</span> 模擬考中與 HW3 同型、數字不同的題目　<span class="ptag">往年作業</span> 2024 年作業原題。數值全部重新計算，與作業頁、模擬考詳解若有小差異，多半來自取捨位數或讀圖。</p>
   </div>
 
   <h3>題型地圖</h3>
   <div class="tablewrap"><table class="data" id="map-tbl">
-    <tr><th>題型</th><th>考古、作業</th><th>模擬考</th><th>國考</th></tr>
+    <tr><th>題型</th><th>考前猜題、作業</th><th>模擬考</th><th>國考考古題</th></tr>
     <tr><td>SDOF 基本量與自由振動</td><td><a href="#e2">期中 Q2</a>、<a href="#e3">期中 Q3</a></td><td><a href="#m4-3">4.3</a>–<a href="#m4-9">4.9</a></td><td><a href="#mN15">N.15</a></td></tr>
     <tr><td>受迫振動、共振、傳遞率、隔振</td><td><a href="#h3-4">HW3 Q4</a></td><td><a href="#m4-10">4.10</a>–<a href="#m4-16">4.16</a></td><td></td></tr>
     <tr><td>共振柱、彎曲元件</td><td><a href="#h3-1a">HW3 Q1</a></td><td><a href="#m3-2">3.2</a>–<a href="#m3-5">3.5</a>、<a href="#m5-5">5.5</a></td><td><a href="#mN1">N.1</a>、<a href="#mN16">N.16</a></td></tr>
@@ -78,59 +84,357 @@
 </header>
 
 <section class="sec" id="c-exam" data-num="Exam" data-short="2025 Midterm" data-title="2025 Midterm calculation problems">
-  <div class="sec-head"><span class="sec-num">Part 1 · Past Exam</span><h2>2025 Midterm Exam (2025/11/13)</h2></div>
-  <p class="part-note">Question 1 (definitions, 40 pts) is covered in the <a href="glossary.html">Glossary</a>. The two calculation questions (30 pts) use the same machine-foundation SDOF system.<span class="zh-d">第 1 題名詞解釋見名詞總表；計算題兩題共 30 分，都是同一個機器基礎 SDOF。</span></p>
+  <div class="sec-head"><span class="sec-num">Part 1 · Pre-exam Guessing</span><h2>2025 Midterm Exam</h2></div>
+  <p class="part-note">Question 1 (definitions) is covered in the <a href="glossary.html">Glossary</a>. Questions 2 and 3 use the same machine-foundation SDOF system, so they are combined below into one problem set: Parts A and B are the original exam questions, Parts C–E are our own extensions.<span class="zh-d">第 1 題名詞解釋見名詞總表。第 2、3 題是同一個機器基礎 SDOF，合併成一個題組：Part A、B 是期中考原題，Part C–E 是自己延伸的練習。</span></p>
 
-  <article class="prob" id="e2">
-    <div class="ph"><span class="pno">Q2</span><h3>Machine foundation SDOF: ω<sub>n</sub>, ξ, ω<sub>d</sub>, δ<span class="zh">機器基礎 SDOF</span></h3><span class="ptag exam">2025 Midterm · 20 pts</span></div>
-    <div class="pq">A foundation–machine system is modeled as an SDOF system with W = 1000 kN, k = 200,000 kN/m and c = 2340 kN·s/m. Determine (a) the natural circular frequency ω<sub>n</sub>, (b) the damping ratio ξ, (c) the damped circular frequency ω<sub>d</sub> and (d) the logarithmic decrement δ (5 pts each).<span class="zh-d">基礎加機器重 1000 kN、彈簧 200,000 kN/m、阻尼器 2340 kN·s/m，求自然圓頻率、阻尼比、阻尼圓頻率、對數遞減。</span></div>
-    <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-      <p class="given"><b>Given</b> W = 1000 kN, k = 200,000 kN/m, c = 2340 kN·s/m, g = 9.81 m/s²</p>
-      <div class="stp"><div class="sh">(a) Natural circular frequency<span class="zh">自然圓頻率</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+  <article class="prob full" id="e2">
+    <div class="ph"><span class="pno">Q2–Q3</span><h3>Machine foundation SDOF: properties and free vibration<span class="zh">機器基礎 SDOF 題組</span></h3><span class="ptag exam">2025 Midterm</span></div>
+    <div class="pq">A foundation–machine system is modeled as an SDOF system with W = 1000 kN, k = 200,000 kN/m and c = 2340 kN·s/m. The system is set into free vibration with initial displacement u(0) = 0.05 m and initial velocity u̇(0) = 0.01 m/s.<span class="zh-d">基礎加機器重 1000 kN、彈簧 200,000 kN/m、阻尼器 2340 kN·s/m；初始位移 0.05 m、初速 0.01 m/s 的自由振動。</span></div>
+
+    <div class="part" id="e2a">
+      <div class="part-h"><b>Part A</b> System properties<span class="zh">系統性質</span><span class="ptag exam">Midterm Q2</span></div>
+      <div class="pq">Determine (a) the natural circular frequency ω<sub>n</sub>, (b) the damping ratio ξ, (c) the damped circular frequency ω<sub>d</sub> and (d) the logarithmic decrement δ.<span class="zh-d">求自然圓頻率、阻尼比、阻尼圓頻率、對數遞減。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+        <p class="given"><b>Given</b> W = 1000 kN, k = 200,000 kN/m, c = 2340 kN·s/m, g = 9.81 m/s²</p>
+        <div class="stp"><div class="sh">(a) Natural circular frequency<span class="zh">自然圓頻率</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
 \[\begin{aligned}
 m &= \frac{W}{g} = \frac{1000\ \text{kN}}{9.81\ \text{m/s}^2} = 101.94\ \text{t} \\
 \omega_n &= \sqrt{\frac{k}{m}} = \sqrt{\frac{200{,}000}{101.94}} = \boxed{44.29\ \text{rad/s}}
 \end{aligned}\]</div>
-      <div class="stp"><div class="sh">(b) Damping ratio<span class="zh">阻尼比</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
+        <div class="stp"><div class="sh">(b) Damping ratio<span class="zh">阻尼比</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
 \[\begin{aligned}
 c_c &= 2m\omega_n = 2(101.94)(44.29) = 9030\ \text{kN}\cdot\text{s/m} \\
 \xi &= \frac{c}{c_c} = \frac{2340}{9030} = \boxed{0.259}
 \end{aligned}\]</div>
-      <div class="stp"><div class="sh">(c) Damped circular frequency<span class="zh">阻尼圓頻率</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
+        <div class="stp"><div class="sh">(c) Damped circular frequency<span class="zh">阻尼圓頻率</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
 \[\omega_d = \omega_n\sqrt{1-\xi^2} = 44.29\sqrt{1-0.259^2} = \boxed{42.78\ \text{rad/s}}\]</div>
-      <div class="stp"><div class="sh">(d) Logarithmic decrement<span class="zh">對數遞減</span><a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
+        <div class="stp"><div class="sh">(d) Logarithmic decrement<span class="zh">對數遞減</span><a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
 \[\delta = \frac{2\pi\xi}{\sqrt{1-\xi^2}} = \frac{2\pi(0.259)}{\sqrt{1-0.259^2}} = \boxed{1.686}\]</div>
-      <p class="ans">Ans. ω<sub>n</sub> = 44.3 rad/s; ξ = 0.259; ω<sub>d</sub> = 42.8 rad/s; δ = 1.69</p>
-    </div></details>
-    <p class="plink">Similar 同型: <a href="#m4-3">4.3</a>, <a href="#mN15">N.15</a></p>
-  </article>
+        <p class="ans">Ans. ω<sub>n</sub> = 44.3 rad/s; ξ = 0.259; ω<sub>d</sub> = 42.8 rad/s; δ = 1.69</p>
+      </div></details>
+    </div>
 
-  <article class="prob" id="e3">
-    <div class="ph"><span class="pno">Q3</span><h3>Undamped free vibration: phase angle and amplitude<span class="zh">無阻尼自由振動</span></h3><span class="ptag exam">2025 Midterm · 10 pts</span></div>
-    <div class="pq">For the same system, the initial displacement and velocity are u(0) = 0.05 m and u̇(0) = 0.01 m/s. <b>Ignoring damping</b>, determine (a) the phase angle of the displacement and (b) the displacement amplitude (5 pts each).<span class="zh-d">同一系統，初始位移 0.05 m、初速 0.01 m/s，不計阻尼，求相位角與位移振幅。</span></div>
-    <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-          <p class="given"><b>Given</b> ω<sub>n</sub> = 44.29 rad/s (from Q2), u(0) = u<sub>0</sub> = 0.05 m, u̇(0) = u̇<sub>0</sub> = 0.01 m/s, damping ignored</p>
-          <div class="stp"><div class="sh">Equation of motion<span class="zh">無阻尼自由振動解</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
-    \[\begin{aligned}
-    u(t) &= u_0\cos\omega_nt + \frac{\dot u_0}{\omega_n}\sin\omega_nt = \rho\sin(\omega_nt+\theta) \\
-    \frac{\dot u_0}{\omega_n} &= \frac{0.01}{44.29} = 2.258\times10^{-4}\ \text{m}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(a) Phase angle<span class="zh">相位角</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
-    \[\begin{aligned}
-    \tan\theta &= \frac{u_0}{\dot u_0/\omega_n} = \frac{u_0\,\omega_n}{\dot u_0} = \frac{0.05(44.29)}{0.01} = 221.5 \\
-    \theta &= \tan^{-1}(221.5) = \boxed{89.74^\circ\ (1.566\ \text{rad})}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(b) Displacement amplitude<span class="zh">位移振幅</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
-    \[\rho = \sqrt{u_0^2 + \left(\frac{\dot u_0}{\omega_n}\right)^2} = \sqrt{0.05^2 + (2.258\times10^{-4})^2} = \boxed{0.0500\ \text{m}}\]</div>
-          <p class="ans">Ans. θ = 89.7° (for u = ρ sin(ω<sub>n</sub>t + θ)); ρ = 0.0500 m</p>
-    </div></details>
-    <p class="plink">With damping 加上阻尼: <a href="#m4-7">4.7</a></p>
+    <div class="part" id="e3">
+      <div class="part-h"><b>Part B</b> Undamped free vibration<span class="zh">無阻尼自由振動</span><span class="ptag exam">Midterm Q3</span></div>
+      <div class="pq"><b>Ignoring damping</b>, determine (a) the phase angle of the displacement and (b) the displacement amplitude.<span class="zh-d">不計阻尼，求位移的相位角與振幅。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+        <p class="given"><b>Given</b> ω<sub>n</sub> = 44.29 rad/s (Part A), u<sub>0</sub> = 0.05 m, u̇<sub>0</sub> = 0.01 m/s, damping ignored</p>
+        <div class="stp"><div class="sh">Equation of motion<span class="zh">無阻尼自由振動解</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+\[\begin{aligned}
+u(t) &= u_0\cos\omega_nt + \frac{\dot u_0}{\omega_n}\sin\omega_nt = \rho\sin(\omega_nt+\theta) \\
+\frac{\dot u_0}{\omega_n} &= \frac{0.01}{44.29} = 2.258\times10^{-4}\ \text{m}
+\end{aligned}\]</div>
+        <div class="stp"><div class="sh">(a) Phase angle<span class="zh">相位角</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+\[\begin{aligned}
+\tan\theta &= \frac{u_0}{\dot u_0/\omega_n} = \frac{u_0\,\omega_n}{\dot u_0} = \frac{0.05(44.29)}{0.01} = 221.5 \\
+\theta &= \tan^{-1}(221.5) = \boxed{89.74^\circ\ (1.566\ \text{rad})}
+\end{aligned}\]</div>
+        <div class="stp"><div class="sh">(b) Displacement amplitude<span class="zh">位移振幅</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+\[\rho = \sqrt{u_0^2 + \left(\frac{\dot u_0}{\omega_n}\right)^2} = \sqrt{0.05^2 + (2.258\times10^{-4})^2} = \boxed{0.0500\ \text{m}}\]</div>
+        <p class="ans">Ans. θ = 89.7° (for u = ρ sin(ω<sub>n</sub>t + θ)); ρ = 0.0500 m</p>
+      </div></details>
+    </div>
+
+    <div class="part" id="e2c">
+      <div class="part-h"><b>Part C</b> More on the undamped response<span class="zh">無阻尼反應延伸</span><span class="ptag ext">Extension</span></div>
+      <div class="pq">Still ignoring damping, determine (a) the displacement history u(t), (b) the natural period T<sub>n</sub> and frequency f<sub>n</sub>, (c) the maximum velocity and acceleration, (d) the times of the first displacement peak and the first zero crossing, (e) the total energy of the system and (f) the maximum spring force.<span class="zh-d">仍不計阻尼：位移歷時、週期與頻率、最大速度與加速度、第一次峰值與通過零點的時間、總能量、最大彈簧力。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+        <p class="given"><b>Given</b> m = 101.94 t, k = 200,000 kN/m, ω<sub>n</sub> = 44.29 rad/s, ρ = 0.0500 m, θ = 89.74° = 1.5663 rad</p>
+        <div class="stp"><div class="sh">(a) Displacement history<span class="zh">位移歷時</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+\[u(t) = u_0\cos\omega_nt + \frac{\dot u_0}{\omega_n}\sin\omega_nt = \boxed{0.05\cos44.29t + 2.258\times10^{-4}\sin44.29t\ \text{(m)}}\]</div>
+        <div class="stp"><div class="sh">(b) Natural period and frequency<span class="zh">自然週期與頻率</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+\[T_n = \frac{2\pi}{\omega_n} = \frac{2\pi}{44.29} = \boxed{0.142\ \text{s}},\qquad f_n = \frac{1}{T_n} = \boxed{7.05\ \text{Hz}}\]</div>
+        <div class="stp"><div class="sh">(c) Maximum velocity and acceleration<span class="zh">最大速度與加速度</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+\[\begin{aligned}
+\dot u_{max} &= \omega_n\rho = 44.29(0.0500) = \boxed{2.21\ \text{m/s}} \\
+\ddot u_{max} &= \omega_n^2\rho = 44.29^2(0.0500) = \boxed{98.1\ \text{m/s}^2}\ (= 10.0\,g)
+\end{aligned}\]</div>
+        <div class="stp"><div class="sh">(d) First peak and first zero crossing<span class="zh">第一次峰值與通過零點</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+\[\begin{aligned}
+\text{peak: } \omega_nt_1 + \theta = \frac{\pi}{2} &\;\Rightarrow\; t_1 = \frac{\pi/2 - 1.5663}{44.29} = \boxed{1.0\times10^{-4}\ \text{s}} \\
+\text{zero: } \omega_nt_2 + \theta = \pi &\;\Rightarrow\; t_2 = \frac{\pi - 1.5663}{44.29} = \boxed{0.0356\ \text{s}}
+\end{aligned}\]</div>
+        <div class="stp"><div class="sh">(e) Total energy (conserved)<span class="zh">總能量</span><a class="cl" href="units/u04.html#s4-8">§4.8</a></div>
+\[\begin{aligned}
+E &= \tfrac12ku_0^2 + \tfrac12m\dot u_0^2 = \tfrac12(200{,}000)(0.05)^2 + \tfrac12(101.94)(0.01)^2 = 250.0 + 0.005 = \boxed{250\ \text{kJ}} \\
+&= \tfrac12k\rho^2 = \tfrac12(200{,}000)(0.0500)^2 = 250\ \text{kJ}\ \checkmark
+\end{aligned}\]</div>
+        <div class="stp"><div class="sh">(f) Maximum spring force<span class="zh">最大彈簧力</span><a class="cl" href="units/u04.html#s4-1">§4.1</a></div>
+\[f_{S,max} = k\rho = 200{,}000(0.0500) = \boxed{10{,}000\ \text{kN}}\]</div>
+        <p class="ans">Ans. u(t) = 0.05 cos 44.29t + 2.26×10⁻⁴ sin 44.29t m; T<sub>n</sub> = 0.142 s, f<sub>n</sub> = 7.05 Hz; u̇<sub>max</sub> = 2.21 m/s, ü<sub>max</sub> = 98.1 m/s²; t<sub>1</sub> = 0.0001 s, t<sub>2</sub> = 0.0356 s; E = 250 kJ; f<sub>S,max</sub> = 10,000 kN</p>
+      </div></details>
+    </div>
+
+    <div class="part" id="e2d">
+      <div class="part-h"><b>Part D</b> Damped free vibration<span class="zh">有阻尼自由振動</span><span class="ptag ext">Extension</span></div>
+      <div class="pq">Now include damping. Determine (a) the displacement history u(t), (b) the envelope amplitude and phase angle, (c) the damped period T<sub>d</sub>, (d) the ratio of peak amplitudes after 1 and 3 cycles, (e) the time and number of cycles for the amplitude to decay to 10 % and 1 %, and (f) the fraction of energy dissipated in the first cycle.<span class="zh-d">考慮阻尼：位移歷時、包絡振幅與相位角、阻尼週期、1 圈與 3 圈後的振幅比、衰減到 10 % 與 1 % 的時間與圈數、第一圈消散的能量比例。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+        <p class="given"><b>Given</b> ω<sub>n</sub> = 44.29 rad/s, ξ = 0.259, ω<sub>d</sub> = 42.78 rad/s, δ = 1.686 (Part A); u<sub>0</sub> = 0.05 m, u̇<sub>0</sub> = 0.01 m/s</p>
+        <div class="stp"><div class="sh">(a) Displacement history<span class="zh">位移歷時</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
+\[\begin{aligned}
+u(t) &= e^{-\xi\omega_nt}\left(A\cos\omega_dt + B\sin\omega_dt\right),\qquad \xi\omega_n = 0.259(44.29) = 11.48\ \text{s}^{-1} \\
+A &= u_0 = 0.05\ \text{m},\qquad B = \frac{\dot u_0 + \xi\omega_nu_0}{\omega_d} = \frac{0.01 + 11.48(0.05)}{42.78} = 0.01365\ \text{m} \\
+u(t) &= \boxed{e^{-11.48t}\left(0.05\cos42.78t + 0.01365\sin42.78t\right)\ \text{(m)}}
+\end{aligned}\]</div>
+        <div class="stp"><div class="sh">(b) Envelope amplitude and phase angle<span class="zh">包絡振幅與相位角</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
+        <p>Writing u(t) = ρ e<sup>−ξω<sub>n</sub>t</sup> sin(ω<sub>d</sub>t + θ):</p>
+\[\rho = \sqrt{A^2+B^2} = \sqrt{0.05^2+0.01365^2} = \boxed{0.0518\ \text{m}},\qquad \theta = \tan^{-1}\frac{A}{B} = \tan^{-1}\frac{0.05}{0.01365} = \boxed{74.7^\circ}\]</div>
+        <div class="stp"><div class="sh">(c) Damped period<span class="zh">阻尼週期</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
+\[T_d = \frac{2\pi}{\omega_d} = \frac{2\pi}{42.78} = \boxed{0.147\ \text{s}}\quad(T_n = 0.142\ \text{s})\]</div>
+        <div class="stp"><div class="sh">(d) Peak ratio after n cycles<span class="zh">n 圈後的振幅比</span><a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
+\[\frac{u_{n+1}}{u_1} = e^{-n\delta}:\qquad n = 1:\ e^{-1.686} = \boxed{0.185},\qquad n = 3:\ e^{-3(1.686)} = \boxed{0.0064}\]</div>
+        <div class="stp"><div class="sh">(e) Decay to 10 % and 1 %<span class="zh">衰減到 10 % 與 1 %</span><a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
+\[\begin{aligned}
+e^{-\xi\omega_nt} = r &\;\Rightarrow\; t = \frac{\ln(1/r)}{\xi\omega_n},\qquad N = \frac{\ln(1/r)}{\delta} \\
+r = 0.10: &\quad t = \frac{2.303}{11.48} = \boxed{0.201\ \text{s}},\qquad N = \frac{2.303}{1.686} = \boxed{1.37\ \text{cycles}} \\
+r = 0.01: &\quad t = \frac{4.605}{11.48} = \boxed{0.401\ \text{s}},\qquad N = \frac{4.605}{1.686} = \boxed{2.73\ \text{cycles}}
+\end{aligned}\]</div>
+        <div class="stp"><div class="sh">(f) Energy dissipated in the first cycle<span class="zh">第一圈消散的能量</span><a class="cl" href="units/u04.html#s4-8">§4.8</a></div>
+\[E \propto u^2:\qquad \frac{\Delta E}{E} = 1 - e^{-2\delta} = 1 - e^{-2(1.686)} = 1 - 0.0343 = \boxed{96.6\,\%}\]</div>
+        <p class="ans">Ans. u(t) = e<sup>−11.48t</sup>(0.05 cos 42.78t + 0.01365 sin 42.78t) m; ρ = 0.0518 m, θ = 74.7°; T<sub>d</sub> = 0.147 s; 0.185 and 0.0064; 10 %: 0.20 s (1.37 cycles), 1 %: 0.40 s (2.73 cycles); 96.6 % of the energy lost in the first cycle</p>
+      </div></details>
+    </div>
+
+    <div class="part" id="e2e">
+      <div class="part-h"><b>Part E</b> Discussion<span class="zh">判斷與討論</span><span class="ptag ext">Extension</span></div>
+      <div class="pq">(a) Is it reasonable to ignore damping as in Part B? (b) Taking u from the static equilibrium position, will the foundation lift off the ground? (c) If the dashpot were increased to c = c<sub>c</sub>, write u(t) and describe the motion. (d) Part B gives θ = 89.74°; why do some solutions give 0.26°?<span class="zh-d">(a) 不計阻尼是否合理　(b) 位移由靜平衡位置量起，基礎會不會上舉　(c) 若 c = c<sub>c</sub>，寫出 u(t) 並描述運動　(d) 為什麼有的解答相位角是 0.26°。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+        <div class="stp"><div class="sh">(a) Ignoring damping<span class="zh">不計阻尼是否合理</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
+        <p>The initial amplitudes are close (0.0500 m undamped vs 0.0518 m envelope), so ignoring damping is acceptable only for the initial amplitude. With ξ = 0.259, the amplitude drops to 18.5 % after one cycle (Part D), so the undamped solution overestimates the later response by more than 5 times and cannot describe the motion beyond the first cycle.</p></div>
+        <div class="stp"><div class="sh">(b) Lift-off check<span class="zh">基礎上舉檢核</span><a class="cl" href="units/u04.html#s4-1">§4.1</a></div>
+\[\begin{aligned}
+\Delta_{st} &= \frac{W}{k} = \frac{1000}{200{,}000} = 0.005\ \text{m} = 5\ \text{mm} \\
+R(t) &= W + ku(t),\qquad k\rho = 10{,}000\ \text{kN} \\
+R_{max} &= 1000 + 10{,}000 = 11{,}000\ \text{kN},\qquad R_{min} = 1000 - 10{,}000 = \boxed{-9000\ \text{kN}}
+\end{aligned}\]
+        <p>R &lt; 0 means tension, which the soil cannot provide. Lift-off occurs whenever the upward displacement exceeds Δ<sub>st</sub> = 5 mm; here ρ = 50 mm = 10Δ<sub>st</sub>, so <b>the foundation lifts off</b> and the linear SDOF model is no longer valid (damping force ignored).</p></div>
+        <div class="stp"><div class="sh">(c) Critically damped case<span class="zh">臨界阻尼</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
+\[\begin{aligned}
+c = c_c = 9030\ \text{kN}\cdot\text{s/m}: \quad u(t) &= \left[u_0 + (\dot u_0 + \omega_nu_0)\,t\right]e^{-\omega_nt} \\
+&= \boxed{(0.05 + 2.225\,t)\,e^{-44.29t}\ \text{(m)}}
+\end{aligned}\]
+        <p>No oscillation: the mass returns to equilibrium in the shortest time without crossing it (ξ = 1 is the boundary between oscillatory and non-oscillatory motion).</p></div>
+        <div class="stp"><div class="sh">(d) Sine form vs cosine form<span class="zh">sin 與 cos 形式的相位角</span><a class="cl" href="units/u04.html#s4-2">§4.2</a></div>
+\[\begin{aligned}
+u &= \rho\sin(\omega_nt + \theta),\qquad \tan\theta = \frac{u_0\omega_n}{\dot u_0} \;\Rightarrow\; \theta = 89.74^\circ \\
+u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_n} \;\Rightarrow\; \alpha = 0.26^\circ
+\end{aligned}\]
+        <p>θ + α = 90°: both describe the same motion, so the answer must state which form is used.</p></div>
+        <p class="ans">Ans. (a) Only for the initial amplitude; (b) R<sub>min</sub> = −9000 kN → lift-off (ρ = 10Δ<sub>st</sub>); (c) u = (0.05 + 2.225t)e<sup>−44.29t</sup> m, no oscillation; (d) θ = 89.74° (sine) = 90° − 0.26° (cosine)</p>
+      </div></details>
+    </div>
+
+    <p class="plink">Similar 同型: <a href="#m4-3">4.3</a>, <a href="#m4-5">4.5</a>, <a href="#mN15">N.15</a></p>
   </article>
 </section>
 
-<section class="sec" id="c-hw" data-num="HW" data-short="HW1–HW3" data-title="Key calculations in this year's homework">
-  <div class="sec-head"><span class="sec-num">Part 2 · Homework</span><h2>Key Calculations in This Year's Homework</h2></div>
-  <p class="part-note">Full solutions with interactive recalculation are on the homework pages. Each problem here is written as a complete exam answer; HW3 is the focus.<span class="zh-d">作業頁有含互動重算的完整解答；這裡寫成考試作答的格式，HW3 是重點。</span></p>
+<section class="sec" id="c-hw3" data-num="HW3" data-short="HW3 題組" data-title="HW3 problem sets">
+  <div class="sec-head"><span class="sec-num">Part 1 · Pre-exam Guessing</span><h2>HW3 Problem Sets</h2></div>
+  <p class="part-note">HW3 is grouped into two problem sets: Set 1 (Q1–Q3) follows one clean sand from the resonant column to the field, and each part builds on the previous ones; Set 2 (Q4) is an isolation pad unrelated to the site. Full solutions with interactive recalculation are on the <a href="hw/hw3.html">HW3 page</a>.<span class="zh-d">HW3 分成兩個題組：Set 1（Q1–Q3）同一種乾淨砂，從共振柱一路到現地，後面的 Part 會用到前面的結果；Set 2（Q4）是與場址無關的隔振墊。含互動重算的完整解答在 HW3 頁。</span></p>
+
+  <article class="prob full" id="hw3-s1">
+    <div class="ph"><span class="pno">Set 1</span><h3>Clean sand: laboratory and field dynamic properties<span class="zh">乾淨砂的動態性質</span></h3><span class="ptag hw">HW3 Q1–Q3</span></div>
+    <div class="pq">A site consists of three sand layers (0–4, 4–10 and 10–20 m) with the water table at 1 m, ρ = 1.95 t/m³ and K<sub>0</sub> = 0.5. A reconstituted specimen of the layer-3 clean sand (e = 0.70, σ′<sub>m</sub> = 100 kPa) is tested in a fixed–free resonant column: d = 50 mm, H = 100 mm, I/I<sub>0</sub> = 0.10.<span class="zh-d">三層砂場址（0–4、4–10、10–20 m），地下水位 1 m、ρ = 1.95 t/m³、K<sub>0</sub> = 0.5；第 3 層乾淨砂重模試體（e = 0.70、σ′<sub>m</sub> = 100 kPa）做固定–自由共振柱試驗。</span></div>
+
+    <div class="part" id="h3-1a">
+      <div class="part-h"><b>Part A</b> Resonant column stage 1<span class="zh">共振柱 stage 1</span><span class="ptag hw">HW3 Q1(a)</span></div>
+      <div class="pq">From the stage 1 (γ = 0.0005 %) frequency response curve find f<sub>n</sub>, V<sub>s</sub> and G<sub>max</sub>; from the free-vibration peaks X<sub>1</sub>–X<sub>6</sub> = 88.80, 83.14, 77.94, 72.61, 67.75, 63.39 mV find the damping ratio.<span class="zh-d">由 stage 1 頻率響應求共振頻率、剪力波速、小應變剪力模數，再由自由衰減求阻尼比。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> fixed–free, H = 0.100 m, ρ = 1.95 t/m³, I/I<sub>0</sub> = 0.10; X<sub>1</sub> = 88.80 mV, X<sub>6</sub> = 63.39 mV</p>
+          <div class="stp"><div class="sh">(1) Resonant frequency<span class="zh">共振頻率</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
+          <p>Peak of the stage 1 frequency response curve: <b>f<sub>n</sub> ≈ 108.2 Hz</b>.</p></div>
+          <div class="stp"><div class="sh">(2) Frequency equation (Newton's method)<span class="zh">頻率方程式與牛頓法迭代</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
+    \[\begin{aligned}
+    \frac{I}{I_0} &= \beta\tan\beta = 0.10 \\
+    f(\beta) &= \beta\tan\beta - 0.10,\qquad f'(\beta) = \tan\beta + \beta\sec^2\beta,\qquad \beta_{k+1} = \beta_k - \frac{f(\beta_k)}{f'(\beta_k)}
+    \end{aligned}\]
+    <p>Initial guess: for small β, tan β ≈ β, so β² ≈ 0.10 → β<sub>0</sub> = √0.10 = 0.3162 rad.</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>k</th><th class="num">β<sub>k</sub> (rad)</th><th class="num">β<sub>k</sub> tan β<sub>k</sub></th><th class="num">f(β<sub>k</sub>)</th><th class="num">f′(β<sub>k</sub>)</th><th class="num">β<sub>k+1</sub></th></tr>
+      <tr><td>0</td><td class="num">0.31623</td><td class="num">0.10347</td><td class="num">3.47×10⁻³</td><td class="num">0.6773</td><td class="num">0.31110</td></tr>
+      <tr><td>1</td><td class="num">0.31110</td><td class="num">0.10003</td><td class="num">3.2×10⁻⁵</td><td class="num">0.6648</td><td class="num">0.31105</td></tr>
+      <tr><td>2</td><td class="num">0.31105</td><td class="num">0.10000</td><td class="num">≈ 0</td><td class="num">0.6647</td><td class="num">0.31105</td></tr>
+    </table></div>
+    \[\beta_1 = 0.31623 - \frac{0.00347}{0.6773} = 0.31110,\qquad \beta_2 = 0.31110 - \frac{0.000032}{0.6648} = 0.31105 \;\Rightarrow\; \boxed{\beta = 0.3111\ \text{rad}}\]</div>
+          <div class="stp"><div class="sh">(3) V<sub>s</sub> and G<sub>max</sub><span class="zh">剪力波速與小應變剪力模數</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
+    \[\begin{aligned}
+    V_s &= \frac{\omega_nH}{\beta} = \frac{2\pi f_nH}{\beta} = \frac{2\pi(108.22)(0.100)}{0.3111} = \boxed{218.6\ \text{m/s}} \\
+    G_{max} &= \rho V_s^2 = 1.95(218.6)^2 = 93{,}200\ \text{kPa} = \boxed{93.2\ \text{MPa}}
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(4) Damping ratio (X<sub>1</sub> → X<sub>6</sub> = 5 cycles)<span class="zh">阻尼比</span><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
+    \[\begin{aligned}
+    \delta &= \frac{1}{n}\ln\frac{X_1}{X_{n+1}} = \frac{1}{5}\ln\frac{88.80}{63.39} = 0.0674 \\
+    D &= \frac{\delta}{2\pi} = \frac{0.0674}{2\pi} = \boxed{1.07\,\%}
+    \end{aligned}\]</div>
+          <p class="ans">Ans. f<sub>n</sub> ≈ 108.2 Hz, β = 0.311, V<sub>s</sub> = 219 m/s, G<sub>max</sub> = 93.2 MPa, D = 1.07 %</p>
+    </div></details>
+      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1a">HW3 Q1(a)</a> · Similar 同型: <a href="#m3-3">3.3</a>, <a href="#m5-5">5.5</a></p>
+    </div>
+
+    <div class="part" id="h3-1b">
+      <div class="part-h"><b>Part B</b> Modulus reduction, damping and threshold strains<span class="zh">模數折減、阻尼與門檻應變</span><span class="ptag hw">HW3 Q1(b)</span></div>
+      <div class="pq">Six stages with γ = 0.0005, 0.001, 0.003, 0.01, 0.03, 0.1 % and f<sub>n</sub> = 108.3, 107.5, 104.7, 96.7, 82.7, 60.7 Hz. Plot G/G<sub>max</sub>–γ and D–γ, compare with the Darendeli clean-sand curves, estimate γ<sub>r</sub>, and locate each stage relative to γ<sub>tl</sub> and γ<sub>tv</sub>.<span class="zh-d">六個階段畫 G/Gmax 與 D 曲線，估參考應變，判斷各階段相對門檻應變的位置。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> f<sub>n</sub> = 108.3 (108.22), 107.5, 104.7, 96.7, 82.7, 60.7 Hz at γ = 0.0005–0.1 %; β = 0.3111 for all stages (same I/I<sub>0</sub>)</p>
+          <div class="stp"><div class="sh">(1) Modulus reduction<span class="zh">模數折減</span><a class="cl" href="units/u08.html#s8-5">§8.5</a></div>
+    \[\begin{aligned}
+    G &= \rho V_s^2 = \rho\left(\frac{2\pi f_nH}{\beta}\right)^2 \propto f_n^2 \;\Rightarrow\; \frac{G}{G_{max}} = \left(\frac{f_n}{f_{n,1}}\right)^2 \\
+    \text{Stage 6:}\quad \frac{G}{G_{max}} &= \left(\frac{60.7}{108.22}\right)^2 = \boxed{0.315}
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(2) Damping of each stage<span class="zh">各階段阻尼比</span><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
+    \[\text{Stage 6:}\quad \delta = \frac15\ln\frac{70.62}{1.13} = 0.827,\qquad D = \frac{0.827}{2\pi} = \boxed{13.2\,\%}\]
+          <div class="tablewrap"><table class="data">
+            <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">G/G<sub>max</sub></th><th class="num">D (%)</th></tr>
+            <tr><td>1</td><td class="num">0.0005</td><td class="num">108.22</td><td class="num">1.000</td><td class="num">1.07</td></tr>
+            <tr><td>2</td><td class="num">0.001</td><td class="num">107.5</td><td class="num">0.987</td><td class="num">1.19</td></tr>
+            <tr><td>3</td><td class="num">0.003</td><td class="num">104.7</td><td class="num">0.936</td><td class="num">1.80</td></tr>
+            <tr><td>4</td><td class="num">0.01</td><td class="num">96.7</td><td class="num">0.799</td><td class="num">3.60</td></tr>
+            <tr><td>5</td><td class="num">0.03</td><td class="num">82.7</td><td class="num">0.584</td><td class="num">7.25</td></tr>
+            <tr><td>6</td><td class="num">0.1</td><td class="num">60.7</td><td class="num">0.315</td><td class="num">13.16</td></tr>
+          </table></div></div>
+          <div class="stp"><div class="sh">(3) Reference strain (G/G<sub>max</sub> = 0.5, interpolate on log γ)<span class="zh">參考應變</span><a class="cl" href="units/u08.html#s8-6">§8.6</a></div>
+    \[\begin{aligned}
+    x &= \frac{0.584 - 0.5}{0.584 - 0.315} = 0.312 \\
+    \log\gamma_r &= \log0.03 + 0.312\log\frac{0.1}{0.03} = -1.360 \;\Rightarrow\; \boxed{\gamma_r = 0.044\,\%}
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(4) Threshold strains (sand: γ<sub>tl</sub> ≈ 0.001 %, γ<sub>tv</sub> ≈ 0.01 %)<span class="zh">門檻應變</span><a class="cl" href="units/u08.html#s8-5">§8.5</a></div>
+          <p>Stage 1 (0.0005 %) &lt; γ<sub>tl</sub>: linear elastic. Stages 2–3: between γ<sub>tl</sub> and γ<sub>tv</sub>: nonlinear, no permanent volume change. Stage 4 ≈ γ<sub>tv</sub>. Stages 5–6 &gt; γ<sub>tv</sub>: permanent volume change; excess pore pressure under undrained loading.</p></div>
+          <p class="ans">Ans. G/G<sub>max</sub> = 1.000 → 0.315, D = 1.07 → 13.2 %; γ<sub>r</sub> ≈ 0.044 % (Darendeli 0.035 %); stage 1 &lt; γ<sub>tl</sub>, stages 5–6 &gt; γ<sub>tv</sub></p>
+    </div></details>
+      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1b">HW3 Q1(b)</a> · Similar 同型: <a href="#m5-5">5.5</a></p>
+    </div>
+
+    <div class="part" id="h3-2">
+      <div class="part-h"><b>Part C</b> Masing loops and damping ratio<span class="zh">Masing 迴圈與阻尼比</span><span class="ptag hw">HW3 Q2</span></div>
+      <div class="pq">Hyperbolic backbone with G<sub>max</sub> = 94,000 kPa and γ<sub>ref</sub> = 0.0004 (decimal); loading path 0 → γ<sub>c</sub> → −γ<sub>c</sub> → γ<sub>c</sub>. (a) Loops and D = E<sub>D</sub>/(4πE<sub>So</sub>) for γ<sub>c</sub> = 0.01 % and 0.1 %, compared with the measured values in Part B. (b) Why the Masing damping differs from the measured values at very small and at large strains.<span class="zh-d">雙曲線骨幹的 Masing 迴圈，由面積求阻尼比並與量測比較；說明兩端為何不同。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> G<sub>max</sub> = 94,000 kPa, γ<sub>ref</sub> = 0.0004; γ<sub>c</sub> = 0.0001 (0.01 %) and 0.001 (0.1 %); strains in decimal</p>
+          <div class="stp"><div class="sh">(1) Backbone and Masing branches<span class="zh">骨幹與卸載、再載分支</span><a class="cl" href="units/u08.html#s8-7">§8.7</a></div>
+    \[f(\gamma) = \frac{G_{max}\gamma}{1+|\gamma|/\gamma_{ref}},\qquad \text{unloading: } \tau = \tau_c + 2f\!\left(\frac{\gamma-\gamma_c}{2}\right),\qquad \text{reloading: } \tau = -\tau_c + 2f\!\left(\frac{\gamma+\gamma_c}{2}\right)\]</div>
+          <div class="stp"><div class="sh">(2) γ<sub>c</sub> = 0.01 % (x = γ<sub>c</sub>/γ<sub>ref</sub> = 0.25)<span class="zh">小應變</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
+    \[\begin{aligned}
+    \tau_c &= \frac{94{,}000(0.0001)}{1+0.25} = 7.52\ \text{kPa},\qquad E_{So} = \tfrac12\tau_c\gamma_c = \tfrac12(7.52)(0.0001) = 0.376\ \text{J/m}^3 \\
+    D &= \frac1\pi\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right) - 2\right] = \frac1\pi\left[4(5)\left(1-\frac{\ln1.25}{0.25}\right) - 2\right] = \boxed{4.73\,\%} \\
+    E_D &= 4\pi E_{So}D = 4\pi(0.376)(0.0473) = 0.223\ \text{J/m}^3
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(3) γ<sub>c</sub> = 0.1 % (x = 2.5)<span class="zh">大應變</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
+    \[\begin{aligned}
+    \tau_c &= \frac{94{,}000(0.001)}{1+2.5} = 26.86\ \text{kPa},\qquad E_{So} = \tfrac12(26.86)(0.001) = 13.43\ \text{J/m}^3 \\
+    D &= \frac1\pi\left[4(1.4)\left(1-\frac{\ln3.5}{2.5}\right) - 2\right] = \boxed{25.3\,\%} \\
+    E_D &= 4\pi(13.43)(0.253) = 42.6\ \text{J/m}^3
+    \end{aligned}\]
+          <p>Compared with Q1: 4.73 % vs 3.60 % (×1.3); 25.3 % vs 13.2 % (×1.9).</p></div>
+          <div class="stp"><div class="sh">(4) Why Masing differs from measurements<span class="zh">兩端差異的原因</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
+          <p>Very small strain: the backbone is linear, so D<sub>Masing</sub> → 0, but soils show D<sub>min</sub> ≈ 1 % (micro-slip, viscosity) → Masing underestimates. Large strain: reversal curves = backbone scaled by 2 give loops that are too fat → Masing overestimates. Correction: D = b(G/G<sub>max</sub>)<sup>0.1</sup>D<sub>Masing</sub> + D<sub>min</sub> (Darendeli).</p></div>
+          <p class="ans">Ans. 0.01 %: τ<sub>c</sub> = 7.52 kPa, D = 4.73 %; 0.1 %: τ<sub>c</sub> = 26.9 kPa, D = 25.3 % (measured 3.60 %, 13.2 %)</p>
+    </div></details>
+      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q2">HW3 Q2</a> · Similar 同型: <a href="#m5-6">5.6</a></p>
+    </div>
+
+    <div class="part" id="h3-3">
+      <div class="part-h"><b>Part D</b> Downhole test and equivalent linear properties<span class="zh">下孔試驗與等值線性參數</span><span class="ptag hw">HW3 Q3</span></div>
+      <div class="pq">Downhole S-wave arrivals at 2, 4, 7, 10, 15 and 20 m are 13.5, 27.2, 41.3, 55.3, 74.2 and 92.5 ms. (a) Determine V<sub>s</sub> and G<sub>max</sub> of each layer and compare layer 3 with the resonant column (Part A) and Hardin (1978). (b) Determine G and D of layer 3 at γ<sub>eff</sub> = 0.05 % using the curves of Part B. Can this analysis predict the excess pore pressure?<span class="zh-d">由下孔走時求各層 V<sub>s</sub>、G<sub>max</sub>，第 3 層和共振柱（Part A）、Hardin 比較；用 Part B 的曲線求 γ<sub>eff</sub> = 0.05 % 時的 G、D，能否預測孔隙水壓。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> ρ = 1.95 t/m³, water table 1 m, K<sub>0</sub> = 0.5; arrivals (z, t) = (2, 13.5), (4, 27.2), (7, 41.3), (10, 55.3), (15, 74.2), (20, 92.5) m, ms; e = 0.70; RC: G<sub>max</sub> = 93.2 MPa</p>
+          <div class="stp"><div class="sh">(a1) V<sub>s</sub> of each layer (least-squares line of t vs z)<span class="zh">各層 Vs</span><a class="cl" href="units/u07.html#s7-3">§7.3</a></div>
+    \[\begin{aligned}
+    \text{Layer 1 } (0, 2, 4\ \text{m}): &\quad \text{slope} = 6.800\ \text{ms/m} \;\Rightarrow\; V_s = \frac{1000}{6.800} = \boxed{147\ \text{m/s}} \\
+    \text{Layer 2 } (4, 7, 10\ \text{m}): &\quad \text{slope} = 4.683\ \text{ms/m} \;\Rightarrow\; V_s = \boxed{214\ \text{m/s}} \\
+    \text{Layer 3 } (10, 15, 20\ \text{m}): &\quad \text{slope} = 3.720\ \text{ms/m} \;\Rightarrow\; V_s = \boxed{269\ \text{m/s}}
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(a2) G<sub>max</sub> = ρV<sub>s</sub>²<span class="zh">小應變剪力模數</span><a class="cl" href="units/u07.html#s7-1">§7.1</a></div>
+    \[G_{max} = 1.95(147.1)^2 = 42.2,\quad 1.95(213.5)^2 = 88.9,\quad 1.95(268.8)^2 = \boxed{140.9\ \text{MPa}}\]</div>
+          <div class="stp"><div class="sh">(a3) Hardin (1978) at 15 m<span class="zh">Hardin 經驗式</span><a class="cl" href="units/u07.html#s7-1">§7.1</a></div>
+    \[\begin{aligned}
+    \sigma_v &= 1.95(9.81)(15) = 286.9\ \text{kPa},\qquad u = 9.81(15-1) = 137.3\ \text{kPa} \\
+    \sigma'_v &= 286.9 - 137.3 = 149.6\ \text{kPa},\qquad \sigma'_m = \frac{1+2K_0}{3}\sigma'_v = \frac{2}{3}(149.6) = 99.7\ \text{kPa} \\
+    F(e) &= \frac{1}{0.3+0.7e^2} = \frac{1}{0.3+0.7(0.70)^2} = 1.555 \\
+    G_{max} &= 625\,F(e)\,OCR^k\sqrt{p_a\sigma'_m} = 625(1.555)(1)\sqrt{100(99.7)} = \boxed{97.1\ \text{MPa}}
+    \end{aligned}\]
+          <p>Field 140.9 MPa &gt; Hardin 97.1 ≈ RC 93.2 MPa: reconstituted specimens lose fabric, aging and cementation.</p></div>
+          <div class="stp"><div class="sh">(b1) G and D at γ<sub>eff</sub> = 0.05 % (log interpolation between stages 5 and 6)<span class="zh">應變相容性質</span><a class="cl" href="units/u11.html#s11-1">§11.1</a></div>
+    \[\begin{aligned}
+    x &= \frac{\log(0.05/0.03)}{\log(0.1/0.03)} = 0.424 \\
+    G/G_{max} &= 0.584 + 0.424(0.315 - 0.584) = 0.470,\qquad D = 7.25 + 0.424(13.16 - 7.25) = \boxed{9.8\,\%} \\
+    G &= 0.470 \times G_{max,field} = 0.470(140.9) = \boxed{66.2\ \text{MPa}}
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(b2) Excess pore pressure?<span class="zh">能否預測孔隙水壓</span><a class="cl" href="units/u11.html#s11-3">§11.3</a></div>
+          <p>No. Equivalent linear analysis is a total stress analysis with no shear–volume coupling; since 0.05 % &gt; γ<sub>tv</sub>, pore pressure will build up, so an effective stress analysis or the Ch8 liquefaction methods are needed.</p></div>
+          <p class="ans">Ans. V<sub>s</sub> = 147, 214, 269 m/s; G<sub>max</sub> = 42.2, 88.9, 140.9 MPa; layer 3: field 141 &gt; Hardin 97 ≈ RC 93 MPa; γ<sub>eff</sub> = 0.05 %: G = 66 MPa, D = 9.8 %</p>
+    </div></details>
+      <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q3">HW3 Q3</a> · Similar 同型: <a href="#m6-4">6.4</a></p>
+    </div>
+  </article>
+
+  <article class="prob full" id="h3-4">
+    <div class="ph"><span class="pno">Set 2</span><h3>Isolation pad SDOF<span class="zh">隔振墊 SDOF</span></h3><span class="ptag hw">HW3 Q4</span></div>
+    <div class="pq">An instrument (m = 2000 kg) rests on an isolation pad and is modeled as an SDOF system. A shaker applies p(t) = p<sub>0</sub> sin ω̄t with p<sub>0</sub> = 0.5 kN, and the steady-state displacement amplitude is measured from 4 to 12 Hz. This problem is unrelated to the site of Set 1.<span class="zh-d">儀器 2000 kg 放在隔振墊上，振動機 p<sub>0</sub> = 0.5 kN，量 4–12 Hz 的穩態位移振幅；與 Set 1 的場址無關。</span></div>
+
+    <div class="part" id="h3-4a">
+      <div class="part-h"><b>Part A</b> Properties of the pad<span class="zh">隔振墊性質</span><span class="ptag hw">HW3 Q4(a)</span></div>
+      <div class="pq">Determine f<sub>n</sub>, k, ρ<sub>s</sub> and ξ by the resonance amplification and half-power bandwidth methods, and the dashpot coefficient c.<span class="zh-d">用共振放大法與半功率法求 f<sub>n</sub>、k、ρ<sub>s</sub>、ξ，再求 c。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> m = 2000 kg = 2.0 t, p<sub>0</sub> = 0.5 kN; measured peak U<sub>max</sub> = 0.622 mm at f<sub>peak</sub> = 7.97 Hz; U<sub>max</sub>/√2 at f<sub>1</sub> = 7.28 Hz, f<sub>2</sub> = 8.56 Hz</p>
+          <div class="stp"><div class="sh">(a1) Resonance amplification method (iterate f<sub>n</sub> and ξ)<span class="zh">共振放大法</span><a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
+    \[\begin{aligned}
+    k &= m(2\pi f_n)^2 = 2.0\,[2\pi(8.02)]^2 = 5079\ \text{kN/m},\qquad \rho_s = \frac{p_0}{k} = \frac{0.5}{5079} = 0.0984\ \text{mm} \\
+    \frac{U_{max}}{\rho_s} &= \frac{0.622}{0.0984} = 6.32 = \frac{1}{2\xi\sqrt{1-\xi^2}} \;\Rightarrow\; \xi = 0.0794 \\
+    f_n &= \frac{f_{peak}}{\sqrt{1-2\xi^2}} = \frac{7.97}{\sqrt{1-2(0.0794)^2}} = 8.02\ \text{Hz}\quad(\text{converged})
+    \end{aligned}\]</div>
+          <div class="stp"><div class="sh">(a2) Half-power bandwidth method<span class="zh">半功率法</span><a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
+    \[\xi = \frac{f_2-f_1}{f_2+f_1} = \frac{8.56-7.28}{8.56+7.28} = 0.081\]</div>
+          <div class="stp"><div class="sh">(a3) Adopted values and c<span class="zh">採用值與阻尼係數</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
+    \[\begin{aligned}
+    \xi &= \tfrac12(0.0794 + 0.081) = \boxed{0.080},\qquad f_n = \boxed{8.02\ \text{Hz}},\qquad k = \boxed{5079\ \text{kN/m}} \\
+    c &= 2\xi\sqrt{km} = 2(0.080)\sqrt{5079(2.0)} = \boxed{16.2\ \text{kN}\cdot\text{s/m}}
+    \end{aligned}\]</div>
+          <p class="ans">Ans. f<sub>n</sub> = 8.02 Hz, k = 5079 kN/m, ρ<sub>s</sub> = 0.098 mm, ξ ≈ 8.0 % (7.9 %, 8.1 %), c = 16.2 kN·s/m</p>
+        </div></details>
+    </div>
+
+    <div class="part" id="h3-4b">
+      <div class="part-h"><b>Part B</b> Floor vibration transmitted to the instrument<span class="zh">地板振動傳到儀器</span><span class="ptag hw">HW3 Q4(b)</span></div>
+      <div class="pq">Nearby construction shakes the floor with u<sub>g0</sub> = 0.05 mm. Determine the instrument amplitude at 15 Hz and at 8 Hz. Above which frequency is TR &lt; 1?<span class="zh-d">地板振幅 0.05 mm，求 15 Hz 與 8 Hz 時儀器的振幅；多高頻率以上減振。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> f<sub>n</sub> = 8.02 Hz, ξ = 0.080 (Part A); u<sub>g0</sub> = 0.05 mm</p>
+          <div class="stp"><div class="sh">(b) Floor motion transmitted to the instrument (u<sub>g0</sub> = 0.05 mm)<span class="zh">地板振動傳到儀器</span><a class="cl" href="units/u04.html#s4-10">§4.10</a></div>
+    \[\begin{aligned}
+    TR &= \frac{\sqrt{1+(2\xi\beta)^2}}{\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}},\qquad U = u_{g0}\,TR \\
+    15\ \text{Hz}: &\quad \beta = \frac{15}{8.02} = 1.870,\quad 2\xi\beta = 2(0.080)(1.870) = 0.300 \\
+    &\quad TR = \frac{\sqrt{1+0.300^2}}{\sqrt{(1-1.870^2)^2+0.300^2}} = 0.415,\quad U = 0.05(0.415) = \boxed{0.021\ \text{mm}} \\
+    8\ \text{Hz}: &\quad \beta = 0.998,\quad TR = 6.33,\quad U = 0.05(6.33) = \boxed{0.316\ \text{mm}} \\
+    TR \lt 1: &\quad \beta \gt \sqrt2 \;\Rightarrow\; f \gt \sqrt2(8.02) = \boxed{11.3\ \text{Hz}}
+    \end{aligned}\]</div>
+          <p class="ans">Ans. 15 Hz: 0.021 mm (reduced); 8 Hz: 0.316 mm (amplified 6.3 times); isolation for f &gt; 11.3 Hz</p>
+        </div></details>
+    </div>
+
+    <div class="part" id="h3-4c">
+      <div class="part-h"><b>Part C</b> Energy per cycle and the definition of damping<span class="zh">每圈能量與阻尼比定義</span><span class="ptag hw">HW3 Q4(c)</span></div>
+      <div class="pq">Determine W<sub>D</sub>, W<sub>s</sub> and W<sub>D</sub>/(4πW<sub>s</sub>) at β = 1 and β = 0.5, and explain why the soil damping ratio is defined without the frequency ratio.<span class="zh-d">求 β = 1 與 0.5 的 W<sub>D</sub>、W<sub>s</sub> 與比值，說明土壤阻尼比為何不含頻率比。</span></div>
+      <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
+          <p class="given"><b>Given</b> k = 5079 kN/m, c = 16.2 kN·s/m, ρ<sub>s</sub> = 0.0984 mm, f<sub>n</sub> = 8.02 Hz, ξ = 0.080 (Part A)</p>
+          <div class="stp"><div class="sh">(c) Energy per cycle<span class="zh">每圈能量</span><a class="cl" href="units/u04.html#s4-8">§4.8</a></div>
+    \[\begin{aligned}
+    \rho_d &= \rho_sD,\qquad W_D = \pi c\bar\omega\rho_d^2,\qquad W_s = \tfrac12k\rho_d^2 \\
+    \beta = 1: &\quad D = \frac{1}{2\xi} = 6.23,\quad \rho_d = 0.0984(6.23) = 0.614\ \text{mm},\quad \bar\omega = 2\pi(8.02) = 50.39\ \text{rad/s} \\
+    &\quad W_D = \pi(16.2)(50.39)(0.614\times10^{-3})^2 = 0.964\ \text{J} \\
+    &\quad W_s = \tfrac12(5079)(0.614\times10^{-3})^2 = 0.957\ \text{J} \\
+    &\quad \frac{W_D}{4\pi W_s} = \frac{0.964}{4\pi(0.957)} = \boxed{0.080 = \xi} \\
+    \beta = 0.5: &\quad D = 1.33,\ \rho_d = 0.131\ \text{mm},\ W_D = 0.0218\ \text{J},\ W_s = 0.0433\ \text{J},\ \frac{W_D}{4\pi W_s} = \boxed{0.040 = \xi\beta}
+    \end{aligned}\]
+          <p>Viscous damping: W<sub>D</sub> ∝ ω̄, so W<sub>D</sub>/(4πW<sub>s</sub>) = ξβ. Soil damping is hysteretic and frequency independent, so soils define ξ = W<sub>D</sub>/(4πW<sub>s</sub>) directly, without the frequency ratio.</p></div>
+          <p class="ans">Ans. β = 1: W<sub>D</sub> = 0.964 J, W<sub>s</sub> = 0.957 J, ratio = 0.080 = ξ; β = 0.5: W<sub>D</sub> = 0.0218 J, W<sub>s</sub> = 0.0433 J, ratio = 0.040 = ξβ</p>
+        </div></details>
+    </div>
+
+    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q4">HW3 Q4</a> · Similar 同型: <a href="#m4-14">4.14</a>, <a href="#m4-15">4.15</a>, <a href="#m4-16">4.16</a></p>
+  </article>
+</section>
+
+<section class="sec" id="c-hw" data-num="HW" data-short="HW1–HW2" data-title="HW1 and HW2">
+  <div class="sec-head"><span class="sec-num">Part 2 · Homework</span><h2>HW1 and HW2</h2></div>
+  <p class="part-note">Full solutions with interactive recalculation are on the homework pages. Each problem here is written as a complete exam answer.<span class="zh-d">作業頁有含互動重算的完整解答；這裡寫成考試作答的格式。</span></p>
 
   <article class="prob" id="h1">
     <div class="ph"><span class="pno">HW1</span><h3>Strong-motion records: integration, spectrum and parameters<span class="zh">強地動紀錄</span></h3><span class="ptag hw">Homework</span></div>
@@ -179,176 +483,6 @@ c_c &= 2m\omega_n = 2(101.94)(44.29) = 9030\ \text{kN}\cdot\text{s/m} \\
           <p class="ans">Ans. V<sub>s30</sub> = 252 m/s (arithmetic 303 m/s) → NEHRP D, EC8 C, Taiwan Class 2; (c) V<sub>s30</sub> = 190 m/s → D, C, Class 2.</p>
     </div></details>
     <p class="plink">Full solution 完整解答: <a href="hw/hw2.html#q2">HW2 Q2</a> · Similar 同型: <a href="#mN7">N.7</a>, <a href="#mN13">N.13</a></p>
-  </article>
-
-  <article class="prob" id="h3-1a">
-    <div class="ph"><span class="pno">HW3 Q1(a)</span><h3>Resonant column stage 1: f<sub>n</sub>, V<sub>s</sub>, G<sub>max</sub> and damping<span class="zh">共振柱 stage 1</span></h3><span class="ptag hw">Homework · key</span></div>
-    <div class="pq">Fixed–free resonant column on clean sand (e = 0.70, σ′<sub>m</sub> = 100 kPa, ρ = 1.95 t/m³); specimen d = 50 mm, H = 100 mm, I/I<sub>0</sub> = 0.10. From the stage 1 (γ = 0.0005 %) frequency response curve find f<sub>n</sub>, V<sub>s</sub> and G<sub>max</sub>; from the free-vibration peaks X<sub>1</sub>–X<sub>6</sub> = 88.80, 83.14, 77.94, 72.61, 67.75, 63.39 mV find the damping ratio.<span class="zh-d">由頻率響應求共振頻率、剪力波速、小應變剪力模數，再由自由衰減求阻尼比。</span></div>
-    <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-          <p class="given"><b>Given</b> fixed–free, H = 0.100 m, ρ = 1.95 t/m³, I/I<sub>0</sub> = 0.10; X<sub>1</sub> = 88.80 mV, X<sub>6</sub> = 63.39 mV</p>
-          <div class="stp"><div class="sh">(1) Resonant frequency<span class="zh">共振頻率</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
-          <p>Peak of the stage 1 frequency response curve: <b>f<sub>n</sub> ≈ 108.2 Hz</b>.</p></div>
-          <div class="stp"><div class="sh">(2) Frequency equation (Newton's method)<span class="zh">頻率方程式與牛頓法迭代</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
-    \[\begin{aligned}
-    \frac{I}{I_0} &= \beta\tan\beta = 0.10 \\
-    f(\beta) &= \beta\tan\beta - 0.10,\qquad f'(\beta) = \tan\beta + \beta\sec^2\beta,\qquad \beta_{k+1} = \beta_k - \frac{f(\beta_k)}{f'(\beta_k)}
-    \end{aligned}\]
-    <p>Initial guess: for small β, tan β ≈ β, so β² ≈ 0.10 → β<sub>0</sub> = √0.10 = 0.3162 rad.</p>
-    <div class="tablewrap"><table class="data">
-      <tr><th>k</th><th class="num">β<sub>k</sub> (rad)</th><th class="num">β<sub>k</sub> tan β<sub>k</sub></th><th class="num">f(β<sub>k</sub>)</th><th class="num">f′(β<sub>k</sub>)</th><th class="num">β<sub>k+1</sub></th></tr>
-      <tr><td>0</td><td class="num">0.31623</td><td class="num">0.10347</td><td class="num">3.47×10⁻³</td><td class="num">0.6773</td><td class="num">0.31110</td></tr>
-      <tr><td>1</td><td class="num">0.31110</td><td class="num">0.10003</td><td class="num">3.2×10⁻⁵</td><td class="num">0.6648</td><td class="num">0.31105</td></tr>
-      <tr><td>2</td><td class="num">0.31105</td><td class="num">0.10000</td><td class="num">≈ 0</td><td class="num">0.6647</td><td class="num">0.31105</td></tr>
-    </table></div>
-    \[\beta_1 = 0.31623 - \frac{0.00347}{0.6773} = 0.31110,\qquad \beta_2 = 0.31110 - \frac{0.000032}{0.6648} = 0.31105 \;\Rightarrow\; \boxed{\beta = 0.3111\ \text{rad}}\]</div>
-          <div class="stp"><div class="sh">(3) V<sub>s</sub> and G<sub>max</sub><span class="zh">剪力波速與小應變剪力模數</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
-    \[\begin{aligned}
-    V_s &= \frac{\omega_nH}{\beta} = \frac{2\pi f_nH}{\beta} = \frac{2\pi(108.22)(0.100)}{0.3111} = \boxed{218.6\ \text{m/s}} \\
-    G_{max} &= \rho V_s^2 = 1.95(218.6)^2 = 93{,}200\ \text{kPa} = \boxed{93.2\ \text{MPa}}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(4) Damping ratio (X<sub>1</sub> → X<sub>6</sub> = 5 cycles)<span class="zh">阻尼比</span><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
-    \[\begin{aligned}
-    \delta &= \frac{1}{n}\ln\frac{X_1}{X_{n+1}} = \frac{1}{5}\ln\frac{88.80}{63.39} = 0.0674 \\
-    D &= \frac{\delta}{2\pi} = \frac{0.0674}{2\pi} = \boxed{1.07\,\%}
-    \end{aligned}\]</div>
-          <p class="ans">Ans. f<sub>n</sub> ≈ 108.2 Hz, β = 0.311, V<sub>s</sub> = 219 m/s, G<sub>max</sub> = 93.2 MPa, D = 1.07 %</p>
-    </div></details>
-    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1a">HW3 Q1(a)</a> · Similar 同型: <a href="#m3-3">3.3</a>, <a href="#m5-5">5.5</a></p>
-  </article>
-
-  <article class="prob" id="h3-1b">
-    <div class="ph"><span class="pno">HW3 Q1(b)</span><h3>Six stages: G/G<sub>max</sub>, D, reference strain and threshold strains<span class="zh">模數折減、阻尼與門檻應變</span></h3><span class="ptag hw">Homework · key</span></div>
-    <div class="pq">Six stages with γ = 0.0005, 0.001, 0.003, 0.01, 0.03, 0.1 % and f<sub>n</sub> = 108.3, 107.5, 104.7, 96.7, 82.7, 60.7 Hz. Plot G/G<sub>max</sub>–γ and D–γ, compare with the Darendeli clean-sand curves, estimate γ<sub>r</sub>, and locate each stage relative to γ<sub>tl</sub> and γ<sub>tv</sub>.<span class="zh-d">六個階段畫 G/Gmax 與 D 曲線，估參考應變，判斷各階段相對門檻應變的位置。</span></div>
-    <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-          <p class="given"><b>Given</b> f<sub>n</sub> = 108.3 (108.22), 107.5, 104.7, 96.7, 82.7, 60.7 Hz at γ = 0.0005–0.1 %; β = 0.3111 for all stages (same I/I<sub>0</sub>)</p>
-          <div class="stp"><div class="sh">(1) Modulus reduction<span class="zh">模數折減</span><a class="cl" href="units/u08.html#s8-5">§8.5</a></div>
-    \[\begin{aligned}
-    G &= \rho V_s^2 = \rho\left(\frac{2\pi f_nH}{\beta}\right)^2 \propto f_n^2 \;\Rightarrow\; \frac{G}{G_{max}} = \left(\frac{f_n}{f_{n,1}}\right)^2 \\
-    \text{Stage 6:}\quad \frac{G}{G_{max}} &= \left(\frac{60.7}{108.22}\right)^2 = \boxed{0.315}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(2) Damping of each stage<span class="zh">各階段阻尼比</span><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
-    \[\text{Stage 6:}\quad \delta = \frac15\ln\frac{70.62}{1.13} = 0.827,\qquad D = \frac{0.827}{2\pi} = \boxed{13.2\,\%}\]
-          <div class="tablewrap"><table class="data">
-            <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">G/G<sub>max</sub></th><th class="num">D (%)</th></tr>
-            <tr><td>1</td><td class="num">0.0005</td><td class="num">108.22</td><td class="num">1.000</td><td class="num">1.07</td></tr>
-            <tr><td>2</td><td class="num">0.001</td><td class="num">107.5</td><td class="num">0.987</td><td class="num">1.19</td></tr>
-            <tr><td>3</td><td class="num">0.003</td><td class="num">104.7</td><td class="num">0.936</td><td class="num">1.80</td></tr>
-            <tr><td>4</td><td class="num">0.01</td><td class="num">96.7</td><td class="num">0.799</td><td class="num">3.60</td></tr>
-            <tr><td>5</td><td class="num">0.03</td><td class="num">82.7</td><td class="num">0.584</td><td class="num">7.25</td></tr>
-            <tr><td>6</td><td class="num">0.1</td><td class="num">60.7</td><td class="num">0.315</td><td class="num">13.16</td></tr>
-          </table></div></div>
-          <div class="stp"><div class="sh">(3) Reference strain (G/G<sub>max</sub> = 0.5, interpolate on log γ)<span class="zh">參考應變</span><a class="cl" href="units/u08.html#s8-6">§8.6</a></div>
-    \[\begin{aligned}
-    x &= \frac{0.584 - 0.5}{0.584 - 0.315} = 0.312 \\
-    \log\gamma_r &= \log0.03 + 0.312\log\frac{0.1}{0.03} = -1.360 \;\Rightarrow\; \boxed{\gamma_r = 0.044\,\%}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(4) Threshold strains (sand: γ<sub>tl</sub> ≈ 0.001 %, γ<sub>tv</sub> ≈ 0.01 %)<span class="zh">門檻應變</span><a class="cl" href="units/u08.html#s8-5">§8.5</a></div>
-          <p>Stage 1 (0.0005 %) &lt; γ<sub>tl</sub>: linear elastic. Stages 2–3: between γ<sub>tl</sub> and γ<sub>tv</sub>: nonlinear, no permanent volume change. Stage 4 ≈ γ<sub>tv</sub>. Stages 5–6 &gt; γ<sub>tv</sub>: permanent volume change; excess pore pressure under undrained loading.</p></div>
-          <p class="ans">Ans. G/G<sub>max</sub> = 1.000 → 0.315, D = 1.07 → 13.2 %; γ<sub>r</sub> ≈ 0.044 % (Darendeli 0.035 %); stage 1 &lt; γ<sub>tl</sub>, stages 5–6 &gt; γ<sub>tv</sub></p>
-    </div></details>
-    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1b">HW3 Q1(b)</a> · Similar 同型: <a href="#m5-5">5.5</a></p>
-  </article>
-
-  <article class="prob" id="h3-2">
-    <div class="ph"><span class="pno">HW3 Q2</span><h3>Masing loops and damping ratio<span class="zh">Masing 迴圈與阻尼比</span></h3><span class="ptag hw">Homework · key</span></div>
-    <div class="pq">Hyperbolic backbone with G<sub>max</sub> = 94,000 kPa and γ<sub>ref</sub> = 0.0004 (decimal); loading path 0 → γ<sub>c</sub> → −γ<sub>c</sub> → γ<sub>c</sub>. (a) Loops and D = E<sub>D</sub>/(4πE<sub>So</sub>) for γ<sub>c</sub> = 0.01 % and 0.1 %, compared with Q1. (b) Why the Masing damping differs from the measured values at very small and at large strains.<span class="zh-d">雙曲線骨幹的 Masing 迴圈，由面積求阻尼比並與量測比較；說明兩端為何不同。</span></div>
-    <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-          <p class="given"><b>Given</b> G<sub>max</sub> = 94,000 kPa, γ<sub>ref</sub> = 0.0004; γ<sub>c</sub> = 0.0001 (0.01 %) and 0.001 (0.1 %); strains in decimal</p>
-          <div class="stp"><div class="sh">(1) Backbone and Masing branches<span class="zh">骨幹與卸載、再載分支</span><a class="cl" href="units/u08.html#s8-7">§8.7</a></div>
-    \[f(\gamma) = \frac{G_{max}\gamma}{1+|\gamma|/\gamma_{ref}},\qquad \text{unloading: } \tau = \tau_c + 2f\!\left(\frac{\gamma-\gamma_c}{2}\right),\qquad \text{reloading: } \tau = -\tau_c + 2f\!\left(\frac{\gamma+\gamma_c}{2}\right)\]</div>
-          <div class="stp"><div class="sh">(2) γ<sub>c</sub> = 0.01 % (x = γ<sub>c</sub>/γ<sub>ref</sub> = 0.25)<span class="zh">小應變</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
-    \[\begin{aligned}
-    \tau_c &= \frac{94{,}000(0.0001)}{1+0.25} = 7.52\ \text{kPa},\qquad E_{So} = \tfrac12\tau_c\gamma_c = \tfrac12(7.52)(0.0001) = 0.376\ \text{J/m}^3 \\
-    D &= \frac1\pi\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right) - 2\right] = \frac1\pi\left[4(5)\left(1-\frac{\ln1.25}{0.25}\right) - 2\right] = \boxed{4.73\,\%} \\
-    E_D &= 4\pi E_{So}D = 4\pi(0.376)(0.0473) = 0.223\ \text{J/m}^3
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(3) γ<sub>c</sub> = 0.1 % (x = 2.5)<span class="zh">大應變</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
-    \[\begin{aligned}
-    \tau_c &= \frac{94{,}000(0.001)}{1+2.5} = 26.86\ \text{kPa},\qquad E_{So} = \tfrac12(26.86)(0.001) = 13.43\ \text{J/m}^3 \\
-    D &= \frac1\pi\left[4(1.4)\left(1-\frac{\ln3.5}{2.5}\right) - 2\right] = \boxed{25.3\,\%} \\
-    E_D &= 4\pi(13.43)(0.253) = 42.6\ \text{J/m}^3
-    \end{aligned}\]
-          <p>Compared with Q1: 4.73 % vs 3.60 % (×1.3); 25.3 % vs 13.2 % (×1.9).</p></div>
-          <div class="stp"><div class="sh">(4) Why Masing differs from measurements<span class="zh">兩端差異的原因</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
-          <p>Very small strain: the backbone is linear, so D<sub>Masing</sub> → 0, but soils show D<sub>min</sub> ≈ 1 % (micro-slip, viscosity) → Masing underestimates. Large strain: reversal curves = backbone scaled by 2 give loops that are too fat → Masing overestimates. Correction: D = b(G/G<sub>max</sub>)<sup>0.1</sup>D<sub>Masing</sub> + D<sub>min</sub> (Darendeli).</p></div>
-          <p class="ans">Ans. 0.01 %: τ<sub>c</sub> = 7.52 kPa, D = 4.73 %; 0.1 %: τ<sub>c</sub> = 26.9 kPa, D = 25.3 % (measured 3.60 %, 13.2 %)</p>
-    </div></details>
-    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q2">HW3 Q2</a> · Similar 同型: <a href="#m5-6">5.6</a></p>
-  </article>
-
-  <article class="prob" id="h3-3">
-    <div class="ph"><span class="pno">HW3 Q3</span><h3>Downhole test, G<sub>max</sub> comparison and equivalent linear properties<span class="zh">下孔試驗與等值線性參數</span></h3><span class="ptag hw">Homework · key</span></div>
-    <div class="pq">Three sand layers (0–4, 4–10, 10–20 m), water table at 1 m, ρ = 1.95 t/m³, K<sub>0</sub> = 0.5. Downhole S-wave arrivals at 2, 4, 7, 10, 15, 20 m: 13.5, 27.2, 41.3, 55.3, 74.2, 92.5 ms. (a) V<sub>s</sub> and G<sub>max</sub> of each layer; compare layer 3 with the resonant column and Hardin (1978). (b) G and D of layer 3 at γ<sub>eff</sub> = 0.05 %; can this analysis predict the excess pore pressure?<span class="zh-d">由走時求各層 Vs、Gmax，第 3 層和共振柱、Hardin 比較；有效應變 0.05 % 時的 G、D，能否預測孔隙水壓。</span></div>
-    <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-          <p class="given"><b>Given</b> ρ = 1.95 t/m³, water table 1 m, K<sub>0</sub> = 0.5; arrivals (z, t) = (2, 13.5), (4, 27.2), (7, 41.3), (10, 55.3), (15, 74.2), (20, 92.5) m, ms; e = 0.70; RC: G<sub>max</sub> = 93.2 MPa</p>
-          <div class="stp"><div class="sh">(a1) V<sub>s</sub> of each layer (least-squares line of t vs z)<span class="zh">各層 Vs</span><a class="cl" href="units/u07.html#s7-3">§7.3</a></div>
-    \[\begin{aligned}
-    \text{Layer 1 } (0, 2, 4\ \text{m}): &\quad \text{slope} = 6.800\ \text{ms/m} \;\Rightarrow\; V_s = \frac{1000}{6.800} = \boxed{147\ \text{m/s}} \\
-    \text{Layer 2 } (4, 7, 10\ \text{m}): &\quad \text{slope} = 4.683\ \text{ms/m} \;\Rightarrow\; V_s = \boxed{214\ \text{m/s}} \\
-    \text{Layer 3 } (10, 15, 20\ \text{m}): &\quad \text{slope} = 3.720\ \text{ms/m} \;\Rightarrow\; V_s = \boxed{269\ \text{m/s}}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(a2) G<sub>max</sub> = ρV<sub>s</sub>²<span class="zh">小應變剪力模數</span><a class="cl" href="units/u07.html#s7-1">§7.1</a></div>
-    \[G_{max} = 1.95(147.1)^2 = 42.2,\quad 1.95(213.5)^2 = 88.9,\quad 1.95(268.8)^2 = \boxed{140.9\ \text{MPa}}\]</div>
-          <div class="stp"><div class="sh">(a3) Hardin (1978) at 15 m<span class="zh">Hardin 經驗式</span><a class="cl" href="units/u07.html#s7-1">§7.1</a></div>
-    \[\begin{aligned}
-    \sigma_v &= 1.95(9.81)(15) = 286.9\ \text{kPa},\qquad u = 9.81(15-1) = 137.3\ \text{kPa} \\
-    \sigma'_v &= 286.9 - 137.3 = 149.6\ \text{kPa},\qquad \sigma'_m = \frac{1+2K_0}{3}\sigma'_v = \frac{2}{3}(149.6) = 99.7\ \text{kPa} \\
-    F(e) &= \frac{1}{0.3+0.7e^2} = \frac{1}{0.3+0.7(0.70)^2} = 1.555 \\
-    G_{max} &= 625\,F(e)\,OCR^k\sqrt{p_a\sigma'_m} = 625(1.555)(1)\sqrt{100(99.7)} = \boxed{97.1\ \text{MPa}}
-    \end{aligned}\]
-          <p>Field 140.9 MPa &gt; Hardin 97.1 ≈ RC 93.2 MPa: reconstituted specimens lose fabric, aging and cementation.</p></div>
-          <div class="stp"><div class="sh">(b1) G and D at γ<sub>eff</sub> = 0.05 % (log interpolation between stages 5 and 6)<span class="zh">應變相容性質</span><a class="cl" href="units/u11.html#s11-1">§11.1</a></div>
-    \[\begin{aligned}
-    x &= \frac{\log(0.05/0.03)}{\log(0.1/0.03)} = 0.424 \\
-    G/G_{max} &= 0.584 + 0.424(0.315 - 0.584) = 0.470,\qquad D = 7.25 + 0.424(13.16 - 7.25) = \boxed{9.8\,\%} \\
-    G &= 0.470 \times G_{max,field} = 0.470(140.9) = \boxed{66.2\ \text{MPa}}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(b2) Excess pore pressure?<span class="zh">能否預測孔隙水壓</span><a class="cl" href="units/u11.html#s11-3">§11.3</a></div>
-          <p>No. Equivalent linear analysis is a total stress analysis with no shear–volume coupling; since 0.05 % &gt; γ<sub>tv</sub>, pore pressure will build up, so an effective stress analysis or the Ch8 liquefaction methods are needed.</p></div>
-          <p class="ans">Ans. V<sub>s</sub> = 147, 214, 269 m/s; G<sub>max</sub> = 42.2, 88.9, 140.9 MPa; layer 3: field 141 &gt; Hardin 97 ≈ RC 93 MPa; γ<sub>eff</sub> = 0.05 %: G = 66 MPa, D = 9.8 %</p>
-    </div></details>
-    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q3">HW3 Q3</a> · Similar 同型: <a href="#m6-4">6.4</a></p>
-  </article>
-
-  <article class="prob" id="h3-4">
-    <div class="ph"><span class="pno">HW3 Q4</span><h3>Isolation pad SDOF: damping, transmissibility and energy<span class="zh">隔振墊 SDOF</span></h3><span class="ptag hw">Homework · key</span></div>
-    <div class="pq">An instrument (m = 2000 kg) rests on an isolation pad; a shaker applies p<sub>0</sub> = 0.5 kN and the steady-state displacement is measured from 4 to 12 Hz. (a) f<sub>n</sub>, k, ρ<sub>s</sub>, ξ by the resonance amplification and half-power methods, and c. (b) Instrument amplitude for floor motion u<sub>g0</sub> = 0.05 mm at 15 Hz and 8 Hz; above which frequency is TR &lt; 1? (c) W<sub>D</sub>, W<sub>s</sub> and W<sub>D</sub>/(4πW<sub>s</sub>) at β = 1 and 0.5.<span class="zh-d">由力試驗求隔振墊性質；地板振動傳到儀器的振幅；每圈能量與阻尼比定義。</span></div>
-    <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
-          <p class="given"><b>Given</b> m = 2000 kg = 2.0 t, p<sub>0</sub> = 0.5 kN; measured peak U<sub>max</sub> = 0.622 mm at f<sub>peak</sub> = 7.97 Hz; U<sub>max</sub>/√2 at f<sub>1</sub> = 7.28 Hz, f<sub>2</sub> = 8.56 Hz</p>
-          <div class="stp"><div class="sh">(a1) Resonance amplification method (iterate f<sub>n</sub> and ξ)<span class="zh">共振放大法</span><a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
-    \[\begin{aligned}
-    k &= m(2\pi f_n)^2 = 2.0\,[2\pi(8.02)]^2 = 5079\ \text{kN/m},\qquad \rho_s = \frac{p_0}{k} = \frac{0.5}{5079} = 0.0984\ \text{mm} \\
-    \frac{U_{max}}{\rho_s} &= \frac{0.622}{0.0984} = 6.32 = \frac{1}{2\xi\sqrt{1-\xi^2}} \;\Rightarrow\; \xi = 0.0794 \\
-    f_n &= \frac{f_{peak}}{\sqrt{1-2\xi^2}} = \frac{7.97}{\sqrt{1-2(0.0794)^2}} = 8.02\ \text{Hz}\quad(\text{converged})
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(a2) Half-power bandwidth method<span class="zh">半功率法</span><a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
-    \[\xi = \frac{f_2-f_1}{f_2+f_1} = \frac{8.56-7.28}{8.56+7.28} = 0.081\]</div>
-          <div class="stp"><div class="sh">(a3) Adopted values and c<span class="zh">採用值與阻尼係數</span><a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
-    \[\begin{aligned}
-    \xi &= \tfrac12(0.0794 + 0.081) = \boxed{0.080},\qquad f_n = \boxed{8.02\ \text{Hz}},\qquad k = \boxed{5079\ \text{kN/m}} \\
-    c &= 2\xi\sqrt{km} = 2(0.080)\sqrt{5079(2.0)} = \boxed{16.2\ \text{kN}\cdot\text{s/m}}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(b) Floor motion transmitted to the instrument (u<sub>g0</sub> = 0.05 mm)<span class="zh">地板振動傳到儀器</span><a class="cl" href="units/u04.html#s4-10">§4.10</a></div>
-    \[\begin{aligned}
-    TR &= \frac{\sqrt{1+(2\xi\beta)^2}}{\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}},\qquad U = u_{g0}\,TR \\
-    15\ \text{Hz}: &\quad \beta = \frac{15}{8.02} = 1.870,\quad 2\xi\beta = 2(0.080)(1.870) = 0.300 \\
-    &\quad TR = \frac{\sqrt{1+0.300^2}}{\sqrt{(1-1.870^2)^2+0.300^2}} = 0.415,\quad U = 0.05(0.415) = \boxed{0.021\ \text{mm}} \\
-    8\ \text{Hz}: &\quad \beta = 0.998,\quad TR = 6.33,\quad U = 0.05(6.33) = \boxed{0.316\ \text{mm}} \\
-    TR \lt 1: &\quad \beta \gt \sqrt2 \;\Rightarrow\; f \gt \sqrt2(8.02) = \boxed{11.3\ \text{Hz}}
-    \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(c) Energy per cycle<span class="zh">每圈能量</span><a class="cl" href="units/u04.html#s4-8">§4.8</a></div>
-    \[\begin{aligned}
-    \rho_d &= \rho_sD,\qquad W_D = \pi c\bar\omega\rho_d^2,\qquad W_s = \tfrac12k\rho_d^2 \\
-    \beta = 1: &\quad D = \frac{1}{2\xi} = 6.23,\quad \rho_d = 0.0984(6.23) = 0.614\ \text{mm},\quad \bar\omega = 2\pi(8.02) = 50.39\ \text{rad/s} \\
-    &\quad W_D = \pi(16.2)(50.39)(0.614\times10^{-3})^2 = 0.964\ \text{J} \\
-    &\quad W_s = \tfrac12(5079)(0.614\times10^{-3})^2 = 0.957\ \text{J} \\
-    &\quad \frac{W_D}{4\pi W_s} = \frac{0.964}{4\pi(0.957)} = \boxed{0.080 = \xi} \\
-    \beta = 0.5: &\quad D = 1.33,\ \rho_d = 0.131\ \text{mm},\ W_D = 0.0218\ \text{J},\ W_s = 0.0433\ \text{J},\ \frac{W_D}{4\pi W_s} = \boxed{0.040 = \xi\beta}
-    \end{aligned}\]
-          <p>Viscous damping: W<sub>D</sub> ∝ ω̄, so W<sub>D</sub>/(4πW<sub>s</sub>) = ξβ. Soil damping is hysteretic and frequency independent, so soils define ξ = W<sub>D</sub>/(4πW<sub>s</sub>) directly, without the frequency ratio.</p></div>
-          <p class="ans">Ans. f<sub>n</sub> = 8.02 Hz, k = 5079 kN/m, ξ ≈ 8.0 % (7.9 %, 8.1 %), c = 16.2 kN·s/m; 15 Hz: 0.021 mm, 8 Hz: 0.316 mm; isolation for f &gt; 11.3 Hz; ratio = ξ at β = 1, ξβ at β = 0.5</p>
-    </div></details>
-    <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q4">HW3 Q4</a> · Similar 同型: <a href="#m4-14">4.14</a>, <a href="#m4-15">4.15</a>, <a href="#m4-16">4.16</a></p>
   </article>
 </section>
 
@@ -445,7 +579,7 @@ c_c &= 2m\omega_n = 2(101.94)(44.29) = 9030\ \text{kN}\cdot\text{s/m} \\
 </section>
 
 <section class="sec" id="c-m3" data-num="Ch3" data-short="模擬考：地震波" data-title="模擬考 Ch3">
-  <div class="sec-head"><span class="sec-num">模擬考 Ch3</span><h2>波速、土柱頻率、共振柱與彎曲元件</h2></div>
+  <div class="sec-head"><span class="sec-num">Part 3 · 模擬考 Ch3</span><h2>波速、土柱頻率、共振柱與彎曲元件</h2></div>
 
   <article class="prob" id="m3-1">
     <div class="ph"><span class="pno">3.1</span><h3>實體波與表面波波速</h3></div>
@@ -576,16 +710,16 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
 </section>
 
 <section class="sec" id="c-m4" data-num="Ch4" data-short="模擬考：振動理論" data-title="模擬考 Ch4">
-  <div class="sec-head"><span class="sec-num">模擬考 Ch4</span><h2>振動理論（16 題）</h2></div>
+  <div class="sec-head"><span class="sec-num">Part 3 · 模擬考 Ch4</span><h2>振動理論（16 題）</h2></div>
   <p class="part-note">共用符號：\(\omega_n = \sqrt{k/m}\)、\(\xi = c/2m\omega_n\)、\(\beta = \bar\omega/\omega_n\)、\(\rho_s = p_0/k\)、\(D = 1/\sqrt{(1-\beta^2)^2+(2\xi\beta)^2}\)、\(TR = D\sqrt{1+(2\xi\beta)^2}\)。</p>
 
   <article class="prob" id="m4-1">
     <div class="ph"><span class="pno">4.1</span><h3>SDOF：ω<sub>n</sub>、ξ、ω<sub>d</sub>、δ</h3><span class="ptag exam">= 2025 期中考 Q2</span></div>
-    <div class="pq">與 2025 期中考 Q2 相同，解答見 <a href="#e2">Part 1 Q2</a>。</div>
+    <div class="pq">與 2025 期中考 Q2 相同，解答見 <a href="#e2a">Part 1 題組 Part A</a>。</div>
   </article>
   <article class="prob" id="m4-2">
     <div class="ph"><span class="pno">4.2</span><h3>無阻尼自由振動</h3><span class="ptag exam">= 2025 期中考 Q3</span></div>
-    <div class="pq">與 2025 期中考 Q3 相同，解答見 <a href="#e3">Part 1 Q3</a>。</div>
+    <div class="pq">與 2025 期中考 Q3 相同，解答見 <a href="#e3">Part 1 題組 Part B</a>。</div>
   </article>
 
   <article class="prob" id="m4-3">
@@ -679,32 +813,8 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
   </article>
 
   <article class="prob" id="m4-7">
-    <div class="ph"><span class="pno">4.7</span><h3>有阻尼自由振動（期中 Q3 加阻尼）</h3></div>
-    <div class="pq">4.1 的系統（ω<sub>n</sub> = 44.29 rad/s、ξ = 0.259），u(0) = 0.05 m、u̇(0) = 0.01 m/s，考慮阻尼。求 (a) u(t)　(b) 包絡振幅與相位角　(c) 振幅衰減到初值 10 % 的時間與圈數。</div>
-    <details class="derive"><summary>完整作答</summary><div class="body sol">
-      <p class="given"><b>已知</b> 系統同 4.1：ω<sub>n</sub> = 44.29 rad/s、ξ = 0.259；u<sub>0</sub> = 0.05 m、u̇<sub>0</sub> = 0.01 m/s</p>
-      <div class="stp"><div class="sh">(a) 位移歷時 u(t)<a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
-    \[\begin{aligned}
-    \xi\omega_n &= 0.259\times44.29 = 11.48\ \text{s}^{-1} \\
-    \omega_D &= \omega_n\sqrt{1-\xi^2} = 44.29\sqrt{1-0.259^2} = 42.78\ \text{rad/s} \\
-    u(t) &= e^{-\xi\omega_nt}\left(A\cos\omega_Dt + B\sin\omega_Dt\right) \\
-    A &= u_0 = 0.05\ \text{m} \\
-    B &= \frac{\dot u_0 + \xi\omega_nu_0}{\omega_D} = \frac{0.01 + 11.48(0.05)}{42.78} = 0.01365\ \text{m} \\
-    u(t) &= \boxed{e^{-11.48t}\left(0.05\cos42.78t + 0.01365\sin42.78t\right)\ \text{m}}
-    \end{aligned}\]</div>
-      <div class="stp"><div class="sh">(b) 包絡振幅與相位角<a class="cl" href="units/u04.html#s4-3">§4.3</a></div>
-        <p>寫成 u(t) = ρ e<sup>−ξω<sub>n</sub>t</sup> sin(ω<sub>D</sub>t + θ)：</p>
-    \[\begin{aligned}
-    \rho &= \sqrt{A^2+B^2} = \sqrt{0.05^2+0.01365^2} = \boxed{0.0518\ \text{m}} \\
-    \theta &= \tan^{-1}\frac{A}{B} = \tan^{-1}\frac{0.05}{0.01365} = \boxed{74.7^\circ}
-    \end{aligned}\]</div>
-      <div class="stp"><div class="sh">(c) 衰減到 10 % 的時間與圈數<a class="cl" href="units/u04.html#s4-9">§4.9</a></div>
-    \[\begin{aligned}
-    e^{-\xi\omega_nt} = 0.1 \;\Rightarrow\; t &= \frac{\ln10}{\xi\omega_n} = \frac{2.303}{11.48} = \boxed{0.201\ \text{s}} \\
-    N &= \frac{t\,\omega_D}{2\pi} = \frac{0.201(42.78)}{2\pi} = \boxed{1.37\ \text{cycles}}
-    \end{aligned}\]</div>
-      <p class="ans">答：u(t) = e<sup>−11.48t</sup>(0.05 cos 42.78t + 0.01365 sin 42.78t) m；包絡振幅 0.0518 m、θ = 74.7°；0.20 s、約 1.4 圈</p>
-    </div></details>
+    <div class="ph"><span class="pno">4.7</span><h3>有阻尼自由振動（期中 Q3 加阻尼）</h3><span class="ptag ext">= 期中題組 Part D</span></div>
+    <div class="pq">與 2025 期中考題組的延伸 Part D 相同，解答見 <a href="#e2d">Part 1 題組 Part D</a>。</div>
   </article>
 
   <article class="prob" id="m4-8">
@@ -954,7 +1064,7 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
 </section>
 
 <section class="sec" id="c-m5" data-num="Ch5" data-short="模擬考：動態土壤性質" data-title="模擬考 Ch5">
-  <div class="sec-head"><span class="sec-num">模擬考 Ch5</span><h2>動態土壤性質</h2></div>
+  <div class="sec-head"><span class="sec-num">Part 3 · 模擬考 Ch5</span><h2>動態土壤性質</h2></div>
 
   <article class="prob" id="m5-1">
     <div class="ph"><span class="pno">5.1</span><h3>Hardin (1978) 求 G<sub>max</sub></h3><span class="ptag hw3">HW3 相關</span></div>
@@ -1162,7 +1272,7 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
 </section>
 
 <section class="sec" id="c-m6" data-num="Ch6" data-short="模擬考：地盤反應" data-title="模擬考 Ch6">
-  <div class="sec-head"><span class="sec-num">模擬考 Ch6</span><h2>地盤反應分析</h2></div>
+  <div class="sec-head"><span class="sec-num">Part 3 · 模擬考 Ch6</span><h2>地盤反應分析</h2></div>
 
   <article class="prob" id="m6-1">
     <div class="ph"><span class="pno">6.1</span><h3>剛性岩盤上的有阻尼均勻土層</h3></div>
@@ -1294,7 +1404,7 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
 </section>
 
 <section class="sec" id="c-m8" data-num="Ch8" data-short="模擬考：液化" data-title="模擬考 Ch8">
-  <div class="sec-head"><span class="sec-num">模擬考 Ch8</span><h2>土壤液化</h2></div>
+  <div class="sec-head"><span class="sec-num">Part 3 · 模擬考 Ch8</span><h2>土壤液化</h2></div>
 
   <article class="prob" id="m8-1">
     <div class="ph"><span class="pno">8.1</span><h3>反覆三軸抗液化曲線與現地 CRR</h3></div>
@@ -1450,7 +1560,7 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
 </section>
 
 <section class="sec" id="c-mR" data-num="R" data-short="模擬考：基礎振動" data-title="模擬考 Part R">
-  <div class="sec-head"><span class="sec-num">模擬考 Part R · Richart, Hall &amp; Woods (1970)</span><h2>基礎振動與波的方法</h2></div>
+  <div class="sec-head"><span class="sec-num">Part 3 · 模擬考 Part R · Richart, Hall &amp; Woods (1970)</span><h2>基礎振動與波的方法</h2></div>
 
   <article class="prob" id="mR-1">
     <div class="ph"><span class="pno">R.1</span><h3>旋轉質量激振</h3></div>
@@ -1621,7 +1731,7 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
 </section>
 
 <section class="sec" id="c-mN" data-num="國考" data-short="國考計算題" data-title="國考計算題">
-  <div class="sec-head"><span class="sec-num">模擬考 Part C · 國考</span><h2>大地技師國考的計算題</h2></div>
+  <div class="sec-head"><span class="sec-num">Part 3 · 考古題 · 國考</span><h2>大地技師國考的計算題</h2></div>
   <p class="part-note">只收計算題。N.6（Mononobe–Okabe 地震土壓力、Richards &amp; Elms）不在本課講義範圍，未收錄；其餘申論題見模擬考原檔。</p>
 
   <article class="prob" id="mN1">
