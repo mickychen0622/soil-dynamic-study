@@ -56,7 +56,8 @@
       <nav class="sn-scroll">
         <a class="sn-item sn-home${page === 'home' ? ' cur' : ''}" href="${root}index.html"><b>⌂</b><span>首頁 · 學習路線</span></a>
         ${item({ id: 'glossary', href: 'glossary.html' }, '<b>≡</b><span>名詞總表</span>')}
-        ${item({ id: 'calc', href: 'calc.html' }, '<b>∑</b><span>計算題整理</span>')}
+        ${item({ id: 'formulas', href: 'formulas.html' }, '<b>ƒ</b><span>公式總表</span>')}
+${item({ id: 'calc', href: 'calc.html' }, '<b>∑</b><span>計算題整理</span>')}
         ${units}<div class="sn-stage">作業</div>${hws}</nav>`;
     const mbar = document.createElement('header');
     mbar.className = 'mbar';

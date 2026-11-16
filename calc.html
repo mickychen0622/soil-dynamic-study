@@ -29,7 +29,7 @@
   .prob .ans { font-weight: 600; }
   .prob .plink { font-size: 13.5px; color: var(--muted); margin: 10px 0 0; }
   .prob .tablewrap { margin: .8em 0; }
-  .part-note { color: var(--muted); max-width: var(--measure); }
+  section.sec > p.part-note { color: var(--muted); max-width: none; }
   .zh-d { display: block; color: var(--muted); font-size: 13.5px; line-height: 1.6; margin-top: 2px; font-weight: 400; opacity: .9; }
   .prob h3 .zh { color: var(--muted); font-size: 14px; font-weight: 500; margin-left: 8px; }
   .part-note .zh-d { margin-top: 4px; }
@@ -188,8 +188,19 @@ c_c &= 2m\omega_n = 2(101.94)(44.29) = 9030\ \text{kN}\cdot\text{s/m} \\
           <p class="given"><b>Given</b> fixed–free, H = 0.100 m, ρ = 1.95 t/m³, I/I<sub>0</sub> = 0.10; X<sub>1</sub> = 88.80 mV, X<sub>6</sub> = 63.39 mV</p>
           <div class="stp"><div class="sh">(1) Resonant frequency<span class="zh">共振頻率</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
           <p>Peak of the stage 1 frequency response curve: <b>f<sub>n</sub> ≈ 108.2 Hz</b>.</p></div>
-          <div class="stp"><div class="sh">(2) Frequency equation<span class="zh">頻率方程式</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
-    \[\frac{I}{I_0} = \beta\tan\beta = 0.10 \;\Rightarrow\; \boxed{\beta = 0.3111\ \text{rad}}\quad(\text{initial guess } \sqrt{0.10} = 0.316)\]</div>
+          <div class="stp"><div class="sh">(2) Frequency equation (Newton's method)<span class="zh">頻率方程式與牛頓法迭代</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
+    \[\begin{aligned}
+    \frac{I}{I_0} &= \beta\tan\beta = 0.10 \\
+    f(\beta) &= \beta\tan\beta - 0.10,\qquad f'(\beta) = \tan\beta + \beta\sec^2\beta,\qquad \beta_{k+1} = \beta_k - \frac{f(\beta_k)}{f'(\beta_k)}
+    \end{aligned}\]
+    <p>Initial guess: for small β, tan β ≈ β, so β² ≈ 0.10 → β<sub>0</sub> = √0.10 = 0.3162 rad.</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>k</th><th class="num">β<sub>k</sub> (rad)</th><th class="num">β<sub>k</sub> tan β<sub>k</sub></th><th class="num">f(β<sub>k</sub>)</th><th class="num">f′(β<sub>k</sub>)</th><th class="num">β<sub>k+1</sub></th></tr>
+      <tr><td>0</td><td class="num">0.31623</td><td class="num">0.10347</td><td class="num">3.47×10⁻³</td><td class="num">0.6773</td><td class="num">0.31110</td></tr>
+      <tr><td>1</td><td class="num">0.31110</td><td class="num">0.10003</td><td class="num">3.2×10⁻⁵</td><td class="num">0.6648</td><td class="num">0.31105</td></tr>
+      <tr><td>2</td><td class="num">0.31105</td><td class="num">0.10000</td><td class="num">≈ 0</td><td class="num">0.6647</td><td class="num">0.31105</td></tr>
+    </table></div>
+    \[\beta_1 = 0.31623 - \frac{0.00347}{0.6773} = 0.31110,\qquad \beta_2 = 0.31110 - \frac{0.000032}{0.6648} = 0.31105 \;\Rightarrow\; \boxed{\beta = 0.3111\ \text{rad}}\]</div>
           <div class="stp"><div class="sh">(3) V<sub>s</sub> and G<sub>max</sub><span class="zh">剪力波速與小應變剪力模數</span><a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
     \[\begin{aligned}
     V_s &= \frac{\omega_nH}{\beta} = \frac{2\pi f_nH}{\beta} = \frac{2\pi(108.22)(0.100)}{0.3111} = \boxed{218.6\ \text{m/s}} \\
@@ -494,8 +505,19 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
     m &= \rho\frac{\pi d^2}{4}h = 1850\cdot\frac{\pi(0.05)^2}{4}(0.10) = 0.3633\ \text{kg} \\
     I &= \frac{md^2}{8} = \frac{0.3633(0.05)^2}{8} = 1.135\times10^{-4}\ \text{kg}\cdot\text{m}^2,\qquad \frac{I}{I_0} = \frac{1.135\times10^{-4}}{4.5\times10^{-4}} = \boxed{0.252}
     \end{aligned}\]</div>
-          <div class="stp"><div class="sh">(b) 頻率方程式<a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
-    \[\beta\tan\beta = 0.252 \;\Rightarrow\; \boxed{\beta = 0.482\ \text{rad}}\]</div>
+          <div class="stp"><div class="sh">(b) 頻率方程式（牛頓法迭代）<a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
+    \[\begin{aligned}
+    \beta\tan\beta &= 0.252 \\
+    f(\beta) &= \beta\tan\beta - 0.252,\qquad f'(\beta) = \tan\beta + \beta\sec^2\beta,\qquad \beta_{k+1} = \beta_k - \frac{f(\beta_k)}{f'(\beta_k)}
+    \end{aligned}\]
+    <p>初值：β 小時 tan β ≈ β，β² ≈ 0.252 → β<sub>0</sub> = √0.252 = 0.5020 rad。</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>k</th><th class="num">β<sub>k</sub> (rad)</th><th class="num">β<sub>k</sub> tan β<sub>k</sub></th><th class="num">f(β<sub>k</sub>)</th><th class="num">f′(β<sub>k</sub>)</th><th class="num">β<sub>k+1</sub></th></tr>
+      <tr><td>0</td><td class="num">0.50200</td><td class="num">0.27554</td><td class="num">2.35×10⁻²</td><td class="num">1.2021</td><td class="num">0.48241</td></tr>
+      <tr><td>1</td><td class="num">0.48241</td><td class="num">0.25263</td><td class="num">6.3×10⁻⁴</td><td class="num">1.1384</td><td class="num">0.48186</td></tr>
+      <tr><td>2</td><td class="num">0.48186</td><td class="num">0.25200</td><td class="num">≈ 0</td><td class="num">1.1366</td><td class="num">0.48186</td></tr>
+    </table></div>
+    \[\beta_1 = 0.50200 - \frac{0.02354}{1.2021} = 0.48241,\qquad \beta_2 = 0.48241 - \frac{0.000628}{1.1384} = 0.48186 \;\Rightarrow\; \boxed{\beta = 0.482\ \text{rad}}\]</div>
           <div class="stp"><div class="sh">(c) V<sub>s</sub>、G<a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
     \[V_s = \frac{2\pi f_nh}{\beta} = \frac{2\pi(80)(0.10)}{0.482} = \boxed{104.3\ \text{m/s}},\qquad G = \rho V_s^2 = 1.85(104.3)^2 = \boxed{20.1\ \text{MPa}}\]</div>
           <div class="stp"><div class="sh">(d) 對數遞減與阻尼比（X<sub>1</sub> → X<sub>6</sub> 為 5 個週期）<a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
@@ -512,9 +534,19 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
           <p class="given"><b>已知</b> H = 0.1524 m、γ = 16.5 kN/m³、I/I<sub>0</sub> = 0.4、響應曲線如題</p>
           <div class="stp"><div class="sh">(a) 共振頻率與 G<a class="cl" href="units/u09.html#s9-1">§9.1</a></div>
     \[\begin{aligned}
-    f_n &= 41\ \text{Hz}\ (\text{峰值 } 74\ \text{mV}),\qquad \rho = \frac{16.5}{9.81} = 1.682\ \text{t/m}^3 \\
-    \beta\tan\beta &= 0.4 \;\Rightarrow\; \beta = 0.593 \\
-    V_s &= \frac{2\pi f_nH}{\beta} = \frac{2\pi(41)(0.1524)}{0.593} = 66.2\ \text{m/s} \\
+    f_n &= 41\ \text{Hz},\qquad \rho = \frac{16.5}{9.81} = 1.682\ \text{t/m}^3
+    \end{aligned}\]
+    <p>f<sub>n</sub> 取響應曲線峰值 74 mV 對應的頻率。β tan β = 0.4 用牛頓法：f(β) = β tan β − 0.4、f′(β) = tan β + β sec²β；初值 β<sub>0</sub> = √0.4 = 0.6325 rad（β 小時 tan β ≈ β）。</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>k</th><th class="num">β<sub>k</sub> (rad)</th><th class="num">β<sub>k</sub> tan β<sub>k</sub></th><th class="num">f(β<sub>k</sub>)</th><th class="num">f′(β<sub>k</sub>)</th><th class="num">β<sub>k+1</sub></th></tr>
+      <tr><td>0</td><td class="num">0.63246</td><td class="num">0.46352</td><td class="num">6.35×10⁻²</td><td class="num">1.7050</td><td class="num">0.59520</td></tr>
+      <tr><td>1</td><td class="num">0.59520</td><td class="num">0.40302</td><td class="num">3.02×10⁻³</td><td class="num">1.5452</td><td class="num">0.59325</td></tr>
+      <tr><td>2</td><td class="num">0.59325</td><td class="num">0.40001</td><td class="num">7.8×10⁻⁶</td><td class="num">1.5372</td><td class="num">0.59324</td></tr>
+    </table></div>
+    \[\begin{aligned}
+    \beta_1 &= 0.63246 - \frac{0.06352}{1.7050} = 0.59520 \\
+    \beta_2 &= 0.59520 - \frac{0.003024}{1.5452} = 0.59325 \;\Rightarrow\; \beta = 0.593 \\
+    V_s &=\frac{2\pi f_nH}{\beta} = \frac{2\pi(41)(0.1524)}{0.593} = 66.2\ \text{m/s} \\
     G &= \rho V_s^2 = 1.682(66.2)^2 = \boxed{7.37\ \text{MPa}}
     \end{aligned}\]</div>
           <div class="stp"><div class="sh">(b) 半功率法阻尼比<a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
@@ -1040,9 +1072,17 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
     <details class="derive"><summary>完整作答</summary><div class="body sol">
       <p class="given"><b>已知</b> d = 50 mm、H = 0.100 m、ρ = 1.90 t/m³、I/I<sub>0</sub> = 0.15；五階段 f<sub>n</sub>、X<sub>1</sub>、X<sub>6</sub> 如題</p>
       <div class="stp"><div class="sh">(a) Stage 1：β、V<sub>s</sub>、G<sub>max</sub>、D<a class="cl" href="units/u09.html#s9-1">§9.1</a><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
+    <p>β tan β = I/I<sub>0</sub> = 0.15 用牛頓法：f(β) = β tan β − 0.15、f′(β) = tan β + β sec²β；初值 β<sub>0</sub> = √0.15 = 0.3873 rad（β 小時 tan β ≈ β）。</p>
+    <div class="tablewrap"><table class="data">
+      <tr><th>k</th><th class="num">β<sub>k</sub> (rad)</th><th class="num">β<sub>k</sub> tan β<sub>k</sub></th><th class="num">f(β<sub>k</sub>)</th><th class="num">f′(β<sub>k</sub>)</th><th class="num">β<sub>k+1</sub></th></tr>
+      <tr><td>0</td><td class="num">0.38730</td><td class="num">0.15798</td><td class="num">7.98×10⁻³</td><td class="num">0.8596</td><td class="num">0.37802</td></tr>
+      <tr><td>1</td><td class="num">0.37802</td><td class="num">0.15012</td><td class="num">1.16×10⁻⁴</td><td class="num">0.8347</td><td class="num">0.37788</td></tr>
+      <tr><td>2</td><td class="num">0.37788</td><td class="num">0.15000</td><td class="num">≈ 0</td><td class="num">0.8344</td><td class="num">0.37788</td></tr>
+    </table></div>
     \[\begin{aligned}
-    \beta\tan\beta &= \frac{I}{I_0} = 0.15 \;\Rightarrow\; \boxed{\beta = 0.378\ \text{rad}} \quad (\text{check: } 0.378\tan0.378 = 0.150) \\
-    V_s &= \frac{2\pi f_n H}{\beta} = \frac{2\pi(141.0)(0.100)}{0.378} = \boxed{234.4\ \text{m/s}} \\
+    \beta_1 &= 0.38730 - \frac{0.007979}{0.8596} = 0.37802 \\
+    \beta_2 &= 0.37802 - \frac{0.000116}{0.8347} = 0.37788 \;\Rightarrow\; \boxed{\beta = 0.378\ \text{rad}} \\
+    V_s &=\frac{2\pi f_n H}{\beta} = \frac{2\pi(141.0)(0.100)}{0.378} = \boxed{234.4\ \text{m/s}} \\
     G_{max} &= \rho V_s^2 = 1.90(234.4)^2 = \boxed{104{,}400\ \text{kPa}} \\
     \delta &= \frac{1}{5}\ln\frac{X_1}{X_6} = \frac{1}{5}\ln\frac{75}{54.78} = 0.0628 \\
     D &= \frac{\delta}{2\pi} = \frac{0.0628}{2\pi} = \boxed{1.00\%}
