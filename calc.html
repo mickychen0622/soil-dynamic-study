@@ -411,9 +411,14 @@ u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_
     &\quad W_D = \pi(16.2)(50.39)(0.614\times10^{-3})^2 = 0.964\ \text{J} \\
     &\quad W_s = \tfrac12(5079)(0.614\times10^{-3})^2 = 0.957\ \text{J} \\
     &\quad \frac{W_D}{4\pi W_s} = \frac{0.964}{4\pi(0.957)} = \boxed{0.080 = \xi} \\
-    \beta = 0.5: &\quad D = 1.33,\ \rho_d = 0.131\ \text{mm},\ W_D = 0.0218\ \text{J},\ W_s = 0.0433\ \text{J},\ \frac{W_D}{4\pi W_s} = \boxed{0.040 = \xi\beta}
+    \beta = 0.5: &\quad \bar\omega = \beta\omega_n = 0.5(50.39) = 25.20\ \text{rad/s},\quad 1-\beta^2 = 0.75,\quad 2\xi\beta = 2(0.080)(0.5) = 0.080 \\
+    &\quad D = \frac{1}{\sqrt{0.75^2+0.080^2}} = \frac{1}{0.7543} = 1.326,\quad \rho_d = \rho_sD = \frac{0.5}{5079}(1.326) = 0.09845(1.326) = 0.13052\ \text{mm} \\
+    &\quad W_D = \pi(16.2)(25.20)(0.13052\times10^{-3})^2 = 0.0218\ \text{J} \\
+    &\quad W_s = \tfrac12(5079)(0.13052\times10^{-3})^2 = 0.0433\ \text{J} \\
+    &\quad \frac{W_D}{4\pi W_s} = \frac{0.0218}{4\pi(0.0433)} = \boxed{0.040 = \xi\beta} \\
+    \text{Check:} &\quad \frac{W_D}{4\pi W_s} = \frac{\pi c\bar\omega\rho_d^2}{4\pi\cdot\tfrac12k\rho_d^2} = \frac{c\bar\omega}{2k} = \frac{16.2(25.20)}{2(5079)} = 0.040\quad(\rho_d \text{ cancels})
     \end{aligned}\]
-          <p>Viscous damping: W<sub>D</sub> ∝ ω̄, so W<sub>D</sub>/(4πW<sub>s</sub>) = ξβ. Soil damping is hysteretic and frequency independent, so soils define ξ = W<sub>D</sub>/(4πW<sub>s</sub>) directly, without the frequency ratio.</p></div>
+          <p>The energy dissipated per cycle by viscous damping is proportional to the excitation frequency, so W<sub>D</sub>/(4πW<sub>s</sub>) = ξβ and changes with frequency. Soil damping comes from the hysteresis loop of particle friction, and the dissipated energy is independent of frequency; soils therefore define the damping ratio directly as ξ = W<sub>D</sub>/(4πW<sub>s</sub>), without multiplying by the frequency ratio.<span class="zh-d">黏滯阻尼的每圈消散能量與激振頻率成正比，所以 W<sub>D</sub>/(4πW<sub>s</sub>) = ξβ，會隨頻率改變。土壤阻尼來自顆粒摩擦的遲滯迴圈，消散能量與頻率無關，因此土壤直接以 ξ = W<sub>D</sub>/(4πW<sub>s</sub>) 定義阻尼比，不乘頻率比。</span></p></div>
           <p class="ans">Ans. β = 1: W<sub>D</sub> = 0.964 J, W<sub>s</sub> = 0.957 J, ratio = 0.080 = ξ; β = 0.5: W<sub>D</sub> = 0.0218 J, W<sub>s</sub> = 0.0433 J, ratio = 0.040 = ξβ</p>
         </div></details>
     </div>
@@ -468,16 +473,16 @@ u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_
           <div class="stp"><div class="sh">(4) Damping ratio (X<sub>1</sub> → X<sub>6</sub> = 5 cycles)<span class="zh">阻尼比</span><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
     \[\begin{aligned}
     \delta &= \frac{1}{n}\ln\frac{X_1}{X_{n+1}} = \frac{1}{5}\ln\frac{88.80}{63.39} = 0.0674 \\
-    D &= \frac{\delta}{2\pi} = \frac{0.0674}{2\pi} = \boxed{1.07\,\%}
+    \xi &= \frac{\delta}{2\pi} = \frac{0.0674}{2\pi} = \boxed{1.07\,\%}
     \end{aligned}\]</div>
-          <p class="ans">Ans. f<sub>n</sub> ≈ 108.2 Hz, β = 0.311, V<sub>s</sub> = 219 m/s, G<sub>max</sub> = 93.2 MPa, D = 1.07 %</p>
+          <p class="ans">Ans. f<sub>n</sub> ≈ 108.2 Hz, β = 0.311, V<sub>s</sub> = 219 m/s, G<sub>max</sub> = 93.2 MPa, ξ = 1.07 %</p>
     </div></details>
       <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1a">HW3 Q1(a)</a> · Similar 同型: <a href="#m3-3">3.3</a>, <a href="#m5-5">5.5</a></p>
     </div>
 
     <div class="part" id="h3-1b">
       <div class="part-h"><b>Part B</b> Modulus reduction, damping and threshold strains<span class="zh">模數折減、阻尼與門檻應變</span><span class="ptag hw">HW3 Q1(b)</span></div>
-      <div class="pq">Repeat Part A for all six stages (Table 1). Plot G/G<sub>max</sub>–γ and D–γ, compare with the Darendeli clean-sand curves, estimate γ<sub>r</sub>, and locate each stage relative to γ<sub>tl</sub> and γ<sub>tv</sub>.<span class="zh-d">六個階段畫 G/Gmax 與 D 曲線，估參考應變，判斷各階段相對門檻應變的位置。</span></div>
+      <div class="pq">Repeat Part A for all six stages (Table 1). Plot G/G<sub>max</sub>–γ and ξ–γ, compare with the Darendeli clean-sand curves, estimate γ<sub>r</sub>, and locate each stage relative to γ<sub>tl</sub> and γ<sub>tv</sub>.<span class="zh-d">六個階段畫 G/Gmax 與 ξ 曲線，估參考應變，判斷各階段相對門檻應變的位置。</span></div>
       <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
           <p class="given"><b>Given</b> f<sub>n</sub> = 108.3 (108.22), 107.5, 104.7, 96.7, 82.7, 60.7 Hz at γ = 0.0005–0.1 %; β = 0.3111 for all stages (same I/I<sub>0</sub>)</p>
           <div class="stp"><div class="sh">(1) Modulus reduction<span class="zh">模數折減</span><a class="cl" href="units/u08.html#s8-5">§8.5</a></div>
@@ -486,9 +491,9 @@ u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_
     \text{Stage 6:}\quad \frac{G}{G_{max}} &= \left(\frac{60.7}{108.22}\right)^2 = \boxed{0.315}
     \end{aligned}\]</div>
           <div class="stp"><div class="sh">(2) Damping of each stage<span class="zh">各階段阻尼比</span><a class="cl" href="units/u09.html#s9-2">§9.2</a></div>
-    \[\text{Stage 6:}\quad \delta = \frac15\ln\frac{70.62}{1.13} = 0.827,\qquad D = \frac{0.827}{2\pi} = \boxed{13.2\,\%}\]
+    \[\text{Stage 6:}\quad \delta = \frac15\ln\frac{70.62}{1.13} = 0.827,\qquad \xi = \frac{0.827}{2\pi} = \boxed{13.2\,\%}\]
           <div class="tablewrap"><table class="data">
-            <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">G/G<sub>max</sub></th><th class="num">D (%)</th></tr>
+            <tr><th>Stage</th><th class="num">γ (%)</th><th class="num">f<sub>n</sub> (Hz)</th><th class="num">G/G<sub>max</sub></th><th class="num">ξ (%)</th></tr>
             <tr><td>1</td><td class="num">0.0005</td><td class="num">108.22</td><td class="num">1.000</td><td class="num">1.07</td></tr>
             <tr><td>2</td><td class="num">0.001</td><td class="num">107.5</td><td class="num">0.987</td><td class="num">1.19</td></tr>
             <tr><td>3</td><td class="num">0.003</td><td class="num">104.7</td><td class="num">0.936</td><td class="num">1.80</td></tr>
@@ -503,14 +508,14 @@ u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_
     \end{aligned}\]</div>
           <div class="stp"><div class="sh">(4) Threshold strains (sand: γ<sub>tl</sub> ≈ 0.001 %, γ<sub>tv</sub> ≈ 0.01 %)<span class="zh">門檻應變</span><a class="cl" href="units/u08.html#s8-5">§8.5</a></div>
           <p>Stage 1 (0.0005 %) &lt; γ<sub>tl</sub>: linear elastic. Stages 2–3: between γ<sub>tl</sub> and γ<sub>tv</sub>: nonlinear, no permanent volume change. Stage 4 ≈ γ<sub>tv</sub>. Stages 5–6 &gt; γ<sub>tv</sub>: permanent volume change; excess pore pressure under undrained loading.</p></div>
-          <p class="ans">Ans. G/G<sub>max</sub> = 1.000 → 0.315, D = 1.07 → 13.2 %; γ<sub>r</sub> ≈ 0.044 % (Darendeli 0.035 %); stage 1 &lt; γ<sub>tl</sub>, stages 5–6 &gt; γ<sub>tv</sub></p>
+          <p class="ans">Ans. G/G<sub>max</sub> = 1.000 → 0.315, ξ = 1.07 → 13.2 %; γ<sub>r</sub> ≈ 0.044 % (Darendeli 0.035 %); stage 1 &lt; γ<sub>tl</sub>, stages 5–6 &gt; γ<sub>tv</sub></p>
     </div></details>
       <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q1b">HW3 Q1(b)</a> · Similar 同型: <a href="#m5-5">5.5</a></p>
     </div>
 
     <div class="part" id="h3-2">
       <div class="part-h"><b>Part C</b> Masing loops and damping ratio<span class="zh">Masing 迴圈與阻尼比</span><span class="ptag hw">HW3 Q2</span></div>
-      <div class="pq">Hyperbolic backbone with G<sub>max</sub> = 94,000 kPa and γ<sub>ref</sub> = 0.0004 (decimal); loading path 0 → γ<sub>c</sub> → −γ<sub>c</sub> → γ<sub>c</sub> (Fig. 5). (a) Loops and D = E<sub>D</sub>/(4πE<sub>So</sub>) for γ<sub>c</sub> = 0.01 % and 0.1 %, compared with the measured values in Part B. (b) Why the Masing damping differs from the measured values at very small and at large strains.<span class="zh-d">雙曲線骨幹的 Masing 迴圈，由面積求阻尼比並與量測比較；說明兩端為何不同。</span></div>
+      <div class="pq">Hyperbolic backbone with G<sub>max</sub> = 94,000 kPa and γ<sub>ref</sub> = 0.0004 (decimal); loading path 0 → γ<sub>c</sub> → −γ<sub>c</sub> → γ<sub>c</sub> (Fig. 5). (a) Loops and ξ = E<sub>D</sub>/(4πE<sub>So</sub>) for γ<sub>c</sub> = 0.01 % and 0.1 %, compared with the measured values in Part B. (b) Why the Masing damping differs from the measured values at very small and at large strains.<span class="zh-d">雙曲線骨幹的 Masing 迴圈，由面積求阻尼比並與量測比較；說明兩端為何不同。</span></div>
       <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
           <p class="given"><b>Given</b> G<sub>max</sub> = 94,000 kPa, γ<sub>ref</sub> = 0.0004; γ<sub>c</sub> = 0.0001 (0.01 %) and 0.001 (0.1 %); strains in decimal</p>
           <div class="stp"><div class="sh">(1) Backbone and Masing branches<span class="zh">骨幹與卸載、再載分支</span><a class="cl" href="units/u08.html#s8-7">§8.7</a></div>
@@ -518,26 +523,26 @@ u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_
           <div class="stp"><div class="sh">(2) γ<sub>c</sub> = 0.01 % (x = γ<sub>c</sub>/γ<sub>ref</sub> = 0.25)<span class="zh">小應變</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
     \[\begin{aligned}
     \tau_c &= \frac{94{,}000(0.0001)}{1+0.25} = 7.52\ \text{kPa},\qquad E_{So} = \tfrac12\tau_c\gamma_c = \tfrac12(7.52)(0.0001) = 0.376\ \text{J/m}^3 \\
-    D &= \frac1\pi\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right) - 2\right] = \frac1\pi\left[4(5)\left(1-\frac{\ln1.25}{0.25}\right) - 2\right] = \boxed{4.73\,\%} \\
-    E_D &= 4\pi E_{So}D = 4\pi(0.376)(0.0473) = 0.223\ \text{J/m}^3
+    \xi &= \frac1\pi\left[4\left(1+\frac1x\right)\left(1-\frac{\ln(1+x)}{x}\right) - 2\right] = \frac1\pi\left[4(5)\left(1-\frac{\ln1.25}{0.25}\right) - 2\right] = \boxed{4.73\,\%} \\
+    E_D &= 4\pi E_{So}\xi = 4\pi(0.376)(0.0473) = 0.223\ \text{J/m}^3
     \end{aligned}\]</div>
           <div class="stp"><div class="sh">(3) γ<sub>c</sub> = 0.1 % (x = 2.5)<span class="zh">大應變</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
     \[\begin{aligned}
     \tau_c &= \frac{94{,}000(0.001)}{1+2.5} = 26.86\ \text{kPa},\qquad E_{So} = \tfrac12(26.86)(0.001) = 13.43\ \text{J/m}^3 \\
-    D &= \frac1\pi\left[4(1.4)\left(1-\frac{\ln3.5}{2.5}\right) - 2\right] = \boxed{25.3\,\%} \\
+    \xi &= \frac1\pi\left[4(1.4)\left(1-\frac{\ln3.5}{2.5}\right) - 2\right] = \boxed{25.3\,\%} \\
     E_D &= 4\pi(13.43)(0.253) = 42.6\ \text{J/m}^3
     \end{aligned}\]
           <p>Compared with Q1: 4.73 % vs 3.60 % (×1.3); 25.3 % vs 13.2 % (×1.9).</p></div>
           <div class="stp"><div class="sh">(4) Why Masing differs from measurements<span class="zh">兩端差異的原因</span><a class="cl" href="units/u08.html#s8-8">§8.8</a></div>
-          <p>Very small strain: the backbone is linear, so D<sub>Masing</sub> → 0, but soils show D<sub>min</sub> ≈ 1 % (micro-slip, viscosity) → Masing underestimates. Large strain: reversal curves = backbone scaled by 2 give loops that are too fat → Masing overestimates. Correction: D = b(G/G<sub>max</sub>)<sup>0.1</sup>D<sub>Masing</sub> + D<sub>min</sub> (Darendeli).</p></div>
-          <p class="ans">Ans. 0.01 %: τ<sub>c</sub> = 7.52 kPa, D = 4.73 %; 0.1 %: τ<sub>c</sub> = 26.9 kPa, D = 25.3 % (measured 3.60 %, 13.2 %)</p>
+          <p>Very small strain: the backbone is linear, so ξ<sub>Masing</sub> → 0, but soils show ξ<sub>min</sub> ≈ 1 % (micro-slip, viscosity) → Masing underestimates. Large strain: reversal curves = backbone scaled by 2 give loops that are too fat → Masing overestimates. Correction: ξ = b(G/G<sub>max</sub>)<sup>0.1</sup>ξ<sub>Masing</sub> + ξ<sub>min</sub> (Darendeli).</p></div>
+          <p class="ans">Ans. 0.01 %: τ<sub>c</sub> = 7.52 kPa, ξ = 4.73 %; 0.1 %: τ<sub>c</sub> = 26.9 kPa, ξ = 25.3 % (measured 3.60 %, 13.2 %)</p>
     </div></details>
       <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q2">HW3 Q2</a> · Similar 同型: <a href="#m5-6">5.6</a></p>
     </div>
 
     <div class="part" id="h3-3">
       <div class="part-h"><b>Part D</b> Downhole test and equivalent linear properties<span class="zh">下孔試驗與等值線性參數</span><span class="ptag hw">HW3 Q3</span></div>
-      <div class="pq">The downhole S-wave arrival times are listed in Table 2 (setup in Fig. 1; vertical travel path). (a) Determine V<sub>s</sub> and G<sub>max</sub> of each layer and compare layer 3 with the resonant column (Part A) and Hardin (1978). (b) Determine G and D of layer 3 at γ<sub>eff</sub> = 0.05 % using the curves of Part B. Can this analysis predict the excess pore pressure?<span class="zh-d">由下孔走時求各層 V<sub>s</sub>、G<sub>max</sub>，第 3 層和共振柱（Part A）、Hardin 比較；用 Part B 的曲線求 γ<sub>eff</sub> = 0.05 % 時的 G、D，能否預測孔隙水壓。</span></div>
+      <div class="pq">The downhole S-wave arrival times are listed in Table 2 (setup in Fig. 1; vertical travel path). (a) Determine V<sub>s</sub> and G<sub>max</sub> of each layer and compare layer 3 with the resonant column (Part A) and Hardin (1978). (b) Determine G and ξ of layer 3 at γ<sub>eff</sub> = 0.05 % using the curves of Part B. Can this analysis predict the excess pore pressure?<span class="zh-d">由下孔走時求各層 V<sub>s</sub>、G<sub>max</sub>，第 3 層和共振柱（Part A）、Hardin 比較；用 Part B 的曲線求 γ<sub>eff</sub> = 0.05 % 時的 G、ξ，能否預測孔隙水壓。</span></div>
       <details class="derive"><summary>Solution · 完整作答</summary><div class="body sol">
           <p class="given"><b>Given</b> ρ = 1.95 t/m³, water table 1 m, K<sub>0</sub> = 0.5; arrivals (z, t) = (2, 13.5), (4, 27.2), (7, 41.3), (10, 55.3), (15, 74.2), (20, 92.5) m, ms; e = 0.70; RC: G<sub>max</sub> = 93.2 MPa</p>
           <div class="stp"><div class="sh">(a1) V<sub>s</sub> of each layer (least-squares line of t vs z)<span class="zh">各層 Vs</span><a class="cl" href="units/u07.html#s7-3">§7.3</a></div>
@@ -556,15 +561,15 @@ u &= \rho\cos(\omega_nt - \alpha),\qquad \tan\alpha = \frac{\dot u_0}{u_0\omega_
     G_{max} &= 625\,F(e)\,OCR^k\sqrt{p_a\sigma'_m} = 625(1.555)(1)\sqrt{100(99.7)} = \boxed{97.1\ \text{MPa}}
     \end{aligned}\]
           <p>Field 140.9 MPa &gt; Hardin 97.1 ≈ RC 93.2 MPa: reconstituted specimens lose fabric, aging and cementation.</p></div>
-          <div class="stp"><div class="sh">(b1) G and D at γ<sub>eff</sub> = 0.05 % (log interpolation between stages 5 and 6)<span class="zh">應變相容性質</span><a class="cl" href="units/u11.html#s11-1">§11.1</a></div>
+          <div class="stp"><div class="sh">(b1) G and ξ at γ<sub>eff</sub> = 0.05 % (log interpolation between stages 5 and 6)<span class="zh">應變相容性質</span><a class="cl" href="units/u11.html#s11-1">§11.1</a></div>
     \[\begin{aligned}
     x &= \frac{\log(0.05/0.03)}{\log(0.1/0.03)} = 0.424 \\
-    G/G_{max} &= 0.584 + 0.424(0.315 - 0.584) = 0.470,\qquad D = 7.25 + 0.424(13.16 - 7.25) = \boxed{9.8\,\%} \\
+    G/G_{max} &= 0.584 + 0.424(0.315 - 0.584) = 0.470,\qquad \xi = 7.25 + 0.424(13.16 - 7.25) = \boxed{9.8\,\%} \\
     G &= 0.470 \times G_{max,field} = 0.470(140.9) = \boxed{66.2\ \text{MPa}}
     \end{aligned}\]</div>
           <div class="stp"><div class="sh">(b2) Excess pore pressure?<span class="zh">能否預測孔隙水壓</span><a class="cl" href="units/u11.html#s11-3">§11.3</a></div>
           <p>No. Equivalent linear analysis is a total stress analysis with no shear–volume coupling; since 0.05 % &gt; γ<sub>tv</sub>, pore pressure will build up, so an effective stress analysis or the Ch8 liquefaction methods are needed.</p></div>
-          <p class="ans">Ans. V<sub>s</sub> = 147, 214, 269 m/s; G<sub>max</sub> = 42.2, 88.9, 140.9 MPa; layer 3: field 141 &gt; Hardin 97 ≈ RC 93 MPa; γ<sub>eff</sub> = 0.05 %: G = 66 MPa, D = 9.8 %</p>
+          <p class="ans">Ans. V<sub>s</sub> = 147, 214, 269 m/s; G<sub>max</sub> = 42.2, 88.9, 140.9 MPa; layer 3: field 141 &gt; Hardin 97 ≈ RC 93 MPa; γ<sub>eff</sub> = 0.05 %: G = 66 MPa, ξ = 9.8 %</p>
     </div></details>
       <p class="plink">Full solution 完整解答: <a href="hw/hw3.html#q3">HW3 Q3</a> · Similar 同型: <a href="#m6-4">6.4</a></p>
     </div>
@@ -833,17 +838,17 @@ v_c &= \sqrt{\frac{E}{\rho}} = \sqrt{\frac{100{,}000}{1.90}} = \boxed{229.4\ \te
   </article>
 
   <article class="prob" id="m3-5">
-    <div class="ph"><span class="pno">3.5</span><h3>彎曲元件試驗</h3></div>
-    <div class="pq">砂試體高 110 mm、ρ = 1.95 t/m³，兩端彎曲元件各伸入 5 mm，剪力波初達時間 0.62 ms。求 (a) 傳播距離　(b) V<sub>s</sub>　(c) G<sub>max</sub>。</div>
-    <details class="derive"><summary>完整作答</summary><div class="body sol">
-          <p class="given"><b>已知</b> 試體高 110 mm、彎曲元件各伸入 5 mm、t = 0.62 ms、ρ = 1.95 t/m³</p>
-          <div class="stp"><div class="sh">(a) 傳播距離（尖端到尖端）<a class="cl" href="units/u07.html#s7-4">§7.4</a></div>
+    <div class="ph"><span class="pno">3.5</span><h3>Bender Element Test</h3></div>
+    <div class="pq">A sand specimen is 110 mm high with ρ = 1.95 t/m³. The bender elements at each end penetrate 5 mm into the specimen, and the first arrival time of the shear wave is 0.62 ms. Find (a) the travel distance, (b) V<sub>s</sub>, (c) G<sub>max</sub>.</div>
+    <details class="derive"><summary>Full Solution</summary><div class="body sol">
+          <p class="given"><b>Given</b> specimen height 110 mm, bender element penetration 5 mm at each end, t = 0.62 ms, ρ = 1.95 t/m³</p>
+          <div class="stp"><div class="sh">(a) Travel distance (tip to tip)<a class="cl" href="units/u07.html#s7-4">§7.4</a></div>
     \[L_{tt} = 110 - 2(5) = \boxed{100\ \text{mm}}\]</div>
           <div class="stp"><div class="sh">(b) V<sub>s</sub><a class="cl" href="units/u07.html#s7-4">§7.4</a></div>
     \[V_s = \frac{L_{tt}}{t} = \frac{0.100}{0.62\times10^{-3}} = \boxed{161.3\ \text{m/s}}\]</div>
           <div class="stp"><div class="sh">(c) G<sub>max</sub><a class="cl" href="units/u07.html#s7-1">§7.1</a></div>
     \[G_{max} = \rho V_s^2 = 1.95(161.3)^2 = 50{,}730\ \text{kPa} = \boxed{50.7\ \text{MPa}}\]</div>
-          <p class="ans">答：100 mm、161 m/s、50.7 MPa</p>
+          <p class="ans">Ans: 100 mm, 161 m/s, 50.7 MPa</p>
     </div></details>
   </article>
 </section>
