@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SDOF 考試重點 · Soil Dynamics and Foundation Vibration</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  table.gl { table-layout: fixed; width: 100%; }
+  table.gl th:nth-child(1) { width: 2.6em; }
+  table.gl th:nth-child(2) { width: 16em; }
+  table.gl th:nth-child(4) { width: 7.5em; }
+  table.gl td.no { color: var(--muted); font-variant-numeric: tabular-nums; }
+  table.gl td.term b { display: block; font-size: 15.5px; }
+  table.gl td.term .zh { color: var(--muted); font-size: 14px; }
+  table.gl td.desc { line-height: 1.65; }
+  table.gl td.desc p { max-width: none; }
+  table.gl td.desc .fx .katex-display { margin: 0 0 8px; text-align: left; }
+  table.gl td.desc .fx .katex-display > .katex { text-align: left; }
+  .fx .katex-display, .eqbox .katex-display { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+  table.gl td.desc .en { margin: 0 0 6px; color: var(--ink); font-size: 15px; }
+  table.gl td.desc .zh-d { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.6; opacity: .85; }
+  td.desc .en .pt { display: block; padding-left: 1em; text-indent: -1em; }
+  td.desc .en .pt + .pt { margin-top: 6px; }
+  table.gl td.go, table.gl th.go { text-align: right; white-space: nowrap; }
+  table.gl td.go a { display: block; font-size: 14px; }
+  table.gl td.go a.pr { font-size: 13px; color: var(--muted); }
+  table.gl td.go a.pr:hover { color: var(--accent); }
+  table.sym td:first-child { white-space: nowrap; width: 8em; }
+  table.sym td:last-child { white-space: nowrap; color: var(--muted); }
+  table.ty td { vertical-align: top; line-height: 1.65; }
+  table.ty td.tn { width: 12em; }
+  table.ty td.tn b { display: block; font-size: 15.5px; }
+  table.ty td.tn .zh { color: var(--muted); font-size: 14px; }
+  table.ty ol { margin: 0; padding-left: 1.3em; }
+  table.ty ol li + li { margin-top: 3px; }
+  table.ty td.go { width: 8em; text-align: right; white-space: nowrap; }
+  table.ty td.go a { display: block; font-size: 13.5px; }
+  .star { color: var(--orange); font-weight: 700; margin-left: 3px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; padding: 0 5px; margin-left: 5px; vertical-align: 2px; }
+  h3.grp { margin-top: 34px; }
+  @media (max-width: 760px) {
+    table.gl, table.gl tbody, table.gl tr, table.gl td,
+    table.ty, table.ty tbody, table.ty tr, table.ty td { display: block; width: auto; }
+    table.gl tr:first-child, table.ty tr:first-child { display: none; }
+    table.gl tr, table.ty tr { padding: 14px 0; border-bottom: 1px solid var(--line); }
+    table.gl tr:last-child, table.ty tr:last-child { border-bottom: 0; }
+    table.gl td, table.ty td { border: 0; padding: 2px 0; text-align: left !important; width: auto !important; }
+    table.gl td.no { display: none; }
+    table.gl td.go a, table.ty td.go a { display: inline; margin-right: 14px; }
+  }
+</style>
+</head>
+<body data-page="sdof" data-root="" data-title="SDOF 考試重點">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">SDOF Exam Review · 單自由度振動考試重點</div>
+  <h1>SDOF 考試重點</h1>
+  <p class="lede"><b>考前把單元 4 一次看完。</b>這頁把 SDOF 的名詞解釋、解題公式、題型步驟與簡答觀念收在一起。說明以英文為主（考試直接作答用），下方淺色字是中文；右欄連回單元 4 的推導，以及計算題整理中的練習題。<span class="star">★</span> 是 2025 年期中考考過的名詞與公式，<span class="tag">HW3</span> 是 HW3 Q4 用到的。</p>
+
+  <h3>2025 期中考的 SDOF 題目</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>題號</th><th>題型</th><th>內容</th><th class="num">配分</th></tr>
+    <tr><td>Q1</td><td>名詞解釋</td><td>10 個名詞中有 3 個是 SDOF：<b>Resonance</b>、<b>Dynamic magnification factor</b>、<b>Critical damping coefficient</b></td><td class="num">12 / 40</td></tr>
+    <tr class="hl"><td>Q2</td><td>計算</td><td>機器基礎 W = 1000 kN、k = 200,000 kN/m、c = 2340 kN·s/m，求 ω<sub>n</sub>、ξ、ω<sub>d</sub>、δ（<a href="#t1">題型 ①</a>）</td><td class="num">20</td></tr>
+    <tr class="hl"><td>Q3</td><td>計算</td><td>同一系統、u(0) = 0.05 m、u̇(0) = 0.01 m/s，不計阻尼，求相位角與振幅（<a href="#t2">題型 ②</a>）</td><td class="num">10</td></tr>
+  </table></div>
+  <div class="callout link"><div class="ct">今年要多準備的</div>
+    <p>模擬考註記「老師表示期中考與 HW3 相關」。HW3 Q4 是 SDOF：由頻率響應曲線求 ξ（半功率法、共振放大法）、地板振動的傳遞率、每圈能量 W<sub>D</sub>/(4πW<sub>S</sub>)。見<a href="#t4">題型 ④</a>、<a href="#t5">⑤</a>。</p>
+  </div>
+</header>
+
+<section class="sec" id="sym" data-num="0" data-short="符號與方程式" data-title="符號與運動方程式">
+  <div class="sec-head"><span class="sec-num">0</span><h2>符號與運動方程式</h2></div>
+  <p>SDOF 只用一個位移 \(u\) 描述運動。三個系統參數是 <b>m 質量、c 阻尼係數、k 勁度</b>；\(u\) 是位移，不是參數。</p>
+  <div class="eqbox">\[ m\ddot u + c\dot u + ku = p(t) \qquad\Longleftrightarrow\qquad \ddot u + 2\xi\omega_n\dot u + \omega_n^2u = \frac{p(t)}{m} \]</div>
+  <div class="tablewrap"><table class="data sym">
+    <tr><th>符號</th><th>意義</th><th>常用單位</th></tr>
+    <tr><td>\(m\)</td><td>Mass 質量。題目給重量時 \(m = W/g\)</td><td>t（= kN·s²/m）</td></tr>
+    <tr><td>\(c\)</td><td>Damping (dashpot) coefficient 阻尼係數</td><td>kN·s/m</td></tr>
+    <tr><td>\(k\)</td><td>Stiffness 勁度 = 力 / 靜位移</td><td>kN/m</td></tr>
+    <tr><td>\(u,\ \dot u,\ \ddot u\)</td><td>Displacement, velocity, acceleration 位移、速度、加速度</td><td>m、m/s、m/s²</td></tr>
+    <tr><td>\(u_0,\ \dot u_0\)</td><td>Initial displacement and velocity 初始位移、初速</td><td>m、m/s</td></tr>
+    <tr><td>\(p(t) = p_0\sin\bar\omega t\)</td><td>Harmonic load 簡諧外力；\(p_0\) 幅值、\(\bar\omega\) 外力頻率</td><td>kN、rad/s</td></tr>
+    <tr><td>\(\omega_n,\ f_n,\ T_n\)</td><td>Natural circular frequency, frequency, period 自然圓頻率、頻率、週期</td><td>rad/s、Hz、s</td></tr>
+    <tr><td>\(\omega_D\)</td><td>Damped natural frequency 阻尼自然頻率</td><td>rad/s</td></tr>
+    <tr><td>\(c_c\)</td><td>Critical damping coefficient 臨界阻尼係數</td><td>kN·s/m</td></tr>
+    <tr><td>\(\xi\)</td><td>Damping ratio 阻尼比（單元 8、9 寫作 D）</td><td>—</td></tr>
+    <tr><td>\(\beta = \bar\omega/\omega_n\)</td><td>Frequency ratio 頻率比</td><td>—</td></tr>
+    <tr><td>\(\rho_s = p_0/k\)</td><td>Static displacement 靜態變位</td><td>m</td></tr>
+    <tr><td>\(D\)</td><td>Dynamic magnification factor 動態放大因子</td><td>—</td></tr>
+    <tr><td>\(\rho_d = \rho_sD\)</td><td>Steady-state amplitude 穩態振幅</td><td>m</td></tr>
+    <tr><td>\(\varphi\)</td><td>Phase lag of displacement behind load 相位落後</td><td>° 或 rad</td></tr>
+    <tr><td>\(\delta\)</td><td>Logarithmic decrement 對數遞減</td><td>—</td></tr>
+    <tr><td>\(TR_1,\ TR_2\)</td><td>Force / motion transmissibility 力／位移傳遞率</td><td>—</td></tr>
+    <tr><td>\(W_D,\ W_S\)</td><td>Energy dissipated per cycle, maximum strain energy 每圈消散能量、最大應變能</td><td>kJ</td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="def" data-num="1" data-short="名詞解釋" data-title="名詞解釋">
+  <div class="sec-head"><span class="sec-num">1</span><h2>名詞解釋</h2></div>
+  <p>作答順序：<b>一句定義 → 公式 → 一兩個關鍵性質</b>。2025 年的格式是「briefly describe in English/Chinese what you know about…」，每題 4 分。</p>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名詞</th><th>說明</th><th class="go">詳細推導</th></tr>
+    <tr><td class="no">1</td><td class="term"><b>Single-degree-of-freedom (SDOF) system</b><span class="zh">單自由度系統</span></td><td class="desc"><p class="en"><span class="pt">A system whose motion is fully described by one displacement coordinate u.</span><span class="pt">It consists of a mass m (inertia), a spring k (stiffness, stores strain energy) and a dashpot c (viscous damping, dissipates energy).</span><span class="pt">Equation of motion: \(m\ddot u + c\dot u + ku = p(t)\).</span><span class="pt">A machine foundation, a resonant-column specimen, a soil layer and a base-isolated building can all be idealized as SDOF systems.</span></p><p class="zh-d">只需一個位移座標 u 就能描述運動的系統，由質量 m（慣性）、彈簧 k（勁度，儲存應變能）、阻尼器 c（黏滯阻尼，消散能量）組成。機器基礎、共振柱土樣、土層、隔震建築都可簡化成 SDOF。</p></td><td class="go"><a href="units/u04.html#s4-1">4.1 →</a></td></tr>
+    <tr><td class="no">2</td><td class="term"><b>Natural frequency</b><span class="zh">自然頻率</span></td><td class="desc"><p class="en"><span class="pt">The frequency at which a system vibrates freely after being disturbed, without damping or external force.</span><span class="pt">\(\omega_n = \sqrt{k/m}\) (rad/s), \(f_n = \omega_n/2\pi\) (Hz), \(T_n = 1/f_n = 2\pi/\omega_n\) (s).</span><span class="pt">It depends only on m and k, not on the initial conditions or the amplitude.</span></p><p class="zh-d">系統受擾動後、無阻尼也無外力時自由振動的頻率。只由 m、k 決定，與初始條件、振幅無關；剛度越大、質量越小，頻率越高。</p></td><td class="go"><a href="units/u04.html#s4-2">4.2 →</a></td></tr>
+    <tr><td class="no">3</td><td class="term"><b>Damped natural frequency</b><span class="zh">阻尼自然頻率</span></td><td class="desc"><p class="en"><span class="pt">The frequency of damped free vibration: \(\omega_D = \omega_n\sqrt{1-\xi^2}\), \(T_D = 2\pi/\omega_D\).</span><span class="pt">It is slightly lower than ω<sub>n</sub>; for ξ ≤ 0.2 the difference is at most 2 %, so ω<sub>D</sub> ≈ ω<sub>n</sub> in practice.</span></p><p class="zh-d">有阻尼自由振動的頻率，略低於 ω<sub>n</sub>；ξ ≤ 0.2 時只差 2 % 以內，工程上可取 ω<sub>D</sub> ≈ ω<sub>n</sub>。</p></td><td class="go"><a href="units/u04.html#s4-3">4.3 →</a></td></tr>
+    <tr data-star><td class="no">4</td><td class="term"><b>Critical damping coefficient<span class="star">★</span></b><span class="zh">臨界阻尼係數</span></td><td class="desc"><p class="en"><span class="pt">The smallest damping coefficient for which a displaced system returns to equilibrium without oscillating.</span><span class="pt">\(c_c = 2m\omega_n = 2\sqrt{km}\), obtained when the characteristic equation \(m\lambda^2 + c\lambda + k = 0\) has a double root.</span><span class="pt">A critically damped system returns to equilibrium fastest without overshoot.</span><span class="pt">It is the reference value for the damping ratio, ξ = c/c<sub>c</sub>.</span></p><p class="zh-d">讓位移後的系統不振盪就回到平衡的最小阻尼係數，\(c_c = 2m\omega_n = 2\sqrt{km}\)（特徵方程式出現重根）。臨界阻尼是「不振盪」中回得最快的；它是阻尼比的基準，ξ = c/c<sub>c</sub>。</p></td><td class="go"><a href="units/u04.html#s4-3">4.3 →</a></td></tr>
+    <tr><td class="no">5</td><td class="term"><b>Damping ratio ξ</b><span class="zh">阻尼比</span></td><td class="desc"><p class="en"><span class="pt">The ratio of the actual damping coefficient to the critical damping coefficient: \(\xi = c/c_c = c/(2m\omega_n)\).</span><span class="pt">Energy definition: \(\xi = W_D/(4\pi W_S)\), where W<sub>D</sub> is the energy dissipated per cycle and W<sub>S</sub> the maximum strain energy.</span><span class="pt">Typical values: structures 2–5 %; soils 1–3 % at small strain and 15–25 % at large strain; footings on soil 20–40 % (radiation damping).</span></p><p class="zh-d">實際阻尼係數 / 臨界阻尼係數，無因次。能量定義 ξ = W<sub>D</sub>/(4πW<sub>S</sub>)，可推廣到土壤的遲滯迴圈。結構約 2–5 %，土壤小應變 1–3 %、大應變 15–25 %，地表基礎因輻射阻尼可達 20–40 %。</p></td><td class="go"><a href="units/u04.html#s4-3">4.3 →</a><a href="units/u04.html#s4-8">4.8 →</a></td></tr>
+    <tr><td class="no">6</td><td class="term"><b>Underdamped, critically damped and overdamped</b><span class="zh">次阻尼、臨界阻尼、超阻尼</span></td><td class="desc"><p class="en"><span class="pt">ξ &lt; 1 (underdamped): oscillates with an exponentially decaying amplitude, \(u = e^{-\xi\omega_nt}(A\cos\omega_Dt + B\sin\omega_Dt)\).</span><span class="pt">ξ = 1 (critically damped): no oscillation; the fastest return to equilibrium.</span><span class="pt">ξ &gt; 1 (overdamped): no oscillation; creeps back more slowly than the critical case.</span><span class="pt">Soils and structures are always underdamped.</span></p><p class="zh-d">ξ &lt; 1 邊振動邊衰減；ξ = 1 不振動、最快回到平衡；ξ &gt; 1 不振動、慢慢爬回（比臨界還慢）。土壤與結構都屬次阻尼。</p></td><td class="go"><a href="units/u04.html#s4-3">4.3 →</a></td></tr>
+    <tr><td class="no">7</td><td class="term"><b>Logarithmic decrement δ</b><span class="zh">對數遞減</span></td><td class="desc"><p class="en"><span class="pt">The natural logarithm of the ratio of two successive peak amplitudes in damped free vibration.</span><span class="pt">\(\delta = \ln(u_1/u_2) = 2\pi\xi/\sqrt{1-\xi^2} \approx 2\pi\xi\); over n cycles, \(\delta = \frac1n\ln(u_1/u_{n+1})\).</span><span class="pt">It is used to measure damping from a free-decay record, e.g. in the resonant column test.</span></p><p class="zh-d">有阻尼自由振動中相鄰兩峰值比的自然對數。相鄰兩峰差很小，實務上隔 n 圈量較準。共振柱關掉驅動後的自由衰減就是用它求阻尼比。</p></td><td class="go"><a href="units/u04.html#s4-9">4.9 →</a></td></tr>
+    <tr><td class="no">8</td><td class="term"><b>Transient and steady-state response</b><span class="zh">暫態與穩態反應</span></td><td class="desc"><p class="en"><span class="pt">Under harmonic loading, total response = transient response + steady-state response.</span><span class="pt">Transient: the homogeneous solution; it vibrates at ω<sub>D</sub>, decays as \(e^{-\xi\omega_nt}\) and depends on the initial conditions.</span><span class="pt">Steady state: the particular solution; it vibrates at the forcing frequency ω̄ with constant amplitude ρ<sub>s</sub>D and phase lag φ, independent of the initial conditions.</span></p><p class="zh-d">受簡諧外力時，總反應 = 暫態（齊次解，以 ω<sub>D</sub> 振動、逐漸衰減，由初始條件決定）＋穩態（特解，以外力頻率振動，振幅 ρ<sub>s</sub>D、相位落後 φ，與初始條件無關）。</p></td><td class="go"><a href="units/u04.html#s4-4">4.4 →</a></td></tr>
+    <tr data-star><td class="no">9</td><td class="term"><b>Resonance<span class="star">★</span></b><span class="zh">共振</span></td><td class="desc"><p class="en"><span class="pt">The condition in which the forcing frequency equals the natural frequency (β = ω̄/ω<sub>n</sub> = 1).</span><span class="pt">The spring force and the inertia force cancel each other, so the load is resisted by the damping force alone.</span><span class="pt">The steady-state amplitude becomes ρ<sub>s</sub>/(2ξ) (D = 1/2ξ), and the displacement lags the load by 90°.</span><span class="pt">Without damping the amplitude grows without limit (by πρ<sub>s</sub> per cycle); with damping it builds up over about 1/(2πξ) cycles to reach 63 % of the steady value.</span></p><p class="zh-d">外力頻率等於自然頻率（β = 1）。彈簧力與慣性力抵消，外力只由阻尼力平衡，振幅放大為 1/(2ξ) 倍、位移落後外力 90°。無阻尼時振幅隨時間線性成長（每圈增加 πρ<sub>s</sub>）；有阻尼時要約 1/(2πξ) 圈才累積到穩態的 63 %。</p></td><td class="go"><a href="units/u04.html#s4-5">4.5 →</a><a href="units/u04.html#s4-7">4.7 →</a></td></tr>
+    <tr data-star><td class="no">10</td><td class="term"><b>Dynamic magnification factor D<span class="star">★</span></b><span class="zh">動態放大因子</span></td><td class="desc"><p class="en"><span class="pt">The ratio of the steady-state dynamic amplitude to the static displacement ρ<sub>s</sub> = p<sub>0</sub>/k.</span><span class="pt">\(D = 1/\sqrt{(1-\beta^2)^2 + (2\xi\beta)^2}\); it depends only on β and ξ.</span><span class="pt">β ≪ 1: D ≈ 1 (stiffness-controlled); β = 1: D = 1/(2ξ) (damping-controlled); β ≫ 1: D ≈ 1/β² → 0 (inertia-controlled).</span><span class="pt">Peak \(D_{max} = 1/(2\xi\sqrt{1-\xi^2})\) at \(\beta = \sqrt{1-2\xi^2}\); no peak when ξ ≥ 0.707.</span></p><p class="zh-d">穩態動態振幅 / 靜態變位，只由 β、ξ 決定。β ≪ 1 勁度控制（D ≈ 1）、β = 1 阻尼控制（D = 1/2ξ）、β ≫ 1 慣性控制（D → 0）。峰值略低於 β = 1；ξ ≥ 0.707 沒有峰。</p></td><td class="go"><a href="units/u04.html#s4-4">4.4 →</a><a href="units/u04.html#s4-5">4.5 →</a></td></tr>
+    <tr><td class="no">11</td><td class="term"><b>Phase angle φ</b><span class="zh">相位角（相位落後）</span></td><td class="desc"><p class="en"><span class="pt">The angle by which the steady-state displacement lags behind the applied force.</span><span class="pt">\(\tan\varphi = 2\xi\beta/(1-\beta^2)\): φ ≈ 0° for β ≪ 1, φ = 90° at β = 1 for any ξ, φ → 180° for β ≫ 1.</span><span class="pt">The 90° lag is used to identify resonance (e.g. resonant column test) without knowing the damping.</span></p><p class="zh-d">穩態位移落後外力的角度。低頻同相、共振時 90°（與阻尼無關）、高頻接近反相 180°。共振柱用「落後 90°」來找共振頻率。</p></td><td class="go"><a href="units/u04.html#s4-4">4.4 →</a><a href="units/u04.html#s4-5">4.5 →</a></td></tr>
+    <tr><td class="no">12</td><td class="term"><b>Half-power bandwidth method<span class="tag">HW3</span></b><span class="zh">半功率頻寬法</span></td><td class="desc"><p class="en"><span class="pt">A method to estimate damping from a frequency-response curve.</span><span class="pt">Find f<sub>1</sub> and f<sub>2</sub> where the amplitude equals peak/√2 (the energy is half of the peak value): \(\xi \approx (f_2-f_1)/(2f_n) \approx (f_2-f_1)/(f_2+f_1)\).</span><span class="pt">It needs only the shape of the curve, not the force magnitude or the static displacement.</span><span class="pt">It overestimates ξ when the response is nonlinear (large strain).</span></p><p class="zh-d">在頻率響應曲線上找振幅等於峰值 1/√2 的兩個頻率（能量為峰值的一半）。只需曲線形狀、不需外力大小；大應變時曲線傾斜會高估阻尼。</p></td><td class="go"><a href="units/u04.html#s4-9">4.9 →</a></td></tr>
+    <tr><td class="no">13</td><td class="term"><b>Resonance amplification method<span class="tag">HW3</span></b><span class="zh">共振放大法</span></td><td class="desc"><p class="en"><span class="pt">At resonance D ≈ 1/(2ξ), so \(\xi \approx \rho_s/(2U_{max})\), with ρ<sub>s</sub> = p<sub>0</sub>/k.</span><span class="pt">It requires the static displacement, which is often too small to measure.</span><span class="pt">If coarse frequency steps miss the true peak, U<sub>max</sub> is too small and ξ is overestimated.</span></p><p class="zh-d">共振振幅 / 靜態變位 ≈ 1/(2ξ)。需要靜態變位（常常太小量不到）；掃頻太粗錯過峰頂，會高估阻尼。</p></td><td class="go"><a href="units/u04.html#s4-9">4.9 →</a></td></tr>
+    <tr><td class="no">14</td><td class="term"><b>Transmissibility and vibration isolation<span class="tag">HW3</span></b><span class="zh">傳遞率與隔振</span></td><td class="desc"><p class="en"><span class="pt">TR<sub>1</sub> = force transmitted to the support / applied force (isolating a vibrating machine).</span><span class="pt">TR<sub>2</sub> = amplitude of the mass / amplitude of the base motion (isolating a sensitive instrument).</span><span class="pt">\(TR_1 = TR_2 = D\sqrt{1+(2\xi\beta)^2}\).</span><span class="pt">Isolation (TR &lt; 1) requires β &gt; √2, i.e. a soft support with f<sub>n</sub> &lt; f̄/√2; in this range more damping increases TR.</span></p><p class="zh-d">TR<sub>1</sub>：機器的力傳到地面的比例；TR<sub>2</sub>：地面振動傳到質量的比例，兩者是同一個函數。β &gt; √2 才有隔振效果，所以支承要軟；在隔振區阻尼越大傳越多。</p></td><td class="go"><a href="units/u04.html#s4-10">4.10 →</a></td></tr>
+    <tr><td class="no">15</td><td class="term"><b>Energy dissipated per cycle<span class="tag">HW3</span></b><span class="zh">每圈消散能量</span></td><td class="desc"><p class="en"><span class="pt">\(W_D = \oint c\dot u\,du = \pi c\bar\omega\rho_d^2\): the area of the force–displacement loop.</span><span class="pt">Maximum strain energy \(W_S = \tfrac12k\rho_d^2\); for a viscous damper \(W_D/(4\pi W_S) = \xi\beta\), which equals ξ only at resonance.</span><span class="pt">Soil damping is hysteretic (nearly frequency-independent), so for soils the damping ratio is defined directly as \(\xi = W_D/(4\pi W_S)\) from one hysteresis loop.</span></p><p class="zh-d">阻尼力一圈做的功＝力–位移迴圈面積。黏滯阻尼的比值 = ξβ，只有共振時等於 ξ；土壤每圈消散的能量幾乎與頻率無關（摩擦遲滯），所以直接用一個迴圈定義 ξ = W<sub>D</sub>/(4πW<sub>S</sub>)。</p></td><td class="go"><a href="units/u04.html#s4-8">4.8 →</a></td></tr>
+    <tr><td class="no">16</td><td class="term"><b>Lysmer's analog</b><span class="zh">Lysmer 類比</span></td><td class="desc"><p class="en"><span class="pt">Represents a rigid circular footing (radius r<sub>0</sub>) vibrating vertically on an elastic half-space (G, ν, ρ) by a frequency-independent spring and dashpot.</span><span class="pt">\(k_z = 4Gr_0/(1-\nu)\), \(c_z = 3.4r_0^2\sqrt{G\rho}/(1-\nu)\); then \(m\ddot z + c_z\dot z + k_zz = Q(t)\) and all SDOF formulas apply.</span><span class="pt">A rectangular footing uses the equivalent radius \(r_0 = \sqrt{BL/\pi}\).</span></p><p class="zh-d">把半無限彈性土體上剛性圓形基礎的垂直振動，換成與頻率無關的彈簧與阻尼器，之後全部套 SDOF 公式。矩形基礎用等效半徑。</p></td><td class="go"><a href="units/u04.html#s4-11">4.11 →</a></td></tr>
+    <tr><td class="no">17</td><td class="term"><b>Geometrical (radiation) damping and mass ratio B<sub>z</sub></b><span class="zh">幾何（輻射）阻尼與修正質量比</span></td><td class="desc"><p class="en"><span class="pt">Energy carried away from a vibrating foundation by waves spreading into the half-space; it never returns, so it acts like a dashpot without any physical damper.</span><span class="pt">For vertical vibration about 67 % of the energy goes into Rayleigh waves, 26 % into S waves and 7 % into P waves.</span><span class="pt">\(B_z = (1-\nu)m/(4\rho r_0^3)\), \(\xi_z = 0.425/\sqrt{B_z}\): a light, wide footing (small B<sub>z</sub>) has large damping.</span><span class="pt">It is much reduced if rigid bedrock is shallow, because waves reflect back.</span></p><p class="zh-d">基礎振動時波往土中傳開、一去不回，帶走的能量等於阻尼。垂直振動約 2/3 能量由 Rayleigh 波帶走。B<sub>z</sub> 小（輕而寬）→ 阻尼大；淺處有岩盤時波會反射回來，輻射阻尼大減。</p></td><td class="go"><a href="units/u04.html#bz">4.11 →</a></td></tr>
+    <tr><td class="no">18</td><td class="term"><b>Rotating-mass excitation</b><span class="zh">旋轉質量激振</span></td><td class="desc"><p class="en"><span class="pt">An unbalanced mass m<sub>e</sub> at eccentricity e produces \(Q_0 = m_ee\,\bar\omega^2\), which grows with the square of the speed.</span><span class="pt">Amplitude \(A = (m_ee/m)\,\beta^2D\); peak at \(\beta = 1/\sqrt{1-2\xi^2}\) (above f<sub>n</sub>); at high speed A → m<sub>e</sub>e/m.</span><span class="pt">For a constant-amplitude force, the peak is at \(\beta = \sqrt{1-2\xi^2}\) (below f<sub>n</sub>).</span></p><p class="zh-d">偏心質量的不平衡力隨轉速平方增加，所以峰值在 f<sub>n</sub> 之上；定力激振的峰在 f<sub>n</sub> 之下。機器基礎 ξ 常達 0.3–0.4，兩者差 15–20 %，不能直接取峰在 β = 1。</p></td><td class="go"><a href="units/u04.html#s4-11">4.11 →</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="fx" data-num="2" data-short="公式" data-title="解題公式">
+  <div class="sec-head"><span class="sec-num">2</span><h2>解題公式（依解題順序）</h2></div>
+  <p>A → G 大致就是一題由淺到深的順序：先求系統性質，再求自由振動或受迫振動，最後是量測、隔振與機器基礎。</p>
+
+  <h3 class="grp" id="fxA">A　系統性質（由 W、k、c 出發）</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr data-star><td class="no">A1</td><td class="term"><b>Mass and natural frequency<span class="star">★</span></b><span class="zh">質量與自然頻率</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &m = \frac{W}{g},\qquad \omega_n = \sqrt{\frac{k}{m}} \ &f_n = \frac{\omega_n}{2\pi},\qquad T_n = \frac{1}{f_n} \end{aligned} \]</div><p class="en"><span class="pt">W in kN and g = 9.81 m/s² give m in t; then k in kN/m gives ω<sub>n</sub> in rad/s.</span></p><p class="zh-d">W 用 kN、g = 9.81，m 的單位是 t；配 kN/m 的 k，ω<sub>n</sub> 直接是 rad/s。</p></td><td class="go"><a href="units/u04.html#s4-2">4.2 →</a><a class="pr" href="calc.html#e2">練習 期中 Q2</a><a class="pr" href="calc.html#m4-4">練習 4.4</a></td></tr>
+    <tr data-star><td class="no">A2</td><td class="term"><b>Critical damping and damping ratio<span class="star">★</span></b><span class="zh">臨界阻尼與阻尼比</span></td><td class="desc"><div class="fx">\[ c_c = 2m\omega_n = 2\sqrt{km},\qquad \xi = \frac{c}{c_c} \]</div><p class="en"><span class="pt">State the type: ξ &lt; 1 underdamped, ξ = 1 critically damped, ξ &gt; 1 overdamped.</span><span class="pt">Inverse: c = 2ξmω<sub>n</sub>, k = mω<sub>n</sub>².</span></p><p class="zh-d">要寫出判斷：ξ &lt; 1 次阻尼。反求：c = 2ξmω<sub>n</sub>、k = mω<sub>n</sub>²。</p></td><td class="go"><a href="units/u04.html#s4-3">4.3 →</a><a class="pr" href="calc.html#m4-6">練習 4.6</a><a class="pr" href="calc.html#mN15">練習 N.15</a></td></tr>
+    <tr data-star><td class="no">A3</td><td class="term"><b>Damped natural frequency<span class="star">★</span></b><span class="zh">阻尼自然頻率</span></td><td class="desc"><div class="fx">\[ \omega_D = \omega_n\sqrt{1-\xi^2},\qquad T_D = \frac{2\pi}{\omega_D} \]</div></td><td class="go"><a href="units/u04.html#s4-3">4.3 →</a><a class="pr" href="calc.html#m4-3">練習 4.3</a></td></tr>
+    <tr data-star><td class="no">A4</td><td class="term"><b>Logarithmic decrement<span class="star">★</span></b><span class="zh">對數遞減</span></td><td class="desc"><div class="fx">\[ \delta = \frac{2\pi\xi}{\sqrt{1-\xi^2}},\qquad \frac{u_n}{u_{n+1}} = e^{\delta} \]</div><p class="en"><span class="pt">Use the exact form when ξ is given; δ ≈ 2πξ only for small ξ.</span></p><p class="zh-d">由 ξ 求 δ 用精確式；e<sup>δ</sup> 就是相鄰兩峰的振幅比。</p></td><td class="go"><a href="units/u04.html#s4-9">4.9 →</a><a class="pr" href="calc.html#e2">練習 期中 Q2</a><a class="pr" href="calc.html#m4-6">練習 4.6</a></td></tr>
+  </table></div>
+  <div class="callout example"><div class="ct">2025 期中 Q2 的數字（對答案用）</div>
+    <p>W = 1000 kN、k = 200,000 kN/m、c = 2340 kN·s/m → m = 101.94 t、ω<sub>n</sub> = 44.29 rad/s、c<sub>c</sub> = 9030 kN·s/m、ξ = 0.259、ω<sub>d</sub> = 42.78 rad/s、δ = 1.686。完整作答見<a href="calc.html#e2">計算題整理 Q2–Q3</a>。</p>
+  </div>
+
+  <h3 class="grp" id="fxB">B　自由振動（給初始條件）</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr data-star><td class="no">B1</td><td class="term"><b>Undamped free vibration<span class="star">★</span></b><span class="zh">無阻尼自由振動</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &u(t) = u_0\cos\omega_nt + \frac{\dot u_0}{\omega_n}\sin\omega_nt \\ &\rho = \sqrt{u_0^2 + \left(\frac{\dot u_0}{\omega_n}\right)^2} \end{aligned} \]</div><p class="en"><span class="pt">ρ: displacement amplitude. Maximum velocity ω<sub>n</sub>ρ, maximum acceleration ω<sub>n</sub>²ρ.</span></p><p class="zh-d">ρ 是位移振幅；最大速度 ω<sub>n</sub>ρ、最大加速度 ω<sub>n</sub>²ρ。</p></td><td class="go"><a href="units/u04.html#s4-2">4.2 →</a><a class="pr" href="calc.html#e3">練習 期中 Q3</a></td></tr>
+    <tr data-star><td class="no">B2</td><td class="term"><b>Phase angle of free vibration<span class="star">★</span></b><span class="zh">自由振動的相位角</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &u = \rho\sin(\omega_nt + \theta),\quad \tan\theta = \frac{u_0\,\omega_n}{\dot u_0} \\ &u = \rho\cos(\omega_nt - \theta'),\quad \tan\theta' = \frac{\dot u_0}{u_0\,\omega_n},\qquad \theta + \theta' = 90^\circ \end{aligned} \]</div><p class="en"><span class="pt">Always write which form you use: the two angles add up to 90°.</span><span class="pt">Check the quadrant from the signs of u<sub>0</sub> and u̇<sub>0</sub>.</span></p><p class="zh-d">sin 與 cos 形式的相位角互餘，作答一定要寫出用哪一種；象限由 u<sub>0</sub>、u̇<sub>0</sub> 的正負判斷。期中 Q3：sin 形式 θ = 89.74°（cos 形式 0.26°）、ρ = 0.0500 m。</p></td><td class="go"><a href="units/u04.html#s4-2">4.2 →</a><a class="pr" href="calc.html#e3">練習 期中 Q3</a><a class="pr" href="calc.html#m4-5">練習 4.5</a></td></tr>
+    <tr><td class="no">B3</td><td class="term"><b>Damped free vibration</b><span class="zh">有阻尼自由振動</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &u(t) = e^{-\xi\omega_nt}\left(A\cos\omega_Dt + B\sin\omega_Dt\right) \\ &A = u_0,\qquad B = \frac{\dot u_0 + \xi\omega_nu_0}{\omega_D} \end{aligned} \]</div><p class="en"><span class="pt">Envelope: \(\sqrt{A^2+B^2}\,e^{-\xi\omega_nt}\).</span><span class="pt">Time to decay to a fraction x of the initial envelope: t = ln(1/x)/(ξω<sub>n</sub>); number of cycles = ln(1/x)/δ.</span></p><p class="zh-d">包絡線按 e<sup>−ξω<sub>n</sub>t</sup> 衰減；衰減到 10 % 需 t = ln10/(ξω<sub>n</sub>)，圈數 = ln10/δ。</p></td><td class="go"><a href="units/u04.html#s4-3">4.3 →</a><a class="pr" href="calc.html#e2d">練習 期中 Part C</a><a class="pr" href="calc.html#m4-7">練習 4.7</a></td></tr>
+    <tr><td class="no">B4</td><td class="term"><b>Release from a static force</b><span class="zh">靜力釋放</span></td><td class="desc"><div class="fx">\[ k = \frac{F}{\Delta_{st}},\qquad u_0 = \Delta_{st},\ \dot u_0 = 0 \;\Rightarrow\; u(t) = \Delta_{st}\cos\omega_nt \]</div></td><td class="go"><a href="units/u04.html#s4-2">4.2 →</a><a class="pr" href="calc.html#m4-5">練習 4.5</a></td></tr>
+  </table></div>
+
+  <h3 class="grp" id="fxC">C　簡諧外力的穩態反應</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">C1</td><td class="term"><b>Frequency ratio and static displacement</b><span class="zh">頻率比與靜態變位</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &\beta = \frac{\bar\omega}{\omega_n} = \frac{\bar f}{f_n},\qquad \rho_s = \frac{p_0}{k} \ &\bar\omega = 2\pi\bar f = \frac{2\pi\,(\text{rpm})}{60} \end{aligned} \]</div></td><td class="go"><a href="units/u04.html#s4-4">4.4 →</a><a class="pr" href="calc.html#m4-10">練習 4.10</a></td></tr>
+    <tr data-star><td class="no">C2</td><td class="term"><b>Dynamic magnification factor<span class="star">★</span></b><span class="zh">動態放大因子</span></td><td class="desc"><div class="fx">\[ D = \frac{1}{\sqrt{(1-\beta^2)^2 + (2\xi\beta)^2}},\qquad \rho_d = \rho_sD \]</div><p class="en"><span class="pt">Undamped: D = 1/|1 − β²|; for β &gt; 1 the displacement is out of phase with the load.</span></p><p class="zh-d">無阻尼時 D = 1/|1 − β²|，β &gt; 1 時位移與外力反相。</p></td><td class="go"><a href="units/u04.html#s4-5">4.5 →</a><a class="pr" href="calc.html#m4-11">練習 4.11</a><a class="pr" href="calc.html#m4-13">練習 4.13</a><a class="pr" href="calc.html#mN15">練習 N.15</a></td></tr>
+    <tr><td class="no">C3</td><td class="term"><b>Steady-state response and phase lag</b><span class="zh">穩態反應與相位落後</span></td><td class="desc"><div class="fx">\[ u_p = \rho_sD\sin(\bar\omega t - \varphi),\qquad \tan\varphi = \frac{2\xi\beta}{1-\beta^2} \]</div><p class="en"><span class="pt">For β &gt; 1 the denominator is negative: add 180° to the calculator result, or use atan2(2ξβ, 1 − β²).</span></p><p class="zh-d">β &gt; 1 時 φ 在 90°–180°，計算機的 tan⁻¹ 要加 180°。</p></td><td class="go"><a href="units/u04.html#s4-4">4.4 →</a><a class="pr" href="calc.html#m4-10">練習 4.10</a></td></tr>
+    <tr><td class="no">C4</td><td class="term"><b>Resonance peak</b><span class="zh">共振峰</span></td><td class="desc"><div class="fx">\[ \beta_{peak} = \sqrt{1-2\xi^2},\qquad D_{max} = \frac{1}{2\xi\sqrt{1-\xi^2}} \;\approx\; \frac{1}{2\xi} \]</div><p class="en"><span class="pt">Constant-amplitude force; the approximation is fine for small ξ.</span></p><p class="zh-d">定振幅外力；小阻尼時取峰在 β = 1、高度 1/(2ξ)。</p></td><td class="go"><a href="units/u04.html#s4-5">4.5 →</a><a class="pr" href="calc.html#m4-10">練習 4.10</a></td></tr>
+    <tr><td class="no">C5</td><td class="term"><b>Total response</b><span class="zh">總反應</span></td><td class="desc"><div class="fx">\[ u = \underbrace{e^{-\xi\omega_nt}(A\cos\omega_Dt + B\sin\omega_Dt)}_{\text{transient}} + \underbrace{\rho_sD\sin(\bar\omega t-\varphi)}_{\text{steady state}} \]</div><p class="en"><span class="pt">A and B come from applying u(0), u̇(0) to the total response, not to the transient part alone.</span></p><p class="zh-d">暫態常數要用「總反應」的初始條件求。</p></td><td class="go"><a href="units/u04.html#s4-4">4.4 →</a><a class="pr" href="calc.html#m4-12">練習 4.12</a></td></tr>
+    <tr><td class="no">C6</td><td class="term"><b>Resonance build-up</b><span class="zh">共振成長</span></td><td class="desc"><div class="fx">\[ \text{amplitude} = \frac{\rho_s}{2\xi}\left(1 - e^{-\xi\omega_nt}\right),\qquad n_{63\%} = \frac{1}{2\pi\xi} \]</div></td><td class="go"><a href="units/u04.html#s4-7">4.7 →</a></td></tr>
+  </table></div>
+
+  <h3 class="grp" id="fxD">D　由試驗資料求阻尼比</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">D1</td><td class="term"><b>From a free-decay record</b><span class="zh">自由衰減紀錄</span></td><td class="desc"><div class="fx">\[ \delta = \frac1n\ln\frac{u_1}{u_{n+1}},\qquad \xi = \frac{\delta}{\sqrt{4\pi^2+\delta^2}} \approx \frac{\delta}{2\pi} \]</div><p class="en"><span class="pt">u<sub>1</sub> to u<sub>n+1</sub> spans n cycles (the 1st and 6th peaks are 5 cycles apart).</span></p><p class="zh-d">第 1 峰到第 6 峰相隔 5 圈，n = 5。</p></td><td class="go"><a href="units/u04.html#s4-9">4.9 →</a><a class="pr" href="calc.html#m4-8">練習 4.8</a><a class="pr" href="calc.html#m4-9">練習 4.9</a></td></tr>
+    <tr><td class="no">D2</td><td class="term"><b>Half-power bandwidth<span class="tag">HW3</span></b><span class="zh">半功率頻寬法</span></td><td class="desc"><div class="fx">\[ U(f_1) = U(f_2) = \frac{U_{max}}{\sqrt2},\qquad \xi \approx \frac{f_2-f_1}{f_2+f_1} \approx \frac{f_2-f_1}{2f_n} \]</div><p class="en"><span class="pt">Interpolate linearly between measured points to find f<sub>1</sub> and f<sub>2</sub>.</span></p><p class="zh-d">f<sub>1</sub>、f<sub>2</sub> 在量測點之間線性內插。</p></td><td class="go"><a href="units/u04.html#s4-9">4.9 →</a><a class="pr" href="calc.html#h3-4">練習 HW3 Q4</a><a class="pr" href="calc.html#m4-14">練習 4.14</a></td></tr>
+    <tr><td class="no">D3</td><td class="term"><b>Resonance amplification<span class="tag">HW3</span></b><span class="zh">共振放大法</span></td><td class="desc"><div class="fx">\[ \frac{U_{max}}{\rho_s} = \frac{1}{2\xi\sqrt{1-\xi^2}} \;\Rightarrow\; \xi \approx \frac{\rho_s}{2U_{max}},\qquad f_n = \frac{f_{peak}}{\sqrt{1-2\xi^2}} \]</div><p class="en"><span class="pt">Then k = m(2πf<sub>n</sub>)², c = 2ξmω<sub>n</sub>; if k itself comes from f<sub>n</sub>, iterate f<sub>n</sub> and ξ.</span></p><p class="zh-d">接著求 k、c；k 由 f<sub>n</sub> 求時兩式疊代。</p></td><td class="go"><a href="units/u04.html#s4-9">4.9 →</a><a class="pr" href="calc.html#h3-4">練習 HW3 Q4</a><a class="pr" href="calc.html#m4-15">練習 4.15</a></td></tr>
+  </table></div>
+
+  <h3 class="grp" id="fxE">E　傳遞率與隔振</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">E1</td><td class="term"><b>Transmissibility<span class="tag">HW3</span></b><span class="zh">傳遞率</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &TR_1 = TR_2 = D\sqrt{1+(2\xi\beta)^2} \ &F_T = TR_1\,p_0,\qquad U_{total} = TR_2\,u_{g0} \end{aligned} \]</div><p class="en"><span class="pt">Relative displacement (spring deformation) under base motion: \(u_{max} = \beta^2D\,u_{g0}\).</span><span class="pt">Total force on the subgrade = static weight W ± dynamic transmitted force.</span></p><p class="zh-d">地動時彈簧伸長量 = β²D·u<sub>g0</sub>；地基受力 = 自重 ± 動態傳遞力。</p></td><td class="go"><a href="units/u04.html#s4-10">4.10 →</a><a class="pr" href="calc.html#m4-11">練習 4.11</a><a class="pr" href="calc.html#m4-13">練習 4.13</a><a class="pr" href="calc.html#m4-16">練習 4.16</a></td></tr>
+    <tr><td class="no">E2</td><td class="term"><b>Isolation condition</b><span class="zh">隔振條件</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &TR &lt; 1 \iff \beta &gt; \sqrt2 \iff f_n &lt; \frac{\bar f}{\sqrt2} \ &TR \approx \frac{1}{\beta^2-1}\ \ (\text{small }\xi) \end{aligned} \]</div><p class="en"><span class="pt">All TR curves pass through TR = 1 at β = √2, regardless of ξ.</span></p><p class="zh-d">所有曲線都在 β = √2 通過 TR = 1，與阻尼無關。</p></td><td class="go"><a href="units/u04.html#s4-10">4.10 →</a><a class="pr" href="calc.html#h3-4">練習 HW3 Q4</a></td></tr>
+  </table></div>
+
+  <h3 class="grp" id="fxF">F　能量</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">F1</td><td class="term"><b>Energy per cycle<span class="tag">HW3</span></b><span class="zh">每圈能量</span></td><td class="desc"><div class="fx">\[ W_D = \pi c\bar\omega\rho_d^2,\qquad W_S = \tfrac12k\rho_d^2,\qquad \frac{W_D}{4\pi W_S} = \xi\beta \]</div><p class="en"><span class="pt">ρ<sub>d</sub> = ρ<sub>s</sub>D at the frequency considered; the ratio equals ξ only at β = 1.</span></p><p class="zh-d">ρ<sub>d</sub> 要用該頻率的穩態振幅；比值只有在共振時等於 ξ。</p></td><td class="go"><a href="units/u04.html#s4-8">4.8 →</a><a class="pr" href="calc.html#h3-4">練習 HW3 Q4</a><a class="pr" href="calc.html#m4-15">練習 4.15</a></td></tr>
+  </table></div>
+
+  <h3 class="grp" id="fxG">G　機器基礎：Lysmer 類比與旋轉質量</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">G1</td><td class="term"><b>Lysmer's analog</b><span class="zh">Lysmer 類比</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &k_z = \frac{4Gr_0}{1-\nu},\qquad c_z = \frac{3.4r_0^2\sqrt{G\rho}}{1-\nu} \ &\rho = \frac{\gamma}{g} \end{aligned} \]</div><p class="en"><span class="pt">Rectangular footing: r<sub>0</sub> = √(BL/π).</span></p><p class="zh-d">土壤密度由單位重除以 g；矩形基礎用等效半徑。</p></td><td class="go"><a href="units/u04.html#s4-11">4.11 →</a><a class="pr" href="calc.html#mR-2">練習 R.2</a><a class="pr" href="calc.html#mN12">練習 N.12</a></td></tr>
+    <tr><td class="no">G2</td><td class="term"><b>Mass ratio and radiation damping</b><span class="zh">修正質量比與輻射阻尼</span></td><td class="desc"><div class="fx">\[ B_z = \frac{(1-\nu)\,m}{4\rho r_0^3},\qquad \xi_z = \frac{0.425}{\sqrt{B_z}} = \frac{c_z}{2\sqrt{k_zm}} \]</div></td><td class="go"><a href="units/u04.html#bz">4.11 →</a><a class="pr" href="calc.html#mR-3">練習 R.3</a></td></tr>
+    <tr><td class="no">G3</td><td class="term"><b>Rotating-mass excitation</b><span class="zh">旋轉質量激振</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &Q_0 = m_ee\,\bar\omega^2,\qquad A = \frac{m_ee}{m}\,\beta^2D \\ &A_{max} = \frac{m_ee/m}{2\xi\sqrt{1-\xi^2}}\ \ \text{at}\ \ \beta = \frac{1}{\sqrt{1-2\xi^2}} \end{aligned} \]</div><p class="en"><span class="pt">Constant force: A = (Q<sub>0</sub>/k)D, A<sub>max</sub> = (Q<sub>0</sub>/k)/(2ξ√(1−ξ²)) at β = √(1−2ξ²).</span></p><p class="zh-d">定力激振：A = (Q<sub>0</sub>/k)D，峰在 β = √(1−2ξ²)。</p></td><td class="go"><a href="units/u04.html#s4-11">4.11 →</a><a class="pr" href="calc.html#mR-1">練習 R.1</a><a class="pr" href="calc.html#mR-3">練習 R.3</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="types" data-num="3" data-short="題型與步驟" data-title="計算題題型與解題步驟">
+  <div class="sec-head"><span class="sec-num">3</span><h2>計算題題型與解題步驟</h2></div>
+  <p>先認出題型，再照步驟寫。每一步都寫「公式 = 代入 = 結果（單位）」，題目沒給 g 時寫明 g = 9.81 m/s²。</p>
+  <div class="tablewrap"><table class="data ty">
+    <tr><th>題型</th><th>典型已知</th><th>解題步驟</th><th class="go">練習</th></tr>
+    <tr id="t1"><td class="tn"><b>① 系統性質<span class="star">★</span></b><span class="zh">2025 期中 Q2（20 分）</span></td><td>W、k、c</td><td><ol><li>m = W/g</li><li>ω<sub>n</sub> = √(k/m)，需要時 f<sub>n</sub>、T<sub>n</sub></li><li>c<sub>c</sub> = 2mω<sub>n</sub> → ξ = c/c<sub>c</sub>，判斷次／臨界／超阻尼</li><li>ω<sub>D</sub> = ω<sub>n</sub>√(1−ξ²)</li><li>δ = 2πξ/√(1−ξ²)；相鄰振幅比 = e<sup>δ</sup></li></ol></td><td class="go"><a href="calc.html#e2">期中 Q2</a><a href="calc.html#m4-3">4.3</a><a href="calc.html#m4-4">4.4</a><a href="calc.html#m4-6">4.6</a><a href="calc.html#mN15">N.15</a></td></tr>
+    <tr id="t2"><td class="tn"><b>② 自由振動<span class="star">★</span></b><span class="zh">2025 期中 Q3（10 分）</span></td><td>u<sub>0</sub>、u̇<sub>0</sub>（或靜力 F 與靜位移後放開）</td><td><ol><li>ω<sub>n</sub>（題型 ①）</li><li>無阻尼：u(t) = u<sub>0</sub>cos ω<sub>n</sub>t + (u̇<sub>0</sub>/ω<sub>n</sub>) sin ω<sub>n</sub>t</li><li>振幅 ρ = √(u<sub>0</sub>² + (u̇<sub>0</sub>/ω<sub>n</sub>)²)</li><li>相位角：寫明 sin 或 cos 形式，再算 tan⁻¹</li><li>有阻尼：A = u<sub>0</sub>、B = (u̇<sub>0</sub> + ξω<sub>n</sub>u<sub>0</sub>)/ω<sub>D</sub>，包絡 e<sup>−ξω<sub>n</sub>t</sup>，衰減時間 ln(1/x)/(ξω<sub>n</sub>)</li></ol></td><td class="go"><a href="calc.html#e3">期中 Q3</a><a href="calc.html#m4-5">4.5</a><a href="calc.html#m4-7">4.7</a></td></tr>
+    <tr id="t3"><td class="tn"><b>③ 簡諧外力</b><span class="zh">穩態振幅、相位、傳到地面的力</span></td><td>系統參數＋p<sub>0</sub>、ω̄（或 rpm、Hz）</td><td><ol><li>ω<sub>n</sub>、ξ（題型 ①）</li><li>ω̄ 換成 rad/s → β = ω̄/ω<sub>n</sub></li><li>ρ<sub>s</sub> = p<sub>0</sub>/k → D → 振幅 ρ<sub>s</sub>D</li><li>φ = atan2(2ξβ, 1−β²)</li><li>傳遞力 F<sub>T</sub> = TR<sub>1</sub>·p<sub>0</sub>；地基最大／最小力 = W ± F<sub>T</sub></li><li>問最大振幅：β<sub>peak</sub> = √(1−2ξ²)、D<sub>max</sub></li></ol></td><td class="go"><a href="calc.html#m4-10">4.10</a><a href="calc.html#m4-11">4.11</a><a href="calc.html#m4-12">4.12</a><a href="calc.html#m4-13">4.13</a><a href="calc.html#mN15">N.15</a></td></tr>
+    <tr id="t4"><td class="tn"><b>④ 由試驗求阻尼<span class="tag">HW3</span></b><span class="zh">自由衰減或頻率響應曲線</span></td><td>峰值序列，或 U–f 曲線＋p<sub>0</sub>、m（或 k）</td><td><ol><li>衰減紀錄：δ = (1/n) ln(u<sub>1</sub>/u<sub>n+1</sub>) → ξ = δ/√(4π²+δ²)</li><li>響應曲線：讀 f<sub>peak</sub>、U<sub>max</sub>；U<sub>max</sub>/√2 處內插 f<sub>1</sub>、f<sub>2</sub> → 半功率 ξ</li><li>共振放大：ρ<sub>s</sub> = p<sub>0</sub>/k → ξ ≈ ρ<sub>s</sub>/(2U<sub>max</sub>)</li><li>f<sub>n</sub> = f<sub>peak</sub>/√(1−2ξ²) → k = mω<sub>n</sub>²、c = 2ξmω<sub>n</sub></li><li>能量驗證：W<sub>D</sub> = πcω̄ρ<sub>d</sub>²、W<sub>S</sub> = ½kρ<sub>d</sub>²，比值 = ξβ</li></ol></td><td class="go"><a href="calc.html#h3-4">HW3 Q4</a><a href="calc.html#m4-8">4.8</a><a href="calc.html#m4-9">4.9</a><a href="calc.html#m4-14">4.14</a><a href="calc.html#m4-15">4.15</a></td></tr>
+    <tr id="t5"><td class="tn"><b>⑤ 隔振<span class="tag">HW3</span></b><span class="zh">地板振動傳到儀器、機器力傳到地面</span></td><td>m、k、ξ＋地板振幅 u<sub>g0</sub> 與頻率（或機器轉速）</td><td><ol><li>f<sub>n</sub> → β = f̄/f<sub>n</sub></li><li>TR = D√(1+(2ξβ)²)</li><li>U<sub>total</sub> = TR·u<sub>g0</sub> 或 F<sub>T</sub> = TR·p<sub>0</sub>，判斷放大（TR &gt; 1）或減振</li><li>隔振條件 β &gt; √2 → f<sub>n</sub> &lt; f̄/√2，反求所需 k</li><li>討論：隔振區阻尼越大 TR 越大，但啟動、停機通過共振時需要阻尼</li></ol></td><td class="go"><a href="calc.html#h3-4">HW3 Q4</a><a href="calc.html#m4-15">4.15</a><a href="calc.html#m4-16">4.16</a></td></tr>
+    <tr id="t6"><td class="tn"><b>⑥ 土上的機器基礎</b><span class="zh">Lysmer 類比（國考）</span></td><td>r<sub>0</sub>（或 B×L）、W、G、ν、γ、Q<sub>0</sub> 或 m<sub>e</sub>e、運轉頻率</td><td><ol><li>m = W/g、ρ = γ/g、矩形換 r<sub>0</sub></li><li>k<sub>z</sub> = 4Gr<sub>0</sub>/(1−ν) → f<sub>n</sub></li><li>B<sub>z</sub> → ξ<sub>z</sub> = 0.425/√B<sub>z</sub>（或 c<sub>z</sub>/c<sub>c</sub>）</li><li>β → 定力 A = (Q<sub>0</sub>/k<sub>z</sub>)D；旋轉質量 A = (m<sub>e</sub>e/m)β²D</li><li>檢核避開共振（計算題整理採 β ≤ 0.5 或 ≥ 1.5），不行就改 f<sub>n</sub></li></ol></td><td class="go"><a href="calc.html#mR-1">R.1</a><a href="calc.html#mR-2">R.2</a><a href="calc.html#mR-3">R.3</a><a href="calc.html#mN12">N.12</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="concept" data-num="4" data-short="關鍵觀念" data-title="簡答題的關鍵觀念">
+  <div class="sec-head"><span class="sec-num">4</span><h2>簡答題的關鍵觀念</h2></div>
+  <p>名詞解釋之外，常被問「為什麼」。每題先寫結論，再寫一句理由。</p>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>問題</th><th>答題重點</th><th class="go">詳細推導</th></tr>
+    <tr><td class="no">1</td><td class="term"><b>What controls the response in each frequency range?</b><span class="zh">三個頻率區由誰控制？</span></td><td class="desc"><p class="en"><span class="pt">β ≪ 1: stiffness-controlled; the mass follows the load, D ≈ 1, φ ≈ 0° (quasi-static).</span><span class="pt">β ≈ 1: damping-controlled; D = 1/(2ξ), φ = 90°.</span><span class="pt">β ≫ 1: inertia-controlled; the mass cannot follow, D → 0, φ → 180°.</span></p><p class="zh-d">低頻靠彈簧、共振靠阻尼器、高頻靠質量慣性。</p></td><td class="go"><a href="units/u04.html#s4-4">4.4 →</a></td></tr>
+    <tr><td class="no">2</td><td class="term"><b>Why does only damping limit the resonant amplitude?</b><span class="zh">為什麼共振振幅只由阻尼決定？</span></td><td class="desc"><p class="en"><span class="pt">At β = 1 the inertia force (mω̄²u) and the spring force (ku) are equal and opposite.</span><span class="pt">The load is balanced by the damping force alone: p<sub>0</sub> = cω̄ρ<sub>d</sub>, so ρ<sub>d</sub> = ρ<sub>s</sub>/(2ξ).</span><span class="pt">To reduce resonant vibration, increase c, or move f<sub>n</sub> away from the operating frequency by changing m or k.</span></p><p class="zh-d">共振時慣性力與彈簧力抵消，只剩阻尼器扛外力。要降低共振振幅就加阻尼，或改 m、k 讓 f<sub>n</sub> 避開運轉頻率。</p></td><td class="go"><a href="units/u04.html#s4-6">4.6 →</a></td></tr>
+    <tr><td class="no">3</td><td class="term"><b>Is the peak exactly at β = 1?</b><span class="zh">峰值在 β = 1 嗎？</span></td><td class="desc"><p class="en"><span class="pt">No. For a constant force the peak is at √(1−2ξ²), slightly below 1; for rotating-mass excitation it is at 1/√(1−2ξ²), slightly above 1.</span><span class="pt">The 90° phase crossing is always at β = 1.</span><span class="pt">The difference matters only for large damping (machine foundations, ξ ≈ 0.3–0.4).</span></p><p class="zh-d">定力在 β = 1 之下、旋轉質量在 β = 1 之上；90° 相位一定在 β = 1。阻尼小時差異可忽略。</p></td><td class="go"><a href="units/u04.html#s4-5">4.5 →</a><a href="units/u04.html#s4-11">4.11 →</a></td></tr>
+    <tr><td class="no">4</td><td class="term"><b>Why is overdamping slower than critical damping?</b><span class="zh">為什麼超阻尼反而比較慢？</span></td><td class="desc"><p class="en"><span class="pt">The slower root, λ = −ω<sub>n</sub>(ξ − √(ξ²−1)), controls the return; for ξ = 2 it decays as e<sup>−0.27ω<sub>n</sub>t</sup>, versus e<sup>−ω<sub>n</sub>t</sup> for ξ = 1.</span><span class="pt">The damper is so strong that the mass creeps back.</span></p><p class="zh-d">衰減較慢的那個根決定回復速度；阻尼太大，質量像被黏住慢慢爬回。</p></td><td class="go"><a href="units/u04.html#s4-3">4.3 →</a></td></tr>
+    <tr><td class="no">5</td><td class="term"><b>How do you isolate vibration?</b><span class="zh">隔振要怎麼設計？</span></td><td class="desc"><p class="en"><span class="pt">Make the support soft so that β = f̄/f<sub>n</sub> &gt; √2 (with light damping, β ≈ 3.3 gives TR ≈ 10 %).</span><span class="pt">In the isolation range, more damping increases TR, because the dashpot is a second path for force.</span><span class="pt">Some damping is still needed because the machine passes through resonance during start-up and shut-down.</span><span class="pt">Active isolation: isolate the source (TR<sub>1</sub>); passive isolation: isolate the receiver (TR<sub>2</sub>).</span></p><p class="zh-d">支承做軟，讓 β &gt; √2；隔振區阻尼越大傳越多，但開關機會通過共振，仍要適量阻尼。主動隔振隔震源、被動隔振保護接收者。</p></td><td class="go"><a href="units/u04.html#s4-10">4.10 →</a></td></tr>
+    <tr><td class="no">6</td><td class="term"><b>Does a short earthquake reach the full resonant amplitude?</b><span class="zh">短促的地震來得及共振嗎？</span></td><td class="desc"><p class="en"><span class="pt">No. Resonant response builds up as (1 − e<sup>−ξω<sub>n</sub>t</sup>); reaching 63 % takes 1/(2πξ) cycles (about 3.2 cycles for ξ = 5 %).</span><span class="pt">So duration matters as much as frequency content.</span></p><p class="zh-d">共振要時間累積；ξ = 5 % 約 3.2 圈才到 63 %。延時和頻率內容一樣重要。</p></td><td class="go"><a href="units/u04.html#s4-7">4.7 →</a></td></tr>
+    <tr><td class="no">7</td><td class="term"><b>Why is soil damping defined as W<sub>D</sub>/(4πW<sub>S</sub>) without β?<span class="tag">HW3</span></b><span class="zh">為什麼土壤阻尼比不帶 β？</span></td><td class="desc"><p class="en"><span class="pt">For a viscous damper W<sub>D</sub> ∝ ω̄, so W<sub>D</sub>/(4πW<sub>S</sub>) = ξβ changes with frequency.</span><span class="pt">Soil damping comes from friction between particles (hysteretic damping); the loop area depends on strain amplitude, not on frequency.</span><span class="pt">So ξ is defined as the viscous damping that dissipates the same energy per cycle at resonance; it is equivalent to the complex modulus G* = G(1 + 2iξ).</span></p><p class="zh-d">黏滯阻尼每圈耗能隨頻率增加；土壤是顆粒摩擦的遲滯阻尼，迴圈面積只看應變振幅。所以直接用一個迴圈定義 ξ（等於「共振時耗能相同的等值黏滯阻尼」）。</p></td><td class="go"><a href="units/u04.html#s4-8">4.8 →</a></td></tr>
+    <tr><td class="no">8</td><td class="term"><b>Where does a footing get damping without a damper?</b><span class="zh">基礎沒有阻尼器，阻尼從哪來？</span></td><td class="desc"><p class="en"><span class="pt">Radiation (geometrical) damping: waves carry energy away into the half-space and do not return.</span><span class="pt">It is controlled by the mass ratio B<sub>z</sub>, not by soil stiffness: ξ<sub>z</sub> = 0.425/√B<sub>z</sub>.</span><span class="pt">Vertical and horizontal modes have large radiation damping; rocking and torsion have small damping.</span></p><p class="zh-d">波帶走能量；ξ<sub>z</sub> 只看 B<sub>z</sub>（G 消掉）。垂直、水平模態阻尼大，搖擺、扭轉阻尼小。</p></td><td class="go"><a href="units/u04.html#s4-11">4.11 →</a></td></tr>
+    <tr><td class="no">9</td><td class="term"><b>Machine foundation design: avoiding resonance</b><span class="zh">機器基礎如何避開共振？</span></td><td class="desc"><p class="en"><span class="pt">Keep the operating frequency well away from f<sub>n</sub>: either a high-tuned foundation (f<sub>n</sub> above the operating frequency) or a low-tuned one (f<sub>n</sub> below it).</span><span class="pt">If it fails: change k<sub>z</sub> (larger footing area, ground improvement, piles) or m (heavier block), change the machine speed, or add isolation mounts.</span><span class="pt">Also check that the amplitude at the operating frequency is within the allowable limit.</span></p><p class="zh-d">讓運轉頻率遠離 f<sub>n</sub>（高調或低調設計）；不行就改勁度（加大面積、地盤改良、樁）或質量、改轉速、加隔振支承；並檢核運轉振幅。</p></td><td class="go"><a href="units/u04.html#s4-11">4.11 →</a><a href="calc.html#mN12">N.12 →</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="trap" data-num="5" data-short="常見陷阱" data-title="常見陷阱與計算機提醒">
+  <div class="sec-head"><span class="sec-num">5</span><h2>常見陷阱與計算機提醒</h2></div>
+  <ul class="pitfalls">
+    <li><b>重量不是質量</b>：m = W/g；W 用 kN 時 m 的單位是 t，k 用 kN/m、c 用 kN·s/m，單位自然一致。</li>
+    <li><b>ω 與 f 差 2π</b>：ω（rad/s）= 2πf（Hz）；rpm → rad/s 要乘 2π/60；T = 1/f = 2π/ω。</li>
+    <li><b>β &gt; 1 的相位</b>：tan⁻¹ 給負角，要加 180°，或用 atan2(2ξβ, 1 − β²)。</li>
+    <li><b>自由振動相位角有兩種寫法</b>：sin 形式與 cos 形式的角度互餘（期中 Q3：89.74° 與 0.26°），作答先寫出 u(t) 的形式。</li>
+    <li><b>δ 的近似</b>：δ = 2πξ/√(1 − ξ²) 才是精確式；ξ ≈ 0.26 時 δ ≈ 2πξ 會差約 3 %，題目給 ξ 時用精確式。</li>
+    <li><b>隔 n 圈</b>：第 1 峰到第 n+1 峰才是 n 圈。</li>
+    <li><b>共振峰位置</b>：嚴格在 √(1 − 2ξ²)，不在 β = 1；機器基礎阻尼大時一定要用精確式。</li>
+    <li><b>隔振要軟</b>：β &gt; √2 才減振；隔振區阻尼越大，傳遞越多。</li>
+    <li><b>總反應的常數</b>：用總反應（暫態＋穩態）的初始條件求，不是只代暫態。</li>
+    <li><b>D 的兩種意思</b>：單元 4 的 D 是放大因子；單元 8、9 與國考題常把阻尼比寫成 D。</li>
+  </ul>
+  <div class="callout link"><div class="ct">延伸</div>
+    <p>完整推導、互動圖與更多例題在<a href="units/u04.html">單元 4 · 單自由度振動</a>；所有公式見<a href="formulas.html#f4">公式總表 Ch4</a>，所有名詞見<a href="glossary.html#g4">名詞總表 Ch4</a>。</p>
+  </div>
+</section>
+
+</main>
+<footer class="site">CIE 5014 Soil Dynamics and Foundation Vibration · Personal Study Notes · From Prof. Dr. Yu-Wei Hwang 2026 Slides、Homework and Reference</footer>
+
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/auto-render.min.js"></script>
+<script src="assets/common.js"></script>
+</body>
+</html>
