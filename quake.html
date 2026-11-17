@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>地震概論考試重點 · Soil Dynamics and Foundation Vibration</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  table.gl { table-layout: fixed; width: 100%; }
+  table.gl th:nth-child(1) { width: 2.6em; }
+  table.gl th:nth-child(2) { width: 16em; }
+  table.gl th:nth-child(4) { width: 7.5em; }
+  table.gl td.no { color: var(--muted); font-variant-numeric: tabular-nums; }
+  table.gl td.term b { display: block; font-size: 15.5px; }
+  table.gl td.term .zh { color: var(--muted); font-size: 14px; }
+  table.gl td.desc { line-height: 1.65; }
+  table.gl td.desc p { max-width: none; }
+  table.gl td.desc .fx .katex-display { margin: 0 0 8px; text-align: left; }
+  table.gl td.desc .fx .katex-display > .katex { text-align: left; }
+  .fx .katex-display, .eqbox .katex-display { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+  table.gl td.desc .en { margin: 0 0 6px; color: var(--ink); font-size: 15px; }
+  table.gl td.desc .zh-d { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.6; opacity: .85; }
+  td.desc .en .pt { display: block; padding-left: 1em; text-indent: -1em; }
+  td.desc .en .pt + .pt { margin-top: 6px; }
+  table.gl td.go, table.gl th.go { text-align: right; white-space: nowrap; }
+  table.gl td.go a { display: block; font-size: 14px; }
+  table.gl td.go a.pr { font-size: 13px; color: var(--muted); }
+  table.gl td.go a.pr:hover { color: var(--accent); }
+  table.sym td:first-child { white-space: nowrap; width: 8em; }
+  table.sym td:last-child { white-space: nowrap; color: var(--muted); }
+  table.ty td { vertical-align: top; line-height: 1.65; }
+  table.ty td.tn { width: 12em; }
+  table.ty td.tn b { display: block; font-size: 15.5px; }
+  table.ty td.tn .zh { color: var(--muted); font-size: 14px; }
+  table.ty ol { margin: 0; padding-left: 1.3em; }
+  table.ty ol li + li { margin-top: 3px; }
+  table.ty td.go { width: 8em; text-align: right; white-space: nowrap; }
+  table.ty td.go a { display: block; font-size: 13.5px; }
+  .star { color: var(--orange); font-weight: 700; margin-left: 3px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; padding: 0 5px; margin-left: 5px; vertical-align: 2px; }
+  h3.grp { margin-top: 34px; }
+  @media (max-width: 760px) {
+    table.gl, table.gl tbody, table.gl tr, table.gl td,
+    table.ty, table.ty tbody, table.ty tr, table.ty td { display: block; width: auto; }
+    table.gl tr:first-child, table.ty tr:first-child { display: none; }
+    table.gl tr, table.ty tr { padding: 14px 0; border-bottom: 1px solid var(--line); }
+    table.gl tr:last-child, table.ty tr:last-child { border-bottom: 0; }
+    table.gl td, table.ty td { border: 0; padding: 2px 0; text-align: left !important; width: auto !important; }
+    table.gl td.no { display: none; }
+    table.gl td.go a, table.ty td.go a { display: inline; margin-right: 14px; }
+  }
+</style>
+</head>
+<body data-page="quake" data-root="" data-title="地震概論考試重點">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">Introduction to Earthquakes Exam Review · 地震概論考試重點</div>
+  <h1>地震概論考試重點</h1>
+  <p class="lede"><b>考前把單元 2 一次看完。</b>這頁把板塊、斷層、震度與規模的名詞解釋、少數幾個公式、題型步驟與比較型簡答收在一起。這一章以定義與簡答為主，計算只有地震矩、規模與倍數。說明以英文為主（考試直接作答用），下方淺色字是中文；右欄連回單元 2 的說明，以及計算題整理中的練習題。<span class="star">★</span> 是 2025 年期中考考過的名詞，<span class="tag">HW1</span> 是 HW1 用到的。</p>
+
+  <h3>2025 期中考的地震概論題目</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>題號</th><th>題型</th><th>內容</th><th class="num">配分</th></tr>
+    <tr class="hl"><td>Q1</td><td>名詞解釋</td><td>10 個名詞中有 1 個屬於本章：<b>Reverse fault</b>（<a href="#rev">名詞 8</a>）</td><td class="num">4 / 40</td></tr>
+  </table></div>
+  <div class="callout link"><div class="ct">今年要多準備的</div>
+    <p>模擬考 1.1 把本章能算的都考了一次：由破裂面與滑移量求 M<sub>0</sub>、M<sub>w</sub>，M<sub>w</sub> 增加 1、2 時 M<sub>0</sub> 的倍數，由「傾角 60°、上盤上移」判斷斷層類型與應力狀態，以及為什麼大地震用 M<sub>w</sub> 不用 M<sub>L</sub>（<a href="#t1">題型 ①</a>–<a href="#t3">③</a>）。計算題整理收錄的國考題沒有本章的題目。其餘多半以名詞或比較型簡答出現：規模與震度、三種斷層的應力狀態、M<sub>w</sub> 為什麼不飽和（<a href="#concept">第 4 節</a>）。HW1 的集集紀錄（M<sub>w</sub> 7.62）以 R<sub>rup</sub> 表示距離。</p>
+  </div>
+</header>
+
+<section class="sec" id="sym" data-num="0" data-short="符號" data-title="符號與單位">
+  <div class="sec-head"><span class="sec-num">0</span><h2>符號與單位</h2></div>
+  <p>單元 2 的 \(\delta\)、\(D\)、\(\mu\) 和其他單元意思不同：\(\delta\) 是傾角（不是對數遞減），\(D\) 是平均滑移量（不是放大因子或阻尼比），\(\mu\) 在 2.2 是摩擦係數、在 2.6 是剛性模數。</p>
+  <div class="tablewrap"><table class="data sym">
+    <tr><th>符號</th><th>意義</th><th>常用單位</th></tr>
+    <tr><td>\(\phi,\ \delta,\ \lambda\)</td><td>Strike, dip, rake 走向、傾角、滑移角</td><td>°</td></tr>
+    <tr><td>\(\sigma_1,\ \sigma_2,\ \sigma_3\)</td><td>Maximum, intermediate, minimum principal stress 最大、中間、最小主應力</td><td>MPa</td></tr>
+    <tr><td>\(\tau_f,\ \sigma_n,\ u\)</td><td>Fault shear strength, normal stress, pore pressure 斷層抗剪強度、正應力、孔隙水壓</td><td>MPa</td></tr>
+    <tr><td>\(\mu\)（2.2）</td><td>Friction coefficient 斷層摩擦係數</td><td>—</td></tr>
+    <tr><td>\(\mu\)（2.6）</td><td>Rigidity (shear modulus) of the crust 地殼剛性模數，約 3×10¹⁰ Pa</td><td>Pa、dyne/cm²</td></tr>
+    <tr><td>\(A,\ D\)</td><td>Rupture area, average slip 破裂面積、平均滑移量</td><td>m²、m</td></tr>
+    <tr><td>\(M_0\)</td><td>Seismic moment 地震矩</td><td>N·m、dyne·cm</td></tr>
+    <tr><td>\(M_L,\ m_b,\ M_s\)</td><td>Local, body-wave, surface-wave magnitude 近震、體波、表面波規模</td><td>—</td></tr>
+    <tr><td>\(M_w\)</td><td>Moment magnitude 地震矩規模</td><td>—</td></tr>
+    <tr><td>\(E_s\)</td><td>Radiated seismic energy 輻射能量</td><td>J</td></tr>
+    <tr><td>\(h\)</td><td>Focal depth 震源深度</td><td>km</td></tr>
+    <tr><td>\(R_{epi},\ R_{hyp}\)</td><td>Epicentral, hypocentral distance 震央距、震源距</td><td>km</td></tr>
+    <tr><td>\(R_{rup},\ R_{jb}\)</td><td>Closest distance to the rupture plane; to its surface projection 到破裂面、到破裂面地表投影的最短距離</td><td>km</td></tr>
+    <tr><td>PGA、PGV</td><td>Peak ground acceleration, velocity 最大地表加速度、速度（震度分級用）</td><td>cm/s²、cm/s</td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="def" data-num="1" data-short="名詞解釋" data-title="名詞解釋">
+  <div class="sec-head"><span class="sec-num">1</span><h2>名詞解釋</h2></div>
+  <p>作答順序：<b>一句定義 → 公式或判別方式 → 一兩個關鍵性質或實例</b>。2025 年的格式是「briefly describe in English/Chinese what you know about…」，每題 4 分。</p>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名詞</th><th>說明</th><th class="go">詳細說明</th></tr>
+    <tr><td class="no">1</td><td class="term"><b>Plate tectonics and plate boundaries</b><span class="zh">板塊構造與板塊邊界</span></td><td class="desc"><p class="en"><span class="pt">The lithosphere (crust + uppermost mantle, about 100 km thick) is broken into a dozen or so plates that move a few cm per year over the asthenosphere.</span><span class="pt">Divergent boundary: plates move apart; normal faults; shallow, smaller earthquakes (mid-ocean ridges, East African Rift).</span><span class="pt">Convergent boundary: subduction or collision; reverse (thrust) faults; every Mw 9+ earthquake has occurred in a subduction zone.</span><span class="pt">Transform boundary: plates slide past each other; strike-slip faults (San Andreas).</span><span class="pt">About 80 % of large earthquakes occur in the Circum-Pacific belt.</span></p><p class="zh-d">岩石圈（地殼＋最上部地函，約 100 km）分成十幾塊板塊，在軟流圈上每年移動數公分。張裂邊界→正斷層、淺源較小地震；聚合邊界（隱沒或碰撞）→逆斷層，Mw 9 以上都在隱沒帶；錯動邊界→走向滑移。全球約八成大地震在環太平洋地震帶。</p></td><td class="go"><a href="units/u02.html#s2-1">2.1 →</a></td></tr>
+    <tr><td class="no">2</td><td class="term"><b>Induced earthquake</b><span class="zh">誘發地震</span></td><td class="desc"><p class="en"><span class="pt">An earthquake triggered by human activity: loading (reservoir impoundment), unloading (mining, excavation) or fluid injection (wastewater disposal, geothermal).</span><span class="pt">Mechanism: effective stress. Injection raises the pore pressure u, so \(\tau_f = c + \mu(\sigma_n - u)\) drops, and a fault that is already near failure slips.</span><span class="pt">Examples: Koyna reservoir, India (1967, M 6.3); Oklahoma after 2009; Pohang, Korea (2017, Mw 5.5).</span></p><p class="zh-d">人為活動引發的地震：加載（水庫蓄水）、卸載（採礦、開挖）、注入流體（廢水回注、地熱）。機制是有效應力：孔隙水壓上升使斷層強度下降，原本接近臨界的斷層就滑動。</p></td><td class="go"><a href="units/u02.html#s2-2">2.2 →</a></td></tr>
+    <tr><td class="no">3</td><td class="term"><b>Elastic rebound theory</b><span class="zh">彈性回跳理論</span></td><td class="desc"><p class="en"><span class="pt">Reid (1910), from the 1906 San Francisco earthquake: relative plate motion builds up elastic strain in the rock on both sides of a locked fault.</span><span class="pt">When the shear stress exceeds the fault strength, the fault slips suddenly; the rock rebounds and the stored strain energy is released as seismic waves.</span><span class="pt">Strain accumulates over hundreds of years and is released in seconds to minutes; slip per event ≈ plate rate × recurrence interval.</span></p><p class="zh-d">斷層被摩擦鎖住，兩側岩體累積彈性應變；剪應力超過強度時突然滑動，岩體彈回，應變能以地震波釋放，然後重新累積。慢慢累積、瞬間釋放；一次錯動量 ≈ 板塊速率 × 再現週期。</p></td><td class="go"><a href="units/u02.html#s2-4">2.4 →</a></td></tr>
+    <tr><td class="no">4</td><td class="term"><b>Hypocenter (focus) and epicenter</b><span class="zh">震源與震央</span></td><td class="desc"><p class="en"><span class="pt">The hypocenter (focus) is the point inside the earth where fault rupture starts.</span><span class="pt">The epicenter is the point on the ground surface directly above it; the distance between them is the focal depth h.</span><span class="pt">For a large rupture, the closest distance to the rupture plane (R<sub>rup</sub>) is more meaningful than the distance to either point.</span></p><p class="zh-d">震源是斷層開始破裂的地下點；震央是震源正上方的地表點，兩者距離為震源深度。大地震破裂面很長，工程上改用到破裂面的最短距離 R<sub>rup</sub>。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a></td></tr>
+    <tr><td class="no">5</td><td class="term"><b>Strike, dip and rake</b><span class="zh">走向、傾角、滑移角</span></td><td class="desc"><p class="en"><span class="pt">Strike φ: the azimuth (clockwise from north) of the line where the fault plane meets a horizontal surface.</span><span class="pt">Dip δ: the angle (0–90°) between the fault plane and the horizontal, measured perpendicular to strike; by convention the plane dips to the right when facing the strike direction.</span><span class="pt">Rake λ: the slip direction of the hanging wall relative to the footwall, measured on the fault plane from the strike direction: +90° reverse, −90° normal, 0° left-lateral, 180° right-lateral.</span></p><p class="zh-d">走向：斷層面與水平面交線的方位，由北順時針量。傾角：斷層面與水平面的夾角，在垂直走向的剖面上量；慣例面向走向時往右手邊傾。滑移角：上盤相對下盤的滑動方向，90° 逆斷層、−90° 正斷層、0° 左移、180° 右移。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a><a href="units/u02.html#w-fault">互動圖 →</a></td></tr>
+    <tr><td class="no">6</td><td class="term"><b>Hanging wall and footwall</b><span class="zh">上盤與下盤</span></td><td class="desc"><p class="en"><span class="pt">For an inclined fault, the block above the fault plane is the hanging wall; the block below it is the footwall.</span><span class="pt">Normal and reverse faults are told apart only by whether the hanging wall moves down or up.</span><span class="pt">A vertical fault has no hanging wall or footwall.</span></p><p class="zh-d">傾斜斷層面上方的岩塊是上盤、下方是下盤（站在斷層面上，頭頂那塊是上盤）。正、逆斷層只看上盤往下或往上；垂直斷層面沒有上下盤之分。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a></td></tr>
+    <tr><td class="no">7</td><td class="term"><b>Normal fault</b><span class="zh">正斷層</span></td><td class="desc"><p class="en"><span class="pt">Motion: the hanging wall slides down the fault plane relative to the footwall (rake ≈ −90°).</span><span class="pt">Cause: horizontal extension, σ<sub>1</sub> vertical and σ<sub>3</sub> horizontal, so the crust gets longer.</span><span class="pt">Typical of divergent boundaries (mid-ocean ridges, rifts); the beach ball has a white (dilatational) center.</span></p><p class="zh-d">上盤沿斷層面往下滑；水平伸張（σ<sub>1</sub> 垂直、σ<sub>3</sub> 水平），地殼變長。常見於洋脊、裂谷；海灘球中心為白色。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a></td></tr>
+    <tr data-star id="rev"><td class="no">8</td><td class="term"><b>Reverse fault<span class="star">★</span></b><span class="zh">逆斷層</span></td><td class="desc"><p class="en"><span class="pt">Motion: the hanging wall is pushed up over the footwall (rake ≈ +90°).</span><span class="pt">Cause: horizontal compression, σ<sub>1</sub> horizontal and σ<sub>3</sub> vertical, so the crust gets shorter.</span><span class="pt">A reverse fault dipping less than about 45° is a thrust fault.</span><span class="pt">Typical of convergent boundaries (subduction zones, collision belts); the beach ball has a shaded (compressional) center.</span><span class="pt">Example: the east-dipping Chelungpu thrust fault, 1999 Chi-Chi earthquake (Mw 7.6), about 100 km of surface rupture; the hanging wall rose about 10 m at the Shih-Kang dam.</span></p><p class="zh-d">上盤被推上去、爬到下盤上方；水平壓縮（σ<sub>1</sub> 水平、σ<sub>3</sub> 垂直），地殼縮短。傾角小於約 45° 的叫逆衝斷層。常見於隱沒帶與碰撞帶（臺灣西部麓山帶）；海灘球中心為陰影。例：1999 集集地震的車籠埔斷層，向東傾的逆衝斷層，地表破裂約 100 km，石岡壩處上盤抬升約 10 m。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a><a href="units/u02.html#s2-4">2.4 →</a><a class="pr" href="calc.html#m1-1">練習 1.1(d)</a></td></tr>
+    <tr><td class="no">9</td><td class="term"><b>Strike-slip fault</b><span class="zh">走向滑移（平移）斷層</span></td><td class="desc"><p class="en"><span class="pt">Motion: the two blocks slide horizontally past each other along the strike (rake ≈ 0° or 180°).</span><span class="pt">Cause: σ<sub>1</sub> and σ<sub>3</sub> both horizontal, σ<sub>2</sub> vertical.</span><span class="pt">Sense: if the block across the fault moves to the right it is right-lateral, to the left left-lateral; the answer is the same from either side.</span><span class="pt">Typical of transform boundaries, e.g. the right-lateral San Andreas fault.</span></p><p class="zh-d">兩側沿走向水平錯開；σ<sub>1</sub>、σ<sub>3</sub> 都在水平面上、σ<sub>2</sub> 垂直。看對面那塊往右移是右移、往左移是左移，站哪一側看都一樣。常見於錯動邊界，如聖安地列斯斷層（右移）。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a></td></tr>
+    <tr><td class="no">10</td><td class="term"><b>Focal mechanism (beach ball)</b><span class="zh">斷層面解（海灘球）</span></td><td class="desc"><p class="en"><span class="pt">A plot of P-wave first motions projected onto the lower focal hemisphere.</span><span class="pt">Shaded quadrants are compressional (contain the T axis); white quadrants are dilatational (contain the P axis).</span><span class="pt">The two boundaries are nodal planes; one of them is the fault plane, identified from aftershocks or surface rupture.</span><span class="pt">White center → normal; shaded center → reverse; four-leaf cross → strike-slip.</span></p><p class="zh-d">把各站 P 波初動投影到震源下半球。陰影＝壓縮象限（含 T 軸），白色＝伸張象限（含 P 軸）。兩條分界是節面，其中一個才是斷層面，要靠餘震或地表破裂判斷。中心白→正斷層、中心陰影→逆斷層、四葉十字→走向滑移。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a></td></tr>
+    <tr><td class="no">11</td><td class="term"><b>Surface fault rupture</b><span class="zh">地表破裂（斷層錯動）</span></td><td class="desc"><p class="en"><span class="pt">Permanent offset of the ground surface where fault slip reaches the surface.</span><span class="pt">Shaking can be resisted by design, but a structure straddling the fault can hardly resist the offset: avoid the fault or design to accommodate the movement.</span><span class="pt">Through a soil cover the rupture does not appear directly above the bedrock fault: the fault controls the offset, the soil controls the location; the thicker the soil, the larger the shift.</span></p><p class="zh-d">斷層錯動延伸到地表造成的永久錯位。震動可以靠設計抵抗，跨越斷層的錯動幾乎不行，只能避開或設計成可容許錯動。有覆土時地表破裂不在岩盤斷層的投影上：斷層決定落差，土壤決定位置，覆土越厚偏離越多。例：石岡壩溢洪道被剪斷。</p></td><td class="go"><a href="units/u02.html#s2-4">2.4 →</a></td></tr>
+    <tr><td class="no">12</td><td class="term"><b>Active fault</b><span class="zh">活動斷層</span></td><td class="desc"><p class="en"><span class="pt">A fault with evidence of movement in the recent geologic past (typically the last 100,000 years) that is likely to rupture again.</span><span class="pt">Taiwan: Type I active within 10,000 years, Type II within 100,000 years (about 36 faults on the published map).</span><span class="pt">Engineering use: Active Fault Geologically Sensitive Areas (site investigation required before development) and the source-to-site distance in seismic hazard analysis.</span></p><p class="zh-d">未來可能再錯動的斷層，一般以近 10 萬年內有活動證據者認定。臺灣分第一類（近 1 萬年）與第二類（近 10 萬年），目前約 36 條；依地質法劃定活動斷層地質敏感區，開發前須做地質調查；也是危害度分析中距離的依據。</p></td><td class="go"><a href="units/u02.html#s2-4">2.4 →</a></td></tr>
+    <tr><td class="no">13</td><td class="term"><b>Seismic intensity (Taiwan CWA scale)</b><span class="zh">震度（中央氣象署新制）</span></td><td class="desc"><p class="en"><span class="pt">Intensity describes how strongly the ground shakes at a particular site, so it differs from station to station (distance, path, site); an earthquake has only one magnitude.</span><span class="pt">The CWA scale (2020) has levels 0–7, with 5 and 6 split into weak and strong (10 levels).</span><span class="pt">Levels 0–4 are assigned by PGA; once PGA ≥ 80 cm/s², the level is assigned by PGV, because building damage correlates better with velocity.</span></p><p class="zh-d">某地搖晃的程度，每站不同；規模一個地震只有一個。2020 新制 0–7 級，5、6 級分弱、強，共 10 級；4 級以下依 PGA，PGA ≥ 80 cm/s² 後改依 PGV（損害與速度相關性較好）。</p></td><td class="go"><a href="units/u02.html#s2-5">2.5 →</a><a href="units/u02.html#cwa-table">分級表 →</a></td></tr>
+    <tr><td class="no">14</td><td class="term"><b>Magnitude (M<sub>L</sub>, m<sub>b</sub>, M<sub>s</sub>)</b><span class="zh">規模</span></td><td class="desc"><p class="en"><span class="pt">A single number for the size of an earthquake at its source, on a logarithmic scale.</span><span class="pt">The early scales are defined from the amplitude of a particular wave at a particular period: M<sub>L</sub> (local, Richter) from waves of about 0.1–1 s, m<sub>b</sub> from about 1 s P waves, M<sub>s</sub> from about 20 s surface waves.</span><span class="pt">Because they read a fixed period, they saturate for large earthquakes.</span></p><p class="zh-d">描述震源大小的單一數值（對數尺度）。早期規模由特定週期波的振幅定義：M<sub>L</sub> 約 0.1–1 s、m<sub>b</sub> 約 1 s 的 P 波、M<sub>s</sub> 約 20 s 的表面波；因為只看固定週期，大地震時會飽和。</p></td><td class="go"><a href="units/u02.html#s2-6">2.6 →</a></td></tr>
+    <tr><td class="no">15</td><td class="term"><b>Seismic moment M<sub>0</sub> and moment magnitude M<sub>w</sub></b><span class="zh">地震矩與地震矩規模</span></td><td class="desc"><p class="en"><span class="pt">Seismic moment \(M_0 = \mu AD\) (rigidity × rupture area × average slip) measures the physical size of the rupture.</span><span class="pt">\(M_w = \tfrac23(\log M_0 - 9.05)\) with M<sub>0</sub> in N·m, or \((\log M_0 - 16.05)/1.5\) in dyne·cm.</span><span class="pt">One unit of M<sub>w</sub> = 10<sup>1.5</sup> ≈ 32 times in M<sub>0</sub> (and in radiated energy).</span><span class="pt">M<sub>w</sub> does not saturate.</span></p><p class="zh-d">\(M_0 = \mu AD\) 直接反映破裂大小；M<sub>w</sub> 由 M<sub>0</sub> 計算，常數要配合單位。ΔM<sub>w</sub> = 1 時 M<sub>0</sub>（與能量）差約 32 倍；M<sub>w</sub> 不會飽和。</p></td><td class="go"><a href="units/u02.html#s2-6">2.6 →</a><a class="pr" href="calc.html#m1-1">練習 1.1</a></td></tr>
+    <tr><td class="no">16</td><td class="term"><b>Magnitude saturation</b><span class="zh">規模飽和</span></td><td class="desc"><p class="en"><span class="pt">Magnitudes based on the wave amplitude at a fixed period stop increasing for large earthquakes.</span><span class="pt">Reason: a larger rupture (longer, with a longer rupture time) adds mainly long-period energy, so the short-period amplitude no longer grows.</span><span class="pt">m<sub>b</sub> saturates near 6–6.5, M<sub>L</sub> near 7 and M<sub>s</sub> near 8; large earthquakes are rated by M<sub>w</sub>.</span></p><p class="zh-d">破裂變大時增加的主要是長週期能量，短週期振幅不再增加，規模就頂住（m<sub>b</sub> 約 6–6.5、M<sub>L</sub> 約 7、M<sub>s</sub> 約 8），所以大地震用 M<sub>w</sub>。集集 M<sub>L</sub> 7.3、M<sub>w</sub> 7.6。</p></td><td class="go"><a href="units/u02.html#s2-6">2.6 →</a></td></tr>
+    <tr><td class="no">17</td><td class="term"><b>Source-to-site distance<span class="tag">HW1</span></b><span class="zh">震源到工址的距離</span></td><td class="desc"><p class="en"><span class="pt">Epicentral distance R<sub>epi</sub>: to the epicenter, along the surface. Hypocentral distance \(R_{hyp} = \sqrt{R_{epi}^2 + h^2}\).</span><span class="pt">For large ruptures, point distances are misleading: use R<sub>rup</sub> (closest distance to the rupture plane) or R<sub>jb</sub> (closest horizontal distance to its surface projection).</span><span class="pt">Ground-motion parameters attenuate with distance (HW1, Chi-Chi records vs R<sub>rup</sub>).</span></p><p class="zh-d">震央距沿地表量到震央；震源距再計入震源深度。大地震的破裂面長達數十公里，改用到破裂面的最短距離 R<sub>rup</sub>，或到破裂面地表投影的最短水平距離 R<sub>jb</sub>。HW1 以 R<sub>rup</sub> 看地動參數的衰減。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a><a class="pr" href="hw/hw1.html#b">HW1 Part B</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="fx" data-num="2" data-short="公式" data-title="解題公式">
+  <div class="sec-head"><span class="sec-num">2</span><h2>解題公式</h2></div>
+  <p>本章公式不多：A 斷層何時滑動，B 地震有多大，C 某地搖多大，D 距離。</p>
+
+  <h3 class="grp" id="fxA">A　斷層力學</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">A1</td><td class="term"><b>Fault strength (effective stress)</b><span class="zh">斷層強度（有效應力）</span></td><td class="desc"><div class="fx">\[ \tau_f = c + \mu(\sigma_n - u),\qquad \text{slip when } \tau \ge \tau_f \]</div><p class="en"><span class="pt">μ here is the friction coefficient. Raising u lowers the strength and can trigger slip.</span></p><p class="zh-d">此處 μ 是摩擦係數。例：σ<sub>n</sub> = 50 MPa、τ = 28 MPa、μ = 0.6、c = 0 → 0.6(50 − u) = 28 → u = 3.33 MPa 就會滑動。</p></td><td class="go"><a href="units/u02.html#s2-2">2.2 →</a><a href="units/u02.html#w-mohr">互動圖 →</a></td></tr>
+    <tr><td class="no">A2</td><td class="term"><b>Slip per event (elastic rebound)</b><span class="zh">單次錯動量與再現週期</span></td><td class="desc"><div class="fx">\[ D \approx v_{plate}\,T_r \]</div><p class="en"><span class="pt">A rough estimate: real faults are irregular, so hazard analysis treats recurrence probabilistically.</span></p><p class="zh-d">粗估用：2 cm/年 × 300 年 ≈ 6 m；錯動 4.5 m、速率 3 cm/年 → 再現週期約 150 年。</p></td><td class="go"><a href="units/u02.html#s2-4">2.4 →</a></td></tr>
+  </table></div>
+
+  <h3 class="grp" id="fxB">B　地震矩、規模與能量</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">B1</td><td class="term"><b>Seismic moment</b><span class="zh">地震矩</span></td><td class="desc"><div class="fx">\[ M_0 = \mu AD,\qquad A = L\times W \]</div><p class="en"><span class="pt">μ ≈ 3×10¹⁰ N/m² = 3×10¹¹ dyne/cm². 1 N·m = 10⁷ dyne·cm; 1 km = 10⁵ cm.</span></p><p class="zh-d">μ 是剛性模數；單位全用 SI 得 N·m，全用 cgs 得 dyne·cm，不要混用。</p></td><td class="go"><a href="units/u02.html#s2-6">2.6 →</a><a class="pr" href="calc.html#m1-1">練習 1.1</a></td></tr>
+    <tr><td class="no">B2</td><td class="term"><b>Moment magnitude</b><span class="zh">地震矩規模</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &M_w = \tfrac23(\log M_0 - 9.05)\quad (\text{N}\cdot\text{m}) \\ &M_w = \tfrac23(\log M_0 - 16.05)\quad (\text{dyne}\cdot\text{cm}) \end{aligned} \]</div><p class="en"><span class="pt">Use the constant that matches the unit of M<sub>0</sub>; both give the same M<sub>w</sub>.</span></p><p class="zh-d">學生講義另有 9.1／16.1 一套，兩套不能混搭（集集用 9.05 得 7.61、用 9.1 得 7.57）。</p></td><td class="go"><a href="units/u02.html#s2-6">2.6 →</a><a href="units/u02.html#w-mag">計算機 →</a><a class="pr" href="calc.html#m1-1">練習 1.1</a></td></tr>
+    <tr><td class="no">B3</td><td class="term"><b>Magnitude difference and moment ratio</b><span class="zh">規模差與地震矩比</span></td><td class="desc"><div class="fx">\[ \frac{M_{0,1}}{M_{0,2}} = 10^{1.5\,\Delta M_w},\qquad \Delta M_w = \frac{\log(M_{0,1}/M_{0,2})}{1.5} \]</div><p class="en"><span class="pt">ΔM<sub>w</sub> = 0.2 → 2.0 times; 1 → 31.6 times; 2 → 1000 times.</span></p><p class="zh-d">規模差 0.2 就是 2 倍，差 1 是 31.6 倍（不是 10 倍）。</p></td><td class="go"><a href="units/u02.html#s2-6">2.6 →</a><a class="pr" href="calc.html#m1-1">練習 1.1(c)</a></td></tr>
+    <tr><td class="no">B4</td><td class="term"><b>Radiated energy</b><span class="zh">輻射能量</span></td><td class="desc"><div class="fx">\[ E_s \approx \frac{M_0}{2\times10^4},\qquad \frac{E_{s,1}}{E_{s,2}} \approx 10^{1.5\,\Delta M_w} \]</div><p class="en"><span class="pt">Energy is roughly proportional to M<sub>0</sub>, so one magnitude unit ≈ 32 times the energy.</span></p><p class="zh-d">能量約與 M<sub>0</sub> 成正比，所以規模加 1、能量約 32 倍。</p></td><td class="go"><a href="units/u02.html#s2-6">2.6 →</a></td></tr>
+  </table></div>
+  <div class="callout example"><div class="ct">對答案用的數字</div>
+    <p><b>模擬考 1.1</b>：40 km × 15 km、D = 1.5 m、μ = 3.0×10¹¹ dyne/cm² → A = 6.0×10¹² cm²、M<sub>0</sub> = 2.7×10²⁶ dyne·cm、M<sub>w</sub> = (26.431 − 16.05)/1.5 = 6.92。完整作答見<a href="calc.html#m1-1">計算題整理 1.1</a>。</p>
+    <p><b>集集地震</b>：μ = 3×10¹⁰ Pa、80 km × 40 km、D = 3 m → M<sub>0</sub> = 2.88×10²⁰ N·m、M<sub>w</sub> = (20.46 − 9.05)/1.5 = 7.61、E<sub>s</sub> ≈ 1.4×10¹⁶ J。</p>
+  </div>
+
+  <h3 class="grp" id="fxC">C　震度分級（中央氣象署 2020 新制）</h3>
+  <p>先看 PGA：未達 80 cm/s² 依 PGA 分 0–4 級；達到 80 cm/s² 改看 PGV 分 5 弱以上，PGV &lt; 15 cm/s 仍判 4 級。</p>
+  <div class="tablewrap"><table class="data">
+    <tr><th>震度</th><th class="num">PGA (cm/s²)</th><th class="num">PGV (cm/s)</th></tr>
+    <tr><td>0</td><td class="num">&lt; 0.8</td><td class="num">—</td></tr>
+    <tr><td>1</td><td class="num">0.8–2.5</td><td class="num">—</td></tr>
+    <tr><td>2</td><td class="num">2.5–8</td><td class="num">—</td></tr>
+    <tr><td>3</td><td class="num">8–25</td><td class="num">—</td></tr>
+    <tr><td>4</td><td class="num">25–80</td><td class="num">（PGA ≥ 80 但 PGV &lt; 15）</td></tr>
+    <tr><td>5 弱</td><td class="num" rowspan="5">≥ 80，改看 PGV</td><td class="num">15–30</td></tr>
+    <tr><td>5 強</td><td class="num">30–50</td></tr>
+    <tr><td>6 弱</td><td class="num">50–80</td></tr>
+    <tr><td>6 強</td><td class="num">80–140</td></tr>
+    <tr><td>7</td><td class="num">≥ 140</td></tr>
+  </table></div>
+
+  <h3 class="grp" id="fxD">D　距離</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">D1</td><td class="term"><b>Hypocentral distance</b><span class="zh">震源距</span></td><td class="desc"><div class="fx">\[ R_{hyp} = \sqrt{R_{epi}^2 + h^2} \]</div><p class="en"><span class="pt">e.g. R<sub>epi</sub> = 40 km, h = 30 km → R<sub>hyp</sub> = 50 km. For large ruptures use R<sub>rup</sub> instead.</span></p><p class="zh-d">震央距與震源深度的斜邊；大地震改用 R<sub>rup</sub>。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="types" data-num="3" data-short="題型與步驟" data-title="計算題題型與解題步驟">
+  <div class="sec-head"><span class="sec-num">3</span><h2>計算題題型與解題步驟</h2></div>
+  <p>本章的計算都很短，失分多半在單位與常數。每一步寫「公式 = 代入 = 結果（單位）」。</p>
+  <div class="tablewrap"><table class="data ty">
+    <tr><th>題型</th><th>典型已知</th><th>解題步驟</th><th class="go">練習</th></tr>
+    <tr id="t1"><td class="tn"><b>① 地震矩與 M<sub>w</sub></b><span class="zh">模擬考 1.1(a)(b)</span></td><td>破裂長 L、寬 W、平均滑移 D、剛性模數 μ</td><td><ol><li>先決定單位系統：全 SI（m、Pa）或全 cgs（cm、dyne/cm²）</li><li>A = L × W（km → m 乘 10³、→ cm 乘 10⁵）</li><li>M<sub>0</sub> = μAD</li><li>M<sub>w</sub> = ⅔(log M<sub>0</sub> − 9.05)（N·m）或 − 16.05（dyne·cm）</li><li>答案寫到小數一位或兩位，必要時與已知地震比較</li></ol></td><td class="go"><a href="calc.html#m1-1">1.1</a><a href="units/u02.html#s2-6">2.6 例</a></td></tr>
+    <tr id="t2"><td class="tn"><b>② 規模差與倍數</b><span class="zh">模擬考 1.1(c)</span></td><td>兩個 M<sub>w</sub>，或地震矩（能量）比</td><td><ol><li>M<sub>0</sub> 比 = 10<sup>1.5ΔM<sub>w</sub></sup></li><li>能量比近似相同（E<sub>s</sub> ∝ M<sub>0</sub>）</li><li>反求：ΔM<sub>w</sub> = log(比值)/1.5</li><li>寫一句結論：ΔM<sub>w</sub> = 1 約 32 倍，不是 10 倍</li></ol></td><td class="go"><a href="calc.html#m1-1">1.1</a><a href="units/u02.html#s2-sum">2 重點</a></td></tr>
+    <tr id="t3"><td class="tn"><b>③ 判斷斷層類型</b><span class="zh">模擬考 1.1(d)</span></td><td>傾角與上盤動向、滑移角，或海灘球</td><td><ol><li>先確認有上下盤（傾斜斷層）</li><li>上盤上移 → 逆斷層（傾角 &lt; 45° 為逆衝）；上盤下移 → 正斷層；水平錯開 → 走向滑移（看對面判斷左、右移）</li><li>或由滑移角：+90° 逆、−90° 正、0° 左移、180° 右移</li><li>或由海灘球：中心陰影逆、中心白正、四葉十字走向滑移</li><li>寫出應力狀態：逆 σ<sub>3</sub> 垂直（水平壓縮）、正 σ<sub>1</sub> 垂直（水平伸張）、走向滑移 σ<sub>2</sub> 垂直</li></ol></td><td class="go"><a href="calc.html#m1-1">1.1</a><a href="units/u02.html#w-fault">2.3 互動圖</a></td></tr>
+    <tr id="t4"><td class="tn"><b>④ 判定震度</b><span class="zh">中央氣象署新制</span></td><td>某站 PGA、PGV（PGA 給 g 時先換算）</td><td><ol><li>PGA 換成 cm/s²（1 g = 981 cm/s²）</li><li>PGA &lt; 80 → 依 PGA 查 0–4 級</li><li>PGA ≥ 80 → 依 PGV 查：&lt; 15 判 4 級，15–30 5 弱、30–50 5 強、50–80 6 弱、80–140 6 強、≥ 140 為 7 級</li></ol><p>例：PGA = 120 cm/s²、PGV = 35 cm/s → 5 強；PGA = 0.252 g = 247 cm/s²、PGV = 21.4 cm/s → 5 弱。</p></td><td class="go"><a href="units/u02.html#cwa-table">2.5 分級表</a><a href="units/u02.html#w-intensity">2.5 震度計</a></td></tr>
+    <tr id="t5"><td class="tn"><b>⑤ 斷層何時滑動</b><span class="zh">孔隙水壓觸發、再現週期</span></td><td>σ<sub>n</sub>、τ、摩擦係數 μ；或板塊速率、錯動量</td><td><ol><li>目前強度 τ<sub>f</sub> = c + μσ<sub>n</sub>，安全係數 τ<sub>f</sub>/τ</li><li>令 c + μ(σ<sub>n</sub> − u) = τ，解出觸發所需孔隙水壓 u</li><li>再現週期 T<sub>r</sub> ≈ 錯動量 / 板塊速率</li></ol></td><td class="go"><a href="units/u02.html#s2-2">2.2 例</a><a href="units/u02.html#s2-4">2.4 例</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="concept" data-num="4" data-short="簡答觀念" data-title="簡答題的關鍵觀念">
+  <div class="sec-head"><span class="sec-num">4</span><h2>簡答題的關鍵觀念</h2></div>
+  <p>本章最常見的是比較題。每題先寫結論，再寫一兩句理由或實例。</p>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>問題</th><th>答題重點</th><th class="go">詳細說明</th></tr>
+    <tr><td class="no">1</td><td class="term"><b>Magnitude vs. intensity</b><span class="zh">規模與震度有何不同？</span></td><td class="desc"><p class="en"><span class="pt">Magnitude measures the size (energy release) of the earthquake at the source: one value per earthquake.</span><span class="pt">Intensity measures how strongly the ground shakes at a site: it differs from station to station and depends on distance, travel path and site conditions.</span><span class="pt">Magnitude comes from wave amplitudes or M<sub>0</sub>; Taiwan's intensity comes from recorded PGA and PGV.</span></p><p class="zh-d">規模描述震源，一個地震一個值；震度描述某地的搖晃，每站不同，受距離、路徑與場址影響。規模由波振幅或地震矩算出；臺灣震度由 PGA、PGV 判定。</p></td><td class="go"><a href="units/u02.html#s2-5">2.5 →</a></td></tr>
+    <tr><td class="no">2</td><td class="term"><b>Compare normal, reverse and strike-slip faults</b><span class="zh">三種斷層的比較</span></td><td class="desc"><p class="en"><span class="pt">Normal: hanging wall moves down; σ<sub>1</sub> vertical; horizontal extension; divergent boundaries (ridges, rifts).</span><span class="pt">Reverse (thrust): hanging wall moves up; σ<sub>3</sub> vertical; horizontal shortening; convergent boundaries (subduction, collision, western Taiwan).</span><span class="pt">Strike-slip: horizontal motion along strike; σ<sub>2</sub> vertical; transform boundaries (San Andreas).</span><span class="pt">The vertical principal stress is the one that differs: σ<sub>1</sub>, σ<sub>3</sub> or σ<sub>2</sub>.</span></p><p class="zh-d">正斷層：上盤下移、σ<sub>1</sub> 垂直、伸張、張裂邊界。逆斷層：上盤上移、σ<sub>3</sub> 垂直、縮短、聚合邊界。走向滑移：水平錯動、σ<sub>2</sub> 垂直、錯動邊界。記法：看垂直方向是哪一個主應力。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a><a href="units/u02.html#s2-1">2.1 →</a></td></tr>
+    <tr><td class="no">3</td><td class="term"><b>Why do M<sub>L</sub>, m<sub>b</sub>, M<sub>s</sub> saturate but M<sub>w</sub> does not?</b><span class="zh">為什麼 M<sub>w</sub> 不會飽和？</span></td><td class="desc"><p class="en"><span class="pt">M<sub>L</sub>, m<sub>b</sub> and M<sub>s</sub> are read from the amplitude at a fixed period (about 0.1–1 s, 1 s, 20 s).</span><span class="pt">A larger rupture adds mainly long-period energy; the amplitude at that period stops growing, so the magnitude levels off (m<sub>b</sub> 6–6.5, M<sub>L</sub> ≈ 7, M<sub>s</sub> ≈ 8).</span><span class="pt">M<sub>w</sub> is computed from M<sub>0</sub> = μAD, a physical measure of the whole rupture, so it keeps increasing with rupture size.</span><span class="pt">Example: Chi-Chi M<sub>L</sub> 7.3 vs M<sub>w</sub> 7.6; 2024 Hualien M<sub>L</sub> 7.2 vs M<sub>w</sub> 7.4.</span></p><p class="zh-d">早期規模只看固定週期的振幅；破裂變大時增加的是長週期能量，該週期的振幅不再增加，規模就頂住。M<sub>w</sub> 由整個破裂的 μAD 算出，不受週期限制，所以不飽和；大地震時 M<sub>L</sub> 與 M<sub>w</sub> 差距變大。</p></td><td class="go"><a href="units/u02.html#s2-6">2.6 →</a><a class="pr" href="calc.html#m1-1">練習 1.1(e)</a></td></tr>
+    <tr><td class="no">4</td><td class="term"><b>Why does Taiwan have so many earthquakes?</b><span class="zh">臺灣為什麼多震？</span></td><td class="desc"><p class="en"><span class="pt">Taiwan lies on the convergent boundary between the Philippine Sea plate and the Eurasian plate (about 8 cm/yr toward the northwest).</span><span class="pt">Two subduction zones of opposite polarity: in the northeast the Philippine Sea plate subducts northward (Ryukyu Trench); in the south the Eurasian plate subducts eastward (Manila Trench).</span><span class="pt">In between, the Luzon arc collides with the continental margin, building the Central Range; thrust faults in the western foothills (e.g. Chelungpu) absorb the shortening.</span></p><p class="zh-d">臺灣位於菲律賓海板塊與歐亞板塊的聚合邊界（約 8 cm/年往西北）。東北菲律賓海板塊向北隱沒、南部歐亞板塊向東隱沒，中間呂宋島弧碰撞大陸邊緣；西部麓山帶的逆衝斷層吸收縮短量，集集地震即屬此類。</p></td><td class="go"><a href="units/u02.html#s2-1">2.1 →</a></td></tr>
+    <tr><td class="no">5</td><td class="term"><b>How can fluid injection or a reservoir trigger an earthquake?</b><span class="zh">注水、水庫為什麼會引發地震？</span></td><td class="desc"><p class="en"><span class="pt">The fault strength follows Mohr–Coulomb with effective stress: \(\tau_f = c + \mu(\sigma_n - u)\).</span><span class="pt">Injected water raises u, lowers σ<sub>n</sub> − u and τ<sub>f</sub>; when τ<sub>f</sub> falls below the existing tectonic shear stress, the fault slips.</span><span class="pt">A reservoir adds normal stress, but water seeping into the fault raises u, which often dominates.</span><span class="pt">The same mechanism, with u generated by cyclic shear in undrained soil, causes liquefaction.</span></p><p class="zh-d">斷層強度遵守有效應力原理。注水使孔隙水壓上升、強度下降，低於原有的構造剪應力就滑動。水庫的水重雖增加正應力，但水滲入斷層後孔壓上升的效果常較大。同一機制換成土壤就是液化。</p></td><td class="go"><a href="units/u02.html#s2-2">2.2 →</a></td></tr>
+    <tr><td class="no">6</td><td class="term"><b>Plates move only cm/yr; why does a fault slip meters at once?</b><span class="zh">板塊每年只動幾公分，為何一次錯動數公尺？</span></td><td class="desc"><p class="en"><span class="pt">Elastic rebound: the fault is locked by friction, so plate motion is stored as elastic strain for hundreds of years.</span><span class="pt">When the stress exceeds the strength, all the accumulated displacement is released in one slip within seconds to minutes.</span><span class="pt">Slip ≈ plate rate × recurrence interval (2 cm/yr × 300 yr ≈ 6 m).</span></p><p class="zh-d">斷層被鎖住，板塊運動以彈性應變累積數百年，超過強度時一次釋放。錯動量 ≈ 速率 × 再現週期。</p></td><td class="go"><a href="units/u02.html#s2-4">2.4 →</a><a href="units/u02.html#w-rebound">互動圖 →</a></td></tr>
+    <tr><td class="no">7</td><td class="term"><b>Why does the CWA scale use PGV for level 5 and above?</b><span class="zh">新制震度為何 5 級以上看 PGV？</span></td><td class="desc"><p class="en"><span class="pt">Building damage correlates better with ground velocity than with peak acceleration.</span><span class="pt">A short-period acceleration spike can give a high PGA with little damage; such records (PGA ≥ 80 cm/s² but PGV &lt; 15 cm/s) are rated level 4.</span></p><p class="zh-d">建物損害與速度的相關性比加速度好；短週期的尖峰加速度 PGA 雖大、損害不大，所以 PGA ≥ 80 但 PGV &lt; 15 cm/s 仍判 4 級。</p></td><td class="go"><a href="units/u02.html#s2-5">2.5 →</a></td></tr>
+    <tr><td class="no">8</td><td class="term"><b>How should engineers deal with active faults?</b><span class="zh">工程上如何面對活動斷層？</span></td><td class="desc"><p class="en"><span class="pt">Permanent offset across a fault cannot be resisted by strength: avoid crossing it, or design to accommodate it (sliding bearings, enough seat length).</span><span class="pt">Through soil, the surface rupture is offset from the mapped bedrock fault, more so for thick soil and gentle dips: do a site investigation instead of relying on a fixed-width zone.</span><span class="pt">Taiwan designates Active Fault Geologically Sensitive Areas; distance to the fault also enters seismic hazard analysis.</span></p><p class="zh-d">跨越斷層的永久錯動無法用強度抵抗，只能避開或設計成可容許錯動。有覆土時地表破裂會偏離地圖上的斷層線，覆土厚、傾角緩時偏得更多，所以開發前要做場址調查；臺灣劃定活動斷層地質敏感區。</p></td><td class="go"><a href="units/u02.html#s2-4">2.4 →</a></td></tr>
+    <tr><td class="no">9</td><td class="term"><b>How do we know the outer core is liquid?</b><span class="zh">怎麼知道外核是液態？</span></td><td class="desc"><p class="en"><span class="pt">\(V_s = \sqrt{G/\rho}\); a liquid has G = 0, so S waves cannot pass through it.</span><span class="pt">Stations about 104°–140° from the epicenter receive no direct S waves (the S-wave shadow zone), while P waves still pass.</span></p><p class="zh-d">液體 G = 0、V<sub>s</sub> = 0，S 波過不了；離震央約 104°–140° 收不到直達 S 波（陰影區），P 波仍可通過。</p></td><td class="go"><a href="units/u02.html#s2-1">2.1 →</a></td></tr>
+    <tr><td class="no">10</td><td class="term"><b>How do you read a beach ball, and which plane is the fault?</b><span class="zh">海灘球怎麼讀？哪個節面是斷層？</span></td><td class="desc"><p class="en"><span class="pt">Look at the center: shaded → reverse, white → normal, four-leaf cross → strike-slip.</span><span class="pt">Both nodal planes produce the same pattern, so the fault plane must be chosen with other data: aftershock distribution or surface rupture.</span></p><p class="zh-d">看中心：陰影逆斷層、白色正斷層、四葉十字走向滑移。兩個節面給出同一顆球，要靠餘震分布或地表破裂決定哪一個是斷層面。</p></td><td class="go"><a href="units/u02.html#s2-3">2.3 →</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="trap" data-num="5" data-short="常見陷阱" data-title="常見陷阱">
+  <div class="sec-head"><span class="sec-num">5</span><h2>常見陷阱</h2></div>
+  <ul class="pitfalls">
+    <li><b>規模 ≠ 震度</b>：一個地震一個規模，震度每站不同；新制 PGA ≥ 80 cm/s² 後看 PGV。</li>
+    <li><b>ΔM<sub>w</sub> = 1 是 32 倍</b>：10<sup>1.5</sup> = 31.6，不是 10 倍；ΔM<sub>w</sub> = 0.2 已是 2 倍。</li>
+    <li><b>M<sub>w</sub> 常數配單位</b>：N·m 用 9.05、dyne·cm 用 16.05；另一套 9.1／16.1 不可混搭。</li>
+    <li><b>單位換算</b>：1 N·m = 10⁷ dyne·cm；1 km = 10³ m = 10⁵ cm，面積 1 km² = 10¹⁰ cm²。</li>
+    <li><b>逆斷層的應力</b>：水平壓縮，σ<sub>1</sub> 水平、<b>σ<sub>3</sub> 垂直</b>；正斷層才是 σ<sub>1</sub> 垂直。</li>
+    <li><b>逆斷層與逆衝</b>：逆衝斷層是傾角小於約 45° 的逆斷層，不是另一種動向。</li>
+    <li><b>右移、左移看對面</b>：站在哪一側看都一樣，看對面那塊往哪移。</li>
+    <li><b>符號撞名</b>：本章 δ 是傾角、D 是滑移量、μ 是摩擦係數或剛性模數，和單元 4 的 δ、D 不同。</li>
+    <li><b>地殼不是 100 km 厚</b>：陸殼約 30–70 km、洋殼約 5–10 km；約 100 km 是岩石圈。</li>
+    <li><b>大地震用 R<sub>rup</sub></b>：破裂面長數十公里，震央距不能代表工址到震源的距離。</li>
+  </ul>
+  <div class="callout link"><div class="ct">延伸</div>
+    <p>完整說明、互動圖與小測驗在<a href="units/u02.html">單元 2 · 地震從哪裡來</a>（<a href="units/u02.html#s2-sum">重點整理</a>）；公式見<a href="formulas.html#f1">公式總表 Ch1</a>，名詞見<a href="glossary.html#g1">名詞總表 Ch1</a>，計算題見<a href="calc.html#m1-1">計算題整理 1.1</a>。</p>
+  </div>
+</section>
+
+</main>
+<footer class="site">CIE 5014 Soil Dynamics and Foundation Vibration · Personal Study Notes · From Prof. Dr. Yu-Wei Hwang 2026 Slides、Homework and Reference</footer>
+
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/auto-render.min.js"></script>
+<script src="assets/common.js"></script>
+</body>
+</html>

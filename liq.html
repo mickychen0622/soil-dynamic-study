@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>液化考試重點 · Soil Dynamics and Foundation Vibration</title>
+<link rel="stylesheet" href="assets/katex/katex.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  table.gl { table-layout: fixed; width: 100%; }
+  table.gl th:nth-child(1) { width: 2.6em; }
+  table.gl th:nth-child(2) { width: 16em; }
+  table.gl th:nth-child(4) { width: 7.5em; }
+  table.gl td.no { color: var(--muted); font-variant-numeric: tabular-nums; }
+  table.gl td.term b { display: block; font-size: 15.5px; }
+  table.gl td.term .zh { color: var(--muted); font-size: 14px; }
+  table.gl td.desc { line-height: 1.65; }
+  table.gl td.desc p { max-width: none; }
+  table.gl td.desc .fx .katex-display { margin: 0 0 8px; text-align: left; }
+  table.gl td.desc .fx .katex-display > .katex { text-align: left; }
+  .fx .katex-display, .eqbox .katex-display { overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+  table.gl td.desc .en { margin: 0 0 6px; color: var(--ink); font-size: 15px; }
+  table.gl td.desc .zh-d { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.6; opacity: .85; }
+  td.desc .en .pt { display: block; padding-left: 1em; text-indent: -1em; }
+  td.desc .en .pt + .pt { margin-top: 6px; }
+  table.gl td.go, table.gl th.go { text-align: right; white-space: nowrap; }
+  table.gl td.go a { display: block; font-size: 14px; }
+  table.gl td.go a.pr { font-size: 13px; color: var(--muted); }
+  table.gl td.go a.pr:hover { color: var(--accent); }
+  table.sym td:first-child { white-space: nowrap; width: 8em; }
+  table.sym td:last-child { white-space: nowrap; color: var(--muted); }
+  table.ty td { vertical-align: top; line-height: 1.65; }
+  table.ty td.tn { width: 12em; }
+  table.ty td.tn b { display: block; font-size: 15.5px; }
+  table.ty td.tn .zh { color: var(--muted); font-size: 14px; }
+  table.ty ol { margin: 0; padding-left: 1.3em; }
+  table.ty ol li + li { margin-top: 3px; }
+  table.ty td.go { width: 8em; text-align: right; white-space: nowrap; }
+  table.ty td.go a { display: block; font-size: 13.5px; }
+  .star { color: var(--orange); font-weight: 700; margin-left: 3px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 600; color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; padding: 0 5px; margin-left: 5px; vertical-align: 2px; }
+  h3.grp { margin-top: 34px; }
+  @media (max-width: 760px) {
+    table.gl, table.gl tbody, table.gl tr, table.gl td,
+    table.ty, table.ty tbody, table.ty tr, table.ty td { display: block; width: auto; }
+    table.gl tr:first-child, table.ty tr:first-child { display: none; }
+    table.gl tr, table.ty tr { padding: 14px 0; border-bottom: 1px solid var(--line); }
+    table.gl tr:last-child, table.ty tr:last-child { border-bottom: 0; }
+    table.gl td, table.ty td { border: 0; padding: 2px 0; text-align: left !important; width: auto !important; }
+    table.gl td.no { display: none; }
+    table.gl td.go a, table.ty td.go a { display: inline; margin-right: 14px; }
+  }
+</style>
+</head>
+<body data-page="liq" data-root="" data-title="液化考試重點">
+
+<main>
+
+<header class="hero" id="top">
+  <div class="eyebrow">Soil Liquefaction Exam Review · 液化考試重點</div>
+  <h1>液化考試重點</h1>
+  <p class="lede"><b>考前把單元 12 一次看完。</b>這頁只收 Ch8 講義 p.1–23：液化易致性（歷史、地質、組成、狀態四個準則）、臨界狀態線、不排水反覆試驗的 r<sub>u</sub>、CSR、CRR 與三軸到現地的修正 c<sub>r</sub>。p.24 之後的 K<sub>α</sub>、K<sub>σ</sub>、N<sub>eq</sub>、簡化法、SPT／CPT／V<sub>s</sub>、P<sub>L</sub>、沉陷與側潰先不放。說明以英文為主（考試直接作答用），下方淺色字是中文；右欄連回單元 12，以及計算題整理中的練習題。<span class="star">★</span> 是 2025 年期中考考過的名詞；HW1–HW3 都沒有液化題，所以本頁沒有 HW 標籤。</p>
+
+  <h3>2025 期中考的液化題目</h3>
+  <div class="tablewrap"><table class="data">
+    <tr><th>題號</th><th>題型</th><th>內容</th><th class="num">配分</th></tr>
+    <tr class="hl"><td>Q1</td><td>名詞解釋</td><td><b>Cyclic mobility</b> 反覆流動性（<a href="#d13">名詞 13</a>，和流動液化對照著寫）</td><td class="num">4 / 40</td></tr>
+  </table></div>
+  <p>同一題還考了 <b>N<sub>eq</sub></b>（等值循環次數），它屬講義 p.24 之後的觸發評估，本頁不列；定義見<a href="glossary.html#g8">名詞總表 Ch8</a>。</p>
+  <div class="callout link"><div class="ct">今年要多準備的</div>
+    <p>模擬考 8.1 整題都落在這個範圍：由兩組反覆三軸試驗算 CSR<sub>tx</sub> → 擬合 CRR = aN<sup>−b</sup> → 求 15 圈的 CRR → 乘 c<sub>r</sub> 與 0.9 換到現地。見<a href="#t4">題型 ④</a>–<a href="#t6">⑥</a>。課綱說期中考會緊跟課堂例題，單元 12.4 的「三軸 → 現地」例題與講義 p.18 的鬆砂／密砂比較也值得再看一次。</p>
+  </div>
+</header>
+
+<section class="sec" id="sym" data-num="0" data-short="符號" data-title="符號與基本關係">
+  <div class="sec-head"><span class="sec-num">0</span><h2>符號與基本關係</h2></div>
+  <p>液化的核心只有一條：<b>不排水 → 孔隙水壓上升 → 有效應力下降 → 強度與勁度下降</b>。所有比值的分母都是<b>有效應力</b>。</p>
+  <div class="eqbox">\[ \begin{aligned} &\sigma' = \sigma - u,\qquad r_u = \frac{\Delta u}{\sigma'_0} \\ &\sigma' = (1 - r_u)\,\sigma'_0 \end{aligned} \]</div>
+  <div class="tablewrap"><table class="data sym">
+    <tr><th>符號</th><th>意義</th><th>常用單位</th></tr>
+    <tr><td>\(\Delta u\)</td><td>Excess pore water pressure 超額孔隙水壓（超過靜水壓的部分）</td><td>kPa</td></tr>
+    <tr><td>\(\sigma'_0\)</td><td>Initial effective confining stress 初始有效應力；三軸用 σ′<sub>3c</sub>、單剪用 σ′<sub>v0</sub></td><td>kPa</td></tr>
+    <tr><td>\(\sigma'_{3c}\)</td><td>Effective consolidation (cell) pressure in the triaxial test 三軸壓密有效圍壓</td><td>kPa</td></tr>
+    <tr><td>\(\sigma'_{v0}\)</td><td>Initial vertical effective stress 初始垂直有效應力</td><td>kPa</td></tr>
+    <tr><td>\(r_u\)</td><td>Excess pore pressure ratio 超額孔隙水壓比</td><td>—</td></tr>
+    <tr><td>\(\tau_{cyc}\)</td><td>Cyclic shear stress amplitude 反覆剪應力振幅（單剪）</td><td>kPa</td></tr>
+    <tr><td>\(\sigma_d\)</td><td>Cyclic deviator stress amplitude 反覆軸差應力振幅（單振幅；講義寫 σ<sub>dc</sub>）</td><td>kPa</td></tr>
+    <tr><td>\(CSR_{ss},\ CSR_{tx}\)</td><td>Cyclic stress ratio in simple shear / triaxial 單剪、三軸的反覆應力比</td><td>—</td></tr>
+    <tr><td>\(CRR\)</td><td>Cyclic resistance ratio 抗液化強度比（指定圈數下造成液化的 CSR）</td><td>—</td></tr>
+    <tr><td>\(N,\ N_L\)</td><td>Number of cycles; cycles to liquefaction 圈數；達液化的圈數</td><td>圈</td></tr>
+    <tr><td>\(a,\ b\)</td><td>Coefficient and exponent of CRR = aN<sup>−b</sup> 抗液化曲線的係數與指數</td><td>—</td></tr>
+    <tr><td>\(c_r\)</td><td>CSR correction factor, triaxial → simple shear 三軸換單剪的修正因子（講義寫 Cr）</td><td>—</td></tr>
+    <tr><td>\(K_0\)</td><td>Coefficient of lateral earth pressure at rest 靜止土壓力係數</td><td>—</td></tr>
+    <tr><td>\(e,\ e_c\)</td><td>Void ratio; critical void ratio 孔隙比；臨界孔隙比</td><td>—</td></tr>
+    <tr><td>\(D_r\)</td><td>Relative density 相對密度</td><td>%</td></tr>
+    <tr><td>\(PI,\ LL,\ w_c\)</td><td>Plasticity index, liquid limit, water content 塑性指數、液性限度、含水量</td><td>%</td></tr>
+    <tr><td>\(I_c\)</td><td>CPT soil behaviour type index CPT 土壤行為指數</td><td>—</td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="def" data-num="1" data-short="名詞解釋" data-title="名詞解釋">
+  <div class="sec-head"><span class="sec-num">1</span><h2>名詞解釋</h2></div>
+  <p>作答順序：<b>一句定義 → 公式 → 一兩個關鍵性質</b>。2025 年的格式是「briefly describe in English/Chinese what you know about…」，每題 4 分。前 7 個是易致性，8–13 是狀態與兩種液化，14–19 是室內反覆試驗。</p>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名詞</th><th>說明</th><th class="go">詳細推導</th></tr>
+    <tr id="d1"><td class="no">1</td><td class="term"><b>Soil liquefaction</b><span class="zh">土壤液化</span></td><td class="desc"><p class="en"><span class="pt">The loss of strength and stiffness of a saturated cohesionless soil when cyclic (earthquake) loading raises the excess pore pressure under undrained conditions.</span><span class="pt">The effective stress drops toward zero: \(\sigma' = (1-r_u)\sigma'_0\).</span><span class="pt">It needs a soil that tends to contract when sheared and loading too fast for the water to drain.</span></p><p class="zh-d">飽和無凝聚性土在反覆載重下，水來不及排出，超額孔隙水壓上升、有效應力趨近零，強度與勁度大幅下降。條件是「土想收縮」加上「水排不掉」。</p></td><td class="go"><a href="units/u12.html#s12-1">12.1 →</a><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+    <tr id="d2"><td class="no">2</td><td class="term"><b>Liquefaction susceptibility</b><span class="zh">液化易致性</span></td><td class="desc"><p class="en"><span class="pt">Whether a soil could liquefy at all if the shaking were strong enough.</span><span class="pt">Judged by four criteria, from coarse to fine: historic, geologic, compositional and state criteria.</span><span class="pt">Susceptible does not mean it will liquefy; only susceptible soils go on to a triggering evaluation.</span></p><p class="zh-d">只回答「這種土有沒有可能液化」，用歷史、地質、組成、狀態四個準則由粗到細判斷。易致不等於會液化；不易致的土不必再做觸發評估。</p></td><td class="go"><a href="units/u12.html#s12-1">12.1 →</a></td></tr>
+    <tr id="d3"><td class="no">3</td><td class="term"><b>Historic criteria</b><span class="zh">歷史準則</span></td><td class="desc"><p class="en"><span class="pt">Based on past earthquake performance: liquefaction case histories and regional liquefaction potential maps.</span><span class="pt">Sites that liquefied before often liquefy again.</span><span class="pt">The maximum distance at which liquefaction has been observed increases with magnitude (Ambraseys 1988): roughly 20 km for M 6, 100 km for M 7 and 300 km for M 8 (read from the chart).</span></p><p class="zh-d">看過去地震的液化案例：同一地點常重複液化；可能液化的最遠距離隨規模增加（Ambraseys 1988 圖讀值：M 6 約 20 km、M 7 約 100 km、M 8 約 300 km）。</p></td><td class="go"><a href="units/u12.html#s12-1">12.1 →</a></td></tr>
+    <tr id="d4"><td class="no">4</td><td class="term"><b>Geologic criteria</b><span class="zh">地質準則</span></td><td class="desc"><p class="en"><span class="pt">Depositional environment: fluvial, alluvial, colluvial and aeolian deposits, hydraulic fills, mine tailings and uncompacted man-made fills are susceptible (loose, uniform sorting).</span><span class="pt">Hydrological environment: only saturated soil liquefies, so a shallow ground-water table increases susceptibility.</span><span class="pt">Age: Holocene deposits are susceptible; susceptibility decreases with age, and Pleistocene deposits rarely liquefy.</span></p><p class="zh-d">沉積環境（河流、沖積、崩積、風積、水力回填、尾礦、未壓實填土）、地下水位（淺、飽和才會液化）、年代（全新世易液化，越老越不易，更新世很少）。</p></td><td class="go"><a href="units/u12.html#s12-1">12.1 →</a></td></tr>
+    <tr id="d5"><td class="no">5</td><td class="term"><b>Compositional criteria</b><span class="zh">組成準則</span></td><td class="desc"><p class="en"><span class="pt">Grain size, gradation, grain shape and plasticity.</span><span class="pt">Grain-size bounds: the most liquefiable band is fine to medium sand; a wider band (silt to fine gravel) is potentially liquefiable.</span><span class="pt">Clay resists because of cohesion; clean gravel drains so fast that pore pressure rarely builds up, but gravel can liquefy when drainage is impeded, e.g. under a clay cap (1983 Borah Peak, 2008 Wenchuan).</span><span class="pt">Non-plastic fines are susceptible; uniformly graded and rounded soils are more susceptible than well-graded and angular soils.</span></p><p class="zh-d">粒徑分布落在細砂到中砂的帶內最易液化，外圍較寬的帶（粉土到細礫石）為可能液化。黏土有凝聚力；乾淨礫石排水快，但上覆黏土層阻礙排水時也會液化。非塑性細料易液化；均勻級配比優良級配、圓粒比角粒容易液化。</p></td><td class="go"><a href="units/u12.html#s12-1">12.1 →</a></td></tr>
+    <tr id="d6"><td class="no">6</td><td class="term"><b>Sand-like vs clay-like fine-grained soils</b><span class="zh">細粒土的類砂與類黏土行為</span></td><td class="desc"><p class="en"><span class="pt">For fine-grained soils, plasticity (PI), not grain size or clay fraction, controls whether they behave like sand.</span><span class="pt">Bray &amp; Sancio (2006): PI ≤ 12 and w<sub>c</sub>/LL ≥ 0.85 susceptible; 12 &lt; PI ≤ 18 and w<sub>c</sub>/LL ≥ 0.8 moderately susceptible (test it).</span><span class="pt">Idriss &amp; Boulanger (2008): PI &lt; 7 sand-like. CPT (Robertson &amp; Wride 1998): I<sub>c</sub> ≤ 2.6 sand-like.</span><span class="pt">The modified Chinese criteria (clay fraction, LL, w<sub>c</sub>) are no longer recommended.</span></p><p class="zh-d">細粒土看塑性，不看粒徑或黏粒含量。Bray &amp; Sancio：PI ≤ 12 且 w<sub>c</sub>/LL ≥ 0.85 易致；12 &lt; PI ≤ 18 且 w<sub>c</sub>/LL ≥ 0.8 中度，要試驗。Idriss &amp; Boulanger：PI &lt; 7 像砂。CPT：I<sub>c</sub> ≤ 2.6 像砂。修正中國準則已不建議使用。</p></td><td class="go"><a href="units/u12.html#s12-1">12.1 →</a></td></tr>
+    <tr id="d7"><td class="no">7</td><td class="term"><b>Cyclic softening</b><span class="zh">反覆軟化</span></td><td class="desc"><p class="en"><span class="pt">The loss of stiffness and strength of clay-like soils under large cyclic strains.</span><span class="pt">It is not called liquefaction and is not evaluated with the sand CRR curves.</span></p><p class="zh-d">像黏土的土（如 PI ≥ 7）不會「液化」，但大應變下強度與勁度仍會明顯下降，稱反覆軟化，另行評估、不用砂的 CRR 曲線。</p></td><td class="go"><a href="units/u12.html#s12-1">12.1 →</a></td></tr>
+    <tr id="d8"><td class="no">8</td><td class="term"><b>State criteria</b><span class="zh">狀態準則</span></td><td class="desc"><p class="en"><span class="pt">The initial void ratio (density) and effective confining stress together decide the volumetric tendency during shear.</span><span class="pt">Contractive during shear: susceptible. Dilative during shear: not susceptible (to flow liquefaction).</span><span class="pt">The boundary is the critical state line, so the same sand can be contractive at depth and dilative near the surface.</span></p><p class="zh-d">初始孔隙比與有效圍壓一起決定剪動時想收縮還是膨脹：收縮易致，膨脹不易致。分界是臨界狀態線，所以同一密度的砂在深處可能收縮、淺處可能膨脹。</p></td><td class="go"><a href="units/u12.html#s12-2">12.2 →</a></td></tr>
+    <tr id="d9"><td class="no">9</td><td class="term"><b>Critical void ratio e<sub>c</sub></b><span class="zh">臨界孔隙比</span></td><td class="desc"><p class="en"><span class="pt">Casagrande's drained triaxial tests: dense sand shows a peak then softens and dilates; loose sand hardens and contracts.</span><span class="pt">At large strain both reach the same void ratio, at which shearing continues with no volume change: the critical void ratio.</span><span class="pt">e<sub>c</sub> decreases as the effective confining stress increases.</span></p><p class="zh-d">排水三軸中密砂先有峰值再軟化、體積膨脹；鬆砂一路硬化、體積收縮；大應變時兩者趨於同一孔隙比（體積不再變化），即臨界孔隙比。圍壓越大，e<sub>c</sub> 越小。</p></td><td class="go"><a href="units/u12.html#s12-2">12.2 →</a></td></tr>
+    <tr id="d10"><td class="no">10</td><td class="term"><b>Critical (steady) state line, CSL</b><span class="zh">臨界狀態線（穩態線）</span></td><td class="desc"><p class="en"><span class="pt">The locus of e<sub>c</sub> versus effective confining stress; nearly a straight line in e–log σ′ space.</span><span class="pt">It is the boundary between contractive (above) and dilative (below) behaviour.</span><span class="pt">It also separates soils susceptible to flow liquefaction (above) from non-susceptible soils (below).</span></p><p class="zh-d">臨界孔隙比對有效圍壓的連線，在 e–log σ′ 上近似直線。線上方收縮、線下方膨脹；也是「會不會流動液化」的分界。</p></td><td class="go"><a href="units/u12.html#s12-2">12.2 →</a></td></tr>
+    <tr id="d11"><td class="no">11</td><td class="term"><b>Drained vs undrained behaviour of loose and dense sand</b><span class="zh">鬆砂與密砂的排水、不排水行為</span></td><td class="desc"><p class="en"><span class="pt">Drained: σ′ stays constant and the void ratio changes; loose sand contracts and dense sand dilates toward the CSL.</span><span class="pt">Undrained: e stays constant, so the soil reaches the CSL by changing σ′.</span><span class="pt">Loose (contractive) sand: positive Δu, σ′ decreases, strength drops. Dense (dilative) sand: negative Δu, σ′ increases, strength rises.</span></p><p class="zh-d">排水時 σ′ 不變、孔隙比改變（鬆砂往下收縮、密砂往上膨脹）。不排水時 e 不變，只能水平移動到 CSL：鬆砂孔壓上升、有效應力下降（往左），密砂負孔壓、有效應力上升（往右），越剪越強。</p></td><td class="go"><a href="units/u12.html#s12-2">12.2 →</a></td></tr>
+    <tr id="d12"><td class="no">12</td><td class="term"><b>Flow liquefaction</b><span class="zh">流動液化</span></td><td class="desc"><p class="en"><span class="pt">Occurs when the static shear stress needed for equilibrium exceeds the residual (steady-state) strength of the liquefied soil.</span><span class="pt">Only loose, contractive soils above the CSL are susceptible.</span><span class="pt">Failure is sudden with very large deformations and may continue after shaking stops (e.g. the 1971 Lower San Fernando Dam, tailings-dam flow slides).</span><span class="pt">Less common than cyclic mobility, but the most destructive.</span></p><p class="zh-d">靜態剪應力大於液化後殘餘強度時發生，只發生在 CSL 上方的鬆、收縮性土。破壞突然、變形很大，地震停了還可能繼續流動。較少見但破壞性最大。</p></td><td class="go"><a href="units/u12.html#s12-2">12.2 →</a></td></tr>
+    <tr id="d13" data-star><td class="no">13</td><td class="term"><b>Cyclic mobility<span class="star">★</span></b><span class="zh">反覆流動性</span></td><td class="desc"><p class="en"><span class="pt">Occurs when the static shear stress is smaller than the residual strength, but the cyclic shear stress is large enough and lasts enough cycles.</span><span class="pt">Pore pressure and deformation accumulate cycle by cycle; it can occur in loose to dense soils, on either side of the CSL.</span><span class="pt">r<sub>u</sub> may reach 1 momentarily at stress reversals, but dilation between reversals restores the strength, so strains per cycle are limited.</span><span class="pt">Deformation stops when shaking stops; typical results are lateral spreading, sand boils and settlement.</span></p><p class="zh-d">靜剪應力小於殘餘強度，靠反覆剪應力夠大、圈數夠多，使孔隙水壓與變形逐圈累積；鬆砂到密砂、CSL 上下都可能發生。剪應力反轉瞬間 r<sub>u</sub> 可達 1，但繼續剪動時膨脹、強度回升，所以每圈變形有限，地震停就停。常見後果是側潰、噴砂、沉陷；日常說的液化多半是這一種。</p></td><td class="go"><a href="units/u12.html#s12-2">12.2 →</a><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+    <tr id="d14"><td class="no">14</td><td class="term"><b>Excess pore pressure ratio r<sub>u</sub></b><span class="zh">超額孔隙水壓比</span></td><td class="desc"><p class="en"><span class="pt">\(r_u = \Delta u/\sigma'_0\): the excess pore pressure over the initial effective stress (σ′<sub>3c</sub> in triaxial).</span><span class="pt">It builds up cycle by cycle; strains stay small until r<sub>u</sub> approaches 1.</span><span class="pt">r<sub>u</sub> = 1 means zero effective stress (initial liquefaction); in dense sand it occurs only momentarily at stress reversal, giving "banana-shaped" stress paths.</span><span class="pt">With static shear (no stress reversal), r<sub>u</sub> may never reach 1 although strains become large.</span></p><p class="zh-d">\(r_u = \Delta u/\sigma'_0\)（三軸用 σ′<sub>3c</sub>），逐圈上升，接近 1 之前應變都很小。r<sub>u</sub> = 1 表示有效應力為零；密砂只在剪應力反轉的瞬間到 1，應力路徑呈香蕉形。有靜剪應力時 r<sub>u</sub> 可能到不了 1，但應變仍可很大。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+    <tr id="d15"><td class="no">15</td><td class="term"><b>Cyclic simple shear and cyclic triaxial tests</b><span class="zh">反覆單剪與反覆三軸試驗</span></td><td class="desc"><p class="en"><span class="pt">Undrained laboratory tests that apply uniform cycles of stress and record Δu and strain until liquefaction.</span><span class="pt">Simple shear: K<sub>0</sub>-consolidated, cyclic horizontal shear stress τ<sub>cyc</sub>; closer to the field condition of vertically propagating S waves.</span><span class="pt">Triaxial: isotropically consolidated at σ′<sub>3c</sub>, cyclic deviator stress σ<sub>d</sub>; easy to run but needs the correction factor c<sub>r</sub>.</span></p><p class="zh-d">不排水、施加等振幅反覆應力，記錄孔隙水壓與應變直到液化。單剪：K<sub>0</sub> 壓密、施加水平剪應力，接近現地。三軸：等向壓密、施加反覆軸差應力，方便但要用 c<sub>r</sub> 修正。</p></td><td class="go"><a href="units/u12.html#s12-4">12.4 →</a></td></tr>
+    <tr id="d16"><td class="no">16</td><td class="term"><b>Cyclic stress ratio, CSR (laboratory)</b><span class="zh">反覆應力比（室內）</span></td><td class="desc"><p class="en"><span class="pt">The cyclic shear stress normalized by the initial effective stress: the loading (demand) applied in a test.</span><span class="pt">Simple shear: \(CSR_{ss} = \tau_{cyc}/\sigma'_{v0}\). Triaxial: \(CSR_{tx} = \sigma_d/(2\sigma'_{3c})\), since the maximum shear stress on the 45° plane is σ<sub>d</sub>/2.</span></p><p class="zh-d">反覆剪應力除以初始有效應力，是試驗施加的載重。三軸的分母是 2σ′<sub>3c</sub>，因為 45° 面上的最大剪應力是 σ<sub>d</sub>/2。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+    <tr id="d17"><td class="no">17</td><td class="term"><b>Laboratory definition of liquefaction</b><span class="zh">試驗中的液化準則</span></td><td class="desc"><p class="en"><span class="pt">Initial liquefaction: r<sub>u</sub> = 1 (Δu = σ′<sub>3c</sub>).</span><span class="pt">Strain criterion: 5 % double-amplitude axial strain (cyclic triaxial) or 3 % single-amplitude shear strain (simple shear).</span><span class="pt">For loose sand both occur almost together; for dense sand the number of cycles to liquefaction N<sub>L</sub> can differ markedly, so the criterion must be reported.</span></p><p class="zh-d">兩種定義：初始液化 r<sub>u</sub> = 1；或應變準則（三軸雙振幅軸應變 5 %、單剪單振幅剪應變 3 %）。鬆砂兩者幾乎同時；密砂差很多，引用 N<sub>L</sub> 要寫明準則。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+    <tr id="d18"><td class="no">18</td><td class="term"><b>Cyclic resistance ratio CRR and cyclic resistance curve</b><span class="zh">抗液化強度比與抗液化（反覆強度）曲線</span></td><td class="desc"><p class="en"><span class="pt">CRR is the CSR that causes liquefaction in a specified number of cycles N: the capacity of the soil.</span><span class="pt">Plotting CSR against N<sub>L</sub> from several tests gives the cyclic strength curve \(CRR = aN^{-b}\), a straight line on log–log axes; b ≈ 0.2–0.35 for clean sand.</span><span class="pt">Denser soil plots higher. A CRR value must state N; the field reference is 15 cycles (M 7.5).</span><span class="pt">The exponent b links cycles of different amplitude.</span></p><p class="zh-d">CRR：在指定圈數下造成液化所需的 CSR，是土的抵抗。多組試驗的 CSR–N<sub>L</sub> 在雙對數上近似直線 CRR = aN<sup>−b</sup>，乾淨砂 b ≈ 0.2–0.35；越密曲線越高。說 CRR 一定要說圈數，現地基準 15 圈（M = 7.5）。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a><a href="units/u12.html#w-ru">互動圖 →</a></td></tr>
+    <tr id="d19"><td class="no">19</td><td class="term"><b>CSR correction factor c<sub>r</sub> and the two-dimensional effect</b><span class="zh">CSR 修正因子與二維效應</span></td><td class="desc"><p class="en"><span class="pt">Isotropically consolidated triaxial tests overestimate the resistance of soil in the K<sub>0</sub> state: \((CSR)_{ss} = c_r(CSR)_{tx}\).</span><span class="pt">Finn et al. (1971) \(c_r = (1+K_0)/2\); Castro (1975) \(c_r = 2(1+2K_0)/(3\sqrt3)\). For K<sub>0</sub> = 0.4, c<sub>r</sub> ≈ 0.55–0.72; for K<sub>0</sub> = 1, 1.0–1.15.</span><span class="pt">Field shaking is multidirectional (two horizontal components), which builds pore pressure faster: \((CSR)_{field} = 0.9(CSR)_{ss} = 0.9c_r(CSR)_{tx}\).</span></p><p class="zh-d">等向壓密三軸高估現地（K<sub>0</sub> 狀態）的抵抗，用 c<sub>r</sub> 換成單剪；現地有兩個水平方向的剪應力，孔壓上升更快，再乘 0.9（二維效應）。K<sub>0</sub> = 0.4 時 c<sub>r</sub> 約 0.55–0.72。</p></td><td class="go"><a href="units/u12.html#s12-4">12.4 →</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="fx" data-num="2" data-short="公式" data-title="解題公式">
+  <div class="sec-head"><span class="sec-num">2</span><h2>解題公式（依解題順序）</h2></div>
+  <p>A 先判斷會不會液化（易致性），B 算試驗中的孔壓與載重，C 由多組試驗建立 CRR 曲線，D 把室內結果換到現地。</p>
+
+  <h3 class="grp" id="fxA">A　易致性篩選</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">A1</td><td class="term"><b>Fine-grained soil criteria</b><span class="zh">細粒土易致性準則</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &\text{Bray \& Sancio: } PI \le 12,\ \ w_c/LL \ge 0.85 \\ &\text{Idriss \& Boulanger: } PI &lt; 7 \\ &\text{CPT: } I_c \le 2.6 \end{aligned} \]</div><p class="en"><span class="pt">Satisfied → sand-like, go on to triggering. Bray &amp; Sancio 12 &lt; PI ≤ 18 and w<sub>c</sub>/LL ≥ 0.8 → moderately susceptible, test it. CPT I<sub>c</sub> &gt; 2.6 → sample and test.</span></p><p class="zh-d">符合就像砂，進入觸發評估；Bray &amp; Sancio 的中間帶與 CPT I<sub>c</sub> &gt; 2.6 都要取樣試驗。</p></td><td class="go"><a href="units/u12.html#s12-1">12.1 →</a></td></tr>
+    <tr><td class="no">A2</td><td class="term"><b>State relative to the CSL</b><span class="zh">狀態相對於 CSL</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &e_0 &gt; e_c(\sigma'_0):\ \text{contractive} \Rightarrow \Delta u &gt; 0,\ \sigma'\downarrow \\ &e_0 &lt; e_c(\sigma'_0):\ \text{dilative} \Rightarrow \Delta u &lt; 0,\ \sigma'\uparrow \end{aligned} \]</div><p class="en"><span class="pt">Undrained: e is constant, so the state moves horizontally on the e–log σ′ plot until it reaches the CSL.</span></p><p class="zh-d">不排水時孔隙比不變，只能水平移到 CSL：上方往左（孔壓上升），下方往右（負孔壓）。</p></td><td class="go"><a href="units/u12.html#s12-2">12.2 →</a></td></tr>
+  </table></div>
+
+  <h3 class="grp" id="fxB">B　孔隙水壓與試驗的 CSR</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">B1</td><td class="term"><b>Excess pore pressure ratio</b><span class="zh">超額孔隙水壓比</span></td><td class="desc"><div class="fx">\[ r_u = \frac{\Delta u}{\sigma'_0},\qquad \sigma' = \sigma'_0 - \Delta u = (1-r_u)\,\sigma'_0 \]</div><p class="en"><span class="pt">Triaxial: σ′<sub>0</sub> = σ′<sub>3c</sub>; simple shear: σ′<sub>0</sub> = σ′<sub>v0</sub>. r<sub>u</sub> = 1 → initial liquefaction.</span></p><p class="zh-d">分母是初始有效應力，不是總應力；r<sub>u</sub> = 1 為初始液化。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+    <tr><td class="no">B2</td><td class="term"><b>CSR in simple shear</b><span class="zh">單剪的 CSR</span></td><td class="desc"><div class="fx">\[ CSR_{ss} = \frac{\tau_{cyc}}{\sigma'_{v0}} \]</div></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+    <tr><td class="no">B3</td><td class="term"><b>CSR in cyclic triaxial</b><span class="zh">三軸的 CSR</span></td><td class="desc"><div class="fx">\[ CSR_{tx} = \frac{\sigma_d}{2\,\sigma'_{3c}} \]</div><p class="en"><span class="pt">σ<sub>d</sub> is the single amplitude of the cyclic deviator stress; σ<sub>d</sub>/2 is the shear stress on the 45° plane.</span></p><p class="zh-d">σ<sub>d</sub> 是單振幅；分母的 2 來自 45° 面剪應力 = σ<sub>d</sub>/2。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a><a class="pr" href="calc.html#m8-1">練習 8.1</a></td></tr>
+    <tr><td class="no">B4</td><td class="term"><b>Liquefaction criteria in a test</b><span class="zh">試驗的液化準則</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &r_u = 1\quad\text{or} \\ &\varepsilon_{DA} = 5\,\%\ (\text{triaxial}),\ \ \gamma_{SA} = 3\,\%\ (\text{simple shear}) \end{aligned} \]</div><p class="en"><span class="pt">The cycle at which the chosen criterion is first met is N<sub>L</sub>.</span></p><p class="zh-d">先達到所選準則的那一圈就是 N<sub>L</sub>；作答寫明用哪個準則。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+  </table></div>
+
+  <h3 class="grp" id="fxC">C　抗液化曲線 CRR = aN<sup>−b</sup></h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">C1</td><td class="term"><b>Cyclic resistance curve</b><span class="zh">抗液化曲線</span></td><td class="desc"><div class="fx">\[ CRR = aN^{-b},\qquad \log CRR = \log a - b\log N \]</div><p class="en"><span class="pt">b ≈ 0.2–0.35 for clean sand; the field reference is N = 15 (M 7.5).</span></p><p class="zh-d">雙對數上斜率為 −b 的直線；乾淨砂 b ≈ 0.2–0.35。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a><a class="pr" href="calc.html#m8-1">練習 8.1</a></td></tr>
+    <tr><td class="no">C2</td><td class="term"><b>a and b from two tests</b><span class="zh">由兩組試驗求 a、b</span></td><td class="desc"><div class="fx">\[ b = \frac{\ln(CRR_1/CRR_2)}{\ln(N_2/N_1)},\qquad a = CRR_1\,N_1^{\,b} \]</div><p class="en"><span class="pt">Test 1 is the higher CSR (fewer cycles), so both logarithms are positive.</span></p><p class="zh-d">CSR 大的那組圈數少，分子分母都取正值。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a><a class="pr" href="calc.html#m8-1">練習 8.1</a></td></tr>
+    <tr><td class="no">C3</td><td class="term"><b>CRR at another number of cycles</b><span class="zh">換到其他圈數</span></td><td class="desc"><div class="fx">\[ \frac{CRR_2}{CRR_1} = \left(\frac{N_2}{N_1}\right)^{-b},\qquad N_L = \left(\frac{a}{CSR}\right)^{1/b} \]</div><p class="en"><span class="pt">The second form gives the cycles to liquefaction under a given CSR.</span></p><p class="zh-d">比值式不需要 a；第二式由給定 CSR 求幾圈液化。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a><a class="pr" href="calc.html#m8-1">練習 8.1</a></td></tr>
+    <tr><td class="no">C4</td><td class="term"><b>Cycles of different amplitude</b><span class="zh">不同振幅的圈數換算</span></td><td class="desc"><div class="fx">\[ 1\ \text{cycle at}\ \tau_1 \;=\; \left(\frac{\tau_1}{\tau_2}\right)^{1/b}\ \text{cycles at}\ \tau_2 \]</div><p class="en"><span class="pt">Each cycle uses up 1/N<sub>L</sub> of the fatigue life; b = 0.25 → one cycle at 1.19τ ≈ 2 cycles at τ.</span></p><p class="zh-d">每圈用掉 1/N<sub>L</sub> 的壽命。這是後面 N<sub>eq</sub> 的基礎（不在本頁範圍）。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+  </table></div>
+
+  <h3 class="grp" id="fxD">D　由室內試驗換到現地</h3>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>名稱</th><th>公式與說明</th><th class="go">推導／練習</th></tr>
+    <tr><td class="no">D1</td><td class="term"><b>Triaxial to simple shear</b><span class="zh">三軸換單剪</span></td><td class="desc"><div class="fx">\[ (CSR)_{ss} = c_r\,(CSR)_{tx} \]</div></td><td class="go"><a href="units/u12.html#s12-4">12.4 →</a></td></tr>
+    <tr><td class="no">D2</td><td class="term"><b>Correction factor c<sub>r</sub></b><span class="zh">修正因子</span></td><td class="desc"><div class="fx">\[ \begin{aligned} &c_r = \frac{1+K_0}{2}\quad(\text{Finn et al. 1971}) \\ &c_r = \frac{2(1+2K_0)}{3\sqrt3}\quad(\text{Castro 1975}) \end{aligned} \]</div><p class="en"><span class="pt">K<sub>0</sub> = 0.4: 0.70 (Finn), 0.55–0.72 (Seed &amp; Peacock 1971, varies), 0.69 (Castro). K<sub>0</sub> = 1: 1.0, 1.0, 1.15.</span></p><p class="zh-d">題目沒指定時寫明用哪一式；模擬考 8.1 用 Finn。</p></td><td class="go"><a href="units/u12.html#s12-4">12.4 →</a><a class="pr" href="calc.html#m8-1">練習 8.1</a></td></tr>
+    <tr><td class="no">D3</td><td class="term"><b>Field CSR (or CRR)</b><span class="zh">現地的 CSR／CRR</span></td><td class="desc"><div class="fx">\[ (CSR)_{field} = \frac{\tau_{cyc}}{\sigma'_{v0}} = 0.9\,(CSR)_{ss} = 0.9\,c_r\,(CSR)_{tx} \]</div><p class="en"><span class="pt">0.9: two-dimensional (multidirectional) shaking. The same factors convert a laboratory CRR to the field CRR.</span></p><p class="zh-d">0.9 是二維效應；室內 CRR 換現地 CRR 用同樣的係數。</p></td><td class="go"><a href="units/u12.html#s12-4">12.4 →</a><a class="pr" href="calc.html#m8-1">練習 8.1</a></td></tr>
+  </table></div>
+  <div class="callout example"><div class="ct">模擬考 8.1 的數字（對答案用）</div>
+    <p>σ′<sub>3c</sub> = 100 kPa；σ<sub>d</sub> = 50 kPa → N<sub>L</sub> = 12、σ<sub>d</sub> = 36 kPa → N<sub>L</sub> = 45。CSR<sub>tx</sub> = 0.25、0.18 → b = 0.249、a = 0.464 → CRR<sub>tx</sub>(15) = 0.237 → K<sub>0</sub> = 0.5、c<sub>r</sub> = 0.75 → CRR<sub>field</sub> = 0.9 × 0.75 × 0.237 = 0.160。完整作答見<a href="calc.html#m8-1">計算題整理 8.1</a>。</p>
+  </div>
+</section>
+
+<section class="sec" id="types" data-num="3" data-short="題型與步驟" data-title="計算題題型與解題步驟">
+  <div class="sec-head"><span class="sec-num">3</span><h2>計算題題型與解題步驟</h2></div>
+  <p>先認出題型，再照步驟寫。每一步都寫「公式 = 代入 = 結果」，CSR、CRR 無單位，應力統一用 kPa。</p>
+  <div class="tablewrap"><table class="data ty">
+    <tr><th>題型</th><th>典型已知</th><th>解題步驟</th><th class="go">練習</th></tr>
+    <tr id="t1"><td class="tn"><b>① 細粒土易致性判斷</b><span class="zh">類砂或類黏土</span></td><td>PI、LL、w<sub>c</sub>（或 CPT 的 I<sub>c</sub>）、FC</td><td><ol><li>算 w<sub>c</sub>/LL</li><li>Idriss &amp; Boulanger：PI &lt; 7 → 像砂</li><li>Bray &amp; Sancio：PI ≤ 12 且 w<sub>c</sub>/LL ≥ 0.85 → 易致；12 &lt; PI ≤ 18 且 ≥ 0.8 → 中度，要試驗</li><li>有 CPT：I<sub>c</sub> ≤ 2.6 像砂，&gt; 2.6 取樣試驗</li><li>結論寫「易致 → 進入觸發評估」或「像黏土 → 評估反覆軟化」；FC 或黏粒含量本身不是判斷依據</li></ol></td><td class="go"><a href="units/u12.html#s12-1">12.1 小測驗</a></td></tr>
+    <tr id="t2"><td class="tn"><b>② 狀態與 CSL</b><span class="zh">收縮或膨脹、會不會流動液化</span></td><td>e<sub>0</sub>、σ′<sub>0</sub>，CSL 圖（或某圍壓下的 e<sub>c</sub>）</td><td><ol><li>在 e–log σ′ 圖上點出 (σ′<sub>0</sub>, e<sub>0</sub>)，讀同一 σ′<sub>0</sub> 的 e<sub>c</sub></li><li>e<sub>0</sub> &gt; e<sub>c</sub> → 收縮：不排水時水平往左，Δu &gt; 0、σ′ 下降</li><li>e<sub>0</sub> &lt; e<sub>c</sub> → 膨脹：Δu &lt; 0、σ′ 上升，越剪越強</li><li>收縮且靜剪應力 &gt; 殘餘強度 → 可能流動液化；否則只可能反覆流動性</li><li>同一 e 在較大 σ′ 下更偏收縮（深處的中密砂也可能在線上方）</li></ol></td><td class="go"><a href="units/u12.html#s12-2">12.2 圖</a></td></tr>
+    <tr id="t3"><td class="tn"><b>③ 孔隙水壓比</b><span class="zh">由量測的 Δu 求 r<sub>u</sub></span></td><td>σ′<sub>3c</sub>（或 σ′<sub>v0</sub>）、各圈 Δu</td><td><ol><li>r<sub>u</sub> = Δu/σ′<sub>0</sub>（分母用初始有效應力）</li><li>剩餘有效應力 σ′ = (1 − r<sub>u</sub>)σ′<sub>0</sub>；例：σ′<sub>3c</sub> = 100 kPa、Δu = 65 kPa → r<sub>u</sub> = 0.65、σ′ = 35 kPa</li><li>r<sub>u</sub> = 1 → 初始液化，記下該圈為 N<sub>L</sub>（若題目用應變準則，改看 5 % 或 3 %）</li></ol></td><td class="go"><a href="units/u12.html#s12-3">12.3</a></td></tr>
+    <tr id="t4"><td class="tn"><b>④ 試驗的 CSR</b><span class="zh">模擬考 8.1 (a)</span></td><td>σ<sub>d</sub>、σ′<sub>3c</sub>（三軸）或 τ<sub>cyc</sub>、σ′<sub>v0</sub>（單剪）</td><td><ol><li>三軸：CSR<sub>tx</sub> = σ<sub>d</sub>/(2σ′<sub>3c</sub>)；例 50/(2 × 100) = 0.25</li><li>單剪：CSR<sub>ss</sub> = τ<sub>cyc</sub>/σ′<sub>v0</sub></li><li>反求試驗要施加的載重：σ<sub>d</sub> = 2σ′<sub>3c</sub>·CSR<sub>tx</sub></li></ol></td><td class="go"><a href="calc.html#m8-1">8.1</a></td></tr>
+    <tr id="t5"><td class="tn"><b>⑤ CRR 曲線與圈數</b><span class="zh">模擬考 8.1 (b)(c)</span></td><td>兩組以上 (CSR, N<sub>L</sub>)，或 a、b</td><td><ol><li>各組 CSR 就是該圈數的 CRR</li><li>b = ln(CRR<sub>1</sub>/CRR<sub>2</sub>)/ln(N<sub>2</sub>/N<sub>1</sub>)，a = CRR<sub>1</sub>N<sub>1</sub><sup>b</sup>；8.1：b = 0.249、a = 0.464</li><li>指定圈數：CRR = aN<sup>−b</sup>（或比值式）；8.1：N = 15 → 0.237</li><li>指定 CSR 求圈數：N<sub>L</sub> = (a/CSR)<sup>1/b</sup>；8.1 的曲線在 CSR = 0.20 時約 29 圈</li><li>寫明液化準則與圈數</li></ol></td><td class="go"><a href="calc.html#m8-1">8.1</a><a href="units/u12.html#s12-3">12.3 小測驗</a></td></tr>
+    <tr id="t6"><td class="tn"><b>⑥ 三軸換到現地</b><span class="zh">模擬考 8.1 (d)</span></td><td>(CSR)<sub>tx</sub> 或 CRR<sub>tx</sub>、K<sub>0</sub></td><td><ol><li>c<sub>r</sub>：Finn (1 + K<sub>0</sub>)/2，或 Castro 2(1 + 2K<sub>0</sub>)/(3√3)，寫明用哪一式</li><li>(CSR)<sub>ss</sub> = c<sub>r</sub>(CSR)<sub>tx</sub></li><li>(CSR)<sub>field</sub> = 0.9(CSR)<sub>ss</sub></li><li>8.1：0.9 × 0.75 × 0.237 = 0.160；單元 12.4 例：0.30 → 0.225 → 0.20</li><li>說明：等向壓密三軸高估現地抵抗、現地是多方向剪動，所以兩個係數都 &lt; 1</li></ol></td><td class="go"><a href="calc.html#m8-1">8.1</a><a href="units/u12.html#s12-4">12.4 例</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="concept" data-num="4" data-short="關鍵觀念" data-title="簡答題的關鍵觀念">
+  <div class="sec-head"><span class="sec-num">4</span><h2>簡答題的關鍵觀念</h2></div>
+  <p>名詞解釋之外，常被問「為什麼」。每題先寫結論，再寫一句理由。</p>
+  <div class="tablewrap"><table class="data gl">
+    <tr><th>#</th><th>問題</th><th>答題重點</th><th class="go">詳細推導</th></tr>
+    <tr><td class="no">1</td><td class="term"><b>Why are loose saturated sands the most susceptible?</b><span class="zh">為什麼疏鬆飽和的砂最危險？</span></td><td class="desc"><p class="en"><span class="pt">Liquefaction needs a soil that wants to contract and water that cannot escape during shaking.</span><span class="pt">Clay has cohesion and plasticity; clean gravel drains too quickly for pore pressure to build up.</span><span class="pt">Sand and non-plastic silt contract easily yet drain slowly, especially when young, loose, uniformly graded and rounded.</span></p><p class="zh-d">要「想收縮」又「排不掉水」。黏土有凝聚力，乾淨礫石排水太快；砂與非塑性粉土兩個條件都成立，年輕、疏鬆、均勻、圓粒時更明顯。</p></td><td class="go"><a href="units/u12.html#s12-1">12.1 →</a></td></tr>
+    <tr><td class="no">2</td><td class="term"><b>Why can the same sand be dense-like near the surface and loose-like at depth?</b><span class="zh">同一種砂為何淺處像密砂、深處像鬆砂？</span></td><td class="desc"><p class="en"><span class="pt">Whether a soil contracts or dilates depends on its state relative to the CSL, i.e. on both e and σ′.</span><span class="pt">e<sub>c</sub> decreases as σ′ increases, so a given e lies below the CSL (dilative) at low stress and may lie above it (contractive) at high stress.</span></p><p class="zh-d">收縮或膨脹看的是相對於 CSL 的狀態；圍壓越大 e<sub>c</sub> 越小，同一孔隙比在深處可能落到線上方而變成收縮。</p></td><td class="go"><a href="units/u12.html#s12-2">12.2 →</a></td></tr>
+    <tr><td class="no">3</td><td class="term"><b>Flow liquefaction vs cyclic mobility<span class="star">★</span></b><span class="zh">流動液化與反覆流動性的差別</span></td><td class="desc"><p class="en"><span class="pt">Condition: flow liquefaction needs static shear stress &gt; residual strength; cyclic mobility occurs when static shear stress &lt; residual strength.</span><span class="pt">State: flow liquefaction only above the CSL (loose, contractive); cyclic mobility on either side.</span><span class="pt">Deformation: flow is sudden, very large and may continue after shaking; cyclic mobility accumulates incrementally and stops when shaking stops.</span><span class="pt">Examples: flow slides of dams and tailings vs lateral spreading, sand boils and settlement.</span></p><p class="zh-d">條件（靜剪應力 vs 殘餘強度）、狀態（只在 CSL 上方 vs 上下都可）、變形（突然很大、震後持續 vs 逐圈累積、震停即停）、例子（壩體流滑 vs 側潰、噴砂、沉陷）四點對照。</p></td><td class="go"><a href="units/u12.html#s12-2">12.2 →</a></td></tr>
+    <tr><td class="no">4</td><td class="term"><b>How does pore pressure build up in an undrained cyclic test?</b><span class="zh">不排水反覆試驗中孔壓怎麼累積？</span></td><td class="desc"><p class="en"><span class="pt">Each cycle tries to compact the soil; with no drainage, the tendency becomes a rise in Δu and r<sub>u</sub> increases cycle by cycle.</span><span class="pt">Strains stay small until r<sub>u</sub> nears 1. Loose sand (D<sub>r</sub> = 47 %): strain then runs away in one or two cycles. Dense sand (D<sub>r</sub> = 75 %): r<sub>u</sub> touches 1 at each stress reversal, but dilation between reversals limits the strain per cycle.</span><span class="pt">In the slide example the dense sand needed about three times the shear stress to liquefy in a similar number of cycles.</span></p><p class="zh-d">每圈都想壓密，不排水就變成孔壓上升；r<sub>u</sub> 接近 1 前應變很小。鬆砂到 1 後應變失控；密砂每次反轉瞬間到 1，但之間膨脹回升，每圈只增加一點應變。講義 p.18 的密砂要約三倍剪應力才在相近圈數液化。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+    <tr><td class="no">5</td><td class="term"><b>Why is r<sub>u</sub> alone not a safe indicator?</b><span class="zh">為什麼只看 r<sub>u</sub> 不夠？</span></td><td class="desc"><p class="en"><span class="pt">With an initial static shear stress (sloping ground), the shear stress does not reverse, so r<sub>u</sub> may never reach 1.</span><span class="pt">Strains can still become very large, so judging by r<sub>u</sub> = 1 underestimates the hazard; a strain criterion is needed.</span></p><p class="zh-d">有靜剪應力時剪應力不反轉，r<sub>u</sub> 可能永遠到不了 1，但應變仍可很大；只看 r<sub>u</sub> 會低估危險。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+    <tr><td class="no">6</td><td class="term"><b>Why must a CRR be quoted with N and the criterion?</b><span class="zh">為什麼 CRR 要附圈數與準則？</span></td><td class="desc"><p class="en"><span class="pt">CRR decreases with the number of cycles (CRR = aN<sup>−b</sup>), so a value without N has no meaning; the field reference is 15 cycles.</span><span class="pt">For dense sand, N<sub>L</sub> by r<sub>u</sub> = 1 and by 5 % strain can differ a lot.</span></p><p class="zh-d">CRR 隨圈數下降，不附圈數沒有意義；密砂用 r<sub>u</sub> = 1 或 5 % 應變得到的 N<sub>L</sub> 差很多。</p></td><td class="go"><a href="units/u12.html#s12-3">12.3 →</a></td></tr>
+    <tr><td class="no">7</td><td class="term"><b>Why is the triaxial CRR reduced for field use?</b><span class="zh">為什麼三軸 CRR 要折減才能用在現地？</span></td><td class="desc"><p class="en"><span class="pt">The triaxial specimen is isotropically consolidated, while the field soil is in the K<sub>0</sub> state with K<sub>0</sub> &lt; 1; the triaxial test overestimates the resistance, corrected by c<sub>r</sub> &lt; 1.</span><span class="pt">The triaxial test loads in one direction; field shaking has two horizontal components that raise pore pressure faster, giving the factor 0.9.</span><span class="pt">Using the triaxial value directly overestimates field resistance by about 50 % (0.30 vs 0.20 for K<sub>0</sub> = 0.5).</span></p><p class="zh-d">等向壓密 vs 現地 K<sub>0</sub> 狀態（c<sub>r</sub>）、單向 vs 多方向剪動（0.9）。K<sub>0</sub> = 0.5 時三軸 0.30 只剩現地 0.20，直接用會高估約 50 %。</p></td><td class="go"><a href="units/u12.html#s12-4">12.4 →</a></td></tr>
+    <tr><td class="no">8</td><td class="term"><b>Why does simple shear approximate the field better than triaxial?</b><span class="zh">為什麼單剪比三軸接近現地？</span></td><td class="desc"><p class="en"><span class="pt">During an earthquake, vertically propagating S waves apply cyclic horizontal shear on horizontal planes of K<sub>0</sub>-consolidated soil.</span><span class="pt">Simple shear reproduces this (K<sub>0</sub> consolidation, τ<sub>cyc</sub> on the horizontal plane, CSR = τ<sub>cyc</sub>/σ′<sub>v0</sub>), whereas triaxial applies σ<sub>d</sub> to an isotropic specimen with shear on the 45° plane.</span></p><p class="zh-d">現地是向上傳的剪力波在水平面上施加反覆剪應力、土在 K<sub>0</sub> 狀態；單剪正是如此，三軸則是等向壓密、剪應力在 45° 面上。</p></td><td class="go"><a href="units/u12.html#s12-4">12.4 →</a></td></tr>
+    <tr><td class="no">9</td><td class="term"><b>What factors influence cyclic resistance, and why are in-situ tests preferred?</b><span class="zh">影響抗液化強度的因素，為何實務用現地試驗？</span></td><td class="desc"><p class="en"><span class="pt">Resistance increases with initial density and confining stress condition, OCR, K<sub>0</sub>, aging time, favourable soil structure (fabric) and prior seismic straining (small pre-shaking).</span><span class="pt">Soil structure and aging effects are destroyed by sampling; careful freezing and coring preserve them but are expensive.</span><span class="pt">So practice relies on in-situ test results correlated with field case histories.</span></p><p class="zh-d">密度與初始應力狀態、OCR、K<sub>0</sub>、老化時間、土壤結構、曾受小震預剪都提高 CRR。結構與老化在取樣時就被破壞，冷凍取樣可保留但昂貴，所以實務多用現地試驗配合案例資料。</p></td><td class="go"><a href="units/u12.html#s12-4">12.4 →</a></td></tr>
+  </table></div>
+</section>
+
+<section class="sec" id="trap" data-num="5" data-short="常見陷阱" data-title="常見陷阱與計算機提醒">
+  <div class="sec-head"><span class="sec-num">5</span><h2>常見陷阱與計算機提醒</h2></div>
+  <ul class="pitfalls">
+    <li><b>易致不等於會液化</b>：易致性只說「可能」，會不會液化要看地震的 CSR 與土的 CRR。</li>
+    <li><b>細粒土看塑性</b>：判斷依據是 PI（與 w<sub>c</sub>/LL、I<sub>c</sub>），不是細粒料比例或黏粒含量；修正中國準則已不建議。</li>
+    <li><b>反覆流動性不只發生在密砂</b>：鬆砂到密砂、CSL 上下都可能；流動液化才只限 CSL 上方。</li>
+    <li><b>講義 p.13 的縱軸</b>：CSL 圖縱軸標成 Deviator stress，應讀作孔隙比 e（與 p.14、p.15 同一條線）。</li>
+    <li><b>分母一律是有效應力</b>：r<sub>u</sub> 用初始有效應力 σ′<sub>0</sub>，CSR 用 σ′<sub>v0</sub> 或 σ′<sub>3c</sub>，不是總應力。</li>
+    <li><b>CSR<sub>tx</sub> 的 2</b>：σ<sub>d</sub>/(2σ′<sub>3c</sub>)，σ<sub>d</sub> 是單振幅；忘了 2 會讓 CSR 加倍。</li>
+    <li><b>b 的符號與順序</b>：b = ln(CRR<sub>1</sub>/CRR<sub>2</sub>)/ln(N<sub>2</sub>/N<sub>1</sub>)，b 為正；CRR = aN<sup>−b</sup> 的負號已在指數裡。</li>
+    <li><b>CRR 不寫圈數或準則</b>：密砂 r<sub>u</sub> = 1 與 5 % 應變的 N<sub>L</sub> 可以差很多。</li>
+    <li><b>只看 r<sub>u</sub></b>：有靜剪應力時 r<sub>u</sub> 到不了 1，應變仍可很大。</li>
+    <li><b>三軸 CRR 直接當現地</b>：要乘 c<sub>r</sub> 與 0.9（兩者都 &lt; 1，是乘不是除）；c<sub>r</sub> 寫明用 Finn 或 Castro，K<sub>0</sub> = 1 時 Castro 給 1.15。</li>
+  </ul>
+  <div class="callout link"><div class="ct">延伸</div>
+    <p>完整說明、CSL 圖與孔隙水壓互動圖在<a href="units/u12.html">單元 12 · 液化易致性與反覆試驗</a>；所有公式見<a href="formulas.html#f8">公式總表 Ch8</a>，所有名詞（含本頁不收的 N<sub>eq</sub>、MSF、K<sub>σ</sub>、K<sub>α</sub>）見<a href="glossary.html#g8">名詞總表 Ch8</a>。</p>
+  </div>
+</section>
+
+</main>
+<footer class="site">CIE 5014 Soil Dynamics and Foundation Vibration · Personal Study Notes · From Prof. Dr. Yu-Wei Hwang 2026 Slides、Homework and Reference</footer>
+
+<script src="assets/katex/katex.min.js"></script>
+<script src="assets/katex/auto-render.min.js"></script>
+<script src="assets/common.js"></script>
+</body>
+</html>

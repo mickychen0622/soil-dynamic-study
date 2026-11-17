@@ -59,6 +59,12 @@
         ${item({ id: 'formulas', href: 'formulas.html' }, '<b>ƒ</b><span>公式總表</span>')}
 ${item({ id: 'calc', href: 'calc.html' }, '<b>∑</b><span>計算題整理</span>')}
         ${item({ id: 'sdof', href: 'sdof.html' }, '<b>◎</b><span>SDOF 考試重點</span>')}
+        ${item({ id: 'soilprop', href: 'soilprop.html' }, '<b>◎</b><span>動態土壤性質考試重點</span>')}
+        ${item({ id: 'siteresp', href: 'siteresp.html' }, '<b>◎</b><span>地盤反應考試重點</span>')}
+        ${item({ id: 'motion', href: 'motion.html' }, '<b>◎</b><span>強地動參數考試重點</span>')}
+        ${item({ id: 'vs', href: 'vs.html' }, '<b>◎</b><span>現地 Vs 量測考試重點</span>')}
+        ${item({ id: 'quake', href: 'quake.html' }, '<b>◎</b><span>地震概論考試重點</span>')}
+        ${item({ id: 'liq', href: 'liq.html' }, '<b>◎</b><span>液化考試重點</span>')}
         ${units}<div class="sn-stage">作業</div>${hws}</nav>`;
     const mbar = document.createElement('header');
     mbar.className = 'mbar';
